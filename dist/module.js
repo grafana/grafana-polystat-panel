@@ -14,8 +14,8 @@ System.register(["./ctrl", "app/plugins/sdk"], function (exports_1, context_1) {
         execute: function () {
             exports_1("PanelCtrl", ctrl_1.D3PolystatPanelCtrl);
             sdk_1.loadPluginCss({
-                dark: "plugins/grafana-polystat-panel/css/dark.css",
-                light: "plugins/grafana-polystat-panel/css/light.css"
+                dark: "plugins/grafana-polystat-panel/css/polystat.dark.css",
+                light: "plugins/grafana-polystat-panel/css/polystat.light.css"
             });
         }
     };

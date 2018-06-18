@@ -4,8 +4,8 @@ import {D3PolystatPanelCtrl} from  "./ctrl";
 import {loadPluginCss} from "app/plugins/sdk";
 
 loadPluginCss({
-  dark: "plugins/grafana-polystat-panel/css/dark.css",
-  light: "plugins/grafana-polystat-panel/css/light.css"
+  dark: "plugins/grafana-polystat-panel/css/polystat.dark.css",
+  light: "plugins/grafana-polystat-panel/css/polystat.light.css"
 });
 
 export {
