@@ -1,0 +1,36 @@
+{
+    "compilerOptions": {
+      "moduleResolution": "node",
+      "outDir": "dist",
+      "target": "es6",
+      "lib": ["es6", "dom"],
+      "rootDir": "src/",
+      "module": "commonjs",
+      "declaration": true,
+      "allowSyntheticDefaultImports": true,
+      "allowJs": true,
+      "sourceMap": true,
+      "noEmitOnError": false,
+      "emitDecoratorMetadata": true,
+      "experimentalDecorators": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": false,
+      "noImplicitUseStrict":false,
+      "noImplicitAny": false,
+      "noUnusedLocals": true
+    },
+    "paths": {
+      "app/core/time_series2": ["node_modules/typed-some-module"]
+    },
+    "include": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "node_modules/grafana-sdk-mocks/app/headers/common.d.ts",
+      "node_modules/@types/grafana/index.d.ts",
+      "node_modules/@types/d3-hexbin/index.d.ts",
+      "node_modules/@types/d3/index.d.ts"
+    ],
+    "exclude": [
+      "node_modules"
+    ]
+}

@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "polystat.light.css",
+	"sources": [
+		"../../src/sass/polystat.light.scss"
+	],
+	"mappings": "",
+	"names": []
+}

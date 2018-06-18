@@ -1,0 +1,100 @@
+.d3-polystat-panel-axis-y {
+	stroke:rgb(255,225,0);
+}
+.d3-polystat-panel-axis-x {
+	stroke:rgb(255,225,255);
+}
+.d3-polystat-panel.div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: black;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+
+.xtooltip {
+  position: absolute;
+  width: 200px;
+  color: white;
+  height: auto;
+  padding: 10px;
+  background-color: black;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.xtooltip.hidden {
+  display: none;
+}
+
+.xtooltip p {
+  margin: 0;
+  not-font-family: Futura;
+  not-font-size: 16px;
+  notline-height: 20px;
+}
+
+.polystat-panel-tooltiptable {
+  not-background: red;
+}
+
+.polystat-panel-tooltiptable th {
+  text-align: left;
+}
+
+.polystat-panel-legendtable {
+  background: red;
+}
+
+.polystat-panel-legendtable th {
+  text-align: left;
+}
+
+.polystat-panel-quadrant {
+  position: absolute;
+  color: white;
+  height: auto;
+  padding: 10px;
+  background-color: black;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.botr2 {
+  position: relative;
+  display: inline-block;
+  top: -40px;
+  left: calc(100% - 52px);
+  /*
+  *  Styling only, the below can be changed or removed
+  *  depending on your use case
+  */
+  height: 20px;
+  padding: 10px 10px;
+}
+
+.botr {
+  position: absolute;
+  top: 90%;
+  left: 80%;
+  right: 0;
+  bottom: -50;
+  text-align: center;
+  background: green;
+}

@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "polystat.dark.css",
+	"sources": [
+		"../../src/sass/polystat.dark.scss"
+	],
+	"mappings": "",
+	"names": []
+}

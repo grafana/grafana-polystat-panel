@@ -1,0 +1,53 @@
+{
+  "name": "grafana-polystat-panel",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Grafana Polystat Panel",
+  "main": "module.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grafana/grafana-polystat-panel.git"
+  },
+  "author": "Brian Gann",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/grafana/grafana-polystat-panel/issues"
+  },
+  "devDependencies": {
+    "@types/d3": "^5.0.0",
+    "@types/d3-hexbin": "0.2.2",
+    "@types/jest": "^22.2.3",
+    "csstype": "^2.5.3",
+    "d3": "^5.1.0",
+    "d3-hexbin": "^0.2.2",
+    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
+    "grunt": "^1.0.3",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "grunt-package-modules": "^1.0.0",
+    "grunt-run": "^0.8.1",
+    "grunt-sass": "^1.1.0",
+    "grunt-systemjs-builder": "^0.2.5",
+    "grunt-ts": "^6.0.0-beta.19",
+    "grunt-tslint": "^5.0.2",
+    "jest": "^22.4.4",
+    "jquery": "^3.3.1",
+    "load-grunt-tasks": "^3.2.0",
+    "lodash": "^4.17.10",
+    "node-sass": "^4.9.0",
+    "plugin-typescript": "^8.0.0",
+    "sass": "^1.3.0",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3",
+    "typescript-formatter": "^7.2.0"
+  },
+  "dependencies": {
+  },
+  "homepage": "https://github.com/grafana/grafana-polystat-panel"
+}

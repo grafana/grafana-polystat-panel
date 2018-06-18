@@ -1,0 +1,124 @@
+<div class="editor-row">
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Overrides
+		</h5>
+	
+        <div class="gf-form-inline" ng-repeat="override in ctrl.overridesCtrl.metricOverrides">
+          <div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label">
+				<i class="fa fa-trash pointer" ng-click="ctrl.overridesCtrl.removeMetricOverride(override)"></i>
+				</label>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label">
+					<i class="fa fa-arrow-up pointer" ng-click="ctrl.overridesCtrl.moveMetricOverrideUp(override)"></i>
+				</label>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label">
+					<i class="fa fa-arrow-down pointer" ng-click="ctrl.overridesCtrl.moveMetricOverrideDown(override)"></i>
+				</label>
+			</div>
+			
+
+			<div class="gf-form">
+				<label class="gf-form-label width-9">Name or regex</label>
+				<input type="text" class="gf-form-input width-13"
+					ng-model="override.metricName"
+					spellcheck='false'
+					bs-typeahead="ctrl.overridesCtrl.suggestMetricNames"
+					placeholder="metric name"
+					data-min-length=0 data-items=500
+					ng-blur="ctrl.overridesCtrl.metricNameChanged(override)">
+				</input>
+			</div>
+		
+			<div class="gf-form">
+				<label class="gf-form-label width-8">Thresholds
+					<tip>Comma separated values</tip>
+				</label>
+				<input type="text" class="gf-form-input" ng-model="override.thresholds" placeholder="50,80" ng-blur="ctrl.render()"
+  				array-join
+	  			ng-model-onblur>
+			</div>
+
+			<div class="gf-form">
+				<label class="gf-form-label width-5">Colors</label>
+					<span class="gf-form-label">
+						<spectrum-picker ng-model="override.colors[0]" ng-change="ctrl.render()"></spectrum-picker>
+					</span>
+					<span class="gf-form-label">
+						<spectrum-picker ng-model="override.colors[1]" ng-change="ctrl.render()"></spectrum-picker>
+					</span>
+					<span class="gf-form-label">
+						<spectrum-picker ng-model="override.colors[2]" ng-change="ctrl.render()"></spectrum-picker>
+					</span>
+			</div>
+
+			<div class="gf-form">
+				<label class="gf-form-label">
+					<i class="fa fa-exchange" ng-click="ctrl.overridesCtrl.invertColorOrder(override)"></i>
+					<tip>Invert Colors</tip>
+				</label>
+		    </div>
+			<div class="gf-form">
+				<editor-checkbox text="Enabled" model="override.enabled"></editor-checkbox>
+			</div>
+		</div>
+	    <div class="gf-form-inline">
+			<div class="gf-form" style="margin-left: 101px;">
+				<label class="gf-form-label width-9">Unit</label>
+			</div>
+			<div class="gf-form">
+			<div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="override.unitFormat" dropdown-typeahead2="ctrl.panel.unitFormats"
+  				dropdown-typeahead-on-select="ctrl.overridesCtrl.setUnitFormat(override, $subItem)"></div>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label">Decimals</label>
+				<input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.render()"
+	  			ng-model-onblur>
+			</div>
+
+			<div class="gf-form">
+				<label class="gf-form-label width-4">Stat</label>
+				<div class="gf-form-select-wrapper width-12">
+					<select class="gf-form-input" ng-model="override.valueName" ng-options="f.value as f.text for f in ctrl.panel.valueNameOptions"
+	  				ng-change="ctrl.refresh()"></select>
+			  </div>
+			</div>
+		</div>
+
+		<div class="gf-form-inline">
+			<div class="gf-form">
+				<label class="gf-form-label width-4">Click</label>
+				<input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="override.clickThrough"
+  				ng-change="ctrl.render()" ng-model-onblur>
+			</div>
+		</div>
+
+		<div class="gf-form-inline">
+			<div class="gf-form" style="margin-left: 101px;">
+				<label class="gf-form-label width-9">Prefix</label>
+				<input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.prefix"
+  				ng-change="ctrl.render()" ng-model-onblur>
+			</div>
+			<div class="gf-form">
+				<label class="gf-form-label width-4">Suffix</label>
+				<input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.suffix"
+  				ng-change="ctrl.render()" ng-model-onblur>
+			</div>
+			
+		</div>
+	</div>
+	</div>
+</div>
+
+
+<div class="editor-row">
+	<div class="section gf-form-group">
+		<button class="btn btn-inverse" ng-click="ctrl.overridesCtrl.addMetricOverride()">
+			<i class="fa fa-plus"></i>&nbsp;Add Override
+		</button>
+	</div>
+</div>

@@ -1,0 +1,26 @@
+{
+  "name": "grafana-polystat-panel",
+  "description": "Polystat panel for Grafana",
+  "main": "",
+  "authors": [
+    "Brian Gann <bkgann@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "grafana d3 d3js"
+  ],
+  "homepage": "https://github.com/grafana/grafana-polystat-panel",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "^4.13.0",
+    "lodash": "^4.17.10",
+    "font-awesome": "^4.7.0"
+  }
+}

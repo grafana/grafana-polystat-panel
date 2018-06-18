@@ -1,0 +1,44 @@
+{
+    "type": "panel",
+    "name": "Polystat",
+    "id": "grafana-polystat-panel",
+    "info": {
+        "description": "Polystat panel for Grafana",
+        "author": {
+            "name": "Brian Gann (bkgann@gmail.com)",
+            "url": "https://github.com/briangann"
+        },
+        "keywords": ["hexbin", "honeycomb", "panel"],
+        "logos": {
+            "small": "img/Logo_D3.svg",
+            "large": "img/Logo_D3.svg"
+        },
+        "links": [{
+            "name": "Project site",
+            "url": "https://github.com/grafana/grafana-polystat-panel"
+        }, {
+            "name": "Apache-2.0",
+            "url": "https://github.com/grafana/grafana-polystat-panel/blob/master/LICENSE.md"
+        }],
+        "screenshots": [{
+            "name": "Showcase",
+            "path": "screenshots/default.png"
+        }, {
+            "name": "Options",
+            "path": "screenshots/options.png"
+        }, {
+            "name": "Polystat Options",
+            "path": "screenshots/hexbinoptions.png"
+        }, {
+            "name": "Thresholding",
+            "path": "screenshots/thresholding.png"
+        }],
+        "version": "1.0.1",
+        "updated": "2018-06-18"
+    },
+
+    "dependencies": {
+        "grafanaVersion": "3.x.x",
+        "plugins": []
+    }
+}
