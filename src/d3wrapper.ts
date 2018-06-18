@@ -275,11 +275,25 @@ export class D3Wrapper {
   formatValueContent(i, frames, thisRef): string {
     let data = thisRef.data[i];
     // options can specify to not show the value
-    if (data.hasOwnProperty("showValue")) {
-      if (!data.showValue) {
+    //if (data.hasOwnProperty("showValue")) {
+    //  if (!data.showValue) {
+     //   return "";
+     // }
+    // }
+    if (typeof(data) !== "undefined") {
+      if (data.hasOwnProperty("showValue")) {
+        if (!data.showValue) {
+          return "";
+        }
+      }
+      if (!data.hasOwnProperty("valueFormatted")) {
         return "";
       }
     }
+    //if (typeof(data.valueFormatted) === "undefined") {
+    //  return "";
+    //}
+
     let content = data.valueFormatted;
     if ((data.prefix) && (data.prefix.length > 0)) {
       content = data.prefix + " " + content;

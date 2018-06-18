@@ -187,8 +187,13 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                 };
                 D3Wrapper.prototype.formatValueContent = function (i, frames, thisRef) {
                     var data = thisRef.data[i];
-                    if (data.hasOwnProperty("showValue")) {
-                        if (!data.showValue) {
+                    if (typeof (data) !== "undefined") {
+                        if (data.hasOwnProperty("showValue")) {
+                            if (!data.showValue) {
+                                return "";
+                            }
+                        }
+                        if (!data.hasOwnProperty("valueFormatted")) {
                             return "";
                         }
                     }
