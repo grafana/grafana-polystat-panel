@@ -197,6 +197,9 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                             return "";
                         }
                     }
+                    else {
+                        return "";
+                    }
                     var content = data.valueFormatted;
                     if ((data.prefix) && (data.prefix.length > 0)) {
                         content = data.prefix + " " + content;
