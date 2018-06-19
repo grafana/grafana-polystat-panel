@@ -124,8 +124,8 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     _this.series = [];
                     _this.polystatData = [];
                     _this.tooltipContent = [];
-                    _this.overridesCtrl = new metric_overrides_manager_1.MetricOverridesManager($scope, templateSrv, _this.panel.savedOverrides);
-                    _this.compositesManager = new composites_manager_1.CompositesManager($scope, templateSrv, _this.panel.savedComposites);
+                    _this.overridesCtrl = new metric_overrides_manager_1.MetricOverridesManager($scope, templateSrv, $sanitize, _this.panel.savedOverrides);
+                    _this.compositesManager = new composites_manager_1.CompositesManager($scope, templateSrv, $sanitize, _this.panel.savedComposites);
                     _this.events.on("init-edit-mode", _this.onInitEditMode.bind(_this));
                     _this.events.on("data-received", _this.onDataReceived.bind(_this));
                     _this.events.on("data-error", _this.onDataError.bind(_this));

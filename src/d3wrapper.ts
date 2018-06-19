@@ -78,28 +78,42 @@ export class D3Wrapper {
     if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
       // sqrt of # data items
       let squared = Math.sqrt(this.data.length);
+      //debugger;
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
         // ratio of width to height
         let ratio = this.opt.width / this.opt.height * .66;
         this.numColumns = Math.ceil(squared) * ratio;
+        // always at least 1 column
+        if (this.numColumns < 1) {
+          this.numColumns = 1;
+        }
         // prefer evens and smaller
-        if (this.numColumns % 2) {
+        if ((this.numColumns % 2) && (this.numColumns > 2)) {
           this.numColumns -= 1;
         }
         this.numRows = Math.ceil(this.data.length / this.numColumns * ratio);
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
         //console.log("Calculated columns = " + this.numColumns);
         //console.log("Calculated rows = " + this.numRows);
         //console.log("Number of data items to render = " + this.data.length);
       } else {
         let ratio = this.opt.height / this.opt.width * .66;
         this.numRows = Math.ceil(squared) * ratio;
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
         // prefer evens and smaller
-        if (this.numRows % 2) {
+        if ((this.numRows % 2) && (this.numRows > 2)) {
           this.numRows -= 1;
         }
         this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+        if (this.numColumns < 1) {
+          this.numColumns = 1;
+        }
       }
     }
     this.hexRadius = this.getAutoHexRadius();
@@ -196,9 +210,15 @@ export class D3Wrapper {
           return data[i].color;
         })
         .on("click", function (_, i) {
-          //console.log("clicked! i = " + i);
-          //console.log("url is " + data[i].clickThrough);
-          window.location.replace(data[i].clickThrough);
+          if (data[i].sanitizeURLEnabled) {
+            if (data[i].sanitizedURL.length > 0) {
+              window.location.replace(data[i].sanitizedURL);
+            }
+          } else {
+            if (data[i].clickThrough.length > 0) {
+              window.location.replace(data[i].clickThrough);
+            }
+          }
         })
         .on("mousemove", function () {
           var mouse = d3.mouse(svg.node());
@@ -237,12 +257,23 @@ export class D3Wrapper {
       .attr("font-size", "20px")
       .attr("fill", "black")
       .text(function (_, i) {
-        if (data[i].hasOwnProperty("showName")) {
-          if (!data[i].showName) {
-            return "";
-          }
+        debugger;
+        let item = data[i];
+        // check if property exist
+        if (!("showName" in item)) {
+          return item.name;
         }
-        return data[i].name;
+        if (item.showName) {
+          return item.name;
+        } else {
+          return "";
+        }
+        //if (data[i].hasOwnProperty("showName")) {
+        //  if (!data[i].showName) {
+        //    return "";
+        //  }
+        //}
+        //return data[i].name;
       });
 
     var frames = 0;
@@ -316,10 +347,11 @@ export class D3Wrapper {
         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
       ]
     );
-    //console.log("autohexradius:" + hexRadius);
-    if (hexRadius > 5) {
-      hexRadius -= 4;
-    }
+    //debugger;
+    console.log("autohexradius:" + hexRadius);
+    //if (hexRadius > 5) {
+    //  hexRadius -= 4;
+    //}
     return hexRadius;
   }
 

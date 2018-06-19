@@ -57,18 +57,30 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                         if (this.opt.width > this.opt.height) {
                             var ratio = this.opt.width / this.opt.height * .66;
                             this.numColumns = Math.ceil(squared) * ratio;
-                            if (this.numColumns % 2) {
+                            if (this.numColumns < 1) {
+                                this.numColumns = 1;
+                            }
+                            if ((this.numColumns % 2) && (this.numColumns > 2)) {
                                 this.numColumns -= 1;
                             }
                             this.numRows = Math.ceil(this.data.length / this.numColumns * ratio);
+                            if (this.numRows < 1) {
+                                this.numRows = 1;
+                            }
                         }
                         else {
                             var ratio = this.opt.height / this.opt.width * .66;
                             this.numRows = Math.ceil(squared) * ratio;
-                            if (this.numRows % 2) {
+                            if (this.numRows < 1) {
+                                this.numRows = 1;
+                            }
+                            if ((this.numRows % 2) && (this.numRows > 2)) {
                                 this.numRows -= 1;
                             }
                             this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+                            if (this.numColumns < 1) {
+                                this.numColumns = 1;
+                            }
                         }
                     }
                     this.hexRadius = this.getAutoHexRadius();
@@ -118,7 +130,16 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                         return data[i].color;
                     })
                         .on("click", function (_, i) {
-                        window.location.replace(data[i].clickThrough);
+                        if (data[i].sanitizeURLEnabled) {
+                            if (data[i].sanitizedURL.length > 0) {
+                                window.location.replace(data[i].sanitizedURL);
+                            }
+                        }
+                        else {
+                            if (data[i].clickThrough.length > 0) {
+                                window.location.replace(data[i].clickThrough);
+                            }
+                        }
                     })
                         .on("mousemove", function () {
                         var mouse = d3.mouse(svg.node());
@@ -155,12 +176,17 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                         .attr("font-size", "20px")
                         .attr("fill", "black")
                         .text(function (_, i) {
-                        if (data[i].hasOwnProperty("showName")) {
-                            if (!data[i].showName) {
-                                return "";
-                            }
+                        debugger;
+                        var item = data[i];
+                        if (!("showName" in item)) {
+                            return item.name;
                         }
-                        return data[i].name;
+                        if (item.showName) {
+                            return item.name;
+                        }
+                        else {
+                            return "";
+                        }
                     });
                     var frames = 0;
                     var textRef = textspot.enter()
@@ -224,9 +250,7 @@ System.register(["./external/d3-hexbin.js", "d3"], function (exports_1, context_
                         this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
                         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
                     ]);
-                    if (hexRadius > 5) {
-                        hexRadius -= 4;
-                    }
+                    console.log("autohexradius:" + hexRadius);
                     return hexRadius;
                 };
                 D3Wrapper.prototype.calculateSVGSize = function () {

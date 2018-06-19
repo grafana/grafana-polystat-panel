@@ -1,4 +1,5 @@
 export declare class PolystatModel {
+    thresholdLevel: number;
     value: number;
     valueFormatted: number;
     name: string;
@@ -8,6 +9,11 @@ export declare class PolystatModel {
     seriesRaw: [any];
     color: string;
     clickThrough: string;
-    members: Array<any>;
+    sanitizedURL: string;
+    sanitizeURLEnabled: boolean;
+    showName: boolean;
+    showValue: boolean;
+    members: Array<PolystatModel>;
     constructor(aSeries: any);
+    shallowClone(): PolystatModel;
 }

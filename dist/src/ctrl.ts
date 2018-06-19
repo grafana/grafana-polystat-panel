@@ -105,8 +105,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.series = [];
     this.polystatData = [];
     this.tooltipContent = [];
-    this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, this.panel.savedOverrides);
-    this.compositesManager = new CompositesManager($scope, templateSrv, this.panel.savedComposites);
+    this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
+    this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
     this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
     this.events.on("data-received", this.onDataReceived.bind(this));
     this.events.on("data-error", this.onDataError.bind(this));

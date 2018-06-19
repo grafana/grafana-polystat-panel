@@ -19,9 +19,10 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
             }());
             exports_1("MetricOverride", MetricOverride);
             MetricOverridesManager = (function () {
-                function MetricOverridesManager($scope, templateSrv, savedOverrides) {
+                function MetricOverridesManager($scope, templateSrv, $sanitize, savedOverrides) {
                     var _this = this;
                     this.$scope = $scope;
+                    this.$sanitize = $sanitize;
                     this.templateSrv = templateSrv;
                     this.suggestMetricNames = function () {
                         return lodash_1.default.map(_this.$scope.ctrl.series, function (series) {
@@ -43,6 +44,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     override.scaledDecimals = null;
                     override.prefix = "";
                     override.suffix = "";
+                    override.sanitizeURLEnabled = true;
                     this.metricOverrides.push(override);
                 };
                 MetricOverridesManager.prototype.removeMetricOverride = function (override) {
@@ -65,6 +67,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                         var matchIndex = this.matchOverride(data[index].name);
                         if (matchIndex >= 0) {
                             data[index].color = this.getColorForValue(matchIndex, data[index].value);
+                            data[index].thresholdLevel = this.getThresholdLevelForValue(matchIndex, data[index].value);
                             var anOverride = this.metricOverrides[matchIndex];
                             var formatFunc = kbn_1.default.valueFormats[anOverride.unitFormat];
                             if (formatFunc) {
@@ -76,6 +79,9 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             data[index].suffix = anOverride.suffix;
                             if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
                                 data[index].clickThrough = this.templateSrv.replaceWithText(anOverride.clickThrough);
+                                if (anOverride.sanitizeURLEnabled) {
+                                    data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
+                                }
                             }
                         }
                     }
@@ -88,6 +94,15 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                         }
                     }
                     return lodash_1.default.first(anOverride.colors);
+                };
+                MetricOverridesManager.prototype.getThresholdLevelForValue = function (index, value) {
+                    var anOverride = this.metricOverrides[index];
+                    for (var i = anOverride.thresholds.length; i > 0; i--) {
+                        if (value >= anOverride.thresholds[i - 1]) {
+                            return i;
+                        }
+                    }
+                    return 0;
                 };
                 MetricOverridesManager.prototype.invertColorOrder = function (override) {
                     override.colors.reverse();

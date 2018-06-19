@@ -10,18 +10,23 @@ export class MetricOverride {
     scaledDecimals: number;
     enabled: boolean;
     valueName: string;
-    clickThrough: string;
     prefix: string;
     suffix: string;
+    clickThrough: string;
+    sanitizeURLEnabled: boolean;
+    sanitizedURL: string;
 }
 
 export class MetricOverridesManager {
     metricOverrides : Array < MetricOverride >;
     $scope: any;
+    $sanitize: any;
     templateSrv: any;
     suggestMetricNames: any;
-    constructor($scope, templateSrv, savedOverrides) {
+
+    constructor($scope, templateSrv, $sanitize, savedOverrides) {
         this.$scope = $scope;
+        this.$sanitize = $sanitize;
         this.templateSrv = templateSrv;
         // typeahead requires this form
         this.suggestMetricNames = () => {
@@ -45,6 +50,7 @@ export class MetricOverridesManager {
         override.scaledDecimals = null;
         override.prefix = "";
         override.suffix = "";
+        override.sanitizeURLEnabled = true;
         this.metricOverrides.push(override);
     }
 
@@ -70,6 +76,7 @@ export class MetricOverridesManager {
             let matchIndex = this.matchOverride(data[index].name);
             if (matchIndex >= 0) {
                 data[index].color = this.getColorForValue(matchIndex, data[index].value);
+                data[index].thresholdLevel = this.getThresholdLevelForValue(matchIndex, data[index].value);
                 // format it
                 let anOverride = this.metricOverrides[matchIndex];
                 var formatFunc = kbn.valueFormats[anOverride.unitFormat];
@@ -85,6 +92,9 @@ export class MetricOverridesManager {
                 // set the url, replace template vars
                 if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
                     data[index].clickThrough = this.templateSrv.replaceWithText(anOverride.clickThrough);
+                    if (anOverride.sanitizeURLEnabled) {
+                        data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
+                    }
                 }
             }
         }
@@ -98,6 +108,16 @@ export class MetricOverridesManager {
             }
         }
         return _.first(anOverride.colors);
+    }
+
+    getThresholdLevelForValue(index, value): number {
+        let anOverride = this.metricOverrides[index];
+        for (let i = anOverride.thresholds.length; i > 0; i--) {
+            if (value >= anOverride.thresholds[i - 1]) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     invertColorOrder(override) {

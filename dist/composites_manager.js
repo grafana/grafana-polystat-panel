@@ -19,9 +19,10 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
             }());
             exports_1("MetricComposite", MetricComposite);
             CompositesManager = (function () {
-                function CompositesManager($scope, templateSrv, savedComposites) {
+                function CompositesManager($scope, templateSrv, $sanitize, savedComposites) {
                     var _this = this;
                     this.$scope = $scope;
+                    this.$sanitize = $sanitize;
                     this.templateSrv = templateSrv;
                     this.suggestMetricNames = function () {
                         return lodash_1.default.map(_this.$scope.ctrl.series, function (series) {
@@ -40,6 +41,9 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     aComposite.showName = true;
                     aComposite.showValue = true;
                     aComposite.animateMode = 0;
+                    aComposite.thresholdLevel = 0;
+                    aComposite.sanitizeURLEnabled = true;
+                    aComposite.sanitizedURL = "";
                     this.metricComposites.push(aComposite);
                 };
                 CompositesManager.prototype.removeMetricComposite = function (item) {
@@ -72,31 +76,35 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                 };
                 CompositesManager.prototype.applyComposites = function (data) {
                     var filteredMetrics = new Array();
+                    var clonedComposites = new Array();
                     for (var i = 0; i < this.metricComposites.length; i++) {
                         var matchedMetrics = new Array();
                         var aComposite = this.metricComposites[i];
                         var currentWorstSeries = null;
                         for (var j = 0; j < aComposite.members.length; j++) {
                             var aMetric = aComposite.members[j];
-                            var seriesItem = null;
                             for (var index = 0; index < data.length; index++) {
-                                if (data[index].name === aMetric.seriesName) {
-                                    seriesItem = data[index];
+                                var regex = kbn_1.default.stringToJsRegex(aMetric.seriesName);
+                                var matches = data[index].name.match(regex);
+                                if (matches && matches.length > 0) {
+                                    var seriesItem = data[index];
                                     matchedMetrics.push(index);
                                     if (aComposite.hideMembers) {
                                         filteredMetrics.push(index);
                                     }
                                     if (aComposite.clickThrough.length > 0) {
                                         seriesItem.clickThrough = aComposite.clickThrough;
+                                        seriesItem.sanitizedURL = this.$sanitize(aComposite.clickThrough);
                                     }
-                                    seriesItem.showValue = aComposite.showValue;
-                                    seriesItem.showName = aComposite.showName;
-                                    break;
                                 }
                             }
-                            if (!seriesItem) {
-                                continue;
-                            }
+                        }
+                        if (matchedMetrics.length === 0) {
+                            continue;
+                        }
+                        for (var k = 0; k < matchedMetrics.length; k++) {
+                            var itemIndex = matchedMetrics[k];
+                            var seriesItem = data[itemIndex];
                             if (currentWorstSeries === null) {
                                 currentWorstSeries = seriesItem;
                             }
@@ -105,20 +113,22 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             }
                         }
                         if (currentWorstSeries !== null) {
-                            var clone = Object.assign({}, currentWorstSeries);
-                            clone.valueFormattedWithPrefix = clone.name + ": " + clone.valueFormatted;
-                            clone.valueRawFormattedWithPrefix = clone.name + ": " + clone.value;
+                            var clone = currentWorstSeries.shallowClone();
                             clone.name = aComposite.compositeName;
                             for (var index = 0; index < matchedMetrics.length; index++) {
                                 var itemIndex = matchedMetrics[index];
                                 clone.members.push(data[itemIndex]);
                             }
-                            data.push(clone);
+                            clone.thresholdLevel = currentWorstSeries.thresholdLevel;
+                            clone.showName = aComposite.showName;
+                            clone.showValue = aComposite.showValue;
+                            clonedComposites.push(clone);
                         }
                     }
+                    Array.prototype.push.apply(data, clonedComposites);
                     filteredMetrics.sort(function (a, b) { return b - a; });
-                    for (var i_1 = 0; i_1 < filteredMetrics.length; i_1++) {
-                        data.splice(filteredMetrics[i_1], 1);
+                    for (var i = 0; i < filteredMetrics.length; i++) {
+                        data.splice(filteredMetrics[i], 1);
                     }
                     return data;
                 };
@@ -126,13 +136,15 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     var worstSeries = series1;
                     var series1thresholdLevel = this.getThresholdLevel(series1);
                     var series2thresholdLevel = this.getThresholdLevel(series2);
+                    console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
+                    console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
                     if (series2thresholdLevel > series1thresholdLevel) {
                         worstSeries = series2;
                     }
                     return worstSeries;
                 };
                 CompositesManager.prototype.getThresholdLevel = function (series) {
-                    var thresholdLevel = 0;
+                    var thresholdLevel = 3;
                     var value = series.value;
                     var thresholds = series.thresholds;
                     if (thresholds === undefined) {
@@ -141,6 +153,9 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     if (thresholds.length !== 2) {
                         return thresholdLevel;
                     }
+                    if (value < thresholds[0]) {
+                        thresholdLevel = 0;
+                    }
                     if (value >= thresholds[0]) {
                         thresholdLevel = 1;
                     }
@@ -148,6 +163,10 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                         thresholdLevel = 2;
                     }
                     return thresholdLevel;
+                };
+                CompositesManager.prototype.metricNameChanged = function (item) {
+                    console.log(item);
+                    this.$scope.ctrl.refresh();
                 };
                 CompositesManager.prototype.moveMetricCompositeUp = function (item) {
                     for (var index = 0; index < this.metricComposites.length; index++) {

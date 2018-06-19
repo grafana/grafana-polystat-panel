@@ -43,7 +43,10 @@
                     <div class="gf-form">
                         <label class="gf-form-label width-3" style="margin-left: 3px;">URL</label>
                             <input type="text" ng-model="composite.clickThrough" ng-blur="ctrl.render()" class="gf-form-input width-30">
-                        </div>
+                    </div>
+                    <div class="gf-form">
+				        <editor-checkbox text="Sanitize" model="composite.sanitizeURLEnabled"></editor-checkbox>
+			        </div>
                 </div>
 
                 <div class="gf-form-inline" style="margin-left: 31px;">
@@ -54,9 +57,21 @@
                         </label>
                     </div>
                     <div class="gf-form-inline" ng-repeat="metric in composite.members">
-                        <div class="gf-form" style="margin-left: 3px;">
-                            <select ng-options="f for f in ctrl.compositesManager.suggestMetricNames()" ng-model="metric.seriesName" ng-change="ctrl.refresh()"></select>
+                        <div class="gf-form">
+				            <label class="gf-form-label width-9">Name or regex</label>
+                			<input type="text" class="gf-form-input width-13"
+					               ng-model="metric.seriesName"
+					               spellcheck='false'
+					               bs-typeahead="ctrl.compositesManager.suggestMetricNames()"
+					               placeholder="metric name"
+					               data-min-length=0 data-items=500
+					               ng-blur="ctrl.compositesManager.metricNameChanged(metric)">
                         </div>
+                        <!--
+                            <div class="gf-form" style="margin-left: 3px;">
+                                <select ng-options="f for f in ctrl.compositesManager.suggestMetricNames()" ng-model="metric.seriesName" ng-change="ctrl.refresh()"></select>
+                            </div>
+                        -->
                         <div class="gf-form">
                             <label class="gf-form-label">
                                 <i class="fa fa-trash pointer" ng-click="ctrl.compositesManager.removeMetricFromComposite(composite, metric)"></i>
