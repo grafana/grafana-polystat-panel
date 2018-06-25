@@ -38,29 +38,6 @@
 	</div>
 
 	<div class="section gf-form-group">
-		<h5 class="section-heading">Sorting</h5>
-			<div class="gf-form">
-			<label class="gf-form-label width-10">Sort Direction
-				<tip>Sort direction</tip>
-			</label>
-			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortDirection" ng-options="f for f in ctrl.panel.sortDirections"
-				 ng-change="ctrl.refresh()">
-				</select>
-			</div>
-			</div>
-			<div class="gf-form">
-			<label class="gf-form-label width-10">Sort Field
-				<tip>Field to sort by</tip>
-			</label>
-			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortField" ng-options="f for f in ctrl.panel.sortFields"
-				 ng-change="ctrl.refresh()">
-				</select>
-			</div>
-			</div>
-	</div>
-	<div class="section gf-form-group">
 		<h5 class="section-heading">Sizing</h5>
 		<div class="gf-form-inline">
 			<div class="gf-form">
@@ -91,6 +68,32 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Sorting</h5>
+			<div class="gf-form">
+			<label class="gf-form-label width-10">Sort Direction
+				<tip>Sort direction</tip>
+			</label>
+			<div class="gf-form-select-wrapper width-12">
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortDirection" ng-options="f for f in ctrl.panel.sortDirections"
+				 ng-change="ctrl.refresh()">
+				</select>
+			</div>
+			</div>
+			<div class="gf-form">
+			<label class="gf-form-label width-10">Sort Field
+				<tip>Field to sort by</tip>
+			</label>
+			<div class="gf-form-select-wrapper width-12">
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortField" ng-options="f for f in ctrl.panel.sortFields"
+				 ng-change="ctrl.refresh()">
+				</select>
+			</div>
+			</div>
+	</div>
+
+
 	<div class="section gf-form-group">
 	<h5 class="section-heading">Tooltips</h5>
 	<!-- cannot be set currently -->
