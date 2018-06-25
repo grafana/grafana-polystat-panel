@@ -88,6 +88,15 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                 notcolors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
                 decimals: 2,
                 format: "none",
+                sortDirections: [
+                    "Ascending",
+                    "Descending",
+                ],
+                sortFields: [
+                    "Name",
+                    "Value",
+                    "State"
+                ],
                 polystat: {
                     rows: "auto",
                     rowAutoSize: true,
@@ -102,6 +111,14 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     animationSpeed: 5000,
                     defaultClickThrough: "",
                     defaultClickThroughSanitize: true,
+                    tooltipPrimarySortDirection: "Descending",
+                    tooltipPrimarySortField: "State",
+                    tooltipSecondarySortDirection: "Ascending",
+                    tooltipSecondarySortField: "Name",
+                    hexagonSortByDirection: "Descending",
+                    hexagonSortByField: "Name",
+                    fontSize: 12,
+                    fontAutoScale: false,
                 },
             };
             D3PolystatPanelCtrl = (function (_super) {
@@ -234,6 +251,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                         tooltipContent: this.tooltipContent,
                         animationSpeed: this.panel.polystat.animationSpeed,
                         defaultClickThrough: this.getDefaultClickThrough(),
+                        polystat: this.panel.polystat,
                     };
                     this.d3Object = new d3wrapper_1.D3Wrapper(this.panel.svgContainer, this.panel.d3DivId, opt);
                     this.d3Object.draw();
@@ -305,6 +323,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                             this.polystatData[index].clickThrough = this.getDefaultClickThrough();
                         }
                     }
+                    this.polystatData = lodash_1.default.orderBy(this.polystatData, ["name"], ["asc"]);
                     this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData);
                 };
                 D3PolystatPanelCtrl.prototype.onDataError = function (err) {

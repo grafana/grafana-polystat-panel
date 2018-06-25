@@ -1,9 +1,13 @@
-System.register([], function (exports_1, context_1) {
+System.register(["lodash"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var Tooltip;
+    var lodash_1, Tooltip;
     return {
-        setters: [],
+        setters: [
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
+            }
+        ],
         execute: function () {
             Tooltip = (function () {
                 function Tooltip() {
@@ -16,8 +20,9 @@ System.register([], function (exports_1, context_1) {
                         var time = scope.ctrl.dashboard.formatDate(data[index].timestamp, tooltipTimeFormat);
                         content.push("\n                <table width=\"100%\" class=\"polystat-panel-tooltiptable\">\n                <thead>\n                  <tr>\n                    <th style=\"text-align: left;\">Name</th>\n                    <th style=\"text-align: right;\">Value</th>\n                  </tr>\n                </thead>\n                <tfoot>\n                  <tr>\n                    <td colspan=\"2\" style=\"text-align: center;\" class=\"graph-tooltip-time\">" + time + "</td>\n                  </tr>\n                </tfoot>\n                <tbody>\n                ");
                         if (data[index].members.length > 0) {
-                            for (var j = 0; j < data[index].members.length; j++) {
-                                var aMember = data[index].members[j];
+                            var sortedMembers = lodash_1.default.orderBy(data[index].members, ["name"], ["asc"]);
+                            for (var j = 0; j < sortedMembers.length; j++) {
+                                var aMember = sortedMembers[j];
                                 content.push("\n                        <tr>\n                          <td style=\"text-align: left; color: " + aMember.color + "\">" + aMember.name + "</td>\n                          <td style=\"text-align: right; color: " + aMember.color + "\">" + aMember.valueFormatted + "</td>\n                        </tr>\n                      ");
                             }
                         }

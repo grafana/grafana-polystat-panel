@@ -52,6 +52,15 @@ const panelDefaults = {
   notcolors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
   decimals: 2, // decimal precision
   format: "none", // unit format
+  sortDirections: [
+    "Ascending",
+    "Descending",
+  ],
+  sortFields: [
+    "Name",
+    "Value",
+    "State"
+  ],
   polystat: {
     rows: "auto",
     rowAutoSize: true,
@@ -66,6 +75,14 @@ const panelDefaults = {
     animationSpeed: 5000,
     defaultClickThrough: "",
     defaultClickThroughSanitize: true,
+    tooltipPrimarySortDirection: "Descending",
+    tooltipPrimarySortField: "State",
+    tooltipSecondarySortDirection: "Ascending",
+    tooltipSecondarySortField: "Name",
+    hexagonSortByDirection: "Descending",
+    hexagonSortByField: "Name",
+    fontSize: 12,
+    fontAutoScale: false,
   },
 };
 
@@ -249,6 +266,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipContent: this.tooltipContent,
       animationSpeed: this.panel.polystat.animationSpeed,
       defaultClickThrough: this.getDefaultClickThrough(),
+      polystat: this.panel.polystat,
     };
     this.d3Object = new D3Wrapper(this.panel.svgContainer, this.panel.d3DivId, opt);
     this.d3Object.draw();
@@ -329,6 +347,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         this.polystatData[index].clickThrough = this.getDefaultClickThrough();
       }
     }
+    // now sort
+    //this.polystatData = _.orderBy(this.polystatData, ["name"], ["desc"]);
+    this.polystatData = _.orderBy(this.polystatData, ["name"], ["asc"]);
+    // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData);
   }
 

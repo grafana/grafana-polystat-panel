@@ -37,6 +37,32 @@ System.register(["lodash"], function (exports_1, context_1) {
         return result;
     }
     exports_1("GetDecimalsForValue", GetDecimalsForValue);
+    function getTextSizeForWidth(text, font, width, minFontPx, maxFontPx) {
+        debugger;
+        var s = font.replace("?", maxFontPx);
+        var w = getTextWidth(text, s);
+        if (w <= width) {
+            return maxFontPx;
+        }
+        width = width - 20;
+        for (var fontSize = maxFontPx; fontSize >= minFontPx; fontSize--) {
+            s = font.replace("?", fontSize);
+            w = getTextWidth(text, s);
+            if (w < width) {
+                return Math.ceil(fontSize);
+            }
+        }
+        return 0;
+    }
+    exports_1("getTextSizeForWidth", getTextSizeForWidth);
+    function getTextWidth(text, font) {
+        var canvas = document.createElement("canvas");
+        var context = canvas.getContext("2d");
+        context.font = font;
+        var metrics = context.measureText(text);
+        return metrics.width;
+    }
+    exports_1("getTextWidth", getTextWidth);
     var lodash_1;
     return {
         setters: [

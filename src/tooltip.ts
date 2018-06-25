@@ -1,6 +1,7 @@
 /**
  * Tooltip generation
  */
+import _ from "lodash";
 
 export class Tooltip {
     static generate(scope, data) : string[] {
@@ -27,8 +28,10 @@ export class Tooltip {
                 `
             );
             if (data[index].members.length > 0) {
-                for (let j = 0; j < data[index].members.length; j++) {
-                    let aMember = data[index].members[j];
+              // sort members
+              let sortedMembers = _.orderBy(data[index].members, ["name"], ["asc"]);
+                for (let j = 0; j < sortedMembers.length; j++) {
+                    let aMember = sortedMembers[j];
                     content.push(
                       `
                         <tr>

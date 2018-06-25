@@ -3,6 +3,7 @@
 
 import * as d3hexbin from "./external/d3-hexbin.js";
 import * as d3 from "d3";
+import { getTextSizeForWidth } from "./utils";
 
 export class D3Wrapper {
   svgContainer: any;
@@ -116,11 +117,29 @@ export class D3Wrapper {
         }
       }
     }
-    this.hexRadius = this.getAutoHexRadius();
-    this.autoHexRadius = this.getAutoHexRadius();
+    if (this.opt.radiusAutoSize) {
+      this.hexRadius = this.getAutoHexRadius();
+      this.autoHexRadius = this.getAutoHexRadius();
+    }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
+    let activeFontSize = this.opt.polystat.fontSize;
+    if (this.opt.polystat.fontAutoScale) {
+      // TODO:
+      // find the most text that will be displayed over all items
+      //let maxTextLength = 12;
+      // estimate how big of a font can be used
+      // if it is too small, hide everything
+      let estimateFontSize = getTextSizeForWidth(
+        "COMPOSITE 1",
+        "?px sans-serif",
+        this.autoHexRadius * 2,
+        10,
+        50);
+      console.log("Estimated Font size: " + estimateFontSize);
+      activeFontSize = estimateFontSize;
+    }
 
     var width = this.opt.width;
     var height = this.opt.height;
@@ -254,10 +273,10 @@ export class D3Wrapper {
       .attr("y", function (d) { return d.y; })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
-      .attr("font-size", "20px")
+      .attr("font-size", activeFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
-        debugger;
+        //debugger;
         let item = data[i];
         // check if property exist
         if (!("showName" in item)) {
@@ -288,7 +307,7 @@ export class D3Wrapper {
       })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
-      .attr("font-size", "20px")
+      .attr("font-size", activeFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
         return thisRef.formatValueContent(i, frames, thisRef);

@@ -21,12 +21,6 @@ module.exports = function(grunt) {
         src: ['**/*', '!**/*.jsxxx', '!**/*.ts', '!**/*.ts.d', '!**/*.scss'],
         dest: 'dist'
       },
-      tsmain: {
-        cwd: 'src',
-        expand: true,
-        src: ['**/*.ts', '**/*.ts.d'],
-        dest: 'dist/src'
-      },
       bower: {
         cwd: 'bower_components',
         expand: true,
@@ -136,7 +130,6 @@ module.exports = function(grunt) {
       'sass',
       'run:tests',
       "copy:main",
-      "copy:tsmain",
       "copy:bower",
       "copy:externals",
       "copy:pluginDef"
@@ -149,7 +142,6 @@ module.exports = function(grunt) {
       'sass',
       'run:tests',
       "copy:main",
-      "copy:tsmain",
       "copy:bower",
       "copy:externals",
       "copy:pluginDef"
