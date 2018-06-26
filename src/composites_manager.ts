@@ -9,7 +9,7 @@ export class MetricComposite {
     hideMembers: boolean;
     showName: boolean;
     showValue: boolean;
-    animateMode: number;
+    animateMode: string;
     thresholdLevel: number;
     clickThrough: string;
     sanitizeURLEnabled: boolean;
@@ -45,7 +45,7 @@ export class CompositesManager {
         aComposite.hideMembers = true;
         aComposite.showName = true;
         aComposite.showValue = true;
-        aComposite.animateMode = 0;
+        aComposite.animateMode = "Show All";
         aComposite.thresholdLevel = 0;
         aComposite.sanitizeURLEnabled = true;
         aComposite.sanitizedURL = "";
@@ -95,9 +95,10 @@ export class CompositesManager {
                 // look for the matches to the pattern in the data
                 for (let index = 0; index < data.length; index++) {
                     // match regex
-                    //let matchIndex = this.matchComposite(data[index].name);
-                    // data[index].name is a regex
-                    //debugger;
+                    // seriesname may not be defined yet, skip
+                    if (typeof aMetric.seriesName === "undefined") {
+                        continue;
+                    }
                     let regex = kbn.stringToJsRegex(aMetric.seriesName);
                     let matches = data[index].name.match(regex);
                     if (matches && matches.length > 0) {
@@ -211,7 +212,6 @@ export class CompositesManager {
 
     metricNameChanged(item) {
         // validate item is a valid regex
-        console.log(item);
         this.$scope.ctrl.refresh();
     }
 
