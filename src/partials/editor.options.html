@@ -76,7 +76,7 @@
 				<tip>Sort direction</tip>
 			</label>
 			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortDirection" ng-options="f for f in ctrl.panel.sortDirections"
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f for f in ctrl.panel.sortDirections"
 				 ng-change="ctrl.refresh()">
 				</select>
 			</div>
@@ -86,7 +86,7 @@
 				<tip>Field to sort by</tip>
 			</label>
 			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.sortField" ng-options="f for f in ctrl.panel.sortFields"
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f for f in ctrl.panel.sortFields"
 				 ng-change="ctrl.refresh()">
 				</select>
 			</div>
