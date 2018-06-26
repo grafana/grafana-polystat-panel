@@ -5,7 +5,7 @@ export declare class MetricComposite {
     hideMembers: boolean;
     showName: boolean;
     showValue: boolean;
-    animateMode: number;
+    animateMode: string;
     thresholdLevel: number;
     clickThrough: string;
     sanitizeURLEnabled: boolean;

@@ -1,12 +1,11 @@
 <div class="gf-form-group">
     <div class="edit-tab-content">
-        <div class="gf-form-group">
             <h5>Composites
                 <tip>Combines multiple metrics into a new name</tip>
             </h5>
-            <div class="gf-form-inline" ng-repeat="composite in ctrl.compositesManager.metricComposites">
+            <div class="gf-form-group" ng-repeat="composite in ctrl.compositesManager.metricComposites">
 
-                <div class="gf-form-inline">
+                <div class="gf-form">
                     <div class="gf-form">
                         <label class="gf-form-label">
                         <i class="fa fa-trash pointer" ng-click="ctrl.compositesManager.removeMetricComposite(composite)"></i>
@@ -14,8 +13,6 @@
                     </div>
                     <div class="gf-form">
                         <label class="gf-form-label width-9">Composite Name</label>
-                    </div>
-                    <div class="gf-form">
                         <input type="text" ng-model="composite.compositeName" ng-blur="ctrl.render()" class="gf-form-input width-16">
                     </div>
 
@@ -26,13 +23,11 @@
                     <gf-form-switch class="gf-form" label="Show Value" label-class="width-7" checked="composite.showValue" on-change="ctrl.refresh()">
                     </gf-form-switch>
                 </div>
-
-                <div class="gf-form-inline" style="margin-left: 31px;">
-                    <div class="gf-form">
-                        <label class="gf-form-label width-9">Animate Mode
-                            <tip>how members are rendered</tip>
-                        </label>
-                    </div>
+                <!-- Next row animation properties -->
+                <div class="gf-form" style="margin-left: 31px;">
+                    <label class="gf-form-label width-9">Animate Mode
+                        <tip>how members are rendered</tip>
+                    </label>
                     <div class="gf-form-select-wrapper">
                         <select class="gf-form-input width-16" style="margin-left: 3px;"
                             ng-model="composite.animateMode"
@@ -48,40 +43,33 @@
 				        <editor-checkbox text="Sanitize" model="composite.sanitizeURLEnabled"></editor-checkbox>
 			        </div>
                 </div>
-
-                <div class="gf-form-inline" style="margin-left: 31px;">
-                    <!-- Metrics that comprise the composite-->
+                <!-- next row holds metric list -->
+                <div class="gf-form" style="margin-left: 31px">
                     <div class="gf-form">
-                        <label class="gf-form-label width-9">Metrics
-                            <tip>Select Metrics members for composite</tip>
+                        <label class="gf-form-label width-9">
+                            <i class="fa fa-plus pointer" ng-click="ctrl.compositesManager.addMetricToComposite(composite)"></i>
+                            Add Metric
+                            <tip>Accepts metric name or regex</tip>         
                         </label>
                     </div>
-                    <div class="gf-form-inline" ng-repeat="metric in composite.members">
+                    <!-- Metrics that comprise the composite-->
+                    <div class="gf-form" ng-repeat="metric in composite.members">
+                        <div class="gf-form-inline">
                         <div class="gf-form">
-				            <label class="gf-form-label width-9">Name or regex</label>
-                			<input type="text" class="gf-form-input width-13"
+                			<input type="text" class="gf-form-input width-14"
 					               ng-model="metric.seriesName"
-					               spellcheck='false'
-					               bs-typeahead="ctrl.compositesManager.suggestMetricNames()"
+					               spellcheck="false"
+					               bs-typeahead="ctrl.compositesManager.suggestMetricNames"
 					               placeholder="metric name"
-					               data-min-length=0 data-items=500
+					               data-min-length="0" data-items="100"
 					               ng-blur="ctrl.compositesManager.metricNameChanged(metric)">
                         </div>
-                        <!--
-                            <div class="gf-form" style="margin-left: 3px;">
-                                <select ng-options="f for f in ctrl.compositesManager.suggestMetricNames()" ng-model="metric.seriesName" ng-change="ctrl.refresh()"></select>
-                            </div>
-                        -->
                         <div class="gf-form">
                             <label class="gf-form-label">
                                 <i class="fa fa-trash pointer" ng-click="ctrl.compositesManager.removeMetricFromComposite(composite, metric)"></i>
                             </label>
                         </div>
-                    </div>
-                    <div class="gf-form">
-                        <label class="gf-form-label">
-                            <i class="fa fa-plus pointer" ng-click="ctrl.compositesManager.addMetricToComposite(composite)"></i>
-                        </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -89,7 +77,6 @@
             <button class="btn btn-inverse" ng-click="ctrl.compositesManager.addMetricComposite()">
                 <i class="fa fa-plus"></i>&nbsp;Add Composite
             </button>
-        </div>
     </div>
 </div>
 

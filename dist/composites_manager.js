@@ -40,7 +40,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     aComposite.hideMembers = true;
                     aComposite.showName = true;
                     aComposite.showValue = true;
-                    aComposite.animateMode = 0;
+                    aComposite.animateMode = "Show All";
                     aComposite.thresholdLevel = 0;
                     aComposite.sanitizeURLEnabled = true;
                     aComposite.sanitizedURL = "";
@@ -84,6 +84,9 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                         for (var j = 0; j < aComposite.members.length; j++) {
                             var aMetric = aComposite.members[j];
                             for (var index = 0; index < data.length; index++) {
+                                if (typeof aMetric.seriesName === "undefined") {
+                                    continue;
+                                }
                                 var regex = kbn_1.default.stringToJsRegex(aMetric.seriesName);
                                 var matches = data[index].name.match(regex);
                                 if (matches && matches.length > 0) {
@@ -165,7 +168,6 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     return thresholdLevel;
                 };
                 CompositesManager.prototype.metricNameChanged = function (item) {
-                    console.log(item);
                     this.$scope.ctrl.refresh();
                 };
                 CompositesManager.prototype.moveMetricCompositeUp = function (item) {

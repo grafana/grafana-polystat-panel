@@ -38,7 +38,6 @@ System.register(["lodash"], function (exports_1, context_1) {
     }
     exports_1("GetDecimalsForValue", GetDecimalsForValue);
     function getTextSizeForWidth(text, font, width, minFontPx, maxFontPx) {
-        debugger;
         var s = font.replace("?", maxFontPx);
         var w = getTextWidth(text, s);
         if (w <= width) {
