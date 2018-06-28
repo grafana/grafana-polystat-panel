@@ -9,7 +9,7 @@ A hexagon is create for each metric received, with the ability to group metrics 
 This plugin supports autoscaling for best-fit sizing of each polygon to the panel size. When the complete text cannot be displayed, only tooltips are active.
 
 ### All visible
-![Scaled3](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled3.png?token=AHBelWPTOss-gUE_1IUksh_edpHQUjzVks5bPZiCwA%3D%3D)
+![Scaled3](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled3.png?token=AHBelVMwePbR84Lvm0a441yGv1-oYRHxks5bPZn2wA%3D%3D)
 ### Scaled down
 ![Scaled1](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled1.png?token=AHBelWPTOss-gUE_1IUksh_edpHQUjzVks5bPZiCwA%3D%3D)
 ### Scaled down with tooltip
