@@ -168,6 +168,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     return thresholdLevel;
                 };
                 CompositesManager.prototype.metricNameChanged = function (item) {
+                    console.log(item);
                     this.$scope.ctrl.refresh();
                 };
                 CompositesManager.prototype.moveMetricCompositeUp = function (item) {

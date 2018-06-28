@@ -22,16 +22,23 @@
         }],
         "screenshots": [{
             "name": "Showcase",
-            "path": "screenshots/default.png"
+            "path": "screenshots/polystat-composite-example1.png"
+        }, {
+            "name": "Animation",
+            "path": "screenshots/polystat-animate1.gif"
         }, {
             "name": "Options",
-            "path": "screenshots/options.png"
+            "path": "screenshots/polystat-options-all.png"
         }, {
-            "name": "Polystat Options",
-            "path": "screenshots/hexbinoptions.png"
+            "name": "Overrides",
+            "path": "screenshots/polystat-overrides-all.png"
         }, {
-            "name": "Thresholding",
-            "path": "screenshots/thresholding.png"
+            "name": "Tooltips",
+            "path": "screenshots/polystat-tooltip.png"
+        }
+        ,{
+            "name": "Composites",
+            "path": "screenshots/polystat-composites-all.png"
         }],
         "version": "1.0.1",
         "updated": "2018-06-18"

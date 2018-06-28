@@ -212,6 +212,7 @@ export class CompositesManager {
 
     metricNameChanged(item) {
         // validate item is a valid regex
+        console.log(item);
         this.$scope.ctrl.refresh();
     }
 
