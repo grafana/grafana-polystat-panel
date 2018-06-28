@@ -11,17 +11,17 @@ This plugin supports autoscaling for best-fit sizing of each polygon to the pane
 ### All visible
 ![Scaled3](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled3.png?token=AHBelVMwePbR84Lvm0a441yGv1-oYRHxks5bPZn2wA%3D%3D)
 ### Scaled down
-![Scaled1](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled1.png?token=AHBelWPTOss-gUE_1IUksh_edpHQUjzVks5bPZiCwA%3D%3D)
+![Scaled1](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled1.png?token=AHBelc7t0KnPYPhdCXoGlDUr94MRQ26bks5bPZpfwA%3D%3D)
 ### Scaled down with tooltip
-![Scaled2](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled2.png?token=AHBelWPTOss-gUE_1IUksh_edpHQUjzVks5bPZiCwA%3D%3D)
+![Scaled2](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-scaled2.png?token=AHBelfDDlMA9l_kdxoyJWF2xTPCFjIAvks5bPZqBwA%3D%3D)
 
 ## Options
 
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-all.png)
+![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-all.png?token=AHBelbOGGpJ0HX70ajMXl3XAcc1hMOHBks5bPZqZwA%3D%3D)
 
 ### Layout
 
-![Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-layout.png)
+![Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-layout.png?token=AHBelZTu1VR3g8zqNi4n04kz3UJCf3Szks5bPZq1wA%3D%3D)
 
 Specify the desired number of columns and rows, or select Autosize to allow the plugin to calculate a "best fit" for the size of the panel.
 
@@ -35,26 +35,26 @@ NOTE: if both columns and rows are set, only rows*columns will be displayed, gen
 Set a limit on number of hexagons to be displayed, set to 0 for no limit.
 
 ### Sizing
-![Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-sizing.png)
+![Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-sizing.png?token=AHBelZ71kGjJjai2SJTKRWnKFdYPTmVBks5bPZrQwA%3D%3D)
 
 Set the size of the polygon to a fixed size, or select auto-size for "best fit".
 
 ### Sorting
-![Sorting](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-sorting.png)
+![Sorting](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-sorting.png?token=AHBelZNWQODVZR-2EPEwJzf-sdx28LH9ks5bPZrmwA%3D%3D)
 
 ### Tooltips
 
-![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-tooltips.png)
+![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-tooltips.png?token=AHBelVOgciJkmll_BXcaPpXAuJU-zYXoks5bPZr4wA%3D%3D)
 
 Set the font to be used for Tooltips
 
 ### Global
 
-![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-global.png)
+![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-global.png?token=AHBelTbJcmJGZBwMrHcaBdnMchKPqGGEks5bPZsNwA%3D%3D)
 
 ### Animation
 
-![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-animation.png)
+![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-animation.png?token=AHBelcYWw5as0R_PUbY2_OptPqjDHpWRks5bPZsiwA%3D%3D)
 
 #### Speed
 
@@ -85,11 +85,11 @@ Animate hexagon to display metrics if there are composites
 
 ## Overrides
 
-![Overrides](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-all.png)
+![Overrides](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-all.png?token=AHBelZ0gKiwbiByMGYxi_lx6WzulQxamks5bPZs2wA%3D%3D)
 
 ## Composites
 
-![Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-all.png)
+![Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-all.png?token=AHBelfcW7VqnZubK3PMd6ilkj_Ppqu8Hks5bPZtKwA%3D%3D)
 
 ## Value Mappings
 
@@ -102,17 +102,17 @@ Animate hexagon to display metrics if there are composites
 Hovering over a hexagon shows the metrics that comprise the displayed state.
 For composites this will expand members of the composite.
 
-![Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-tooltip.png)
+![Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-tooltip.png?token=AHBelUgpo8dN0wXl4MgaOx-jLg8q5hThks5bPZtpwA%3D%3D)
 
 #### State with composites
 
 This shows creation of composites, where you select which metrics comprise the composite.
 
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composite-example1.png)
+![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composite-example1.png?token=AHBelVeXvIfTh_x5wX9uu5QZ1eHrKSGvks5bPZt8wA%3D%3D)
 
 This shows composites configured for GPU 0,1,2,3, and non-grouped metrics from GPU4-7.
 
-![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-gpu-state-composites.png)
+![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-gpu-state-composites.png?token=AHBelXmqTBW2k3gB9TRwmdMnptr-ba4kks5bPZuNwA%3D%3D)
 ## Building
 
 This plugin relies on Grunt/NPM/Bower, typical build sequence:
