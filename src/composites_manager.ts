@@ -121,7 +121,6 @@ export class CompositesManager {
             if (matchedMetrics.length === 0) {
                continue;
             }
-            //debugger;
             // now determine the most triggered threshold
             for (let k = 0; k < matchedMetrics.length; k++) {
                 let itemIndex = matchedMetrics[k];
@@ -135,14 +134,7 @@ export class CompositesManager {
             }
             // Prefix the valueFormatted with the actual metric name
             if (currentWorstSeries !== null) {
-                //debugger;
-                //var clone: PolystatModel = Object.assign({}, currentWorstSeries);
                 let clone = currentWorstSeries.shallowClone();
-                // clone the object or it will modify the original
-                //clone.valueFormattedWithPrefix = clone.name + ": " + clone.valueFormatted;
-                //clone.valueRawFormattedWithPrefix = clone.name + ": " + clone.value;
-                //clone.valueFormatted = clone.name + ": " + clone.valueFormatted;
-                //clone.valueFormatted = clone.name + ": " + clone.valueFormatted;
                 clone.name = aComposite.compositeName;
                 // tooltip/legend uses this to expand what values are inside the composite
                 for (let index = 0; index < matchedMetrics.length; index++) {

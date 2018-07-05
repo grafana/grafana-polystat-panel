@@ -152,12 +152,13 @@ Then browse to http://localhost:3000
 
 #### Acknowledgements
 
-This panel is based on these D3 examples:
+This panel is based on this D3 example:
 * https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
 
 
 #### Changelog
 
-
 ##### v1.0.0
 - Initial commit
+##### v1.0.1
+- Added Options -> Show Timestamp checkbox for tooltips

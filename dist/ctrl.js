@@ -115,6 +115,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     tooltipPrimarySortField: "State",
                     tooltipSecondarySortDirection: "Ascending",
                     tooltipSecondarySortField: "Name",
+                    tooltipTimestampEnabled: true,
                     hexagonSortByDirection: "Ascending",
                     hexagonSortByField: "Name",
                     fontSize: 12,
@@ -324,7 +325,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                         }
                     }
                     this.polystatData = lodash_1.default.orderBy(this.polystatData, ["name"], ["asc"]);
-                    this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData);
+                    this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
                 };
                 D3PolystatPanelCtrl.prototype.onDataError = function (err) {
                     console.log(err);

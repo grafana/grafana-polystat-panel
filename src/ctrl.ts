@@ -79,6 +79,7 @@ const panelDefaults = {
     tooltipPrimarySortField: "State",
     tooltipSecondarySortDirection: "Ascending",
     tooltipSecondarySortField: "Name",
+    tooltipTimestampEnabled: true,
     hexagonSortByDirection: "Ascending",
     hexagonSortByField: "Name",
     fontSize: 12,
@@ -130,10 +131,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.events.on("data-snapshot-load", this.onDataReceived.bind(this));
   }
 
-//  exitFullscreen() {
-//    this.changeView(false, false);
-//    debugger;
-//  }
 
   onInitEditMode() {
     // determine the path to this plugin base on the name found in panel.type
@@ -249,7 +246,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       margin.top = 7;
     }
     margin.bottom = 0;
-    //debugger;
     var opt = {
       width: width,
       height: height,
@@ -351,7 +347,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     //this.polystatData = _.orderBy(this.polystatData, ["name"], ["desc"]);
     this.polystatData = _.orderBy(this.polystatData, ["name"], ["asc"]);
     // generate tooltips
-    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData);
+    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
   }
 
   onDataError(err) {

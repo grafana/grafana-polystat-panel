@@ -54,7 +54,6 @@ function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaled
  * @param {maxFontPx} the largest acceptable font size in pixels
 **/
 function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontPx) {
-    //debugger;
     var s = font.replace("?", maxFontPx);
     var w = getTextWidth(text, s);
     if (w <= width) {

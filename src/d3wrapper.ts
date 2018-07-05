@@ -79,7 +79,6 @@ export class D3Wrapper {
     if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
       // sqrt of # data items
       let squared = Math.sqrt(this.data.length);
-      //debugger;
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
@@ -276,7 +275,6 @@ export class D3Wrapper {
       .attr("font-size", activeFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
-        //debugger;
         let item = data[i];
         // check if property exist
         if (!("showName" in item)) {
@@ -366,8 +364,7 @@ export class D3Wrapper {
         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
       ]
     );
-    //debugger;
-    console.log("autohexradius:" + hexRadius);
+    //console.log("autohexradius:" + hexRadius);
     //if (hexRadius > 5) {
     //  hexRadius -= 4;
     //}

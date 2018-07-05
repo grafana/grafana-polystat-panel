@@ -12,13 +12,18 @@ System.register(["lodash"], function (exports_1, context_1) {
             Tooltip = (function () {
                 function Tooltip() {
                 }
-                Tooltip.generate = function (scope, data) {
+                Tooltip.generate = function (scope, data, timestampEnabled) {
                     var items = [];
                     for (var index = 0; index < data.length; index++) {
                         var content = [];
                         var tooltipTimeFormat = "YYYY-MM-DD HH:mm:ss";
                         var time = scope.ctrl.dashboard.formatDate(data[index].timestamp, tooltipTimeFormat);
-                        content.push("\n                <table width=\"100%\" class=\"polystat-panel-tooltiptable\">\n                <thead>\n                  <tr>\n                    <th style=\"text-align: left;\">Name</th>\n                    <th style=\"text-align: right;\">Value</th>\n                  </tr>\n                </thead>\n                <tfoot>\n                  <tr>\n                    <td colspan=\"2\" style=\"text-align: center;\" class=\"graph-tooltip-time\">" + time + "</td>\n                  </tr>\n                </tfoot>\n                <tbody>\n                ");
+                        var timestampContent = "";
+                        if (timestampEnabled) {
+                            timestampContent =
+                                "\n                     <tr>\n                       <td colspan=\"2\" style=\"text-align: center;\" class=\"graph-tooltip-time\">" + time + "</td>\n                     </tr>\n                    ";
+                        }
+                        content.push("\n                <table width=\"100%\" class=\"polystat-panel-tooltiptable\">\n                <thead>\n                  <tr>\n                    <th style=\"text-align: left;\">Name</th>\n                    <th style=\"text-align: right;\">Value</th>\n                  </tr>\n                </thead>\n                <tfoot>\n                  " + timestampContent + "\n                </tfoot>\n                <tbody>\n                ");
                         if (data[index].members.length > 0) {
                             var sortedMembers = lodash_1.default.orderBy(data[index].members, ["name"], ["asc"]);
                             for (var j = 0; j < sortedMembers.length; j++) {
