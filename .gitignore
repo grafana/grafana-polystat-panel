@@ -1,4 +1,5 @@
 .tscache
 bower_components
 node_modules
+dist/src
 .DS_Store
