@@ -15,6 +15,12 @@ module.exports = function(grunt) {
     clean: ["dist"],
 
     copy: {
+      dev: {
+        cwd: 'src',
+        expand: true,
+        src: ['**/*', '!**/*.jsxxx', '!**/*.scss'],
+        dest: 'dist/src'
+      },
       main: {
         cwd: 'src',
         expand: true,
@@ -129,6 +135,7 @@ module.exports = function(grunt) {
       'ts:build',
       'sass',
       'run:tests',
+      "copy:dev",
       "copy:main",
       "copy:bower",
       "copy:externals",
