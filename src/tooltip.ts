@@ -5,7 +5,6 @@ import _ from "lodash";
 
 export class Tooltip {
   static generate(scope, data, timestampEnabled) : string[] {
-    debugger;
     let items = [];
     for (let index = 0; index < data.length; index++) {
       let content = [];
@@ -37,7 +36,57 @@ export class Tooltip {
       `);
       if (data[index].members.length > 0) {
         // sort members
-        let sortedMembers = _.orderBy(data[index].members, ["name"], ["asc"]);
+        let primarySortField = scope.ctrl.panel.polystat.tooltipPrimarySortField;
+        let primarySortByField = "name";
+        switch (primarySortField) {
+          case "Name":
+            primarySortByField = "name";
+            break;
+          case "Threshold Level":
+            primarySortByField = "thresholdLevel";
+            break;
+          case "Value":
+            primarySortByField = "value";
+            break;
+        }
+        let primarySortDirection = scope.ctrl.panel.polystat.tooltipPrimarySortDirection;
+        let primarySortByDirection = "asc";
+        switch (primarySortDirection) {
+          case "Ascending":
+            primarySortByDirection = "asc";
+            break;
+          case "Descending":
+            primarySortByDirection = "desc";
+            break;
+        }
+
+        let secondarySortField = scope.ctrl.panel.polystat.tooltipSecondarySortField;
+        let secondarySortByField = "value";
+        switch (secondarySortField) {
+          case "Name":
+            secondarySortByField = "name";
+            break;
+          case "Threshold Level":
+            secondarySortByField = "thresholdLevel";
+            break;
+          case "Value":
+            secondarySortByField = "value";
+            break;
+        }
+        let secondarySortDirection = scope.ctrl.panel.polystat.tooltipSecondarySortDirection;
+        let secondarySortByDirection = "asc";
+        switch (secondarySortDirection) {
+          case "Ascending":
+            secondarySortByDirection = "asc";
+            break;
+          case "Descending":
+            secondarySortByDirection = "desc";
+            break;
+        }
+        let sortedMembers = _.orderBy(data[index].members,
+          [primarySortByField, secondarySortByField],
+          [primarySortByDirection, secondarySortByDirection]
+        );
         for (let j = 0; j < sortedMembers.length; j++) {
           let aMember = sortedMembers[j];
           content.push(`

@@ -60,8 +60,8 @@ const panelDefaults = {
   ],
   sortFields: [
     "Name",
+    "Threshold Level",
     "Value",
-    "State"
   ],
   polystat: {
     rows: "auto",
@@ -77,10 +77,10 @@ const panelDefaults = {
     animationSpeed: 2500,
     defaultClickThrough: "",
     defaultClickThroughSanitize: true,
-    tooltipPrimarySortDirection: "Descending",
-    tooltipPrimarySortField: "State",
-    tooltipSecondarySortDirection: "Ascending",
-    tooltipSecondarySortField: "Name",
+    tooltipPrimarySortDirection: "Ascending",
+    tooltipPrimarySortField: "Name",
+    tooltipSecondarySortDirection: "Descending",
+    tooltipSecondarySortField: "Value",
     tooltipTimestampEnabled: true,
     hexagonSortByDirection: "Ascending",
     hexagonSortByField: "Name",
