@@ -254,6 +254,7 @@ export class D3Wrapper {
             .style("left", (d.x + 135) + "px")
             .style("top", d.y + 50);
           })
+
         .on("mouseout", function(d) {
               console.log(d);
               tooltip

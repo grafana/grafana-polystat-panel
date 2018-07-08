@@ -34,18 +34,20 @@ const panelDefaults = {
     "Verdana"
   ],
   unitFormats: kbn.getUnitFormats(),
-  valueNameOptions: [
-    { value: "min", text: "Min" },
-    { value: "max", text: "Max" },
+  operatorOptions: [
     { value: "avg", text: "Average" },
+    { value: "count", text: "Count" },
     { value: "current", text: "Current" },
-    { value: "total", text: "Total" },
-    { value: "name", text: "Name" },
-    { value: "first", text: "First" },
     { value: "delta", text: "Delta" },
     { value: "diff", text: "Difference" },
-    { value: "range", text: "Range" },
-    { value: "last_time", text: "Time of last point" },
+    { value: "first", text: "First" },
+    { value: "logmin", text: "Log Min" },
+    { value: "max", text: "Max" },
+    { value: "min", text: "Min" },
+    { value: "name", text: "Name" },
+    { value: "last_time", text: "Time of Last Point" },
+    { value: "time_step", text: "Time Step" },
+    { value: "total", text: "Total" },
   ],
   operatorName: "avg", // operator applied to time series
   colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
@@ -224,16 +226,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if ($("#" + this.panel.d3DivId + "-panel").length) {
       $("#" + this.panel.d3DivId + "-panel").remove();
     }
+    if ($("#" + this.panel.d3DivId + "-tooltip").length) {
+      $("#" + this.panel.d3DivId + "-tooltip").remove();
+    }
   }
 
   renderD3() {
     this.setValues(this.data);
-    if ($("#" + this.panel.d3DivId).length) {
-      $("#" + this.panel.d3DivId).remove();
-    }
-    if ($("#" + this.panel.d3DivId + "-panel").length) {
-      $("#" + this.panel.d3DivId + "-panel").remove();
-    }
+    this.clearSVG();
     this.panelWidth = this.getPanelWidth();
     this.panelHeight = this.getPanelHeight();
     var margin = {top: 0, right: 0, bottom: 0, left: 0};
@@ -324,6 +324,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
+    //debugger;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {

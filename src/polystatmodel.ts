@@ -8,6 +8,7 @@ export class PolystatModel {
   thresholdLevel: number; // 0 = ok, 1 = warn, 2 = crit, 3 = unknown (same as sensu)
   value: number;
   valueFormatted: number;
+  stats: any;
   name: string;
   timestamp: number;
   prefix: string;
@@ -28,6 +29,7 @@ export class PolystatModel {
     this.name = aSeries.alias;
     this.value = aSeries.stats.current;
     this.valueFormatted = aSeries.stats.current;
+    this.stats = aSeries.stats;
     this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
     this.prefix = "";
     this.suffix = "";

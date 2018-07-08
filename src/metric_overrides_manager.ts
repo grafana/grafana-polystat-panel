@@ -9,7 +9,7 @@ export class MetricOverride {
     decimals: string;
     scaledDecimals: number;
     enabled: boolean;
-    valueName: string;
+    operatorName: string; // avg/min/max etc
     prefix: string;
     suffix: string;
     clickThrough: string;
@@ -46,7 +46,7 @@ export class MetricOverridesManager {
         override.enabled = true;
         override.unitFormat = "";
         override.clickThrough = "";
-        override.valueName = "avg";
+        override.operatorName = "avg";
         override.scaledDecimals = null;
         override.prefix = "";
         override.suffix = "";
@@ -75,10 +75,13 @@ export class MetricOverridesManager {
         for (let index = 0; index < data.length; index++) {
             let matchIndex = this.matchOverride(data[index].name);
             if (matchIndex >= 0) {
+                let anOverride = this.metricOverrides[matchIndex];
+                let dataValue = this.getValueByStatName(anOverride, data[index]);
+                // set value to what was returned
+                data[index].value = dataValue;
                 data[index].color = this.getColorForValue(matchIndex, data[index].value);
                 data[index].thresholdLevel = this.getThresholdLevelForValue(matchIndex, data[index].value);
                 // format it
-                let anOverride = this.metricOverrides[matchIndex];
                 var formatFunc = kbn.valueFormats[anOverride.unitFormat];
                 if (formatFunc) {
                     // put the value in quotes to escape "most" special characters
@@ -98,6 +101,55 @@ export class MetricOverridesManager {
                 }
             }
         }
+    }
+
+    getValueByStatName(settings, data) {
+        let value = data.stats.avg;
+        switch (settings.operatorName) {
+            case "avg":
+                value = data.stats.avg;
+                break;
+            case "count":
+                value = data.stats.count;
+                break;
+            case "current":
+                value = data.stats.current;
+                break;
+            case "delta":
+                value = data.stats.delta;
+                break;
+            case "diff":
+                value = data.stats.diff;
+                break;
+            case "first":
+                value = data.stats.first;
+                break;
+            case "logmin":
+                value = data.stats.logmin;
+                break;
+            case "max":
+                value = data.stats.max;
+                break;
+            case "min":
+                value = data.stats.min;
+                break;
+            case "name":
+                value = data.metricName;
+                break;
+            case "time_step":
+                value = data.stats.timeStep;
+                break;
+            case "last_time":
+                value = data.timestamp;
+                break;
+            case "total":
+                value = data.stats.total;
+                break;
+            default:
+                value = data.stats.avg;
+                break;
+        }
+        return value;
     }
 
     getColorForValue(index, value): string {
