@@ -64,6 +64,7 @@ const panelDefaults = {
     "Value",
   ],
   polystat: {
+    globalOperatorName: "avg",
     rows: "auto",
     rowAutoSize: true,
     columns: "auto",
@@ -330,7 +331,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         let aSeries = this.series[index];
-        let converted = Transformers.TimeSeriesToPolystat(aSeries);
+        let converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
         this.polystatData.push(converted);
       }
     }
