@@ -40,7 +40,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     override.enabled = true;
                     override.unitFormat = "";
                     override.clickThrough = "";
-                    override.valueName = "avg";
+                    override.operatorName = "avg";
                     override.scaledDecimals = null;
                     override.prefix = "";
                     override.suffix = "";
@@ -66,9 +66,11 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     for (var index = 0; index < data.length; index++) {
                         var matchIndex = this.matchOverride(data[index].name);
                         if (matchIndex >= 0) {
+                            var anOverride = this.metricOverrides[matchIndex];
+                            var dataValue = this.getValueByStatName(anOverride, data[index]);
+                            data[index].value = dataValue;
                             data[index].color = this.getColorForValue(matchIndex, data[index].value);
                             data[index].thresholdLevel = this.getThresholdLevelForValue(matchIndex, data[index].value);
-                            var anOverride = this.metricOverrides[matchIndex];
                             var formatFunc = kbn_1.default.valueFormats[anOverride.unitFormat];
                             if (formatFunc) {
                                 data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
@@ -85,6 +87,54 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             }
                         }
                     }
+                };
+                MetricOverridesManager.prototype.getValueByStatName = function (settings, data) {
+                    var value = data.stats.avg;
+                    switch (settings.operatorName) {
+                        case "avg":
+                            value = data.stats.avg;
+                            break;
+                        case "count":
+                            value = data.stats.count;
+                            break;
+                        case "current":
+                            value = data.stats.current;
+                            break;
+                        case "delta":
+                            value = data.stats.delta;
+                            break;
+                        case "diff":
+                            value = data.stats.diff;
+                            break;
+                        case "first":
+                            value = data.stats.first;
+                            break;
+                        case "logmin":
+                            value = data.stats.logmin;
+                            break;
+                        case "max":
+                            value = data.stats.max;
+                            break;
+                        case "min":
+                            value = data.stats.min;
+                            break;
+                        case "name":
+                            value = data.metricName;
+                            break;
+                        case "time_step":
+                            value = data.stats.timeStep;
+                            break;
+                        case "last_time":
+                            value = data.timestamp;
+                            break;
+                        case "total":
+                            value = data.stats.total;
+                            break;
+                        default:
+                            value = data.stats.avg;
+                            break;
+                    }
+                    return value;
                 };
                 MetricOverridesManager.prototype.getColorForValue = function (index, value) {
                     var anOverride = this.metricOverrides[index];

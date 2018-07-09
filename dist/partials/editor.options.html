@@ -165,16 +165,23 @@
 
 <div class="editor-row">
 	<div class="section gf-form-group">
-		<h5 class="section-heading">Global</h5>
+    <h5 class="section-heading">Global</h5>
+    <div class="gf-form">
+      <label class="gf-form-label width-11">Stat</label>
+      <div class="gf-form-select-wrapper width-12">
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalOperatorName" ng-options="f.value as f.text for f in ctrl.panel.operatorOptions"
+          ng-change="ctrl.refresh()"></select>
+      </div>
+    </div>
 		<div class="gf-form-inline">
-			<gf-form-switch class="gf-form" label="Sanitize URL" label-class="width-8" checked="ctrl.panel.polystat.defaultClickThroughSanitize" on-change="ctrl.refresh()">
-			</gf-form-switch>
 			<label class="gf-form-label width-11">Default Clickthrough
 				<tip>URL to use when none defined by overrides</tip>
 			</label>
 				<input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="ctrl.panel.polystat.defaultClickThrough"
 				  ng-change="ctrl.render()" ng-model-onblur>				
-		</div>
+      <gf-form-switch class="gf-form" label="Sanitize URL" label-class="width-8" checked="ctrl.panel.polystat.defaultClickThroughSanitize" on-change="ctrl.refresh()">
+      </gf-form-switch>
+    </div>
 	</div>
 </div>
 

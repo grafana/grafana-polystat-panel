@@ -6,13 +6,16 @@ System.register([], function (exports_1, context_1) {
         setters: [],
         execute: function () {
             PolystatModel = (function () {
-                function PolystatModel(aSeries) {
+                function PolystatModel(operatorName, aSeries) {
                     if (aSeries === null) {
                         return;
                     }
+                    this.operatorName = operatorName;
                     this.name = aSeries.alias;
-                    this.value = aSeries.stats.current;
-                    this.valueFormatted = aSeries.stats.current;
+                    var operatorValue = this.getValueByOperator(operatorName, aSeries);
+                    this.value = operatorValue;
+                    this.valueFormatted = operatorValue;
+                    this.stats = aSeries.stats;
                     this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
                     this.prefix = "";
                     this.suffix = "";
@@ -26,8 +29,57 @@ System.register([], function (exports_1, context_1) {
                     this.showName = true;
                     this.showValue = true;
                 }
+                PolystatModel.prototype.getValueByOperator = function (operatorName, data) {
+                    var value = data.stats.avg;
+                    switch (operatorName) {
+                        case "avg":
+                            value = data.stats.avg;
+                            break;
+                        case "count":
+                            value = data.stats.count;
+                            break;
+                        case "current":
+                            value = data.stats.current;
+                            break;
+                        case "delta":
+                            value = data.stats.delta;
+                            break;
+                        case "diff":
+                            value = data.stats.diff;
+                            break;
+                        case "first":
+                            value = data.stats.first;
+                            break;
+                        case "logmin":
+                            value = data.stats.logmin;
+                            break;
+                        case "max":
+                            value = data.stats.max;
+                            break;
+                        case "min":
+                            value = data.stats.min;
+                            break;
+                        case "name":
+                            value = data.metricName;
+                            break;
+                        case "time_step":
+                            value = data.stats.timeStep;
+                            break;
+                        case "last_time":
+                            value = data.timestamp;
+                            break;
+                        case "total":
+                            value = data.stats.total;
+                            break;
+                        default:
+                            value = data.stats.avg;
+                            break;
+                    }
+                    return value;
+                };
                 PolystatModel.prototype.shallowClone = function () {
-                    var clone = new PolystatModel(null);
+                    var clone = new PolystatModel(this.operatorName, null);
+                    clone.operatorName = this.operatorName;
                     clone.thresholdLevel = this.thresholdLevel;
                     clone.value = this.value;
                     clone.valueFormatted = this.valueFormatted;

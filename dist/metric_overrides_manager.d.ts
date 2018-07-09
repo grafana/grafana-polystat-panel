@@ -6,7 +6,7 @@ export declare class MetricOverride {
     decimals: string;
     scaledDecimals: number;
     enabled: boolean;
-    valueName: string;
+    operatorName: string;
     prefix: string;
     suffix: string;
     clickThrough: string;
@@ -24,6 +24,7 @@ export declare class MetricOverridesManager {
     removeMetricOverride(override: any): void;
     matchOverride(pattern: any): number;
     applyOverrides(data: any): void;
+    getValueByStatName(settings: any, data: any): any;
     getColorForValue(index: any, value: any): string;
     getThresholdLevelForValue(index: any, value: any): number;
     invertColorOrder(override: any): void;

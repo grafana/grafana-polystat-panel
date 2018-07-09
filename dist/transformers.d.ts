@@ -1,4 +1,4 @@
 export declare class Transformers {
-    static TimeSeriesToPolystat(series: any): any;
+    static TimeSeriesToPolystat(operatorName: string, series: any): any;
     static GetColumnsJSONData(data: any): any;
 }

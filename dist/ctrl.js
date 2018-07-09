@@ -70,18 +70,20 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     "Verdana"
                 ],
                 unitFormats: kbn_1.default.getUnitFormats(),
-                valueNameOptions: [
-                    { value: "min", text: "Min" },
-                    { value: "max", text: "Max" },
+                operatorOptions: [
                     { value: "avg", text: "Average" },
+                    { value: "count", text: "Count" },
                     { value: "current", text: "Current" },
-                    { value: "total", text: "Total" },
-                    { value: "name", text: "Name" },
-                    { value: "first", text: "First" },
                     { value: "delta", text: "Delta" },
                     { value: "diff", text: "Difference" },
-                    { value: "range", text: "Range" },
-                    { value: "last_time", text: "Time of last point" },
+                    { value: "first", text: "First" },
+                    { value: "logmin", text: "Log Min" },
+                    { value: "max", text: "Max" },
+                    { value: "min", text: "Min" },
+                    { value: "name", text: "Name" },
+                    { value: "last_time", text: "Time of Last Point" },
+                    { value: "time_step", text: "Time Step" },
+                    { value: "total", text: "Total" },
                 ],
                 operatorName: "avg",
                 colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
@@ -94,10 +96,11 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                 ],
                 sortFields: [
                     "Name",
+                    "Threshold Level",
                     "Value",
-                    "State"
                 ],
                 polystat: {
+                    globalOperatorName: "avg",
                     rows: "auto",
                     rowAutoSize: true,
                     columns: "auto",
@@ -111,13 +114,13 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     animationSpeed: 2500,
                     defaultClickThrough: "",
                     defaultClickThroughSanitize: true,
-                    tooltipPrimarySortDirection: "Descending",
-                    tooltipPrimarySortField: "State",
-                    tooltipSecondarySortDirection: "Ascending",
-                    tooltipSecondarySortField: "Name",
-                    tooltipTimestampEnabled: true,
                     hexagonSortByDirection: "Ascending",
                     hexagonSortByField: "Name",
+                    tooltipPrimarySortDirection: "Ascending",
+                    tooltipPrimarySortField: "Name",
+                    tooltipSecondarySortDirection: "Descending",
+                    tooltipSecondarySortField: "Value",
+                    tooltipTimestampEnabled: true,
                     fontSize: 12,
                     fontAutoScale: false,
                 },
@@ -217,15 +220,13 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     if (jquery_1.default("#" + this.panel.d3DivId + "-panel").length) {
                         jquery_1.default("#" + this.panel.d3DivId + "-panel").remove();
                     }
+                    if (jquery_1.default("#" + this.panel.d3DivId + "-tooltip").length) {
+                        jquery_1.default("#" + this.panel.d3DivId + "-tooltip").remove();
+                    }
                 };
                 D3PolystatPanelCtrl.prototype.renderD3 = function () {
                     this.setValues(this.data);
-                    if (jquery_1.default("#" + this.panel.d3DivId).length) {
-                        jquery_1.default("#" + this.panel.d3DivId).remove();
-                    }
-                    if (jquery_1.default("#" + this.panel.d3DivId + "-panel").length) {
-                        jquery_1.default("#" + this.panel.d3DivId + "-panel").remove();
-                    }
+                    this.clearSVG();
                     this.panelWidth = this.getPanelWidth();
                     this.panelHeight = this.getPanelHeight();
                     var margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -313,7 +314,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     if (this.series && this.series.length > 0) {
                         for (var index = 0; index < this.series.length; index++) {
                             var aSeries = this.series[index];
-                            var converted = transformers_1.Transformers.TimeSeriesToPolystat(aSeries);
+                            var converted = transformers_1.Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
                             this.polystatData.push(converted);
                         }
                     }
@@ -324,7 +325,28 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                             this.polystatData[index].clickThrough = this.getDefaultClickThrough();
                         }
                     }
-                    this.polystatData = lodash_1.default.orderBy(this.polystatData, ["name"], ["asc"]);
+                    var hexagonSortDirection = "asc";
+                    switch (this.panel.polystat.hexagonSortByDirection) {
+                        case "Ascending":
+                            hexagonSortDirection = "asc";
+                            break;
+                        case "Descending":
+                            hexagonSortDirection = "desc";
+                            break;
+                    }
+                    var hexagonSortField = "name";
+                    switch (this.panel.polystat.hexagonSortByField) {
+                        case "Name":
+                            hexagonSortField = "name";
+                            break;
+                        case "Threshold Level":
+                            hexagonSortField = "thresholdLevel";
+                            break;
+                        case "Value":
+                            hexagonSortField = "value";
+                            break;
+                    }
+                    this.polystatData = lodash_1.default.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
                     this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
                 };
                 D3PolystatPanelCtrl.prototype.onDataError = function (err) {
