@@ -77,13 +77,13 @@ const panelDefaults = {
     animationSpeed: 2500,
     defaultClickThrough: "",
     defaultClickThroughSanitize: true,
+    hexagonSortByDirection: "Ascending",
+    hexagonSortByField: "Name",
     tooltipPrimarySortDirection: "Ascending",
     tooltipPrimarySortField: "Name",
     tooltipSecondarySortDirection: "Descending",
     tooltipSecondarySortField: "Value",
     tooltipTimestampEnabled: true,
-    hexagonSortByDirection: "Ascending",
-    hexagonSortByField: "Name",
     fontSize: 12,
     fontAutoScale: false,
   },
@@ -346,7 +346,28 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // now sort
     //this.polystatData = _.orderBy(this.polystatData, ["name"], ["desc"]);
-    this.polystatData = _.orderBy(this.polystatData, ["name"], ["asc"]);
+    let hexagonSortDirection = "asc";
+    switch (this.panel.polystat.hexagonSortByDirection) {
+      case "Ascending":
+        hexagonSortDirection = "asc";
+        break;
+      case "Descending":
+        hexagonSortDirection = "desc";
+        break;
+    }
+    let hexagonSortField = "name";
+    switch (this.panel.polystat.hexagonSortByField) {
+      case "Name":
+        hexagonSortField = "name";
+        break;
+      case "Threshold Level":
+        hexagonSortField = "thresholdLevel";
+        break;
+      case "Value":
+        hexagonSortField = "value";
+        break;
+    }
+    this.polystatData = _.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
   }
