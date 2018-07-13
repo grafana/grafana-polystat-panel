@@ -18,8 +18,8 @@ System.register(["./flatten", "lodash", "./polystatmodel"], function (exports_1,
             Transformers = (function () {
                 function Transformers() {
                 }
-                Transformers.TimeSeriesToPolystat = function (series) {
-                    var aPolystat = new polystatmodel_1.PolystatModel(series);
+                Transformers.TimeSeriesToPolystat = function (operatorName, series) {
+                    var aPolystat = new polystatmodel_1.PolystatModel(operatorName, series);
                     return aPolystat;
                 };
                 Transformers.GetColumnsJSONData = function (data) {

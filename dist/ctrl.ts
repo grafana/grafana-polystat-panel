@@ -34,20 +34,18 @@ const panelDefaults = {
     "Verdana"
   ],
   unitFormats: kbn.getUnitFormats(),
-  operatorOptions: [
+  valueNameOptions: [
+    { value: "min", text: "Min" },
+    { value: "max", text: "Max" },
     { value: "avg", text: "Average" },
-    { value: "count", text: "Count" },
     { value: "current", text: "Current" },
+    { value: "total", text: "Total" },
+    { value: "name", text: "Name" },
+    { value: "first", text: "First" },
     { value: "delta", text: "Delta" },
     { value: "diff", text: "Difference" },
-    { value: "first", text: "First" },
-    { value: "logmin", text: "Log Min" },
-    { value: "max", text: "Max" },
-    { value: "min", text: "Min" },
-    { value: "name", text: "Name" },
-    { value: "last_time", text: "Time of Last Point" },
-    { value: "time_step", text: "Time Step" },
-    { value: "total", text: "Total" },
+    { value: "range", text: "Range" },
+    { value: "last_time", text: "Time of last point" },
   ],
   operatorName: "avg", // operator applied to time series
   colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
@@ -60,11 +58,10 @@ const panelDefaults = {
   ],
   sortFields: [
     "Name",
-    "Threshold Level",
     "Value",
+    "State"
   ],
   polystat: {
-    globalOperatorName: "avg",
     rows: "auto",
     rowAutoSize: true,
     columns: "auto",
@@ -78,13 +75,13 @@ const panelDefaults = {
     animationSpeed: 2500,
     defaultClickThrough: "",
     defaultClickThroughSanitize: true,
+    tooltipPrimarySortDirection: "Descending",
+    tooltipPrimarySortField: "State",
+    tooltipSecondarySortDirection: "Ascending",
+    tooltipSecondarySortField: "Name",
+    tooltipTimestampEnabled: true,
     hexagonSortByDirection: "Ascending",
     hexagonSortByField: "Name",
-    tooltipPrimarySortDirection: "Ascending",
-    tooltipPrimarySortField: "Name",
-    tooltipSecondarySortDirection: "Descending",
-    tooltipSecondarySortField: "Value",
-    tooltipTimestampEnabled: true,
     fontSize: 12,
     fontAutoScale: false,
   },
@@ -325,13 +322,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
-    //debugger;
+    debugger;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         let aSeries = this.series[index];
-        let converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
+        let converted = Transformers.TimeSeriesToPolystat(aSeries);
         this.polystatData.push(converted);
       }
     }
@@ -347,28 +344,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // now sort
     //this.polystatData = _.orderBy(this.polystatData, ["name"], ["desc"]);
-    let hexagonSortDirection = "asc";
-    switch (this.panel.polystat.hexagonSortByDirection) {
-      case "Ascending":
-        hexagonSortDirection = "asc";
-        break;
-      case "Descending":
-        hexagonSortDirection = "desc";
-        break;
-    }
-    let hexagonSortField = "name";
-    switch (this.panel.polystat.hexagonSortByField) {
-      case "Name":
-        hexagonSortField = "name";
-        break;
-      case "Threshold Level":
-        hexagonSortField = "thresholdLevel";
-        break;
-      case "Value":
-        hexagonSortField = "value";
-        break;
-    }
-    this.polystatData = _.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
+    this.polystatData = _.orderBy(this.polystatData, ["name"], ["asc"]);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
   }

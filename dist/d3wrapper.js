@@ -260,7 +260,6 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                         this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
                         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
                     ]);
-                    console.log("autohexradius:" + hexRadius);
                     return hexRadius;
                 };
                 D3Wrapper.prototype.calculateSVGSize = function () {
