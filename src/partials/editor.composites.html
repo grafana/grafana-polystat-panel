@@ -29,10 +29,12 @@
                         <tip>how members are rendered</tip>
                     </label>
                     <div class="gf-form-select-wrapper">
-                        <select class="gf-form-input width-16" style="margin-left: 3px;"
-                            ng-model="composite.animateMode"
-                            ng-options="f for f in ctrl.panel.animationModes"
-			                ng-change="ctrl.refresh()">
+                      <select class="gf-form-input width-16"
+                        style="margin-left: 3px;"
+                        ng-model="composite.animateMode"
+                        ng-options="f.value as f.text for f in ctrl.panel.animationModes"
+                        ng-change="ctrl.refresh()">
+                      </select>
 			            </select>
 		            </div>
                     <div class="gf-form">

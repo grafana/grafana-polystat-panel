@@ -15,13 +15,12 @@ import { Tooltip } from "./tooltip";
 
 const panelDefaults = {
   animationModes: [
-    "Show All",
-    "Show All Triggered",
-    "Show Primary Triggered"
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Triggered" },
   ],
   displayModes: [
     { value: "all", text: "Show All" },
-    { value: "triggered", text: "Show Only Triggered" },
+    { value: "triggered", text: "Show Triggered" },
   ],
   savedComposites : [],
   savedOverrides : [],
@@ -109,6 +108,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   d3Object: D3Wrapper;
   data: any;
   series: any[];
+  templateSrv: any;
   overridesCtrl: MetricOverridesManager;
   compositesManager : CompositesManager;
   tooltipContent: string[];
@@ -122,6 +122,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.alertSrvRef = alertSrv;
     this.initialized = false;
     this.panelContainer = null;
+    this.templateSrv = templateSrv;
     this.panel.svgContainer = null;
     this.panelWidth = null;
     this.panelHeight = null;
@@ -271,7 +272,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: this.getDefaultClickThrough(),
       polystat: this.panel.polystat,
     };
-    this.d3Object = new D3Wrapper(this.panel.svgContainer, this.panel.d3DivId, opt);
+    this.d3Object = new D3Wrapper(this.templateSrv, this.panel.svgContainer, this.panel.d3DivId, opt);
     this.d3Object.draw();
   }
 

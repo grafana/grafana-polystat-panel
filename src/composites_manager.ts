@@ -45,7 +45,7 @@ export class CompositesManager {
         aComposite.hideMembers = true;
         aComposite.showName = true;
         aComposite.showValue = true;
-        aComposite.animateMode = "Show All";
+        aComposite.animateMode = "all";
         aComposite.thresholdLevel = 0;
         aComposite.sanitizeURLEnabled = true;
         aComposite.sanitizedURL = "";
@@ -147,6 +147,7 @@ export class CompositesManager {
                 // add the composite seting for showing the name/value to the new cloned model
                 clone.showName = aComposite.showName;
                 clone.showValue = aComposite.showValue;
+                clone.animateMode = aComposite.animateMode;
                 clonedComposites.push(clone);
             }
         }

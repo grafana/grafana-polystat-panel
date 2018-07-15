@@ -5,6 +5,8 @@
  */
 
 export class PolystatModel {
+  animateMode: string;
+  displayMode: string;
   thresholdLevel: number; // 0 = ok, 1 = warn, 2 = crit, 3 = unknown (same as sensu)
   value: number;
   valueFormatted: number;
@@ -27,6 +29,8 @@ export class PolystatModel {
     if (aSeries === null) {
       return;
     }
+    this.animateMode = "all";
+    this.displayMode = "all";
     this.operatorName = operatorName;
     this.name = aSeries.alias;
     let operatorValue = this.getValueByOperator(operatorName, aSeries);

@@ -12,6 +12,7 @@ export class D3Wrapper {
   maxRowsUsed: number;
   opt: any;
   data: any;
+  templateSrv: any;
   calculatedPoints: any;
   hexRadius: number;
   autoHexRadius : number;
@@ -26,7 +27,8 @@ export class D3Wrapper {
     left : number,
   };
 
-  constructor(svgContainer: any, d3DivId, opt) {
+  constructor(templateSrv: any, svgContainer: any, d3DivId, opt) {
+    this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
     this.d3DivId = d3DivId;
     this.data = opt.data;
@@ -125,13 +127,17 @@ export class D3Wrapper {
 
     let activeFontSize = this.opt.polystat.fontSize;
     if (this.opt.polystat.fontAutoScale) {
-      // TODO:
       // find the most text that will be displayed over all items
-      //let maxTextLength = 12;
+      let maxLabel = "";
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i].name.length > maxLabel.length) {
+          maxLabel = this.data[i].name;
+        }
+      }
       // estimate how big of a font can be used
       // if it is too small, hide everything
       let estimateFontSize = getTextSizeForWidth(
-        "COMPOSITE 1",
+        maxLabel,
         "?px sans-serif",
         this.autoHexRadius * 2,
         10,
@@ -309,13 +315,37 @@ export class D3Wrapper {
       .attr("font-size", activeFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
-        return thisRef.formatValueContent(i, frames, thisRef);
+        // animation/displaymode can modify what is being displayed
+        let content = null;
+        let counter = 0;
+        let dataLen = thisRef.data.length;
+        // search for a value but not more than number of data items
+        while ((content === null) && (counter < dataLen)) {
+          content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+          counter++;
+        }
+        if (content === null) {
+          content = "N/A";
+        }
+        return content;
       });
 
 
     d3.interval(function () {
         textRef.text(function (_, i) {
-          return thisRef.formatValueContent(i, frames, thisRef);
+          // animation/displaymode can modify what is being displayed
+          let content = null;
+          let counter = 0;
+          let dataLen = thisRef.data.length * 2;
+          // search for a value cycling through twice to allow rollover
+          while ((content === null) && (counter < dataLen)) {
+            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+            counter++;
+          }
+          if (content === null) {
+            content = "N/A";
+          }
+          return content;
         });
         frames++;
     }, this.opt.animationSpeed);
@@ -337,6 +367,16 @@ export class D3Wrapper {
       // no data, return nothing
       return "";
     }
+    //debugger;
+    switch (data.animateMode) {
+      case "all":
+        break;
+      case "triggered":
+        // return nothing if mode is triggered and the state is 0
+        if (data.thresholdLevel < 1) {
+          return "";
+        }
+    }
     let content = data.valueFormatted;
     if ((data.prefix) && (data.prefix.length > 0)) {
       content = data.prefix + " " + content;
@@ -346,14 +386,27 @@ export class D3Wrapper {
     }
     let len = data.members.length;
     if (len > 0) {
-      content = data.members[frames % len].valueFormatted;
-      if ((data.members[frames % len].prefix) && (data.members[frames % len].prefix.length > 0)) {
-        content = data.members[frames % len].prefix + " " + content;
+      let aMember = data.members[frames % len];
+      // use the animate mode from the parent (for composites)
+      switch (data.animateMode) {
+        case "all":
+          break;
+        case "triggered":
+          // return nothing if mode is triggered and the state is 0
+          if (aMember.thresholdLevel < 1) {
+            return null;
+          }
       }
-      if ((data.members[frames % len].suffix) && (data.members[frames % len].suffix.length > 0)) {
-        content = content + " " + data.members[frames % len].suffix;
+      content = aMember.valueFormatted;
+      if ((aMember.prefix) && (aMember.prefix.length > 0)) {
+        content = aMember.prefix + " " + content;
+      }
+      if ((aMember.suffix) && (aMember.suffix.length > 0)) {
+        content = content + " " + aMember.suffix;
       }
     }
+    // allow templating
+    content = this.templateSrv.replaceWithText(content);
     return content;
   }
 
