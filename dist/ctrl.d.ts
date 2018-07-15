@@ -35,6 +35,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     addRangeMap(): void;
     link(scope: any, elem: any, attrs: any, ctrl: any): void;
     setValues(dataList: any): void;
+    filterByGlobalDisplayMode(data: any): any;
     onDataError(err: any): void;
     onDataReceived(dataList: any): void;
     seriesHandler(seriesData: any): any;

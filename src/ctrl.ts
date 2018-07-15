@@ -19,6 +19,10 @@ const panelDefaults = {
     "Show All Triggered",
     "Show Primary Triggered"
   ],
+  displayModes: [
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Only Triggered" },
+  ],
   savedComposites : [],
   savedOverrides : [],
   fontSizes: [
@@ -64,6 +68,7 @@ const panelDefaults = {
     "Value",
   ],
   polystat: {
+    globalDisplayMode: "All",
     globalOperatorName: "avg",
     rows: "auto",
     rowAutoSize: true,
@@ -256,6 +261,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipFontType: this.panel.polystat.tooltipFontType,
       data: this.polystatData,
       displayLimit: this.panel.polystat.displayLimit,
+      globalDisplayMode: this.panel.polystat.globalDisplayMode,
       columns: this.panel.polystat.columns,
       columnAutoSize: this.panel.polystat.columnAutoSize,
       rows: this.panel.polystat.rows,
@@ -369,8 +375,26 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         break;
     }
     this.polystatData = _.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
+    // filter out by globalDisplayMode
+    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
+  }
+
+  filterByGlobalDisplayMode(data: any) {
+    let filteredMetrics = [];
+    if (this.panel.polystat.globalDisplayMode !== "all") {
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        if (item.thresholdLevel < 1) {
+          filteredMetrics.push(item);
+        }
+      }
+      for (let i = 0; i < filteredMetrics.length; i++) {
+        data.splice(filteredMetrics[i], 1);
+      }
+    }
+    return data;
   }
 
   onDataError(err) {

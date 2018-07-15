@@ -54,6 +54,10 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     "Show All Triggered",
                     "Show Primary Triggered"
                 ],
+                displayModes: [
+                    { value: "all", text: "Show All" },
+                    { value: "triggered", text: "Show Only Triggered" },
+                ],
                 savedComposites: [],
                 savedOverrides: [],
                 fontSizes: [
@@ -100,6 +104,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     "Value",
                 ],
                 polystat: {
+                    globalDisplayMode: "All",
                     globalOperatorName: "avg",
                     rows: "auto",
                     rowAutoSize: true,
@@ -246,6 +251,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                         tooltipFontType: this.panel.polystat.tooltipFontType,
                         data: this.polystatData,
                         displayLimit: this.panel.polystat.displayLimit,
+                        globalDisplayMode: this.panel.polystat.globalDisplayMode,
                         columns: this.panel.polystat.columns,
                         columnAutoSize: this.panel.polystat.columnAutoSize,
                         rows: this.panel.polystat.rows,
@@ -347,7 +353,23 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                             break;
                     }
                     this.polystatData = lodash_1.default.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
+                    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
                     this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
+                };
+                D3PolystatPanelCtrl.prototype.filterByGlobalDisplayMode = function (data) {
+                    var filteredMetrics = [];
+                    if (this.panel.polystat.globalDisplayMode !== "all") {
+                        for (var i = 0; i < data.length; i++) {
+                            var item = data[i];
+                            if (item.thresholdLevel < 1) {
+                                filteredMetrics.push(item);
+                            }
+                        }
+                        for (var i = 0; i < filteredMetrics.length; i++) {
+                            data.splice(filteredMetrics[i], 1);
+                        }
+                    }
+                    return data;
                 };
                 D3PolystatPanelCtrl.prototype.onDataError = function (err) {
                     console.log(err);
