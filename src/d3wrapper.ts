@@ -222,12 +222,47 @@ export class D3Wrapper {
       .style("text-align", "right")
       .html("(" + numAlerts + "/" + numPoints + ")");
     */
+    let customShape = null;
+    let symbol = d3.symbol().size(this.autoHexRadius * 2 * 100);
+    switch (this.opt.polystat.shape) {
+      case "hexagon_pointed_top":
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        break;
+      case "hexagon_flat_top":
+        // TODO: use pointed for now
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        break;
+      case "circle":
+        customShape = symbol.type(d3.symbolCircle);
+        break;
+      case "cross":
+        customShape = symbol.type(d3.symbolCross);
+        break;
+      case "diamond":
+        customShape = symbol.type(d3.symbolDiamond);
+        break;
+      case "square":
+        customShape = symbol.type(d3.symbolSquare);
+        break;
+      case "star":
+        customShape = symbol.type(d3.symbolStar);
+        break;
+      case "triangle":
+        customShape = symbol.type(d3.symbolTriangle);
+        break;
+      case "wye":
+        customShape = symbol.type(d3.symbolWye);
+        break;
+     default:
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        break;
+    }
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
         .attr("class", "hexagon")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("d", ahexbin.hexagon(this.autoHexRadius))
+        .attr("d", customShape)
         .attr("stroke", "black")
         .attr("stroke-width", "2px")
         .style("fill", function(_, i) {

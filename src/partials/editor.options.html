@@ -164,6 +164,13 @@
 	<div class="section gf-form-group">
     <h5 class="section-heading">Global</h5>
     <div class="gf-form">
+      <label class="gf-form-label width-11">Shape</label>
+      <div class="gf-form-select-wrapper width-13">
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.shape" ng-options="f.value as f.text for f in ctrl.panel.shapes"
+          ng-change="ctrl.refresh()"></select>
+      </div>
+    </div>
+    <div class="gf-form">
       <label class="gf-form-label width-11">Display</label>
       <div class="gf-form-select-wrapper width-13">
         <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalDisplayMode" ng-options="f.value as f.text for f in ctrl.panel.displayModes"
