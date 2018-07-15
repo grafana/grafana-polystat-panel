@@ -50,13 +50,12 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
         execute: function () {
             panelDefaults = {
                 animationModes: [
-                    "Show All",
-                    "Show All Triggered",
-                    "Show Primary Triggered"
+                    { value: "all", text: "Show All" },
+                    { value: "triggered", text: "Show Triggered" },
                 ],
                 displayModes: [
                     { value: "all", text: "Show All" },
-                    { value: "triggered", text: "Show Only Triggered" },
+                    { value: "triggered", text: "Show Triggered" },
                 ],
                 savedComposites: [],
                 savedOverrides: [],
@@ -141,6 +140,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     _this.alertSrvRef = alertSrv;
                     _this.initialized = false;
                     _this.panelContainer = null;
+                    _this.templateSrv = templateSrv;
                     _this.panel.svgContainer = null;
                     _this.panelWidth = null;
                     _this.panelHeight = null;
@@ -261,7 +261,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                         defaultClickThrough: this.getDefaultClickThrough(),
                         polystat: this.panel.polystat,
                     };
-                    this.d3Object = new d3wrapper_1.D3Wrapper(this.panel.svgContainer, this.panel.d3DivId, opt);
+                    this.d3Object = new d3wrapper_1.D3Wrapper(this.templateSrv, this.panel.svgContainer, this.panel.d3DivId, opt);
                     this.d3Object.draw();
                 };
                 D3PolystatPanelCtrl.prototype.removeValueMap = function (map) {

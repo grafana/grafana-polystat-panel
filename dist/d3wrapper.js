@@ -16,7 +16,8 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
         ],
         execute: function () {
             D3Wrapper = (function () {
-                function D3Wrapper(svgContainer, d3DivId, opt) {
+                function D3Wrapper(templateSrv, svgContainer, d3DivId, opt) {
+                    this.templateSrv = templateSrv;
                     this.svgContainer = svgContainer;
                     this.d3DivId = d3DivId;
                     this.data = opt.data;
@@ -94,7 +95,13 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                     this.calculatedPoints = this.generatePoints();
                     var activeFontSize = this.opt.polystat.fontSize;
                     if (this.opt.polystat.fontAutoScale) {
-                        var estimateFontSize = utils_1.getTextSizeForWidth("COMPOSITE 1", "?px sans-serif", this.autoHexRadius * 2, 10, 50);
+                        var maxLabel = "";
+                        for (var i = 0; i < this.data.length; i++) {
+                            if (this.data[i].name.length > maxLabel.length) {
+                                maxLabel = this.data[i].name;
+                            }
+                        }
+                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", this.autoHexRadius * 2, 10, 50);
                         console.log("Estimated Font size: " + estimateFontSize);
                         activeFontSize = estimateFontSize;
                     }
@@ -212,11 +219,31 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                         .attr("font-size", activeFontSize + "px")
                         .attr("fill", "black")
                         .text(function (_, i) {
-                        return thisRef.formatValueContent(i, frames, thisRef);
+                        var content = null;
+                        var counter = 0;
+                        var dataLen = thisRef.data.length;
+                        while ((content === null) && (counter < dataLen)) {
+                            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+                            counter++;
+                        }
+                        if (content === null) {
+                            content = "N/A";
+                        }
+                        return content;
                     });
                     d3.interval(function () {
                         textRef.text(function (_, i) {
-                            return thisRef.formatValueContent(i, frames, thisRef);
+                            var content = null;
+                            var counter = 0;
+                            var dataLen = thisRef.data.length * 2;
+                            while ((content === null) && (counter < dataLen)) {
+                                content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+                                counter++;
+                            }
+                            if (content === null) {
+                                content = "N/A";
+                            }
+                            return content;
                         });
                         frames++;
                     }, this.opt.animationSpeed);
@@ -236,6 +263,14 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                     else {
                         return "";
                     }
+                    switch (data.animateMode) {
+                        case "all":
+                            break;
+                        case "triggered":
+                            if (data.thresholdLevel < 1) {
+                                return "";
+                            }
+                    }
                     var content = data.valueFormatted;
                     if ((data.prefix) && (data.prefix.length > 0)) {
                         content = data.prefix + " " + content;
@@ -245,14 +280,24 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                     }
                     var len = data.members.length;
                     if (len > 0) {
-                        content = data.members[frames % len].valueFormatted;
-                        if ((data.members[frames % len].prefix) && (data.members[frames % len].prefix.length > 0)) {
-                            content = data.members[frames % len].prefix + " " + content;
+                        var aMember = data.members[frames % len];
+                        switch (data.animateMode) {
+                            case "all":
+                                break;
+                            case "triggered":
+                                if (aMember.thresholdLevel < 1) {
+                                    return null;
+                                }
                         }
-                        if ((data.members[frames % len].suffix) && (data.members[frames % len].suffix.length > 0)) {
-                            content = content + " " + data.members[frames % len].suffix;
+                        content = aMember.valueFormatted;
+                        if ((aMember.prefix) && (aMember.prefix.length > 0)) {
+                            content = aMember.prefix + " " + content;
+                        }
+                        if ((aMember.suffix) && (aMember.suffix.length > 0)) {
+                            content = content + " " + aMember.suffix;
                         }
                     }
+                    content = this.templateSrv.replaceWithText(content);
                     return content;
                 };
                 D3Wrapper.prototype.getAutoHexRadius = function () {

@@ -1,4 +1,6 @@
 export declare class PolystatModel {
+    animateMode: string;
+    displayMode: string;
     thresholdLevel: number;
     value: number;
     valueFormatted: number;

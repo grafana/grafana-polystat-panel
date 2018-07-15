@@ -40,7 +40,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     aComposite.hideMembers = true;
                     aComposite.showName = true;
                     aComposite.showValue = true;
-                    aComposite.animateMode = "Show All";
+                    aComposite.animateMode = "all";
                     aComposite.thresholdLevel = 0;
                     aComposite.sanitizeURLEnabled = true;
                     aComposite.sanitizedURL = "";
@@ -125,6 +125,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             clone.thresholdLevel = currentWorstSeries.thresholdLevel;
                             clone.showName = aComposite.showName;
                             clone.showValue = aComposite.showValue;
+                            clone.animateMode = aComposite.animateMode;
                             clonedComposites.push(clone);
                         }
                     }

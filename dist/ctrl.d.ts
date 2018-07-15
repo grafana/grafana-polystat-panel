@@ -19,6 +19,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     d3Object: D3Wrapper;
     data: any;
     series: any[];
+    templateSrv: any;
     overridesCtrl: MetricOverridesManager;
     compositesManager: CompositesManager;
     tooltipContent: string[];

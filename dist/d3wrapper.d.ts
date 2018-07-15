@@ -5,6 +5,7 @@ export declare class D3Wrapper {
     maxRowsUsed: number;
     opt: any;
     data: any;
+    templateSrv: any;
     calculatedPoints: any;
     hexRadius: number;
     autoHexRadius: number;
@@ -18,7 +19,7 @@ export declare class D3Wrapper {
         bottom: number;
         left: number;
     };
-    constructor(svgContainer: any, d3DivId: any, opt: any);
+    constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any);
     update(data: any): void;
     draw(): void;
     formatValueContent(i: any, frames: any, thisRef: any): string;
