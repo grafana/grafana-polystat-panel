@@ -272,6 +272,12 @@ export class D3Wrapper {
       activeFontSize = estimateFontSize;
     }
 
+    // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
+    //.attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")rotate(90)"; })
+    // see http://bl.ocks.org/jasondavies/f5922ed4d0ac1ac2161f
+
+    //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
@@ -456,7 +462,9 @@ export class D3Wrapper {
       }
     }
     // allow templating
-    content = this.templateSrv.replaceWithText(content);
+    if (content.length > 0) {
+      content = thisRef.templateSrv.replaceWithText(content);
+    }
     return content;
   }
 
