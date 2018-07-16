@@ -1,8 +1,8 @@
 /////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
-
+import * as d3 from "./external/d3.min.js";
+//import d3 from "d3";
 import * as d3hexbin from "./external/d3-hexbin.js";
-import * as d3 from "d3";
 import { getTextSizeForWidth } from "./utils";
 
 export class D3Wrapper {
@@ -521,4 +521,5 @@ export class D3Wrapper {
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
+
 }
