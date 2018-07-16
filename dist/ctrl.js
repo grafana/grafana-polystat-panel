@@ -57,6 +57,17 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     { value: "all", text: "Show All" },
                     { value: "triggered", text: "Show Triggered" },
                 ],
+                shapes: [
+                    { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
+                    { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
+                    { value: "circle", text: "Circle" },
+                    { value: "cross", text: "Cross" },
+                    { value: "diamond", text: "Diamond" },
+                    { value: "square", text: "Square" },
+                    { value: "star", text: "Star" },
+                    { value: "triangle", text: "Triangle" },
+                    { value: "wye", text: "Wye" },
+                ],
                 savedComposites: [],
                 savedOverrides: [],
                 fontSizes: [
@@ -103,6 +114,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     "Value",
                 ],
                 polystat: {
+                    shape: "hexagon_pointed_top",
                     globalDisplayMode: "All",
                     globalOperatorName: "avg",
                     rows: "auto",

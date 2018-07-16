@@ -93,18 +93,6 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                     }
                     this.calculateSVGSize();
                     this.calculatedPoints = this.generatePoints();
-                    var activeFontSize = this.opt.polystat.fontSize;
-                    if (this.opt.polystat.fontAutoScale) {
-                        var maxLabel = "";
-                        for (var i = 0; i < this.data.length; i++) {
-                            if (this.data[i].name.length > maxLabel.length) {
-                                maxLabel = this.data[i].name;
-                            }
-                        }
-                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", this.autoHexRadius * 2, 10, 50);
-                        console.log("Estimated Font size: " + estimateFontSize);
-                        activeFontSize = estimateFontSize;
-                    }
                     var width = this.opt.width;
                     var height = this.opt.height;
                     var ahexbin = d3hexbin
@@ -136,12 +124,68 @@ System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_
                         .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
                     var data = this.data;
                     var thisRef = this;
+                    var customShape = null;
+                    var shapeWidth = diameterX;
+                    var innerArea = diameterX * diameterY;
+                    if (diameterX < diameterY) {
+                        innerArea = diameterX * diameterX;
+                    }
+                    if (diameterY < diameterX) {
+                        innerArea = diameterY * diameterY;
+                    }
+                    var symbol = d3.symbol().size(innerArea);
+                    switch (this.opt.polystat.shape) {
+                        case "hexagon_pointed_top":
+                            customShape = ahexbin.hexagon(this.autoHexRadius);
+                            shapeWidth = this.autoHexRadius * 2;
+                            break;
+                        case "hexagon_flat_top":
+                            customShape = ahexbin.hexagon(this.autoHexRadius);
+                            shapeWidth = this.autoHexRadius * 2;
+                            break;
+                        case "circle":
+                            customShape = symbol.type(d3.symbolCircle);
+                            break;
+                        case "cross":
+                            customShape = symbol.type(d3.symbolCross);
+                            break;
+                        case "diamond":
+                            customShape = symbol.type(d3.symbolDiamond);
+                            break;
+                        case "square":
+                            customShape = symbol.type(d3.symbolSquare);
+                            break;
+                        case "star":
+                            customShape = symbol.type(d3.symbolStar);
+                            break;
+                        case "triangle":
+                            customShape = symbol.type(d3.symbolTriangle);
+                            break;
+                        case "wye":
+                            customShape = symbol.type(d3.symbolWye);
+                            break;
+                        default:
+                            customShape = ahexbin.hexagon(this.autoHexRadius);
+                            break;
+                    }
+                    var activeFontSize = this.opt.polystat.fontSize;
+                    if (this.opt.polystat.fontAutoScale) {
+                        var maxLabel = "";
+                        for (var i = 0; i < this.data.length; i++) {
+                            if (this.data[i].name.length > maxLabel.length) {
+                                maxLabel = this.data[i].name;
+                            }
+                        }
+                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 50);
+                        console.log("Estimated Font size: " + estimateFontSize);
+                        activeFontSize = estimateFontSize;
+                    }
                     svg.selectAll(".hexagon")
                         .data(ahexbin(this.calculatedPoints))
                         .enter().append("path")
                         .attr("class", "hexagon")
                         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-                        .attr("d", ahexbin.hexagon(this.autoHexRadius))
+                        .attr("d", customShape)
                         .attr("stroke", "black")
                         .attr("stroke-width", "2px")
                         .style("fill", function (_, i) {
