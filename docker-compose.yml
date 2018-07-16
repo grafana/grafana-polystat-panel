@@ -4,5 +4,6 @@ grafana:
     - "3000:3000"
   volumes:
     - ./dist:/var/lib/grafana/plugins/grafana-polystat-panel
+    - ./provisioning:/etc/grafana/provisioning
   environment:
     - TERM=linux
