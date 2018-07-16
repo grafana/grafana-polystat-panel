@@ -1,14 +1,14 @@
-System.register(["./external/d3-hexbin.js", "d3", "./utils"], function (exports_1, context_1) {
+System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var d3hexbin, d3, utils_1, D3Wrapper;
+    var d3, d3hexbin, utils_1, D3Wrapper;
     return {
         setters: [
-            function (d3hexbin_1) {
-                d3hexbin = d3hexbin_1;
-            },
             function (d3_1) {
                 d3 = d3_1;
+            },
+            function (d3hexbin_1) {
+                d3hexbin = d3hexbin_1;
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
