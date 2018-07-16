@@ -462,9 +462,9 @@ export class D3Wrapper {
       }
     }
     // allow templating
-    if (content.length > 0) {
-      content = thisRef.templateSrv.replaceWithText(content);
-    }
+    //if (content.length > 0) {
+    //  content = thisRef.templateSrv.replaceWithText(content);
+    //}
     return content;
   }
 
