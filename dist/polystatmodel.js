@@ -10,6 +10,8 @@ System.register([], function (exports_1, context_1) {
                     if (aSeries === null) {
                         return;
                     }
+                    this.animateMode = "all";
+                    this.displayMode = "all";
                     this.operatorName = operatorName;
                     this.name = aSeries.alias;
                     var operatorValue = this.getValueByOperator(operatorName, aSeries);

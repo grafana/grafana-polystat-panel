@@ -19,6 +19,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     d3Object: D3Wrapper;
     data: any;
     series: any[];
+    templateSrv: any;
     overridesCtrl: MetricOverridesManager;
     compositesManager: CompositesManager;
     tooltipContent: string[];
@@ -35,6 +36,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     addRangeMap(): void;
     link(scope: any, elem: any, attrs: any, ctrl: any): void;
     setValues(dataList: any): void;
+    filterByGlobalDisplayMode(data: any): any;
     onDataError(err: any): void;
     onDataReceived(dataList: any): void;
     seriesHandler(seriesData: any): any;

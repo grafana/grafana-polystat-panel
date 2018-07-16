@@ -1,8 +1,8 @@
 /////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
-
+import * as d3 from "./external/d3.min.js";
+//import d3 from "d3";
 import * as d3hexbin from "./external/d3-hexbin.js";
-import * as d3 from "d3";
 import { getTextSizeForWidth } from "./utils";
 
 export class D3Wrapper {
@@ -12,6 +12,7 @@ export class D3Wrapper {
   maxRowsUsed: number;
   opt: any;
   data: any;
+  templateSrv: any;
   calculatedPoints: any;
   hexRadius: number;
   autoHexRadius : number;
@@ -26,7 +27,8 @@ export class D3Wrapper {
     left : number,
   };
 
-  constructor(svgContainer: any, d3DivId, opt) {
+  constructor(templateSrv: any, svgContainer: any, d3DivId, opt) {
+    this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
     this.d3DivId = d3DivId;
     this.data = opt.data;
@@ -123,23 +125,6 @@ export class D3Wrapper {
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
-    let activeFontSize = this.opt.polystat.fontSize;
-    if (this.opt.polystat.fontAutoScale) {
-      // TODO:
-      // find the most text that will be displayed over all items
-      //let maxTextLength = 12;
-      // estimate how big of a font can be used
-      // if it is too small, hide everything
-      let estimateFontSize = getTextSizeForWidth(
-        "COMPOSITE 1",
-        "?px sans-serif",
-        this.autoHexRadius * 2,
-        10,
-        50);
-      console.log("Estimated Font size: " + estimateFontSize);
-      activeFontSize = estimateFontSize;
-    }
-
     var width = this.opt.width;
     var height = this.opt.height;
     //console.log("autorad:" + this.autoHexRadius);
@@ -216,12 +201,83 @@ export class D3Wrapper {
       .style("text-align", "right")
       .html("(" + numAlerts + "/" + numPoints + ")");
     */
+    let customShape = null;
+    // this is used to calculate the fontsize
+    let shapeWidth = diameterX;
+    // symbols use the area for their size
+    let innerArea = diameterX * diameterY;
+    // use the smaller of diameterX or Y
+    if (diameterX < diameterY) {
+      innerArea = diameterX * diameterX;
+    }
+    if (diameterY < diameterX) {
+      innerArea = diameterY * diameterY;
+    }
+    let symbol = d3.symbol().size(innerArea);
+    switch (this.opt.polystat.shape) {
+      case "hexagon_pointed_top":
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        shapeWidth = this.autoHexRadius * 2;
+        break;
+      case "hexagon_flat_top":
+        // TODO: use pointed for now
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        shapeWidth = this.autoHexRadius * 2;
+        break;
+      case "circle":
+        customShape = symbol.type(d3.symbolCircle);
+        break;
+      case "cross":
+        customShape = symbol.type(d3.symbolCross);
+        break;
+      case "diamond":
+        customShape = symbol.type(d3.symbolDiamond);
+        break;
+      case "square":
+        customShape = symbol.type(d3.symbolSquare);
+        break;
+      case "star":
+        customShape = symbol.type(d3.symbolStar);
+        break;
+      case "triangle":
+        customShape = symbol.type(d3.symbolTriangle);
+        break;
+      case "wye":
+        customShape = symbol.type(d3.symbolWye);
+        break;
+     default:
+        customShape = ahexbin.hexagon(this.autoHexRadius);
+        break;
+    }
+
+    // calculate the fontsize based on the shape and the text
+    let activeFontSize = this.opt.polystat.fontSize;
+    if (this.opt.polystat.fontAutoScale) {
+      // find the most text that will be displayed over all items
+      let maxLabel = "";
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i].name.length > maxLabel.length) {
+          maxLabel = this.data[i].name;
+        }
+      }
+      // estimate how big of a font can be used
+      // if it is too small, hide everything
+      let estimateFontSize = getTextSizeForWidth(
+        maxLabel,
+        "?px sans-serif",
+        shapeWidth,
+        10,
+        50);
+      console.log("Estimated Font size: " + estimateFontSize);
+      activeFontSize = estimateFontSize;
+    }
+
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
         .attr("class", "hexagon")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("d", ahexbin.hexagon(this.autoHexRadius))
+        .attr("d", customShape)
         .attr("stroke", "black")
         .attr("stroke-width", "2px")
         .style("fill", function(_, i) {
@@ -309,13 +365,37 @@ export class D3Wrapper {
       .attr("font-size", activeFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
-        return thisRef.formatValueContent(i, frames, thisRef);
+        // animation/displaymode can modify what is being displayed
+        let content = null;
+        let counter = 0;
+        let dataLen = thisRef.data.length;
+        // search for a value but not more than number of data items
+        while ((content === null) && (counter < dataLen)) {
+          content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+          counter++;
+        }
+        if (content === null) {
+          content = "N/A";
+        }
+        return content;
       });
 
 
     d3.interval(function () {
         textRef.text(function (_, i) {
-          return thisRef.formatValueContent(i, frames, thisRef);
+          // animation/displaymode can modify what is being displayed
+          let content = null;
+          let counter = 0;
+          let dataLen = thisRef.data.length * 2;
+          // search for a value cycling through twice to allow rollover
+          while ((content === null) && (counter < dataLen)) {
+            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+            counter++;
+          }
+          if (content === null) {
+            content = "N/A";
+          }
+          return content;
         });
         frames++;
     }, this.opt.animationSpeed);
@@ -337,6 +417,16 @@ export class D3Wrapper {
       // no data, return nothing
       return "";
     }
+    //debugger;
+    switch (data.animateMode) {
+      case "all":
+        break;
+      case "triggered":
+        // return nothing if mode is triggered and the state is 0
+        if (data.thresholdLevel < 1) {
+          return "";
+        }
+    }
     let content = data.valueFormatted;
     if ((data.prefix) && (data.prefix.length > 0)) {
       content = data.prefix + " " + content;
@@ -346,14 +436,27 @@ export class D3Wrapper {
     }
     let len = data.members.length;
     if (len > 0) {
-      content = data.members[frames % len].valueFormatted;
-      if ((data.members[frames % len].prefix) && (data.members[frames % len].prefix.length > 0)) {
-        content = data.members[frames % len].prefix + " " + content;
+      let aMember = data.members[frames % len];
+      // use the animate mode from the parent (for composites)
+      switch (data.animateMode) {
+        case "all":
+          break;
+        case "triggered":
+          // return nothing if mode is triggered and the state is 0
+          if (aMember.thresholdLevel < 1) {
+            return null;
+          }
       }
-      if ((data.members[frames % len].suffix) && (data.members[frames % len].suffix.length > 0)) {
-        content = content + " " + data.members[frames % len].suffix;
+      content = aMember.valueFormatted;
+      if ((aMember.prefix) && (aMember.prefix.length > 0)) {
+        content = aMember.prefix + " " + content;
+      }
+      if ((aMember.suffix) && (aMember.suffix.length > 0)) {
+        content = content + " " + aMember.suffix;
       }
     }
+    // allow templating
+    content = this.templateSrv.replaceWithText(content);
     return content;
   }
 
@@ -418,4 +521,5 @@ export class D3Wrapper {
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
+
 }

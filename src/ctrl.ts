@@ -15,9 +15,23 @@ import { Tooltip } from "./tooltip";
 
 const panelDefaults = {
   animationModes: [
-    "Show All",
-    "Show All Triggered",
-    "Show Primary Triggered"
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Triggered" },
+  ],
+  displayModes: [
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Triggered" },
+  ],
+  shapes: [
+    { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
+    { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
+    { value: "circle", text: "Circle" },
+    { value: "cross", text: "Cross" },
+    { value: "diamond", text: "Diamond" },
+    { value: "square", text: "Square" },
+    { value: "star", text: "Star" },
+    { value: "triangle", text: "Triangle" },
+    { value: "wye", text: "Wye" },
   ],
   savedComposites : [],
   savedOverrides : [],
@@ -64,6 +78,8 @@ const panelDefaults = {
     "Value",
   ],
   polystat: {
+    shape: "hexagon_pointed_top",
+    globalDisplayMode: "All",
     globalOperatorName: "avg",
     rows: "auto",
     rowAutoSize: true,
@@ -104,6 +120,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   d3Object: D3Wrapper;
   data: any;
   series: any[];
+  templateSrv: any;
   overridesCtrl: MetricOverridesManager;
   compositesManager : CompositesManager;
   tooltipContent: string[];
@@ -117,6 +134,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.alertSrvRef = alertSrv;
     this.initialized = false;
     this.panelContainer = null;
+    this.templateSrv = templateSrv;
     this.panel.svgContainer = null;
     this.panelWidth = null;
     this.panelHeight = null;
@@ -256,6 +274,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipFontType: this.panel.polystat.tooltipFontType,
       data: this.polystatData,
       displayLimit: this.panel.polystat.displayLimit,
+      globalDisplayMode: this.panel.polystat.globalDisplayMode,
       columns: this.panel.polystat.columns,
       columnAutoSize: this.panel.polystat.columnAutoSize,
       rows: this.panel.polystat.rows,
@@ -265,7 +284,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: this.getDefaultClickThrough(),
       polystat: this.panel.polystat,
     };
-    this.d3Object = new D3Wrapper(this.panel.svgContainer, this.panel.d3DivId, opt);
+    this.d3Object = new D3Wrapper(this.templateSrv, this.panel.svgContainer, this.panel.d3DivId, opt);
     this.d3Object.draw();
   }
 
@@ -369,8 +388,26 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         break;
     }
     this.polystatData = _.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
+    // filter out by globalDisplayMode
+    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
+  }
+
+  filterByGlobalDisplayMode(data: any) {
+    let filteredMetrics = [];
+    if (this.panel.polystat.globalDisplayMode !== "all") {
+      for (let i = 0; i < data.length; i++) {
+        let item = data[i];
+        if (item.thresholdLevel < 1) {
+          filteredMetrics.push(item);
+        }
+      }
+      for (let i = 0; i < filteredMetrics.length; i++) {
+        data.splice(filteredMetrics[i], 1);
+      }
+    }
+    return data;
   }
 
   onDataError(err) {
