@@ -41,8 +41,6 @@ export class D3Wrapper {
       bottom: 20,
       left: 50
     };
-    //console.log("height from opt: " + opt.height);
-    //console.log("width from opt: " + opt.width);
     // take 10 off the height
     this.opt.height -= 10;
     this.opt.width -= 20;
