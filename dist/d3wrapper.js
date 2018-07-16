@@ -341,9 +341,6 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                             content = content + " " + aMember.suffix;
                         }
                     }
-                    if (content.length > 0) {
-                        content = thisRef.templateSrv.replaceWithText(content);
-                    }
                     return content;
                 };
                 D3Wrapper.prototype.getAutoHexRadius = function () {
