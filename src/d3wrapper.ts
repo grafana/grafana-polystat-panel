@@ -125,27 +125,6 @@ export class D3Wrapper {
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
-    let activeFontSize = this.opt.polystat.fontSize;
-    if (this.opt.polystat.fontAutoScale) {
-      // find the most text that will be displayed over all items
-      let maxLabel = "";
-      for (let i = 0; i < this.data.length; i++) {
-        if (this.data[i].name.length > maxLabel.length) {
-          maxLabel = this.data[i].name;
-        }
-      }
-      // estimate how big of a font can be used
-      // if it is too small, hide everything
-      let estimateFontSize = getTextSizeForWidth(
-        maxLabel,
-        "?px sans-serif",
-        this.autoHexRadius * 2,
-        10,
-        50);
-      console.log("Estimated Font size: " + estimateFontSize);
-      activeFontSize = estimateFontSize;
-    }
-
     var width = this.opt.width;
     var height = this.opt.height;
     //console.log("autorad:" + this.autoHexRadius);
@@ -223,14 +202,27 @@ export class D3Wrapper {
       .html("(" + numAlerts + "/" + numPoints + ")");
     */
     let customShape = null;
-    let symbol = d3.symbol().size(this.autoHexRadius * 2 * 100);
+    // this is used to calculate the fontsize
+    let shapeWidth = diameterX;
+    // symbols use the area for their size
+    let innerArea = diameterX * diameterY;
+    // use the smaller of diameterX or Y
+    if (diameterX < diameterY) {
+      innerArea = diameterX * diameterX;
+    }
+    if (diameterY < diameterX) {
+      innerArea = diameterY * diameterY;
+    }
+    let symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
       case "hexagon_pointed_top":
         customShape = ahexbin.hexagon(this.autoHexRadius);
+        shapeWidth = this.autoHexRadius * 2;
         break;
       case "hexagon_flat_top":
         // TODO: use pointed for now
         customShape = ahexbin.hexagon(this.autoHexRadius);
+        shapeWidth = this.autoHexRadius * 2;
         break;
       case "circle":
         customShape = symbol.type(d3.symbolCircle);
@@ -257,6 +249,29 @@ export class D3Wrapper {
         customShape = ahexbin.hexagon(this.autoHexRadius);
         break;
     }
+
+    // calculate the fontsize based on the shape and the text
+    let activeFontSize = this.opt.polystat.fontSize;
+    if (this.opt.polystat.fontAutoScale) {
+      // find the most text that will be displayed over all items
+      let maxLabel = "";
+      for (let i = 0; i < this.data.length; i++) {
+        if (this.data[i].name.length > maxLabel.length) {
+          maxLabel = this.data[i].name;
+        }
+      }
+      // estimate how big of a font can be used
+      // if it is too small, hide everything
+      let estimateFontSize = getTextSizeForWidth(
+        maxLabel,
+        "?px sans-serif",
+        shapeWidth,
+        10,
+        50);
+      console.log("Estimated Font size: " + estimateFontSize);
+      activeFontSize = estimateFontSize;
+    }
+
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
