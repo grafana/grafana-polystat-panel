@@ -1,7 +1,6 @@
 /////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
 import * as d3 from "./external/d3.min.js";
-//import d3 from "d3";
 import * as d3hexbin from "./external/d3-hexbin.js";
 import { getTextSizeForWidth } from "./utils";
 
@@ -137,22 +136,17 @@ export class D3Wrapper {
     let diameterY = this.autoHexRadius * 1.5;
     let radiusX = diameterX / 2;
     let renderWidth = this.maxColumnsUsed * diameterX;
-    //console.log("renderwidth: " + renderWidth);
-    //console.log("numRows = " + this.numRows);
-    // TODO: renderHeight needs to be calculated based on the #rows used, and
+    // renderHeight is calculated based on the #rows used, and
     // the "space" taken by the hexagons interleaved
     // space taken is 2/3 of diameterY * # rows
     let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
     //renderHeight = (this.maxRowsUsed * this.autoHexRadius * .66);
-    //console.log("renderHeight: " + renderHeight);
     // difference of width and renderwidth is our play room, split that in half
     // offset is from center of hexagon, not from the edge
     // also, if there is just one column and one row, center it
     let xoffset = (width - renderWidth + radiusX) / 2;
-    //console.log("xoffset = " + xoffset);
     // y diameter of hexagon is larger than x diameter
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
-    //console.log("yoffset = " + yoffset);
 
     // Define the div for the tooltip
     var tooltip = d3.select(this.svgContainer)
@@ -263,10 +257,10 @@ export class D3Wrapper {
       let estimateFontSize = getTextSizeForWidth(
         maxLabel,
         "?px sans-serif",
-        shapeWidth,
+        shapeWidth - 10, // pad
         10,
         50);
-      console.log("Estimated Font size: " + estimateFontSize);
+      //console.log("Estimated Font size: " + estimateFontSize);
       activeFontSize = estimateFontSize;
     }
 
@@ -346,12 +340,6 @@ export class D3Wrapper {
         } else {
           return "";
         }
-        //if (data[i].hasOwnProperty("showName")) {
-        //  if (!data[i].showName) {
-        //    return "";
-        //  }
-        //}
-        //return data[i].name;
       });
 
     var frames = 0;
@@ -362,7 +350,7 @@ export class D3Wrapper {
         return d.x;
       })
       .attr("y", function (d) {
-        return d.y + 25;
+        return d.y + activeFontSize + 10; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
@@ -421,7 +409,6 @@ export class D3Wrapper {
       // no data, return nothing
       return "";
     }
-    //debugger;
     switch (data.animateMode) {
       case "all":
         break;
@@ -460,9 +447,15 @@ export class D3Wrapper {
       }
     }
     // allow templating
-    //if (content.length > 0) {
-    //  content = thisRef.templateSrv.replaceWithText(content);
-    //}
+    //
+    if (content.length > 0) {
+      try {
+        let replacedContent = thisRef.templateSrv.replaceWithText(content);
+        content = replacedContent;
+      } catch (err) {
+        console.log("ERROR: template server threw error: " + err);
+      }
+    }
     return content;
   }
 
@@ -474,10 +467,6 @@ export class D3Wrapper {
         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
       ]
     );
-    //console.log("autohexradius:" + hexRadius);
-    //if (hexRadius > 5) {
-    //  hexRadius -= 4;
-    //}
     return hexRadius;
   }
 
@@ -490,7 +479,7 @@ export class D3Wrapper {
     //console.log("autoheight = " + this.autoHeight);
     //The width of the total display will be
     //this.autoWidth = this.numColumns * Math.sqrt(3) * this.hexRadius + Math.sqrt(3) / 2 * this.hexRadius;
-      //which is the same as
+    //which is the same as
     this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
     this.autoWidth -= this.margin.left - this.margin.right;
     //console.log("autowidth = " + this.autoWidth);

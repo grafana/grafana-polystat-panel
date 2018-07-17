@@ -113,8 +113,6 @@ export class CompositesManager {
                             seriesItem.clickThrough = aComposite.clickThrough;
                             seriesItem.sanitizedURL = this.$sanitize(aComposite.clickThrough);
                         }
-                        //seriesItem.showValue = aComposite.showValue;
-                        //seriesItem.showName = aComposite.showName;
                     }
                 }
             }
@@ -148,6 +146,8 @@ export class CompositesManager {
                 clone.showName = aComposite.showName;
                 clone.showValue = aComposite.showValue;
                 clone.animateMode = aComposite.animateMode;
+                // mark this series as a compsite
+                clone.isComposite = true;
                 clonedComposites.push(clone);
             }
         }
@@ -156,8 +156,11 @@ export class CompositesManager {
         // sort by value descending
         filteredMetrics.sort(function (a, b) { return b - a; });
         // now remove the filtered metrics from final list
-        for (let i = 0; i < filteredMetrics.length; i++) {
-            data.splice(filteredMetrics[i], 1);
+        // remove filtered metrics, use splice in reverse order
+        for (let i = data.length; i >= 0; i--) {
+          if (_.includes(filteredMetrics, i)) {
+            data.splice(i, 1);
+          }
         }
         return data;
     }
@@ -166,8 +169,8 @@ export class CompositesManager {
         var worstSeries = series1;
         var series1thresholdLevel = this.getThresholdLevel(series1);
         var series2thresholdLevel = this.getThresholdLevel(series2);
-        console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
-        console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
+        //console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
+        //console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
         if (series2thresholdLevel > series1thresholdLevel) {
             // series2 has higher threshold violation
             worstSeries = series2;
@@ -204,7 +207,7 @@ export class CompositesManager {
     }
 
     metricNameChanged(item) {
-        // validate item is a valid regex
+        // TODO: validate item is a valid regex
         console.log(item);
         this.$scope.ctrl.refresh();
     }

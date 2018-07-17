@@ -126,13 +126,16 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             clone.showName = aComposite.showName;
                             clone.showValue = aComposite.showValue;
                             clone.animateMode = aComposite.animateMode;
+                            clone.isComposite = true;
                             clonedComposites.push(clone);
                         }
                     }
                     Array.prototype.push.apply(data, clonedComposites);
                     filteredMetrics.sort(function (a, b) { return b - a; });
-                    for (var i = 0; i < filteredMetrics.length; i++) {
-                        data.splice(filteredMetrics[i], 1);
+                    for (var i = data.length; i >= 0; i--) {
+                        if (lodash_1.default.includes(filteredMetrics, i)) {
+                            data.splice(i, 1);
+                        }
                     }
                     return data;
                 };
@@ -140,8 +143,6 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     var worstSeries = series1;
                     var series1thresholdLevel = this.getThresholdLevel(series1);
                     var series2thresholdLevel = this.getThresholdLevel(series2);
-                    console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
-                    console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
                     if (series2thresholdLevel > series1thresholdLevel) {
                         worstSeries = series2;
                     }

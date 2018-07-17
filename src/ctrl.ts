@@ -41,9 +41,9 @@ const panelDefaults = {
     34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
     56, 58, 60, 62, 64, 66, 68, 70],
   fontTypes: [
-    "normal", "Arial", "Avant Garde", "Bookman",
+    "Open Sans", "Arial", "Avant Garde", "Bookman",
     "Consolas", "Courier", "Courier New", "Futura",
-    "Garamond", "Helvetica", "Open Sans",
+    "Garamond", "Helvetica",
     "Palatino", "Times", "Times New Roman",
     "Verdana"
   ],
@@ -69,40 +69,40 @@ const panelDefaults = {
   decimals: 2, // decimal precision
   format: "none", // unit format
   sortDirections: [
-    "Ascending",
-    "Descending",
+    { value: "asc", text: "Ascending" },
+    { value: "desc", text: "Descending" },
   ],
   sortFields: [
-    "Name",
-    "Threshold Level",
-    "Value",
+    { value: "name", text: "Name" },
+    { value: "thresholdLevel", text: "Threshold Level" },
+    { value: "value", text: "Value" },
   ],
   polystat: {
     shape: "hexagon_pointed_top",
-    globalDisplayMode: "All",
+    globalDisplayMode: "all",
     globalOperatorName: "avg",
-    rows: "auto",
+    rows: "",
     rowAutoSize: true,
-    columns: "auto",
+    columns: "",
     columnAutoSize: true,
     displayLimit: 100,
     maxMetrics: 0,
-    radius: "auto",
+    radius: "",
     radiusAutoSize: true,
     tooltipFontSize: 12,
-    tooltipFontType: "normal",
+    tooltipFontType: "Open Sans",
     animationSpeed: 2500,
     defaultClickThrough: "",
     defaultClickThroughSanitize: true,
-    hexagonSortByDirection: "Ascending",
-    hexagonSortByField: "Name",
-    tooltipPrimarySortDirection: "Ascending",
-    tooltipPrimarySortField: "Name",
-    tooltipSecondarySortDirection: "Descending",
-    tooltipSecondarySortField: "Value",
+    hexagonSortByDirection: "asc",
+    hexagonSortByField: "name",
+    tooltipPrimarySortDirection: "desc",
+    tooltipPrimarySortField: "thresholdLevel",
+    tooltipSecondarySortDirection: "desc",
+    tooltipSecondarySortField: "value",
     tooltipTimestampEnabled: true,
     fontSize: 12,
-    fontAutoScale: false,
+    fontAutoScale: true,
   },
 };
 
@@ -344,7 +344,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
-    //debugger;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {
@@ -365,29 +364,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
     }
     // now sort
-    //this.polystatData = _.orderBy(this.polystatData, ["name"], ["desc"]);
-    let hexagonSortDirection = "asc";
-    switch (this.panel.polystat.hexagonSortByDirection) {
-      case "Ascending":
-        hexagonSortDirection = "asc";
-        break;
-      case "Descending":
-        hexagonSortDirection = "desc";
-        break;
-    }
-    let hexagonSortField = "name";
-    switch (this.panel.polystat.hexagonSortByField) {
-      case "Name":
-        hexagonSortField = "name";
-        break;
-      case "Threshold Level":
-        hexagonSortField = "thresholdLevel";
-        break;
-      case "Value":
-        hexagonSortField = "value";
-        break;
-    }
-    this.polystatData = _.orderBy(this.polystatData, [hexagonSortField], [hexagonSortDirection]);
+    this.polystatData = _.orderBy(
+      this.polystatData,
+      [this.panel.polystat.hexagonSortByField],
+      [this.panel.polystat.hexagonSortByDirection]);
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
@@ -395,16 +375,32 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   filterByGlobalDisplayMode(data: any) {
-    let filteredMetrics = [];
+    let filteredMetrics = new Array<number>();
+    let compositeMetrics = new Array<PolystatModel>();
     if (this.panel.polystat.globalDisplayMode !== "all") {
-      for (let i = 0; i < data.length; i++) {
+      let dataLen = data.length;
+      for (let i = 0; i < dataLen; i++) {
         let item = data[i];
+        // keep if composite
+        if (item.isComposite) {
+          compositeMetrics.push(item);
+        }
         if (item.thresholdLevel < 1) {
-          filteredMetrics.push(item);
+          // push the index number
+          filteredMetrics.push(i);
         }
       }
-      for (let i = 0; i < filteredMetrics.length; i++) {
-        data.splice(filteredMetrics[i], 1);
+      // remove filtered metrics, use splice in reverse order
+      for (let i = data.length; i >= 0; i--) {
+        if (_.includes(filteredMetrics, i)) {
+          data.splice(i, 1);
+        }
+      }
+      if (data.length === 0) {
+        if (compositeMetrics.length > 0) {
+          // set data to be all of the composites
+          data = compositeMetrics;
+        }
       }
     }
     return data;

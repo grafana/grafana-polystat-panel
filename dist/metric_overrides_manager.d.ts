@@ -26,7 +26,7 @@ export declare class MetricOverridesManager {
     applyOverrides(data: any): void;
     getValueByStatName(settings: any, data: any): any;
     getColorForValue(index: any, value: any): string;
-    getThresholdLevelForValue(index: any, value: any): number;
+    getThresholdLevelForValue(index: any, value: number): number;
     invertColorOrder(override: any): void;
     setUnitFormat(override: any, subItem: any): void;
     moveMetricOverrideUp(override: any): void;

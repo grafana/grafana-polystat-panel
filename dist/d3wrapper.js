@@ -176,8 +176,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                                 maxLabel = this.data[i].name;
                             }
                         }
-                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 50);
-                        console.log("Estimated Font size: " + estimateFontSize);
+                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - 10, 10, 50);
                         activeFontSize = estimateFontSize;
                     }
                     svg.selectAll(".hexagon")
@@ -256,7 +255,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         return d.x;
                     })
                         .attr("y", function (d) {
-                        return d.y + 25;
+                        return d.y + activeFontSize + 10;
                     })
                         .attr("text-anchor", "middle")
                         .attr("font-family", "sans-serif")
@@ -339,6 +338,15 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         }
                         if ((aMember.suffix) && (aMember.suffix.length > 0)) {
                             content = content + " " + aMember.suffix;
+                        }
+                    }
+                    if (content.length > 0) {
+                        try {
+                            var replacedContent = thisRef.templateSrv.replaceWithText(content);
+                            content = replacedContent;
+                        }
+                        catch (err) {
+                            console.log("ERROR: template server threw error: " + err);
                         }
                     }
                     return content;
