@@ -23,6 +23,7 @@ export class PolystatModel {
   sanitizeURLEnabled: boolean;
   showName: boolean;
   showValue: boolean;
+  isComposite: boolean;
   members: Array<PolystatModel>;
 
   constructor(operatorName: string, aSeries: any) {
@@ -45,6 +46,7 @@ export class PolystatModel {
     this.clickThrough = "";
     this.sanitizedURL = "";
     this.sanitizeURLEnabled = true;
+    this.isComposite = false;
     this.members = [];
     this.thresholdLevel = 0;
     this.showName = true;
@@ -118,6 +120,7 @@ export class PolystatModel {
     clone.clickThrough = this.clickThrough;
     clone.sanitizedURL = this.sanitizedURL;
     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
+    clone.isComposite = this.isComposite;
     clone.members = []; // this.members;
     return clone;
   }

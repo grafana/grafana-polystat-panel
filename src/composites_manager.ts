@@ -146,6 +146,8 @@ export class CompositesManager {
                 clone.showName = aComposite.showName;
                 clone.showValue = aComposite.showValue;
                 clone.animateMode = aComposite.animateMode;
+                // mark this series as a compsite
+                clone.isComposite = true;
                 clonedComposites.push(clone);
             }
         }

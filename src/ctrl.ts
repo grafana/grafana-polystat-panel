@@ -376,10 +376,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   filterByGlobalDisplayMode(data: any) {
     let filteredMetrics = new Array<number>();
+    let compositeMetrics = new Array<PolystatModel>();
     if (this.panel.polystat.globalDisplayMode !== "all") {
       let dataLen = data.length;
       for (let i = 0; i < dataLen; i++) {
         let item = data[i];
+        // keep if composite
+        if (item.isComposite) {
+          compositeMetrics.push(item);
+        }
         if (item.thresholdLevel < 1) {
           // push the index number
           filteredMetrics.push(i);
@@ -389,6 +394,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       for (let i = data.length; i >= 0; i--) {
         if (_.includes(filteredMetrics, i)) {
           data.splice(i, 1);
+        }
+      }
+      if (data.length === 0) {
+        if (compositeMetrics.length > 0) {
+          // set data to be all of the composites
+          data = compositeMetrics;
         }
       }
     }
