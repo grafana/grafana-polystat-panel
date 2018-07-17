@@ -96,8 +96,8 @@ const panelDefaults = {
     defaultClickThroughSanitize: true,
     hexagonSortByDirection: "asc",
     hexagonSortByField: "name",
-    tooltipPrimarySortDirection: "asc",
-    tooltipPrimarySortField: "name",
+    tooltipPrimarySortDirection: "desc",
+    tooltipPrimarySortField: "thresholdLevel",
     tooltipSecondarySortDirection: "desc",
     tooltipSecondarySortField: "value",
     tooltipTimestampEnabled: true,
@@ -375,16 +375,21 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   filterByGlobalDisplayMode(data: any) {
-    let filteredMetrics = [];
+    let filteredMetrics = new Array<number>();
     if (this.panel.polystat.globalDisplayMode !== "all") {
-      for (let i = 0; i < data.length; i++) {
+      let dataLen = data.length;
+      for (let i = 0; i < dataLen; i++) {
         let item = data[i];
         if (item.thresholdLevel < 1) {
-          filteredMetrics.push(item);
+          // push the index number
+          filteredMetrics.push(i);
         }
       }
-      for (let i = 0; i < filteredMetrics.length; i++) {
-        data.splice(filteredMetrics[i], 1);
+      // remove filtered metrics, use splice in reverse order
+      for (let i = data.length; i >= 0; i--) {
+        if (_.includes(filteredMetrics, i)) {
+          data.splice(i, 1);
+        }
       }
     }
     return data;
