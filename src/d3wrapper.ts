@@ -257,7 +257,7 @@ export class D3Wrapper {
       let estimateFontSize = getTextSizeForWidth(
         maxLabel,
         "?px sans-serif",
-        shapeWidth,
+        shapeWidth - 10, // pad
         10,
         50);
       //console.log("Estimated Font size: " + estimateFontSize);
@@ -350,7 +350,7 @@ export class D3Wrapper {
         return d.x;
       })
       .attr("y", function (d) {
-        return d.y + 25;
+        return d.y + activeFontSize + 10; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
