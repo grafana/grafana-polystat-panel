@@ -162,7 +162,7 @@ export class MetricOverridesManager {
         return _.first(anOverride.colors);
     }
 
-    getThresholdLevelForValue(index, value): number {
+    getThresholdLevelForValue(index, value: number): number {
         let anOverride = this.metricOverrides[index];
         for (let i = anOverride.thresholds.length; i > 0; i--) {
             if (value >= anOverride.thresholds[i - 1]) {
