@@ -154,8 +154,11 @@ export class CompositesManager {
         // sort by value descending
         filteredMetrics.sort(function (a, b) { return b - a; });
         // now remove the filtered metrics from final list
-        for (let i = 0; i < filteredMetrics.length; i++) {
-            data.splice(filteredMetrics[i], 1);
+        // remove filtered metrics, use splice in reverse order
+        for (let i = data.length; i >= 0; i--) {
+          if (_.includes(filteredMetrics, i)) {
+            data.splice(i, 1);
+          }
         }
         return data;
     }
