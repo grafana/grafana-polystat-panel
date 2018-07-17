@@ -17,6 +17,7 @@ export declare class PolystatModel {
     sanitizeURLEnabled: boolean;
     showName: boolean;
     showValue: boolean;
+    isComposite: boolean;
     members: Array<PolystatModel>;
     constructor(operatorName: string, aSeries: any);
     getValueByOperator(operatorName: any, data: any): any;

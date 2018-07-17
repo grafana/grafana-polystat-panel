@@ -26,6 +26,7 @@ System.register([], function (exports_1, context_1) {
                     this.clickThrough = "";
                     this.sanitizedURL = "";
                     this.sanitizeURLEnabled = true;
+                    this.isComposite = false;
                     this.members = [];
                     this.thresholdLevel = 0;
                     this.showName = true;
@@ -94,6 +95,7 @@ System.register([], function (exports_1, context_1) {
                     clone.clickThrough = this.clickThrough;
                     clone.sanitizedURL = this.sanitizedURL;
                     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
+                    clone.isComposite = this.isComposite;
                     clone.members = [];
                     return clone;
                 };

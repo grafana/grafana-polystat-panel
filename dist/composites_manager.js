@@ -126,6 +126,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             clone.showName = aComposite.showName;
                             clone.showValue = aComposite.showValue;
                             clone.animateMode = aComposite.animateMode;
+                            clone.isComposite = true;
                             clonedComposites.push(clone);
                         }
                     }

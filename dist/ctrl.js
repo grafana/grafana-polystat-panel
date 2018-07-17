@@ -349,10 +349,14 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                 };
                 D3PolystatPanelCtrl.prototype.filterByGlobalDisplayMode = function (data) {
                     var filteredMetrics = new Array();
+                    var compositeMetrics = new Array();
                     if (this.panel.polystat.globalDisplayMode !== "all") {
                         var dataLen = data.length;
                         for (var i = 0; i < dataLen; i++) {
                             var item = data[i];
+                            if (item.isComposite) {
+                                compositeMetrics.push(item);
+                            }
                             if (item.thresholdLevel < 1) {
                                 filteredMetrics.push(i);
                             }
@@ -360,6 +364,11 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                         for (var i = data.length; i >= 0; i--) {
                             if (lodash_1.default.includes(filteredMetrics, i)) {
                                 data.splice(i, 1);
+                            }
+                        }
+                        if (data.length === 0) {
+                            if (compositeMetrics.length > 0) {
+                                data = compositeMetrics;
                             }
                         }
                     }
