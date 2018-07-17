@@ -113,8 +113,6 @@ export class CompositesManager {
                             seriesItem.clickThrough = aComposite.clickThrough;
                             seriesItem.sanitizedURL = this.$sanitize(aComposite.clickThrough);
                         }
-                        //seriesItem.showValue = aComposite.showValue;
-                        //seriesItem.showName = aComposite.showName;
                     }
                 }
             }
@@ -166,8 +164,8 @@ export class CompositesManager {
         var worstSeries = series1;
         var series1thresholdLevel = this.getThresholdLevel(series1);
         var series2thresholdLevel = this.getThresholdLevel(series2);
-        console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
-        console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
+        //console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
+        //console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
         if (series2thresholdLevel > series1thresholdLevel) {
             // series2 has higher threshold violation
             worstSeries = series2;
@@ -204,7 +202,7 @@ export class CompositesManager {
     }
 
     metricNameChanged(item) {
-        // validate item is a valid regex
+        // TODO: validate item is a valid regex
         console.log(item);
         this.$scope.ctrl.refresh();
     }
