@@ -140,8 +140,6 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     var worstSeries = series1;
                     var series1thresholdLevel = this.getThresholdLevel(series1);
                     var series2thresholdLevel = this.getThresholdLevel(series2);
-                    console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
-                    console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
                     if (series2thresholdLevel > series1thresholdLevel) {
                         worstSeries = series2;
                     }

@@ -177,7 +177,6 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                             }
                         }
                         var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 50);
-                        console.log("Estimated Font size: " + estimateFontSize);
                         activeFontSize = estimateFontSize;
                     }
                     svg.selectAll(".hexagon")
@@ -339,6 +338,15 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         }
                         if ((aMember.suffix) && (aMember.suffix.length > 0)) {
                             content = content + " " + aMember.suffix;
+                        }
+                    }
+                    if (content.length > 0) {
+                        try {
+                            var replacedContent = thisRef.templateSrv.replaceWithText(content);
+                            content = replacedContent;
+                        }
+                        catch (err) {
+                            console.log("ERROR: template server threw error: " + err);
                         }
                     }
                     return content;
