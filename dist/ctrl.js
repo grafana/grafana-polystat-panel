@@ -132,8 +132,8 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     defaultClickThroughSanitize: true,
                     hexagonSortByDirection: "asc",
                     hexagonSortByField: "name",
-                    tooltipPrimarySortDirection: "asc",
-                    tooltipPrimarySortField: "name",
+                    tooltipPrimarySortDirection: "desc",
+                    tooltipPrimarySortField: "thresholdLevel",
                     tooltipSecondarySortDirection: "desc",
                     tooltipSecondarySortField: "value",
                     tooltipTimestampEnabled: true,
@@ -348,16 +348,19 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
                 };
                 D3PolystatPanelCtrl.prototype.filterByGlobalDisplayMode = function (data) {
-                    var filteredMetrics = [];
+                    var filteredMetrics = new Array();
                     if (this.panel.polystat.globalDisplayMode !== "all") {
-                        for (var i = 0; i < data.length; i++) {
+                        var dataLen = data.length;
+                        for (var i = 0; i < dataLen; i++) {
                             var item = data[i];
                             if (item.thresholdLevel < 1) {
-                                filteredMetrics.push(item);
+                                filteredMetrics.push(i);
                             }
                         }
-                        for (var i = 0; i < filteredMetrics.length; i++) {
-                            data.splice(filteredMetrics[i], 1);
+                        for (var i = data.length; i >= 0; i--) {
+                            if (lodash_1.default.includes(filteredMetrics, i)) {
+                                data.splice(i, 1);
+                            }
                         }
                     }
                     return data;

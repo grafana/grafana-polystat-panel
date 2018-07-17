@@ -176,7 +176,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                                 maxLabel = this.data[i].name;
                             }
                         }
-                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 50);
+                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - 10, 10, 50);
                         activeFontSize = estimateFontSize;
                     }
                     svg.selectAll(".hexagon")
@@ -255,7 +255,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         return d.x;
                     })
                         .attr("y", function (d) {
-                        return d.y + 25;
+                        return d.y + activeFontSize + 10;
                     })
                         .attr("text-anchor", "middle")
                         .attr("font-family", "sans-serif")

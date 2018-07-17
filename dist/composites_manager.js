@@ -131,8 +131,10 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                     }
                     Array.prototype.push.apply(data, clonedComposites);
                     filteredMetrics.sort(function (a, b) { return b - a; });
-                    for (var i = 0; i < filteredMetrics.length; i++) {
-                        data.splice(filteredMetrics[i], 1);
+                    for (var i = data.length; i >= 0; i--) {
+                        if (lodash_1.default.includes(filteredMetrics, i)) {
+                            data.splice(i, 1);
+                        }
                     }
                     return data;
                 };
