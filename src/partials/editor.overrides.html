@@ -38,7 +38,7 @@
 				<label class="gf-form-label width-8">Thresholds
 					<tip>Comma separated values</tip>
 				</label>
-				<input type="text" class="gf-form-input" ng-model="override.thresholds" placeholder="50,80" ng-blur="ctrl.render()"
+				<input type="text" class="gf-form-input" ng-model="override.thresholds" placeholder="50,80" ng-blur="ctrl.refresh()"
   				array-join
 	  			ng-model-onblur>
 			</div>
@@ -46,13 +46,13 @@
 			<div class="gf-form">
 				<label class="gf-form-label width-5">Colors</label>
 					<span class="gf-form-label">
-						<spectrum-picker ng-model="override.colors[0]" ng-change="ctrl.render()"></spectrum-picker>
+						<spectrum-picker ng-model="override.colors[0]" ng-change="ctrl.refresh()"></spectrum-picker>
 					</span>
 					<span class="gf-form-label">
-						<spectrum-picker ng-model="override.colors[1]" ng-change="ctrl.render()"></spectrum-picker>
+						<spectrum-picker ng-model="override.colors[1]" ng-change="ctrl.refresh()"></spectrum-picker>
 					</span>
 					<span class="gf-form-label">
-						<spectrum-picker ng-model="override.colors[2]" ng-change="ctrl.render()"></spectrum-picker>
+						<spectrum-picker ng-model="override.colors[2]" ng-change="ctrl.refresh()"></spectrum-picker>
 					</span>
 			</div>
 
@@ -76,7 +76,7 @@
 			</div>
 			<div class="gf-form">
 				<label class="gf-form-label">Decimals</label>
-				<input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.render()"
+				<input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.refresh()"
 	  			ng-model-onblur>
 			</div>
 
@@ -93,7 +93,7 @@
 			<div class="gf-form">
 				<label class="gf-form-label width-4">Click</label>
 				<input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="override.clickThrough"
-  				ng-change="ctrl.render()" ng-model-onblur>
+  				ng-change="ctrl.refresh()" ng-model-onblur>
 			</div>
 			<div class="gf-form">
 				<editor-checkbox text="Sanitize" model="override.sanitizeURLEnabled"></editor-checkbox>
@@ -104,12 +104,12 @@
 			<div class="gf-form" style="margin-left: 101px;">
 				<label class="gf-form-label width-9">Prefix</label>
 				<input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.prefix"
-  				ng-change="ctrl.render()" ng-model-onblur>
+  				ng-change="ctrl.refresh()" ng-model-onblur>
 			</div>
 			<div class="gf-form">
 				<label class="gf-form-label width-4">Suffix</label>
 				<input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.suffix"
-  				ng-change="ctrl.render()" ng-model-onblur>
+  				ng-change="ctrl.refresh()" ng-model-onblur>
 			</div>
 			
 		</div>
