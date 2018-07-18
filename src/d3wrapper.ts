@@ -264,7 +264,7 @@ export class D3Wrapper {
       estimateFontSize = getTextSizeForWidth(
         maxLabel,
         "?px sans-serif",
-        shapeWidth - (estimateFontSize * 2), // pad
+        shapeWidth - (estimateFontSize * 1.2), // pad
         10,
         250);
       activeFontSize = estimateFontSize;
@@ -323,12 +323,13 @@ export class D3Wrapper {
                 .style("opacity", 0);
         });
     // now labels
-    var textspot = svg.selectAll("text")
+    var textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
 
     textspot
       .enter()
       .append("text")
+      .attr("class", "toplabel")
       .attr("x", function (d) { return d.x; })
       .attr("y", function (d) { return d.y; })
       .attr("text-anchor", "middle")
@@ -350,8 +351,13 @@ export class D3Wrapper {
 
     var frames = 0;
 
-    var textRef = textspot.enter()
+    let dynamicFontSize = activeFontSize;
+
+    textspot.enter()
       .append("text")
+      .attr("class", function(_, i) {
+        return "valueLabel" + i;
+      })
       .attr("x", function (d) {
         return d.x;
       })
@@ -360,9 +366,9 @@ export class D3Wrapper {
       })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
-      .attr("fill", "black");
-
-    textRef.text(function (_, i) {
+      .attr("fill", "black")
+      .attr("font-size", dynamicFontSize + "px")
+      .text(function (_, i) {
         // animation/displaymode can modify what is being displayed
         let content = null;
         let counter = 0;
@@ -375,56 +381,66 @@ export class D3Wrapper {
         if (content === null) {
           content = "N/A";
         }
-        let dynamicFontSize = getTextSizeForWidth(
+        dynamicFontSize = getTextSizeForWidth(
           content,
           "?px sans-serif",
           shapeWidth,
-          10,
+          6,
           250);
         dynamicFontSize = getTextSizeForWidth(
           content,
           "?px sans-serif",
-          shapeWidth - (dynamicFontSize * 2), // pad
-          10,
+          shapeWidth - (dynamicFontSize * 1.2), // pad
+          6,
           250);
-        textRef.attr("font-size", dynamicFontSize + "px");
+        //console.log("metric dynamicFontSize: " + dynamicFontSize);
+        var valueTextLocation = svg.select("text.valueLabel" + i);
+        //console.log(meh);
+        valueTextLocation.attr("font-size", dynamicFontSize + "px");
 
+        d3.interval(function () {
+          var valueTextLocation = svg.select("text.valueLabel" + i);
+          var compositeIndex = i;
+          valueTextLocation.text(function () {
+            // animation/displaymode can modify what is being displayed
+            let content = null;
+            let counter = 0;
+            let dataLen = thisRef.data.length * 2;
+            // search for a value cycling through twice to allow rollover
+            while ((content === null) && (counter < dataLen)) {
+              content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+              counter++;
+            }
+            if (content === null) {
+              content = "N/A";
+            }
+            if (content === "") {
+              content = "OK";
+              // use fonts size of top label
+              dynamicFontSize = activeFontSize;
+            } else {
+              dynamicFontSize = getTextSizeForWidth(
+                content,
+                "?px sans-serif",
+                shapeWidth,
+                6,
+                250);
+              dynamicFontSize = getTextSizeForWidth(
+                content,
+                "?px sans-serif",
+                shapeWidth - (dynamicFontSize * 1.1), // pad with space before/after of one char
+                6,
+                250);
+              //console.log("metric dynamicFontSize: " + dynamicFontSize);
+              //console.log("content would be " + content);
+            }
+            valueTextLocation.attr("font-size", dynamicFontSize + "px");
+            return content;
+          });
+          frames++;
+        }, thisRef.opt.animationSpeed);
         return content;
       });
-
-
-    d3.interval(function () {
-        textRef.text(function (_, i) {
-          // animation/displaymode can modify what is being displayed
-          let content = null;
-          let counter = 0;
-          let dataLen = thisRef.data.length * 2;
-          // search for a value cycling through twice to allow rollover
-          while ((content === null) && (counter < dataLen)) {
-            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
-            counter++;
-          }
-          if (content === null) {
-            content = "N/A";
-          }
-          let dynamicFontSize = getTextSizeForWidth(
-            content,
-            "?px sans-serif",
-            shapeWidth,
-            10,
-            50);
-          dynamicFontSize = getTextSizeForWidth(
-            content,
-            "?px sans-serif",
-            shapeWidth - (dynamicFontSize * 2), // pad with space before/after of one char
-            10,
-            50);
-            textRef.attr("font-size", dynamicFontSize + "px");
-
-          return content;
-        });
-        frames++;
-    }, this.opt.animationSpeed);
   }
 
   formatValueContent(i, frames, thisRef): string {
