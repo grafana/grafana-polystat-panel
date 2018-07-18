@@ -180,7 +180,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             }
                         }
                         var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 250);
-                        estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - (estimateFontSize * 2), 10, 250);
+                        estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - (estimateFontSize * 1.2), 10, 250);
                         activeFontSize = estimateFontSize;
                     }
                     svg.selectAll(".hexagon")
@@ -228,11 +228,12 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             .duration(500)
                             .style("opacity", 0);
                     });
-                    var textspot = svg.selectAll("text")
+                    var textspot = svg.selectAll("text.toplabel")
                         .data(ahexbin(this.calculatedPoints));
                     textspot
                         .enter()
                         .append("text")
+                        .attr("class", "toplabel")
                         .attr("x", function (d) { return d.x; })
                         .attr("y", function (d) { return d.y; })
                         .attr("text-anchor", "middle")
@@ -252,8 +253,12 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         }
                     });
                     var frames = 0;
-                    var textRef = textspot.enter()
+                    var dynamicFontSize = activeFontSize;
+                    textspot.enter()
                         .append("text")
+                        .attr("class", function (_, i) {
+                        return "valueLabel" + i;
+                    })
                         .attr("x", function (d) {
                         return d.x;
                     })
@@ -262,8 +267,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     })
                         .attr("text-anchor", "middle")
                         .attr("font-family", "sans-serif")
-                        .attr("fill", "black");
-                    textRef.text(function (_, i) {
+                        .attr("fill", "black")
+                        .attr("font-size", dynamicFontSize + "px")
+                        .text(function (_, i) {
                         var content = null;
                         var counter = 0;
                         var dataLen = thisRef.data.length * 2;
@@ -274,30 +280,39 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         if (content === null) {
                             content = "N/A";
                         }
-                        var dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 10, 250);
-                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 2), 10, 250);
-                        textRef.attr("font-size", dynamicFontSize + "px");
+                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 6, 250);
+                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 1.2), 6, 250);
+                        var valueTextLocation = svg.select("text.valueLabel" + i);
+                        valueTextLocation.attr("font-size", dynamicFontSize + "px");
+                        d3.interval(function () {
+                            var valueTextLocation = svg.select("text.valueLabel" + i);
+                            var compositeIndex = i;
+                            valueTextLocation.text(function () {
+                                var content = null;
+                                var counter = 0;
+                                var dataLen = thisRef.data.length * 2;
+                                while ((content === null) && (counter < dataLen)) {
+                                    content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+                                    counter++;
+                                }
+                                if (content === null) {
+                                    content = "N/A";
+                                }
+                                if (content === "") {
+                                    content = "OK";
+                                    dynamicFontSize = activeFontSize;
+                                }
+                                else {
+                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 6, 250);
+                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 1.1), 6, 250);
+                                }
+                                valueTextLocation.attr("font-size", dynamicFontSize + "px");
+                                return content;
+                            });
+                            frames++;
+                        }, thisRef.opt.animationSpeed);
                         return content;
                     });
-                    d3.interval(function () {
-                        textRef.text(function (_, i) {
-                            var content = null;
-                            var counter = 0;
-                            var dataLen = thisRef.data.length * 2;
-                            while ((content === null) && (counter < dataLen)) {
-                                content = thisRef.formatValueContent(i, (frames + counter), thisRef);
-                                counter++;
-                            }
-                            if (content === null) {
-                                content = "N/A";
-                            }
-                            var dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 10, 50);
-                            dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 2), 10, 50);
-                            textRef.attr("font-size", dynamicFontSize + "px");
-                            return content;
-                        });
-                        frames++;
-                    }, this.opt.animationSpeed);
                 };
                 D3Wrapper.prototype.formatValueContent = function (i, frames, thisRef) {
                     var data = thisRef.data[i];
