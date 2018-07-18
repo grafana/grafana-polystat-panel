@@ -3,6 +3,7 @@
 import * as d3 from "./external/d3.min.js";
 import * as d3hexbin from "./external/d3-hexbin.js";
 import { getTextSizeForWidth } from "./utils";
+import _ from "lodash";
 
 export class D3Wrapper {
   svgContainer: any;
@@ -257,10 +258,15 @@ export class D3Wrapper {
       let estimateFontSize = getTextSizeForWidth(
         maxLabel,
         "?px sans-serif",
-        shapeWidth - 10, // pad
+        shapeWidth, // pad
         10,
-        50);
-      //console.log("Estimated Font size: " + estimateFontSize);
+        250);
+      estimateFontSize = getTextSizeForWidth(
+        maxLabel,
+        "?px sans-serif",
+        shapeWidth - (estimateFontSize * 2), // pad
+        10,
+        250);
       activeFontSize = estimateFontSize;
     }
 
@@ -309,8 +315,8 @@ export class D3Wrapper {
             .style("top", d.y + 50);
           })
 
-        .on("mouseout", function(d) {
-              console.log(d);
+        .on("mouseout", function(_) {
+              //console.log(d);
               tooltip
                 .transition()
                 .duration(500)
@@ -354,13 +360,13 @@ export class D3Wrapper {
       })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
-      .attr("font-size", activeFontSize + "px")
-      .attr("fill", "black")
-      .text(function (_, i) {
+      .attr("fill", "black");
+
+    textRef.text(function (_, i) {
         // animation/displaymode can modify what is being displayed
         let content = null;
         let counter = 0;
-        let dataLen = thisRef.data.length;
+        let dataLen = thisRef.data.length * 2;
         // search for a value but not more than number of data items
         while ((content === null) && (counter < dataLen)) {
           content = thisRef.formatValueContent(i, (frames + counter), thisRef);
@@ -369,6 +375,20 @@ export class D3Wrapper {
         if (content === null) {
           content = "N/A";
         }
+        let dynamicFontSize = getTextSizeForWidth(
+          content,
+          "?px sans-serif",
+          shapeWidth,
+          10,
+          250);
+        dynamicFontSize = getTextSizeForWidth(
+          content,
+          "?px sans-serif",
+          shapeWidth - (dynamicFontSize * 2), // pad
+          10,
+          250);
+        textRef.attr("font-size", dynamicFontSize + "px");
+
         return content;
       });
 
@@ -387,6 +407,20 @@ export class D3Wrapper {
           if (content === null) {
             content = "N/A";
           }
+          let dynamicFontSize = getTextSizeForWidth(
+            content,
+            "?px sans-serif",
+            shapeWidth,
+            10,
+            50);
+          dynamicFontSize = getTextSizeForWidth(
+            content,
+            "?px sans-serif",
+            shapeWidth - (dynamicFontSize * 2), // pad with space before/after of one char
+            10,
+            50);
+            textRef.attr("font-size", dynamicFontSize + "px");
+
           return content;
         });
         frames++;
@@ -425,20 +459,26 @@ export class D3Wrapper {
     if ((data.suffix) && (data.suffix.length > 0)) {
       content = content + " " + data.suffix;
     }
+    // a composite will contain the "worst" case as the valueFormatted,
+    // and will have all of the members of the composite included.
+    // as frames increment find a triggered member starting from the frame mod len
     let len = data.members.length;
     if (len > 0) {
-      let aMember = data.members[frames % len];
-      // use the animate mode from the parent (for composites)
-      switch (data.animateMode) {
-        case "all":
-          break;
-        case "triggered":
-          // return nothing if mode is triggered and the state is 0
-          if (aMember.thresholdLevel < 1) {
-            return null;
-          }
+      let triggeredIndex = -1;
+      if (data.animateMode === "all") {
+        triggeredIndex = frames % len;
+        //console.log("triggeredIndex from all mode: " + triggeredIndex);
+      } else {
+        if (typeof(data.triggerCache) === "undefined") {
+          data.triggerCache = this.buildTriggerCache(data);
+        }
+        let z = frames % data.triggerCache.length;
+        triggeredIndex = data.triggerCache[z].index;
+        //console.log("triggeredIndex from cache is: " + triggeredIndex);
       }
-      content = aMember.valueFormatted;
+      let aMember = data.members[triggeredIndex];
+
+      content = aMember.name + " " + aMember.valueFormatted;
       if ((aMember.prefix) && (aMember.prefix.length > 0)) {
         content = aMember.prefix + " " + content;
       }
@@ -457,6 +497,22 @@ export class D3Wrapper {
       }
     }
     return content;
+  }
+
+  buildTriggerCache(item) {
+    //console.log("Building trigger cache for item");
+    let triggerCache = [];
+    for (let i = 0; i < item.members.length; i++) {
+      let aMember = item.members[i];
+      if (aMember.thresholdLevel > 0) {
+        // add to list
+        let cachedMemberState = { index: i, name: aMember.name, value: aMember.value, thresholdLevel: aMember.thresholdLevel };
+        triggerCache.push(cachedMemberState);
+      }
+    }
+    // sort it
+    triggerCache = _.orderBy(triggerCache, ["thresholdLevel", "value", "name"], ["desc", "desc", "asc"]);
+    return triggerCache;
   }
 
   getAutoHexRadius(): number {
