@@ -1,7 +1,7 @@
-System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], function (exports_1, context_1) {
+System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "lodash"], function (exports_1, context_1) {
     "use strict";
     var __moduleName = context_1 && context_1.id;
-    var d3, d3hexbin, utils_1, D3Wrapper;
+    var d3, d3hexbin, utils_1, lodash_1, D3Wrapper;
     return {
         setters: [
             function (d3_1) {
@@ -12,6 +12,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
             },
             function (utils_1_1) {
                 utils_1 = utils_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }
         ],
         execute: function () {
@@ -176,7 +179,8 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                                 maxLabel = this.data[i].name;
                             }
                         }
-                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - 10, 10, 50);
+                        var estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth, 10, 250);
+                        estimateFontSize = utils_1.getTextSizeForWidth(maxLabel, "?px sans-serif", shapeWidth - (estimateFontSize * 2), 10, 250);
                         activeFontSize = estimateFontSize;
                     }
                     svg.selectAll(".hexagon")
@@ -218,8 +222,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                             .style("left", (d.x + 135) + "px")
                             .style("top", d.y + 50);
                     })
-                        .on("mouseout", function (d) {
-                        console.log(d);
+                        .on("mouseout", function (_) {
                         tooltip
                             .transition()
                             .duration(500)
@@ -259,12 +262,11 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                     })
                         .attr("text-anchor", "middle")
                         .attr("font-family", "sans-serif")
-                        .attr("font-size", activeFontSize + "px")
-                        .attr("fill", "black")
-                        .text(function (_, i) {
+                        .attr("fill", "black");
+                    textRef.text(function (_, i) {
                         var content = null;
                         var counter = 0;
-                        var dataLen = thisRef.data.length;
+                        var dataLen = thisRef.data.length * 2;
                         while ((content === null) && (counter < dataLen)) {
                             content = thisRef.formatValueContent(i, (frames + counter), thisRef);
                             counter++;
@@ -272,6 +274,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         if (content === null) {
                             content = "N/A";
                         }
+                        var dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 10, 250);
+                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 2), 10, 250);
+                        textRef.attr("font-size", dynamicFontSize + "px");
                         return content;
                     });
                     d3.interval(function () {
@@ -286,6 +291,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                             if (content === null) {
                                 content = "N/A";
                             }
+                            var dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 10, 50);
+                            dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 2), 10, 50);
+                            textRef.attr("font-size", dynamicFontSize + "px");
                             return content;
                         });
                         frames++;
@@ -323,16 +331,19 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                     }
                     var len = data.members.length;
                     if (len > 0) {
-                        var aMember = data.members[frames % len];
-                        switch (data.animateMode) {
-                            case "all":
-                                break;
-                            case "triggered":
-                                if (aMember.thresholdLevel < 1) {
-                                    return null;
-                                }
+                        var triggeredIndex = -1;
+                        if (data.animateMode === "all") {
+                            triggeredIndex = frames % len;
                         }
-                        content = aMember.valueFormatted;
+                        else {
+                            if (typeof (data.triggerCache) === "undefined") {
+                                data.triggerCache = this.buildTriggerCache(data);
+                            }
+                            var z = frames % data.triggerCache.length;
+                            triggeredIndex = data.triggerCache[z].index;
+                        }
+                        var aMember = data.members[triggeredIndex];
+                        content = aMember.name + " " + aMember.valueFormatted;
                         if ((aMember.prefix) && (aMember.prefix.length > 0)) {
                             content = aMember.prefix + " " + content;
                         }
@@ -350,6 +361,18 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils"], 
                         }
                     }
                     return content;
+                };
+                D3Wrapper.prototype.buildTriggerCache = function (item) {
+                    var triggerCache = [];
+                    for (var i = 0; i < item.members.length; i++) {
+                        var aMember = item.members[i];
+                        if (aMember.thresholdLevel > 0) {
+                            var cachedMemberState = { index: i, name: aMember.name, value: aMember.value, thresholdLevel: aMember.thresholdLevel };
+                            triggerCache.push(cachedMemberState);
+                        }
+                    }
+                    triggerCache = lodash_1.default.orderBy(triggerCache, ["thresholdLevel", "value", "name"], ["desc", "desc", "asc"]);
+                    return triggerCache;
                 };
                 D3Wrapper.prototype.getAutoHexRadius = function () {
                     var hexRadius = d3.min([

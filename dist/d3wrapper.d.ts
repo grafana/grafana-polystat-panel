@@ -23,6 +23,7 @@ export declare class D3Wrapper {
     update(data: any): void;
     draw(): void;
     formatValueContent(i: any, frames: any, thisRef: any): string;
+    buildTriggerCache(item: any): any[];
     getAutoHexRadius(): number;
     calculateSVGSize(): void;
     generatePoints(): any;
