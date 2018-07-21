@@ -1,6 +1,6 @@
 export declare class MetricOverride {
     metricName: string;
-    thresholds: Array<number>;
+    thresholds: Array<any>;
     colors: Array<string>;
     unitFormat: string;
     decimals: string;
@@ -25,8 +25,13 @@ export declare class MetricOverridesManager {
     matchOverride(pattern: any): number;
     applyOverrides(data: any): void;
     getValueByStatName(settings: any, data: any): any;
-    getColorForValue(index: any, value: any): string;
+    getColorForValue(index: any, value: number): string;
     getThresholdLevelForValue(index: any, value: number): number;
+    addThreshold(override: any): void;
+    setThresholdColor(threshold: any): void;
+    validateThresholdColor(threshold: any): void;
+    sortThresholds(override: any): void;
+    removeThreshold(override: any, threshold: any): void;
     invertColorOrder(override: any): void;
     setUnitFormat(override: any, subItem: any): void;
     moveMetricOverrideUp(override: any): void;

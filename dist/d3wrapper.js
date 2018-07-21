@@ -300,13 +300,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                                 }
                                 if (content === "") {
                                     content = "OK";
-                                    dynamicFontSize = activeFontSize;
                                 }
-                                else {
-                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 6, 250);
-                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 1.1), 6, 250);
-                                }
-                                valueTextLocation.attr("font-size", dynamicFontSize + "px");
                                 return content;
                             });
                             frames++;
@@ -358,7 +352,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             triggeredIndex = data.triggerCache[z].index;
                         }
                         var aMember = data.members[triggeredIndex];
-                        content = aMember.name + " " + aMember.valueFormatted;
+                        content = aMember.name + ": " + aMember.valueFormatted;
                         if ((aMember.prefix) && (aMember.prefix.length > 0)) {
                             content = aMember.prefix + " " + content;
                         }
