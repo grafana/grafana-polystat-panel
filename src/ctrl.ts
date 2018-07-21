@@ -109,6 +109,7 @@ const panelDefaults = {
     tooltipTimestampEnabled: true,
     fontSize: 12,
     fontAutoScale: true,
+    gradientEnabled: true,
   },
 };
 

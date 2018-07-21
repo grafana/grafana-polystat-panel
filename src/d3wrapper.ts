@@ -169,31 +169,74 @@ export class D3Wrapper {
     var data = this.data;
     var thisRef = this;
 
-    // TODO: quadrant data
-    //var numPoints = this.calculatedPoints.length;
-    // TODO: count number of ok/warn/crit
-    //var numAlerts = this.calculatedPoints.length;
-    //var numOK = 0;
-    //var numWARN = 0;
-    //var numCRIT = 0;
-    /*
-    d3.select(this.svgContainer)
-      .append("div")
-      .attr("class", "botr2")
-      .attr("id", this.d3DivId + "quadrant4")
-      .html("(" + numAlerts + "/" + numPoints + ")");
-    */
-    /*
-    d3.select(this.svgContainer)
-      .append("div")
-      .attr("class", "polystat-panel-quadrant")
-      .attr("id", this.d3DivId + "quadrant4")
-      .style("border", "1px solid white")
-      .style("left", (width - 125) + "px")
-      .style("top", (height - 50) + "px")
-      .style("text-align", "right")
-      .html("(" + numAlerts + "/" + numPoints + ")");
-    */
+
+    var defs = svg.append("defs");
+
+    // https://uigradients.com/#LittleLeaf
+    let okGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-ok");
+    okGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    okGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#8DC26F"); // light green
+    okGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#76b852"); // dark green
+
+    // https://uigradients.com/#JuicyOrange
+    let warningGradient = defs.append("linearGradient")
+        .attr("id", "linear-gradient-state-warning");
+    warningGradient.attr("x1", "30%")
+        .attr("y1", "30%")
+        .attr("x2", "70%")
+        .attr("y2", "70%");
+    warningGradient.append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", "#FFC837"); // light orange
+    warningGradient.append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", "#FF8808"); // dark orange
+
+    // https://uigradients.com/#YouTube
+    let criticalGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-critical");
+    criticalGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    criticalGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#e52d27"); // light red
+    criticalGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#b31217"); // dark red
+
+    // https://uigradients.com/#Ash
+    let unknownGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-unknown");
+    unknownGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    unknownGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#606c88"); // light orange
+    unknownGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#3f4c6b"); // dark orange
+
     let customShape = null;
     // this is used to calculate the fontsize
     let shapeWidth = diameterX;
@@ -284,8 +327,21 @@ export class D3Wrapper {
         .attr("d", customShape)
         .attr("stroke", "black")
         .attr("stroke-width", "2px")
-        .style("fill", function(_, i) {
-          return data[i].color;
+        .style("fill", (_, i) => {
+          if (this.opt.polystat.gradientEnabled) {
+            switch (data[i].thresholdLevel) {
+              case 0:
+                return "url(#linear-gradient-state-ok)";
+              case 1:
+                return "url(#linear-gradient-state-warning)";
+              case 2:
+                return "url(#linear-gradient-state-critical)";
+              default:
+                return "url(#linear-gradient-state-unknown)";
+            }
+          } else {
+            return data[i].color;
+          }
         })
         .on("click", function (_, i) {
           if (data[i].sanitizeURLEnabled) {
