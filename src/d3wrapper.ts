@@ -416,25 +416,7 @@ export class D3Wrapper {
             }
             if (content === "") {
               content = "OK";
-              // use fonts size of top label
-              dynamicFontSize = activeFontSize;
-            } else {
-              dynamicFontSize = getTextSizeForWidth(
-                content,
-                "?px sans-serif",
-                shapeWidth,
-                6,
-                250);
-              dynamicFontSize = getTextSizeForWidth(
-                content,
-                "?px sans-serif",
-                shapeWidth - (dynamicFontSize * 1.1), // pad with space before/after of one char
-                6,
-                250);
-              //console.log("metric dynamicFontSize: " + dynamicFontSize);
-              //console.log("content would be " + content);
             }
-            valueTextLocation.attr("font-size", dynamicFontSize + "px");
             return content;
           });
           frames++;
@@ -494,7 +476,7 @@ export class D3Wrapper {
       }
       let aMember = data.members[triggeredIndex];
 
-      content = aMember.name + " " + aMember.valueFormatted;
+      content = aMember.name + ": " + aMember.valueFormatted;
       if ((aMember.prefix) && (aMember.prefix.length > 0)) {
         content = aMember.prefix + " " + content;
       }
