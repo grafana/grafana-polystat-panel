@@ -145,6 +145,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     tooltipTimestampEnabled: true,
                     fontSize: 12,
                     fontAutoScale: true,
+                    gradientEnabled: true,
                 },
             };
             D3PolystatPanelCtrl = (function (_super) {
