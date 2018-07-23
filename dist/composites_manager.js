@@ -1,7 +1,7 @@
 System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var lodash_1, kbn_1, MetricComposite, CompositesManager;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (lodash_1_1) {

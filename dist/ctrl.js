@@ -10,8 +10,8 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
             d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
         };
     })();
-    var __moduleName = context_1 && context_1.id;
     var sdk_1, lodash_1, jquery_1, kbn_1, time_series2_1, d3wrapper_1, transformers_1, metric_overrides_manager_1, composites_manager_1, tooltip_1, panelDefaults, D3PolystatPanelCtrl;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (sdk_1_1) {

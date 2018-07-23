@@ -1,5 +1,6 @@
 System.register(["lodash"], function (exports_1, context_1) {
     "use strict";
+    var lodash_1;
     var __moduleName = context_1 && context_1.id;
     function GetDecimalsForValue(value, panelDecimals) {
         if (lodash_1.default.isNumber(panelDecimals)) {
@@ -62,7 +63,6 @@ System.register(["lodash"], function (exports_1, context_1) {
         return metrics.width;
     }
     exports_1("getTextWidth", getTextWidth);
-    var lodash_1;
     return {
         setters: [
             function (lodash_1_1) {

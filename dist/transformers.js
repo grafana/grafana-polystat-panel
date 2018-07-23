@@ -1,7 +1,7 @@
 System.register(["./flatten", "lodash", "./polystatmodel"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var flatten_1, lodash_1, polystatmodel_1, Transformers;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (flatten_1_1) {

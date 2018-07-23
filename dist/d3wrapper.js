@@ -1,7 +1,7 @@
 System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var d3, d3hexbin, utils_1, lodash_1, D3Wrapper;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (d3_1) {
@@ -127,7 +127,6 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .append("g")
                         .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
                     var data = this.data;
-                    var thisRef = this;
                     var defs = svg.append("defs");
                     var okGradient = defs.append("linearGradient")
                         .attr("id", "linear-gradient-state-ok");
@@ -139,11 +138,11 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     okGradient
                         .append("stop")
                         .attr("offset", "0%")
-                        .attr("stop-color", "#8DC26F");
+                        .attr("stop-color", "#52c234");
                     okGradient
                         .append("stop")
                         .attr("offset", "100%")
-                        .attr("stop-color", "#76b852");
+                        .attr("stop-color", "#389232");
                     var warningGradient = defs.append("linearGradient")
                         .attr("id", "linear-gradient-state-warning");
                     warningGradient.attr("x1", "30%")
@@ -289,9 +288,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     })
                         .on("mouseover", function (d, i) {
                         tooltip.transition().duration(200).style("opacity", 0.9);
-                        tooltip.html(thisRef.opt.tooltipContent[i])
-                            .style("font-size", thisRef.opt.tooltipFontSize)
-                            .style("font-family", thisRef.opt.tooltipFontType)
+                        tooltip.html(_this.opt.tooltipContent[i])
+                            .style("font-size", _this.opt.tooltipFontSize)
+                            .style("font-family", _this.opt.tooltipFontType)
                             .style("left", (d.x + 135) + "px")
                             .style("top", d.y + 50);
                     })
@@ -345,9 +344,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .text(function (_, i) {
                         var content = null;
                         var counter = 0;
-                        var dataLen = thisRef.data.length * 2;
+                        var dataLen = _this.data.length * 2;
                         while ((content === null) && (counter < dataLen)) {
-                            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+                            content = _this.formatValueContent(i, (frames + counter), _this);
                             counter++;
                         }
                         if (content === null) {
@@ -363,9 +362,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             valueTextLocation.text(function () {
                                 var content = null;
                                 var counter = 0;
-                                var dataLen = thisRef.data.length * 2;
+                                var dataLen = _this.data.length * 2;
                                 while ((content === null) && (counter < dataLen)) {
-                                    content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+                                    content = _this.formatValueContent(compositeIndex, (frames + counter), _this);
                                     counter++;
                                 }
                                 if (content === null) {
@@ -373,11 +372,12 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                                 }
                                 if (content === "") {
                                     content = "OK";
+                                    valueTextLocation.attr("font-size", activeFontSize + "px");
                                 }
                                 return content;
                             });
                             frames++;
-                        }, thisRef.opt.animationSpeed);
+                        }, _this.opt.animationSpeed);
                         return content;
                     });
                 };
