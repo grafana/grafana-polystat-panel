@@ -167,8 +167,8 @@ export class CompositesManager {
 
     getWorstSeries(series1, series2) {
         var worstSeries = series1;
-        var series1thresholdLevel = this.getThresholdLevel(series1);
-        var series2thresholdLevel = this.getThresholdLevel(series2);
+        var series1thresholdLevel = this.getThresholdLevelForSeriesValue(series1);
+        var series2thresholdLevel = this.getThresholdLevelForSeriesValue(series2);
         //console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
         //console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
         if (series2thresholdLevel > series1thresholdLevel) {
@@ -178,32 +178,16 @@ export class CompositesManager {
         return worstSeries;
     }
 
-    // returns level of threshold, 0 = ok, 1 = warnimg, 2 = critical, 3 = unknown
-    getThresholdLevel(series) {
-        // default to ok
-        var thresholdLevel = 3;
-        var value = series.value;
-        var thresholds = series.thresholds;
-        // if no thresholds are defined, return 0
-        if (thresholds === undefined) {
-            return thresholdLevel;
-        }
-        // make sure thresholds is an array of size 2
-        if (thresholds.length !== 2) {
-            return thresholdLevel;
-        }
-        if (value < thresholds[0]) {
-            thresholdLevel = 0;
-        }
-        if (value >= thresholds[0]) {
-            // value is equal or greater than first threshold
-            thresholdLevel = 1;
-        }
-        if (value >= thresholds[1]) {
-            // value is equal or greater than second threshold
-            thresholdLevel = 2;
-        }
-        return thresholdLevel;
+       // user may define the threshold with just one value
+    getThresholdLevelForSeriesValue(series): number {
+      var value = series.value;
+      for (let i = series.thresholds.length - 1; i >= 0; i--) {
+        let aThreshold = series.thresholds[i];
+          if (value >= aThreshold.value) {
+            return aThreshold.state;
+          }
+      }
+      return 0;
     }
 
     metricNameChanged(item) {

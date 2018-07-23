@@ -1,7 +1,7 @@
 System.register(["./ctrl", "app/plugins/sdk"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var ctrl_1, sdk_1;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (ctrl_1_1) {

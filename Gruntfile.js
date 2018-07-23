@@ -84,7 +84,7 @@ module.exports = function(grunt) {
           noImplicitThis: true,
           noFallthroughCasesInSwitch: true,
           strictNullChecks: false,
-          strictPropertyInitialization: true,
+          strictPropertyInitialization: false,
           allowJs: false,
           jsx: "react",
           strictFunctionTypes: false,
@@ -120,7 +120,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['src/**/*.ts', 'src/**/*.html', 'src/**/*.css', 'src/img/*.*', 'src/plugin.json', 'tests/**/*.ts', 'README.md'],
+      files: ['src/**/*.ts', 'src/**/*.html', 'src/**/*.scss', 'src/**/*.css', 'src/img/*.*', 'src/plugin.json', 'tests/**/*.ts', 'README.md'],
       tasks: ['default'],
       options: {
         debounceDelay: 250,

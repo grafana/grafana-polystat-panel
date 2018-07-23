@@ -1,7 +1,7 @@
 System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "lodash"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var d3, d3hexbin, utils_1, lodash_1, D3Wrapper;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (d3_1) {
@@ -59,6 +59,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     }
                 };
                 D3Wrapper.prototype.draw = function () {
+                    var _this = this;
                     if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
                         var squared = Math.sqrt(this.data.length);
                         if (this.opt.width > this.opt.height) {
@@ -126,7 +127,64 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .append("g")
                         .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
                     var data = this.data;
-                    var thisRef = this;
+                    var defs = svg.append("defs");
+                    var okGradient = defs.append("linearGradient")
+                        .attr("id", "linear-gradient-state-ok");
+                    okGradient
+                        .attr("x1", "30%")
+                        .attr("y1", "30%")
+                        .attr("x2", "70%")
+                        .attr("y2", "70%");
+                    okGradient
+                        .append("stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", "#52c234");
+                    okGradient
+                        .append("stop")
+                        .attr("offset", "100%")
+                        .attr("stop-color", "#389232");
+                    var warningGradient = defs.append("linearGradient")
+                        .attr("id", "linear-gradient-state-warning");
+                    warningGradient.attr("x1", "30%")
+                        .attr("y1", "30%")
+                        .attr("x2", "70%")
+                        .attr("y2", "70%");
+                    warningGradient.append("stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", "#FFC837");
+                    warningGradient.append("stop")
+                        .attr("offset", "100%")
+                        .attr("stop-color", "#FF8808");
+                    var criticalGradient = defs.append("linearGradient")
+                        .attr("id", "linear-gradient-state-critical");
+                    criticalGradient
+                        .attr("x1", "30%")
+                        .attr("y1", "30%")
+                        .attr("x2", "70%")
+                        .attr("y2", "70%");
+                    criticalGradient
+                        .append("stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", "#e52d27");
+                    criticalGradient
+                        .append("stop")
+                        .attr("offset", "100%")
+                        .attr("stop-color", "#b31217");
+                    var unknownGradient = defs.append("linearGradient")
+                        .attr("id", "linear-gradient-state-unknown");
+                    unknownGradient
+                        .attr("x1", "30%")
+                        .attr("y1", "30%")
+                        .attr("x2", "70%")
+                        .attr("y2", "70%");
+                    unknownGradient
+                        .append("stop")
+                        .attr("offset", "0%")
+                        .attr("stop-color", "#606c88");
+                    unknownGradient
+                        .append("stop")
+                        .attr("offset", "100%")
+                        .attr("stop-color", "#3f4c6b");
                     var customShape = null;
                     var shapeWidth = diameterX;
                     var innerArea = diameterX * diameterY;
@@ -192,7 +250,21 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .attr("stroke", "black")
                         .attr("stroke-width", "2px")
                         .style("fill", function (_, i) {
-                        return data[i].color;
+                        if (_this.opt.polystat.gradientEnabled) {
+                            switch (data[i].thresholdLevel) {
+                                case 0:
+                                    return "url(#linear-gradient-state-ok)";
+                                case 1:
+                                    return "url(#linear-gradient-state-warning)";
+                                case 2:
+                                    return "url(#linear-gradient-state-critical)";
+                                default:
+                                    return "url(#linear-gradient-state-unknown)";
+                            }
+                        }
+                        else {
+                            return data[i].color;
+                        }
                     })
                         .on("click", function (_, i) {
                         if (data[i].sanitizeURLEnabled) {
@@ -216,9 +288,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     })
                         .on("mouseover", function (d, i) {
                         tooltip.transition().duration(200).style("opacity", 0.9);
-                        tooltip.html(thisRef.opt.tooltipContent[i])
-                            .style("font-size", thisRef.opt.tooltipFontSize)
-                            .style("font-family", thisRef.opt.tooltipFontType)
+                        tooltip.html(_this.opt.tooltipContent[i])
+                            .style("font-size", _this.opt.tooltipFontSize)
+                            .style("font-family", _this.opt.tooltipFontType)
                             .style("left", (d.x + 135) + "px")
                             .style("top", d.y + 50);
                     })
@@ -272,9 +344,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .text(function (_, i) {
                         var content = null;
                         var counter = 0;
-                        var dataLen = thisRef.data.length * 2;
+                        var dataLen = _this.data.length * 2;
                         while ((content === null) && (counter < dataLen)) {
-                            content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+                            content = _this.formatValueContent(i, (frames + counter), _this);
                             counter++;
                         }
                         if (content === null) {
@@ -290,9 +362,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             valueTextLocation.text(function () {
                                 var content = null;
                                 var counter = 0;
-                                var dataLen = thisRef.data.length * 2;
+                                var dataLen = _this.data.length * 2;
                                 while ((content === null) && (counter < dataLen)) {
-                                    content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+                                    content = _this.formatValueContent(compositeIndex, (frames + counter), _this);
                                     counter++;
                                 }
                                 if (content === null) {
@@ -300,17 +372,12 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                                 }
                                 if (content === "") {
                                     content = "OK";
-                                    dynamicFontSize = activeFontSize;
+                                    valueTextLocation.attr("font-size", activeFontSize + "px");
                                 }
-                                else {
-                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 6, 250);
-                                    dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 1.1), 6, 250);
-                                }
-                                valueTextLocation.attr("font-size", dynamicFontSize + "px");
                                 return content;
                             });
                             frames++;
-                        }, thisRef.opt.animationSpeed);
+                        }, _this.opt.animationSpeed);
                         return content;
                     });
                 };
@@ -358,7 +425,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             triggeredIndex = data.triggerCache[z].index;
                         }
                         var aMember = data.members[triggeredIndex];
-                        content = aMember.name + " " + aMember.valueFormatted;
+                        content = aMember.name + ": " + aMember.valueFormatted;
                         if ((aMember.prefix) && (aMember.prefix.length > 0)) {
                             content = aMember.prefix + " " + content;
                         }

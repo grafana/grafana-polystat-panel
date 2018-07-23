@@ -167,33 +167,73 @@ export class D3Wrapper {
       .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
 
     var data = this.data;
-    var thisRef = this;
+    var defs = svg.append("defs");
 
-    // TODO: quadrant data
-    //var numPoints = this.calculatedPoints.length;
-    // TODO: count number of ok/warn/crit
-    //var numAlerts = this.calculatedPoints.length;
-    //var numOK = 0;
-    //var numWARN = 0;
-    //var numCRIT = 0;
-    /*
-    d3.select(this.svgContainer)
-      .append("div")
-      .attr("class", "botr2")
-      .attr("id", this.d3DivId + "quadrant4")
-      .html("(" + numAlerts + "/" + numPoints + ")");
-    */
-    /*
-    d3.select(this.svgContainer)
-      .append("div")
-      .attr("class", "polystat-panel-quadrant")
-      .attr("id", this.d3DivId + "quadrant4")
-      .style("border", "1px solid white")
-      .style("left", (width - 125) + "px")
-      .style("top", (height - 50) + "px")
-      .style("text-align", "right")
-      .html("(" + numAlerts + "/" + numPoints + ")");
-    */
+    // https://uigradients.com/#LittleLeaf (similar)
+    let okGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-ok");
+    okGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    okGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#52c234"); // light green
+    okGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#389232"); // dark green
+
+    // https://uigradients.com/#JuicyOrange
+    let warningGradient = defs.append("linearGradient")
+        .attr("id", "linear-gradient-state-warning");
+    warningGradient.attr("x1", "30%")
+        .attr("y1", "30%")
+        .attr("x2", "70%")
+        .attr("y2", "70%");
+    warningGradient.append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", "#FFC837"); // light orange
+    warningGradient.append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", "#FF8808"); // dark orange
+
+    // https://uigradients.com/#YouTube
+    let criticalGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-critical");
+    criticalGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    criticalGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#e52d27"); // light red
+    criticalGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#b31217"); // dark red
+
+    // https://uigradients.com/#Ash
+    let unknownGradient = defs.append("linearGradient")
+      .attr("id", "linear-gradient-state-unknown");
+    unknownGradient
+      .attr("x1", "30%")
+      .attr("y1", "30%")
+      .attr("x2", "70%")
+      .attr("y2", "70%");
+    unknownGradient
+      .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", "#606c88"); // light orange
+    unknownGradient
+      .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", "#3f4c6b"); // dark orange
+
     let customShape = null;
     // this is used to calculate the fontsize
     let shapeWidth = diameterX;
@@ -284,8 +324,21 @@ export class D3Wrapper {
         .attr("d", customShape)
         .attr("stroke", "black")
         .attr("stroke-width", "2px")
-        .style("fill", function(_, i) {
-          return data[i].color;
+        .style("fill", (_, i) => {
+          if (this.opt.polystat.gradientEnabled) {
+            switch (data[i].thresholdLevel) {
+              case 0:
+                return "url(#linear-gradient-state-ok)";
+              case 1:
+                return "url(#linear-gradient-state-warning)";
+              case 2:
+                return "url(#linear-gradient-state-critical)";
+              default:
+                return "url(#linear-gradient-state-unknown)";
+            }
+          } else {
+            return data[i].color;
+          }
         })
         .on("click", function (_, i) {
           if (data[i].sanitizeURLEnabled) {
@@ -306,11 +359,11 @@ export class D3Wrapper {
             .style("left", xpos + "px")
             .style("top", (ypos + 50) + "px");
         })
-        .on("mouseover", function(d, i) {
+        .on("mouseover", (d, i) => {
           tooltip.transition().duration(200).style("opacity", 0.9);
-          tooltip.html(thisRef.opt.tooltipContent[i])
-            .style("font-size", thisRef.opt.tooltipFontSize)
-            .style("font-family", thisRef.opt.tooltipFontType)
+          tooltip.html(this.opt.tooltipContent[i])
+            .style("font-size", this.opt.tooltipFontSize)
+            .style("font-family", this.opt.tooltipFontType)
             .style("left", (d.x + 135) + "px")
             .style("top", d.y + 50);
           })
@@ -368,14 +421,14 @@ export class D3Wrapper {
       .attr("font-family", "sans-serif")
       .attr("fill", "black")
       .attr("font-size", dynamicFontSize + "px")
-      .text(function (_, i) {
+      .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let content = null;
         let counter = 0;
-        let dataLen = thisRef.data.length * 2;
+        let dataLen = this.data.length * 2;
         // search for a value but not more than number of data items
         while ((content === null) && (counter < dataLen)) {
-          content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+          content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
         if (content === null) {
@@ -398,17 +451,17 @@ export class D3Wrapper {
         //console.log(meh);
         valueTextLocation.attr("font-size", dynamicFontSize + "px");
 
-        d3.interval(function () {
+        d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
-          valueTextLocation.text(function () {
+          valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
             let content = null;
             let counter = 0;
-            let dataLen = thisRef.data.length * 2;
+            let dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
             while ((content === null) && (counter < dataLen)) {
-              content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+              content = this.formatValueContent(compositeIndex, (frames + counter), this);
               counter++;
             }
             if (content === null) {
@@ -416,29 +469,13 @@ export class D3Wrapper {
             }
             if (content === "") {
               content = "OK";
-              // use fonts size of top label
-              dynamicFontSize = activeFontSize;
-            } else {
-              dynamicFontSize = getTextSizeForWidth(
-                content,
-                "?px sans-serif",
-                shapeWidth,
-                6,
-                250);
-              dynamicFontSize = getTextSizeForWidth(
-                content,
-                "?px sans-serif",
-                shapeWidth - (dynamicFontSize * 1.1), // pad with space before/after of one char
-                6,
-                250);
-              //console.log("metric dynamicFontSize: " + dynamicFontSize);
-              //console.log("content would be " + content);
+              // set the font size to be the same as the label above
+              valueTextLocation.attr("font-size", activeFontSize + "px");
             }
-            valueTextLocation.attr("font-size", dynamicFontSize + "px");
             return content;
           });
           frames++;
-        }, thisRef.opt.animationSpeed);
+        }, this.opt.animationSpeed);
         return content;
       });
   }
@@ -494,7 +531,7 @@ export class D3Wrapper {
       }
       let aMember = data.members[triggeredIndex];
 
-      content = aMember.name + " " + aMember.valueFormatted;
+      content = aMember.name + ": " + aMember.valueFormatted;
       if ((aMember.prefix) && (aMember.prefix.length > 0)) {
         content = aMember.prefix + " " + content;
       }

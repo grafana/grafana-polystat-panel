@@ -1,7 +1,7 @@
 System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var lodash_1, kbn_1, MetricComposite, CompositesManager;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (lodash_1_1) {
@@ -141,33 +141,22 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                 };
                 CompositesManager.prototype.getWorstSeries = function (series1, series2) {
                     var worstSeries = series1;
-                    var series1thresholdLevel = this.getThresholdLevel(series1);
-                    var series2thresholdLevel = this.getThresholdLevel(series2);
+                    var series1thresholdLevel = this.getThresholdLevelForSeriesValue(series1);
+                    var series2thresholdLevel = this.getThresholdLevelForSeriesValue(series2);
                     if (series2thresholdLevel > series1thresholdLevel) {
                         worstSeries = series2;
                     }
                     return worstSeries;
                 };
-                CompositesManager.prototype.getThresholdLevel = function (series) {
-                    var thresholdLevel = 3;
+                CompositesManager.prototype.getThresholdLevelForSeriesValue = function (series) {
                     var value = series.value;
-                    var thresholds = series.thresholds;
-                    if (thresholds === undefined) {
-                        return thresholdLevel;
+                    for (var i = series.thresholds.length - 1; i >= 0; i--) {
+                        var aThreshold = series.thresholds[i];
+                        if (value >= aThreshold.value) {
+                            return aThreshold.state;
+                        }
                     }
-                    if (thresholds.length !== 2) {
-                        return thresholdLevel;
-                    }
-                    if (value < thresholds[0]) {
-                        thresholdLevel = 0;
-                    }
-                    if (value >= thresholds[0]) {
-                        thresholdLevel = 1;
-                    }
-                    if (value >= thresholds[1]) {
-                        thresholdLevel = 2;
-                    }
-                    return thresholdLevel;
+                    return 0;
                 };
                 CompositesManager.prototype.metricNameChanged = function (item) {
                     console.log(item);

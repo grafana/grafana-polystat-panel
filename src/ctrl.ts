@@ -22,6 +22,12 @@ const panelDefaults = {
     { value: "all", text: "Show All" },
     { value: "triggered", text: "Show Triggered" },
   ],
+  thresholdStates: [
+    { value: 0, text: "ok" },
+    { value: 1, text: "warning" },
+    { value: 2, text: "critical" },
+    { value: 3, text: "custom" }
+  ],
   shapes: [
     { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
     { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
@@ -103,6 +109,7 @@ const panelDefaults = {
     tooltipTimestampEnabled: true,
     fontSize: 12,
     fontAutoScale: true,
+    gradientEnabled: true,
   },
 };
 

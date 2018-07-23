@@ -1,7 +1,7 @@
 System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1) {
     "use strict";
-    var __moduleName = context_1 && context_1.id;
     var lodash_1, kbn_1, MetricOverride, MetricOverridesManager;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (lodash_1_1) {
@@ -138,21 +138,66 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                 };
                 MetricOverridesManager.prototype.getColorForValue = function (index, value) {
                     var anOverride = this.metricOverrides[index];
-                    for (var i = anOverride.thresholds.length; i > 0; i--) {
-                        if (value >= anOverride.thresholds[i - 1]) {
-                            return anOverride.colors[i];
+                    var color = "rgba(50, 172, 45, 0.97)";
+                    for (var i = anOverride.thresholds.length - 1; i >= 0; i--) {
+                        var aThreshold = anOverride.thresholds[i];
+                        if (value >= aThreshold.value) {
+                            return aThreshold.color;
                         }
                     }
-                    return lodash_1.default.first(anOverride.colors);
+                    return color;
                 };
                 MetricOverridesManager.prototype.getThresholdLevelForValue = function (index, value) {
                     var anOverride = this.metricOverrides[index];
-                    for (var i = anOverride.thresholds.length; i > 0; i--) {
-                        if (value >= anOverride.thresholds[i - 1]) {
-                            return i;
+                    for (var i = anOverride.thresholds.length - 1; i >= 0; i--) {
+                        var aThreshold = anOverride.thresholds[i];
+                        if (value >= aThreshold.value) {
+                            return aThreshold.state;
                         }
                     }
                     return 0;
+                };
+                MetricOverridesManager.prototype.addThreshold = function (override) {
+                    override.thresholds.push({
+                        value: 0,
+                        state: 0,
+                        color: "#299c46",
+                    });
+                    this.sortThresholds(override);
+                };
+                MetricOverridesManager.prototype.setThresholdColor = function (threshold) {
+                    switch (threshold.state) {
+                        case 0:
+                            threshold.color = "#299c46";
+                            break;
+                        case 1:
+                            threshold.color = "rgba(237, 129, 40, 0.89)";
+                            break;
+                        case 2:
+                            threshold.color = "#d44a3a";
+                            break;
+                    }
+                };
+                MetricOverridesManager.prototype.validateThresholdColor = function (threshold) {
+                    switch (threshold.state) {
+                        case 0:
+                            threshold.color = "#299c46";
+                            break;
+                        case 1:
+                            threshold.color = "rgba(237, 129, 40, 0.89)";
+                            break;
+                        case 2:
+                            threshold.color = "#d44a3a";
+                            break;
+                    }
+                };
+                MetricOverridesManager.prototype.sortThresholds = function (override) {
+                    override.thresholds = lodash_1.default.orderBy(override.thresholds, ["value"], ["asc"]);
+                    this.$scope.ctrl.refresh();
+                };
+                MetricOverridesManager.prototype.removeThreshold = function (override, threshold) {
+                    override.thresholds = lodash_1.default.without(override.thresholds, threshold);
+                    this.sortThresholds(override);
                 };
                 MetricOverridesManager.prototype.invertColorOrder = function (override) {
                     override.colors.reverse();

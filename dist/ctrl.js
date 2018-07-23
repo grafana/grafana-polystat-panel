@@ -10,8 +10,8 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
             d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
         };
     })();
-    var __moduleName = context_1 && context_1.id;
     var sdk_1, lodash_1, jquery_1, kbn_1, time_series2_1, d3wrapper_1, transformers_1, metric_overrides_manager_1, composites_manager_1, tooltip_1, panelDefaults, D3PolystatPanelCtrl;
+    var __moduleName = context_1 && context_1.id;
     return {
         setters: [
             function (sdk_1_1) {
@@ -56,6 +56,12 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                 displayModes: [
                     { value: "all", text: "Show All" },
                     { value: "triggered", text: "Show Triggered" },
+                ],
+                thresholdStates: [
+                    { value: 0, text: "ok" },
+                    { value: 1, text: "warning" },
+                    { value: 2, text: "critical" },
+                    { value: 3, text: "custom" }
                 ],
                 shapes: [
                     { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
@@ -139,6 +145,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     tooltipTimestampEnabled: true,
                     fontSize: 12,
                     fontAutoScale: true,
+                    gradientEnabled: true,
                 },
             };
             D3PolystatPanelCtrl = (function (_super) {

@@ -3,7 +3,7 @@ import kbn from "app/core/utils/kbn";
 
 export class MetricOverride {
     metricName: string;
-    thresholds: Array<number>;
+    thresholds: Array<any>;
     colors: Array<string>;
     unitFormat: string;
     decimals: string;
@@ -152,29 +152,81 @@ export class MetricOverridesManager {
         return value;
     }
 
-    getColorForValue(index, value): string {
-        let anOverride = this.metricOverrides[index];
-        for (let i = anOverride.thresholds.length; i > 0; i--) {
-            if (value >= anOverride.thresholds[i - 1]) {
-                return anOverride.colors[i];
-            }
-        }
-        return _.first(anOverride.colors);
-    }
+    getColorForValue(index, value: number): string {
+      let anOverride = this.metricOverrides[index];
+      let color = "rgba(50, 172, 45, 0.97)";
+      for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
+        let aThreshold = anOverride.thresholds[i];
+          if (value >= aThreshold.value) {
+              return aThreshold.color;
+          }
+      }
+      return color;
+  }
 
+    // user may define the threshold with just one value
     getThresholdLevelForValue(index, value: number): number {
         let anOverride = this.metricOverrides[index];
-        for (let i = anOverride.thresholds.length; i > 0; i--) {
-            if (value >= anOverride.thresholds[i - 1]) {
-                return i;
+        for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
+          let aThreshold = anOverride.thresholds[i];
+            if (value >= aThreshold.value) {
+                return aThreshold.state;
             }
         }
         return 0;
     }
 
+    addThreshold(override) {
+      override.thresholds.push( {
+        value: 0,
+        state: 0,
+        color: "#299c46",
+      });
+      this.sortThresholds(override);
+    }
+
+    // store user selection of color to be used for all items with the corresponding state
+    setThresholdColor(threshold) {
+      switch (threshold.state) {
+        case 0:
+          threshold.color = "#299c46";
+          break;
+        case 1:
+          threshold.color = "rgba(237, 129, 40, 0.89)";
+          break;
+        case 2:
+          threshold.color = "#d44a3a";
+          break;
+      }
+    }
+
+    validateThresholdColor(threshold) {
+      switch (threshold.state) {
+        case 0:
+          threshold.color = "#299c46";
+          break;
+        case 1:
+          threshold.color = "rgba(237, 129, 40, 0.89)";
+          break;
+        case 2:
+          threshold.color = "#d44a3a";
+          break;
+      }
+    }
+
+    sortThresholds(override) {
+      override.thresholds = _.orderBy(override.thresholds, ["value"], ["asc"]);
+      this.$scope.ctrl.refresh();
+    }
+
+    removeThreshold(override, threshold) {
+      override.thresholds = _.without(override.thresholds, threshold);
+      this.sortThresholds(override);
+    }
+
     invertColorOrder(override) {
-        override.colors.reverse();
-        this.$scope.ctrl.refresh();
+      override.colors.reverse();
+      this.$scope.ctrl.refresh();
     }
 
     setUnitFormat(override, subItem) {
