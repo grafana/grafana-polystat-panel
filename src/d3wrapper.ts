@@ -167,12 +167,9 @@ export class D3Wrapper {
       .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
 
     var data = this.data;
-    var thisRef = this;
-
-
     var defs = svg.append("defs");
 
-    // https://uigradients.com/#LittleLeaf
+    // https://uigradients.com/#LittleLeaf (similar)
     let okGradient = defs.append("linearGradient")
       .attr("id", "linear-gradient-state-ok");
     okGradient
@@ -183,11 +180,11 @@ export class D3Wrapper {
     okGradient
       .append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#8DC26F"); // light green
+        .attr("stop-color", "#52c234"); // light green
     okGradient
       .append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#76b852"); // dark green
+        .attr("stop-color", "#389232"); // dark green
 
     // https://uigradients.com/#JuicyOrange
     let warningGradient = defs.append("linearGradient")
@@ -362,11 +359,11 @@ export class D3Wrapper {
             .style("left", xpos + "px")
             .style("top", (ypos + 50) + "px");
         })
-        .on("mouseover", function(d, i) {
+        .on("mouseover", (d, i) => {
           tooltip.transition().duration(200).style("opacity", 0.9);
-          tooltip.html(thisRef.opt.tooltipContent[i])
-            .style("font-size", thisRef.opt.tooltipFontSize)
-            .style("font-family", thisRef.opt.tooltipFontType)
+          tooltip.html(this.opt.tooltipContent[i])
+            .style("font-size", this.opt.tooltipFontSize)
+            .style("font-family", this.opt.tooltipFontType)
             .style("left", (d.x + 135) + "px")
             .style("top", d.y + 50);
           })
@@ -424,14 +421,14 @@ export class D3Wrapper {
       .attr("font-family", "sans-serif")
       .attr("fill", "black")
       .attr("font-size", dynamicFontSize + "px")
-      .text(function (_, i) {
+      .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let content = null;
         let counter = 0;
-        let dataLen = thisRef.data.length * 2;
+        let dataLen = this.data.length * 2;
         // search for a value but not more than number of data items
         while ((content === null) && (counter < dataLen)) {
-          content = thisRef.formatValueContent(i, (frames + counter), thisRef);
+          content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
         if (content === null) {
@@ -454,17 +451,17 @@ export class D3Wrapper {
         //console.log(meh);
         valueTextLocation.attr("font-size", dynamicFontSize + "px");
 
-        d3.interval(function () {
+        d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
-          valueTextLocation.text(function () {
+          valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
             let content = null;
             let counter = 0;
-            let dataLen = thisRef.data.length * 2;
+            let dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
             while ((content === null) && (counter < dataLen)) {
-              content = thisRef.formatValueContent(compositeIndex, (frames + counter), thisRef);
+              content = this.formatValueContent(compositeIndex, (frames + counter), this);
               counter++;
             }
             if (content === null) {
@@ -472,11 +469,13 @@ export class D3Wrapper {
             }
             if (content === "") {
               content = "OK";
+              // set the font size to be the same as the label above
+              valueTextLocation.attr("font-size", activeFontSize + "px");
             }
             return content;
           });
           frames++;
-        }, thisRef.opt.animationSpeed);
+        }, this.opt.animationSpeed);
         return content;
       });
   }

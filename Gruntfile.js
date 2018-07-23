@@ -84,7 +84,7 @@ module.exports = function(grunt) {
           noImplicitThis: true,
           noFallthroughCasesInSwitch: true,
           strictNullChecks: false,
-          strictPropertyInitialization: true,
+          strictPropertyInitialization: false,
           allowJs: false,
           jsx: "react",
           strictFunctionTypes: false,
