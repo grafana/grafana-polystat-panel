@@ -1,3 +1,5 @@
+///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { PolystatModel } from "./polystatmodel";
