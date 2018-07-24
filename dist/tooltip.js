@@ -14,7 +14,6 @@ System.register(["lodash"], function (exports_1, context_1) {
                 }
                 Tooltip.generate = function (scope, data, polystat) {
                     var items = [];
-                    debugger;
                     for (var index = 0; index < data.length; index++) {
                         var tooltipTimeFormat = "YYYY-MM-DD HH:mm:ss";
                         var time = scope

@@ -41,7 +41,7 @@ export class PolystatModel {
     this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
     this.prefix = "";
     this.suffix = "";
-    this.seriesRaw = aSeries;
+    this.seriesRaw = null;
     this.color = "green";
     this.clickThrough = "";
     this.sanitizedURL = "";
@@ -115,7 +115,26 @@ export class PolystatModel {
     clone.timestamp = this.timestamp;
     clone.prefix = this.prefix;
     clone.suffix = this.suffix;
-    clone.seriesRaw = this.seriesRaw;
+    clone.seriesRaw = null; // for a shallow clone drop the series
+    clone.color = this.color;
+    clone.clickThrough = this.clickThrough;
+    clone.sanitizedURL = this.sanitizedURL;
+    clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
+    clone.isComposite = this.isComposite;
+    clone.members = []; // this.members;
+    return clone;
+  }
+  deepClone(): PolystatModel {
+    let clone = new PolystatModel(this.operatorName, null);
+    clone.operatorName = this.operatorName;
+    clone.thresholdLevel = this.thresholdLevel;
+    clone.value = this.value;
+    clone.valueFormatted = this.valueFormatted;
+    clone.name = this.name;
+    clone.timestamp = this.timestamp;
+    clone.prefix = this.prefix;
+    clone.suffix = this.suffix;
+    clone.seriesRaw = this.seriesRaw; // deep clone retains the series (careful of leak!)
     clone.color = this.color;
     clone.clickThrough = this.clickThrough;
     clone.sanitizedURL = this.sanitizedURL;
