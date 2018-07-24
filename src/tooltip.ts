@@ -6,7 +6,6 @@ import _ from "lodash";
 export class Tooltip {
   static generate(scope, data, polystat) : string[] {
     let items = [];
-    debugger;
     for (let index = 0; index < data.length; index++) {
       let tooltipTimeFormat = "YYYY-MM-DD HH:mm:ss";
       let time = scope
