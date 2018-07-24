@@ -102,6 +102,8 @@ const panelDefaults = {
     defaultClickThroughSanitize: true,
     hexagonSortByDirection: "asc",
     hexagonSortByField: "name",
+    tooltipDisplayMode: "all",
+    tooltipDisplayTextTriggeredEmpty: "OK",
     tooltipPrimarySortDirection: "desc",
     tooltipPrimarySortField: "thresholdLevel",
     tooltipSecondarySortDirection: "desc",
@@ -378,7 +380,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       [this.panel.polystat.hexagonSortByField],
       [this.panel.polystat.hexagonSortByDirection]);
     // generate tooltips
-    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
+    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
 
   filterByGlobalDisplayMode(data: any) {

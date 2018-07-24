@@ -1,9 +1,11 @@
 .d3-polystat-panel-axis-y {
 	stroke:rgb(255,225,0);
 }
+
 .d3-polystat-panel-axis-x {
 	stroke:rgb(255,225,255);
 }
+
 .d3-polystat-panel.div.tooltip {
   position: absolute;
   text-align: center;
@@ -40,9 +42,6 @@
 
 .xtooltip p {
   margin: 0;
-  not-font-family: Futura;
-  not-font-size: 16px;
-  notline-height: 20px;
 }
 
 .polystat-panel-tooltiptable {
@@ -76,25 +75,13 @@
   pointer-events: none;
 }
 
-.botr2 {
-  position: relative;
-  display: inline-block;
-  top: -40px;
-  left: calc(100% - 52px);
-  /*
-  *  Styling only, the below can be changed or removed
-  *  depending on your use case
-  */
-  height: 20px;
-  padding: 10px 10px;
+.polystat-panel-tooltip-displaytext-empty {
+  text-align: center;
+  color: #299c46;
+
 }
 
-.botr {
-  position: absolute;
-  top: 90%;
-  left: 80%;
-  right: 0;
-  bottom: -50;
+.polystat-panel-tooltip-time {
   text-align: center;
-  background: green;
+  color: white;
 }

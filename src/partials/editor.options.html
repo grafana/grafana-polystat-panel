@@ -101,7 +101,7 @@
 			on-change="ctrl.refresh()">
 		</gf-form-switch>
 	</div>
-	<div class="gf-form-inline">
+	<div class="gf-form">
 		<label class="gf-form-label width-13">Font Type
 			<tip>The font of the tooltip</tip>
 		</label>
@@ -110,8 +110,21 @@
 			    ng-change="ctrl.refresh()">
 			</select>
 		</div>
-	</div>
-	<div class="gf-form-inline">
+  </div>
+  <div class="gf-form">
+    <label class="gf-form-label width-13">Display</label>
+    <div class="gf-form-select-wrapper width-12">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayMode" ng-options="f.value as f.text for f in ctrl.panel.displayModes"
+        ng-change="ctrl.refresh()"></select>
+    </div>
+  </div>
+  <div class="gf-form" ng-if="ctrl.panel.polystat.tooltipDisplayMode === 'triggered'">
+    <label class="gf-form-label width-13">Non Triggered State Text
+      <tip>Text to be displayed by tooltip when there are no triggered thresholds and display mode is set to triggered</tip>
+    </label>
+    <input type="text" class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
+  </div>
+	<div class="gf-form">
 		<label class="gf-form-label width-13">Primary Sort Direction
 			<tip>Primary sort direction</tip>
 		</label>
@@ -129,7 +142,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="gf-form-inline">
+	<div class="gf-form">
 		<label class="gf-form-label width-13">Secondary Sort Direction
 			<tip>Secondary sort direction</tip>
 		</label>
