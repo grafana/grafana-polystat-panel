@@ -35,10 +35,7 @@
   display: none; }
 
 .xtooltip p {
-  margin: 0;
-  not-font-family: Futura;
-  not-font-size: 16px;
-  notline-height: 20px; }
+  margin: 0; }
 
 .polystat-panel-tooltiptable {
   not-background: red; }
@@ -66,25 +63,12 @@
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
   pointer-events: none; }
 
-.botr2 {
-  position: relative;
-  display: inline-block;
-  top: -40px;
-  left: calc(100% - 52px);
-  /*
-  *  Styling only, the below can be changed or removed
-  *  depending on your use case
-  */
-  height: 20px;
-  padding: 10px 10px; }
-
-.botr {
-  position: absolute;
-  top: 90%;
-  left: 80%;
-  right: 0;
-  bottom: -50;
+.polystat-panel-tooltip-displaytext-empty {
   text-align: center;
-  background: green; }
+  color: #299c46; }
+
+.polystat-panel-tooltip-time {
+  text-align: center;
+  color: white; }
 
 /*# sourceMappingURL=polystat.css.map */

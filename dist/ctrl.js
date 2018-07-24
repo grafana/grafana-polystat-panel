@@ -138,6 +138,8 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     defaultClickThroughSanitize: true,
                     hexagonSortByDirection: "asc",
                     hexagonSortByField: "name",
+                    tooltipDisplayMode: "all",
+                    tooltipDisplayTextTriggeredEmpty: "OK",
                     tooltipPrimarySortDirection: "desc",
                     tooltipPrimarySortField: "thresholdLevel",
                     tooltipSecondarySortDirection: "desc",
@@ -352,7 +354,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     }
                     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
                     this.polystatData = lodash_1.default.orderBy(this.polystatData, [this.panel.polystat.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
-                    this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat.tooltipTimestampEnabled);
+                    this.tooltipContent = tooltip_1.Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
                 };
                 D3PolystatPanelCtrl.prototype.filterByGlobalDisplayMode = function (data) {
                     var filteredMetrics = new Array();
