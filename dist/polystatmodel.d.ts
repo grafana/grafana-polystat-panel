@@ -22,4 +22,5 @@ export declare class PolystatModel {
     constructor(operatorName: string, aSeries: any);
     getValueByOperator(operatorName: any, data: any): any;
     shallowClone(): PolystatModel;
+    deepClone(): PolystatModel;
 }
