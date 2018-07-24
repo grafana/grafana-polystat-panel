@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
 export declare class MetricComposite {
     compositeName: string;
     members: Array<any>;
