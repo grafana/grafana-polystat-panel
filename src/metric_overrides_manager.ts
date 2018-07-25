@@ -156,26 +156,29 @@ export class MetricOverridesManager {
 
     getColorForValue(index, value: number): string {
       let anOverride = this.metricOverrides[index];
-      let color = "rgba(50, 172, 45, 0.97)";
+      let lastColor = "rgba(50, 172, 45, 0.97)";
       for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
         let aThreshold = anOverride.thresholds[i];
           if (value >= aThreshold.value) {
-              return aThreshold.color;
+            return aThreshold.color;
           }
+        lastColor = aThreshold.color;
       }
-      return color;
+      return lastColor;
   }
 
     // user may define the threshold with just one value
     getThresholdLevelForValue(index, value: number): number {
         let anOverride = this.metricOverrides[index];
+        let lastState = 0;
         for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
           let aThreshold = anOverride.thresholds[i];
-            if (value >= aThreshold.value) {
-                return aThreshold.state;
-            }
+          if (value >= aThreshold.value) {
+            return aThreshold.state;
+          }
+          lastState = aThreshold.state;
         }
-        return 0;
+        return lastState;
     }
 
     addThreshold(override) {
