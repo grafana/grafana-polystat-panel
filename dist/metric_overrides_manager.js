@@ -138,24 +138,27 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                 };
                 MetricOverridesManager.prototype.getColorForValue = function (index, value) {
                     var anOverride = this.metricOverrides[index];
-                    var color = "rgba(50, 172, 45, 0.97)";
+                    var lastColor = "rgba(50, 172, 45, 0.97)";
                     for (var i = anOverride.thresholds.length - 1; i >= 0; i--) {
                         var aThreshold = anOverride.thresholds[i];
                         if (value >= aThreshold.value) {
                             return aThreshold.color;
                         }
+                        lastColor = aThreshold.color;
                     }
-                    return color;
+                    return lastColor;
                 };
                 MetricOverridesManager.prototype.getThresholdLevelForValue = function (index, value) {
                     var anOverride = this.metricOverrides[index];
+                    var lastState = 0;
                     for (var i = anOverride.thresholds.length - 1; i >= 0; i--) {
                         var aThreshold = anOverride.thresholds[i];
                         if (value >= aThreshold.value) {
                             return aThreshold.state;
                         }
+                        lastState = aThreshold.state;
                     }
-                    return 0;
+                    return lastState;
                 };
                 MetricOverridesManager.prototype.addThreshold = function (override) {
                     override.thresholds.push({
