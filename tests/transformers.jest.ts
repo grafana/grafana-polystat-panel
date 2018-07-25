@@ -14,10 +14,8 @@ class TimeSeries {
     this.target = opts.alias;
   }
 }
-
-
 import {Transformers} from "../src/transformers";
-import {HexbinModel} from "../src/hexbinmodel";
+import {PolystatModel} from "../src/polystatmodel";
 // get this working...
 //import "app/core/time_series2";
 
@@ -27,7 +25,7 @@ describe("Transforms", async() => {
     let xAxisSeries: TimeSeries;
     let yAxisSeries: TimeSeries;
 
-    let hexbin: HexbinModel;
+    let hexbin: PolystatModel;
     beforeEach(() => {
       var time = new Date().getTime();
       xAxisSeries = new TimeSeries({

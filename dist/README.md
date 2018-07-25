@@ -155,8 +155,6 @@ Then browse to http://localhost:3000
 This panel is based on this D3 example:
 * https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
 
-and more...
-https://www.visualcinnamon.com/2016/05/smooth-color-legend-d3-svg-gradient
 
 #### Changelog
 

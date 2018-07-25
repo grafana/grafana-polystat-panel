@@ -183,13 +183,15 @@ export class CompositesManager {
        // user may define the threshold with just one value
     getThresholdLevelForSeriesValue(series): number {
       var value = series.value;
+      let lastState = 0;
       for (let i = series.thresholds.length - 1; i >= 0; i--) {
         let aThreshold = series.thresholds[i];
           if (value >= aThreshold.value) {
             return aThreshold.state;
           }
+          lastState = aThreshold.state;
       }
-      return 0;
+      return lastState;
     }
 
     metricNameChanged(item) {

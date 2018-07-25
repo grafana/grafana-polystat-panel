@@ -150,13 +150,15 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                 };
                 CompositesManager.prototype.getThresholdLevelForSeriesValue = function (series) {
                     var value = series.value;
+                    var lastState = 0;
                     for (var i = series.thresholds.length - 1; i >= 0; i--) {
                         var aThreshold = series.thresholds[i];
                         if (value >= aThreshold.value) {
                             return aThreshold.state;
                         }
+                        lastState = aThreshold.state;
                     }
-                    return 0;
+                    return lastState;
                 };
                 CompositesManager.prototype.metricNameChanged = function (item) {
                     console.log(item);
