@@ -153,7 +153,7 @@ export class D3Wrapper {
     var tooltip = d3.select(this.svgContainer)
       .append("div")
       .attr("id", this.d3DivId + "-tooltip")
-      .attr("class", "xtooltip")
+      .attr("class", "polystat-panel-tooltip")
       .style("opacity", 0);
     var svg : any = d3.select(this.svgContainer)
       .attr("width", width + "px")
@@ -228,11 +228,11 @@ export class D3Wrapper {
     unknownGradient
       .append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#606c88"); // light orange
+        .attr("stop-color", "#73808A"); // light grey
     unknownGradient
       .append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#3f4c6b"); // dark orange
+        .attr("stop-color", "#757F9A"); // dark grey
 
     let customShape = null;
     // this is used to calculate the fontsize
@@ -423,32 +423,47 @@ export class D3Wrapper {
       .attr("font-size", dynamicFontSize + "px")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
-        let content = null;
         let counter = 0;
-        let dataLen = this.data.length * 2;
+        let dataLen = this.data.length;
         // search for a value but not more than number of data items
+        // need to find the longest content string generated to determine the
+        // dynamic fire size
+        //while ((content === null) && (counter < dataLen)) {
+        //  content = this.formatValueContent(i, (frames + counter), this);
+        //  counter++;
+        //}
+        // this always starts from frame 0, look through every metric including composite members for the longest text possible
+        // get the total count of metrics (with composite members), and loop through
+        let submetricCount = this.data[i].members.length;
+        let longestDisplayedContent = "";
+        while (counter < submetricCount) {
+          let checkContent = this.formatValueContent(i, counter, this);
+          if (checkContent) {
+            if (checkContent.length > longestDisplayedContent.length) {
+              longestDisplayedContent = checkContent;
+            }
+          }
+          counter++;
+        }
+        let content = null;
+        counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        if (content === null) {
-          content = "N/A";
-        }
         dynamicFontSize = getTextSizeForWidth(
-          content,
+          longestDisplayedContent,
           "?px sans-serif",
           shapeWidth,
           6,
           250);
         dynamicFontSize = getTextSizeForWidth(
-          content,
+          longestDisplayedContent,
           "?px sans-serif",
-          shapeWidth - (dynamicFontSize * 1.2), // pad
+          shapeWidth - (dynamicFontSize * 3), // pad by 1.5 chars each side
           6,
           250);
-        //console.log("metric dynamicFontSize: " + dynamicFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
-        //console.log(meh);
         valueTextLocation.attr("font-size", dynamicFontSize + "px");
 
         d3.interval( () => {
@@ -465,10 +480,11 @@ export class D3Wrapper {
               counter++;
             }
             if (content === null) {
-              content = "N/A";
+              return "";
             }
             if (content === "") {
-              content = "OK";
+              // TODO: add custom content for composite ok state
+              content = "";
               // set the font size to be the same as the label above
               valueTextLocation.attr("font-size", activeFontSize + "px");
             }
@@ -506,6 +522,10 @@ export class D3Wrapper {
         }
     }
     let content = data.valueFormatted;
+    // if there's no valueFormatted, there's nothing to display
+    if (!content) {
+      return null;
+    }
     if ((data.prefix) && (data.prefix.length > 0)) {
       content = data.prefix + " " + content;
     }
@@ -541,7 +561,7 @@ export class D3Wrapper {
     }
     // allow templating
     //
-    if (content.length > 0) {
+    if ((content) && (content.length > 0)) {
       try {
         let replacedContent = thisRef.templateSrv.replaceWithText(content);
         content = replacedContent;
