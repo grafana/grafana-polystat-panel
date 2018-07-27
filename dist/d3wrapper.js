@@ -114,7 +114,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     var tooltip = d3.select(this.svgContainer)
                         .append("div")
                         .attr("id", this.d3DivId + "-tooltip")
-                        .attr("class", "xtooltip")
+                        .attr("class", "polystat-panel-tooltip")
                         .style("opacity", 0);
                     var svg = d3.select(this.svgContainer)
                         .attr("width", width + "px")
@@ -180,11 +180,11 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     unknownGradient
                         .append("stop")
                         .attr("offset", "0%")
-                        .attr("stop-color", "#606c88");
+                        .attr("stop-color", "#73808A");
                     unknownGradient
                         .append("stop")
                         .attr("offset", "100%")
-                        .attr("stop-color", "#3f4c6b");
+                        .attr("stop-color", "#757F9A");
                     var customShape = null;
                     var shapeWidth = diameterX;
                     var innerArea = diameterX * diameterY;
@@ -342,18 +342,27 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .attr("fill", "black")
                         .attr("font-size", dynamicFontSize + "px")
                         .text(function (_, i) {
-                        var content = null;
                         var counter = 0;
-                        var dataLen = _this.data.length * 2;
+                        var dataLen = _this.data.length;
+                        var submetricCount = _this.data[i].members.length;
+                        var longestDisplayedContent = "";
+                        while (counter < submetricCount) {
+                            var checkContent = _this.formatValueContent(i, counter, _this);
+                            if (checkContent) {
+                                if (checkContent.length > longestDisplayedContent.length) {
+                                    longestDisplayedContent = checkContent;
+                                }
+                            }
+                            counter++;
+                        }
+                        var content = null;
+                        counter = 0;
                         while ((content === null) && (counter < dataLen)) {
                             content = _this.formatValueContent(i, (frames + counter), _this);
                             counter++;
                         }
-                        if (content === null) {
-                            content = "N/A";
-                        }
-                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth, 6, 250);
-                        dynamicFontSize = utils_1.getTextSizeForWidth(content, "?px sans-serif", shapeWidth - (dynamicFontSize * 1.2), 6, 250);
+                        dynamicFontSize = utils_1.getTextSizeForWidth(longestDisplayedContent, "?px sans-serif", shapeWidth, 6, 250);
+                        dynamicFontSize = utils_1.getTextSizeForWidth(longestDisplayedContent, "?px sans-serif", shapeWidth - (dynamicFontSize * 3), 6, 250);
                         var valueTextLocation = svg.select("text.valueLabel" + i);
                         valueTextLocation.attr("font-size", dynamicFontSize + "px");
                         d3.interval(function () {
@@ -368,10 +377,10 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                                     counter++;
                                 }
                                 if (content === null) {
-                                    content = "N/A";
+                                    return "";
                                 }
                                 if (content === "") {
-                                    content = "OK";
+                                    content = "";
                                     valueTextLocation.attr("font-size", activeFontSize + "px");
                                 }
                                 return content;
@@ -405,6 +414,9 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             }
                     }
                     var content = data.valueFormatted;
+                    if (!content) {
+                        return null;
+                    }
                     if ((data.prefix) && (data.prefix.length > 0)) {
                         content = data.prefix + " " + content;
                     }
@@ -433,7 +445,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                             content = content + " " + aMember.suffix;
                         }
                     }
-                    if (content.length > 0) {
+                    if ((content) && (content.length > 0)) {
                         try {
                             var replacedContent = thisRef.templateSrv.replaceWithText(content);
                             content = replacedContent;
