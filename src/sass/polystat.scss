@@ -1,26 +1,4 @@
-.d3-polystat-panel-axis-y {
-	stroke:rgb(255,225,0);
-}
-
-.d3-polystat-panel-axis-x {
-	stroke:rgb(255,225,255);
-}
-
-.d3-polystat-panel.div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: 60px;
-  height: 28px;
-  padding: 2px;
-  font: 12px sans-serif;
-  background: black;
-  border: 0px;
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-
-.xtooltip {
+.polystat-panel-tooltip {
   position: absolute;
   width: 250px;
   color: white;
@@ -36,27 +14,15 @@
   pointer-events: none;
 }
 
-.xtooltip.hidden {
+.polystat-panel-tooltip.hidden {
   display: none;
 }
 
-.xtooltip p {
+.polystat-panel-tooltip p {
   margin: 0;
 }
 
-.polystat-panel-tooltiptable {
-  not-background: red;
-}
-
 .polystat-panel-tooltiptable th {
-  text-align: left;
-}
-
-.polystat-panel-legendtable {
-  background: red;
-}
-
-.polystat-panel-legendtable th {
   text-align: left;
 }
 
@@ -77,8 +43,7 @@
 
 .polystat-panel-tooltip-displaytext-empty {
   text-align: center;
-  color: #299c46;
-
+  color: #3aa655;
 }
 
 .polystat-panel-tooltip-time {
