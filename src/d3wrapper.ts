@@ -171,7 +171,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#LittleLeaf (similar)
     let okGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-ok");
+      .attr("id", this.d3DivId + "linear-gradient-state-ok");
     okGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -188,7 +188,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#JuicyOrange
     let warningGradient = defs.append("linearGradient")
-        .attr("id", "linear-gradient-state-warning");
+        .attr("id", this.d3DivId + "linear-gradient-state-warning");
     warningGradient.attr("x1", "30%")
         .attr("y1", "30%")
         .attr("x2", "70%")
@@ -202,7 +202,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#YouTube
     let criticalGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-critical");
+      .attr("id", this.d3DivId + "linear-gradient-state-critical");
     criticalGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -219,7 +219,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#Ash
     let unknownGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-unknown");
+      .attr("id", this.d3DivId + "linear-gradient-state-unknown");
     unknownGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -328,13 +328,13 @@ export class D3Wrapper {
           if (this.opt.polystat.gradientEnabled) {
             switch (data[i].thresholdLevel) {
               case 0:
-                return "url(#linear-gradient-state-ok)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-ok)";
               case 1:
-                return "url(#linear-gradient-state-warning)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-warning)";
               case 2:
-                return "url(#linear-gradient-state-critical)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-critical)";
               default:
-                return "url(#linear-gradient-state-unknown)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-unknown)";
             }
           } else {
             return data[i].color;
@@ -351,23 +351,32 @@ export class D3Wrapper {
             }
           }
         })
-        .on("mousemove", function () {
+        .on("mousemove", () => {
+          // this gives the relative position of the mouse within the rendered shape
+          // need to calculate the shape position then move the div
           var mouse = d3.mouse(svg.node());
-          var xpos = mouse[0] + 135;
-          var ypos = mouse[1];
+          var xpos = xoffset + mouse[0] - 50;
+          // check if wider than screensize
+          if ((xpos + 250) > width) {
+            xpos = width - 250;
+          }
+          // check if new position will be too far left
+          if (xpos < 0) {
+            xpos = 0;
+          }
+          var ypos = yoffset + mouse[1] - 5;
           tooltip
             .style("left", xpos + "px")
-            .style("top", (ypos + 50) + "px");
+            .style("top", ypos + "px");
         })
         .on("mouseover", (d, i) => {
           tooltip.transition().duration(200).style("opacity", 0.9);
           tooltip.html(this.opt.tooltipContent[i])
             .style("font-size", this.opt.tooltipFontSize)
             .style("font-family", this.opt.tooltipFontType)
-            .style("left", (d.x + 135) + "px")
-            .style("top", d.y + 50);
+            .style("left", (d.x - 5) + "px")
+            .style("top", (d.y - 5) + "px");
           })
-
         .on("mouseout", function(_) {
               //console.log(d);
               tooltip
