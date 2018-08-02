@@ -150,7 +150,9 @@ export class D3Wrapper {
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
 
     // Define the div for the tooltip
-    var tooltip = d3.select(this.svgContainer)
+    // add it to the body and not the container so it can float outside of the panel
+    var tooltip = d3
+      .select("body")
       .append("div")
       .attr("id", this.d3DivId + "-tooltip")
       .attr("class", "polystat-panel-tooltip")
@@ -364,7 +366,7 @@ export class D3Wrapper {
           if (xpos < 0) {
             xpos = 0;
           }
-          var ypos = yoffset + mouse[1] - 5;
+          var ypos = yoffset + mouse[1] + 75;
           tooltip
             .style("left", xpos + "px")
             .style("top", ypos + "px");
