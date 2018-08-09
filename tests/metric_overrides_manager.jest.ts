@@ -12,7 +12,7 @@ describe("MetricOverridesManager", () => {
   let mgr: MetricOverridesManager;
 
   beforeEach(() => {
-    mgr = new MetricOverridesManager(null, null, null, null);
+    mgr = new MetricOverridesManager(null, null, null, []);
     var time = new Date().getTime();
     aSeries = new TimeSeries({
       datapoints: [[200, time], [101, time + 1], [555, time + 2]],

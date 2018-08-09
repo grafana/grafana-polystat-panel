@@ -36,7 +36,7 @@ export class MetricOverridesManager {
                 return series.alias;
             });
         };
-        this.metricOverrides = savedOverrides || new Array<MetricOverride>();
+        this.metricOverrides = savedOverrides;
     }
 
     addMetricOverride() {

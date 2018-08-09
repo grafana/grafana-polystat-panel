@@ -45,6 +45,8 @@ export class D3Wrapper {
     this.opt.height -= 10;
     this.opt.width -= 20;
     this.data = this.opt.data;
+    this.numColumns = 5;
+    this.numRows = 5;
     this.maxColumnsUsed = 0;
     this.maxRowsUsed = 0;
     if (opt.rowAutoSize && opt.columnAutoSize) {
@@ -342,7 +344,7 @@ export class D3Wrapper {
             return data[i].color;
           }
         })
-        .on("click", function (_, i) {
+        .on("click", (_, i) => {
           if (data[i].sanitizeURLEnabled) {
             if (data[i].sanitizedURL.length > 0) {
               window.location.replace(data[i].sanitizedURL);
@@ -354,19 +356,20 @@ export class D3Wrapper {
           }
         })
         .on("mousemove", () => {
-          // this gives the relative position of the mouse within the rendered shape
-          // need to calculate the shape position then move the div
-          var mouse = d3.mouse(svg.node());
-          var xpos = xoffset + mouse[0] - 50;
-          // check if wider than screensize
-          if ((xpos + 250) > width) {
-            xpos = width - 250;
-          }
-          // check if new position will be too far left
+          // use the viewportwidth to prevent the tooltip from going too far right
+          let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+          // use the mouse position for the entire page
+          var mouse = d3.mouse(d3.select("body").node());
+          var xpos = mouse[0] - 50;
+          // don't allow offscreen tooltip
           if (xpos < 0) {
             xpos = 0;
           }
-          var ypos = yoffset + mouse[1] + 75;
+          // prevent tooltip from rendering outside of viewport
+          if ((xpos + 200) > viewPortWidth) {
+            xpos = viewPortWidth - 200;
+          }
+          var ypos = mouse[1] + 5;
           tooltip
             .style("left", xpos + "px")
             .style("top", ypos + "px");
@@ -379,8 +382,7 @@ export class D3Wrapper {
             .style("left", (d.x - 5) + "px")
             .style("top", (d.y - 5) + "px");
           })
-        .on("mouseout", function(_) {
-              //console.log(d);
+        .on("mouseout", () => {
               tooltip
                 .transition()
                 .duration(500)
@@ -634,6 +636,15 @@ export class D3Wrapper {
     let maxRowsUsed = 0;
     let columnsUsed = 0;
     let maxColumnsUsed = 0;
+    // when duplicating panels, this gets odd
+    if (this.numRows === Infinity) {
+      console.log("numRows infinity...");
+      return points;
+    }
+    if (this.numColumns === NaN) {
+      console.log("numColumns NaN");
+      return points;
+    }
     for (var i = 0; i < this.numRows; i++) {
       if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
         maxRowsUsed += 1;
