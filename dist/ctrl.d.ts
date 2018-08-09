@@ -7,6 +7,76 @@ import { CompositesManager } from "./composites_manager";
 declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     private $sanitize;
     static templateUrl: string;
+    panelDefaults: {
+        animationModes: {
+            value: string;
+            text: string;
+        }[];
+        displayModes: {
+            value: string;
+            text: string;
+        }[];
+        thresholdStates: {
+            value: number;
+            text: string;
+        }[];
+        shapes: {
+            value: string;
+            text: string;
+        }[];
+        savedComposites: any[];
+        savedOverrides: any[];
+        fontSizes: number[];
+        fontTypes: string[];
+        unitFormats: any;
+        operatorOptions: {
+            value: string;
+            text: string;
+        }[];
+        operatorName: string;
+        colors: string[];
+        notcolors: string[];
+        decimals: number;
+        format: string;
+        sortDirections: {
+            value: string;
+            text: string;
+        }[];
+        sortFields: {
+            value: string;
+            text: string;
+        }[];
+        polystat: {
+            shape: string;
+            globalDisplayMode: string;
+            globalOperatorName: string;
+            rows: string;
+            rowAutoSize: boolean;
+            columns: string;
+            columnAutoSize: boolean;
+            displayLimit: number;
+            maxMetrics: number;
+            radius: string;
+            radiusAutoSize: boolean;
+            tooltipFontSize: number;
+            tooltipFontType: string;
+            animationSpeed: number;
+            defaultClickThrough: string;
+            defaultClickThroughSanitize: boolean;
+            hexagonSortByDirection: string;
+            hexagonSortByField: string;
+            tooltipDisplayMode: string;
+            tooltipDisplayTextTriggeredEmpty: string;
+            tooltipPrimarySortDirection: string;
+            tooltipPrimarySortField: string;
+            tooltipSecondarySortDirection: string;
+            tooltipSecondarySortField: string;
+            tooltipTimestampEnabled: boolean;
+            fontSize: number;
+            fontAutoScale: boolean;
+            gradientEnabled: boolean;
+        };
+    };
     dataRaw: any;
     polystatData: PolystatModel[];
     containerDivId: any;
@@ -26,7 +96,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     constructor($scope: any, $injector: any, templateSrv: any, alertSrv: any, $sanitize: any);
     onInitEditMode(): void;
     setContainer(container: any): void;
-    getPanelWidth(): number;
+    getPanelWidthFailsafe(): number;
     getPanelHeight(): number;
     clearSVG(): void;
     renderD3(): void;

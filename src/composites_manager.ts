@@ -35,7 +35,7 @@ export class CompositesManager {
                 return series.alias;
             });
         };
-        this.metricComposites = savedComposites || new Array<MetricComposite>();
+        this.metricComposites = savedComposites;
     }
 
     addMetricComposite() {

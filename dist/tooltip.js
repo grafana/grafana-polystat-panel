@@ -27,7 +27,7 @@ System.register(["lodash"], function (exports_1, context_1) {
                                 if (polystat.tooltipTimestampEnabled) {
                                     timestampContent = "\n              <div class=\"polystat-panel-tooltip-time\">" + time + "</div>\n            ";
                                 }
-                                var content_1 = "\n          <div class=\"polystat-panel-tooltip-displaytext-empty\">" + polystat.tooltipDisplayTextTriggeredEmpty + "</div>\n          " + timestampContent + "\n          ";
+                                var content_1 = "\n          <div class=\"polystat-panel-tooltip-displaytext-empty-compositename\">" + data[index].name + "</div>\n          <div class=\"polystat-panel-tooltip-displaytext-empty\">" + polystat.tooltipDisplayTextTriggeredEmpty + "</div>\n          " + timestampContent + "\n          ";
                                 items.push(content_1);
                                 continue;
                             }

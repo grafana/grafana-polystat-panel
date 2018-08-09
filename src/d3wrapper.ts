@@ -45,6 +45,8 @@ export class D3Wrapper {
     this.opt.height -= 10;
     this.opt.width -= 20;
     this.data = this.opt.data;
+    this.numColumns = 5;
+    this.numRows = 5;
     this.maxColumnsUsed = 0;
     this.maxRowsUsed = 0;
     if (opt.rowAutoSize && opt.columnAutoSize) {
@@ -150,7 +152,9 @@ export class D3Wrapper {
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
 
     // Define the div for the tooltip
-    var tooltip = d3.select(this.svgContainer)
+    // add it to the body and not the container so it can float outside of the panel
+    var tooltip = d3
+      .select("body")
       .append("div")
       .attr("id", this.d3DivId + "-tooltip")
       .attr("class", "polystat-panel-tooltip")
@@ -171,7 +175,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#LittleLeaf (similar)
     let okGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-ok");
+      .attr("id", this.d3DivId + "linear-gradient-state-ok");
     okGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -188,7 +192,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#JuicyOrange
     let warningGradient = defs.append("linearGradient")
-        .attr("id", "linear-gradient-state-warning");
+        .attr("id", this.d3DivId + "linear-gradient-state-warning");
     warningGradient.attr("x1", "30%")
         .attr("y1", "30%")
         .attr("x2", "70%")
@@ -202,7 +206,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#YouTube
     let criticalGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-critical");
+      .attr("id", this.d3DivId + "linear-gradient-state-critical");
     criticalGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -219,7 +223,7 @@ export class D3Wrapper {
 
     // https://uigradients.com/#Ash
     let unknownGradient = defs.append("linearGradient")
-      .attr("id", "linear-gradient-state-unknown");
+      .attr("id", this.d3DivId + "linear-gradient-state-unknown");
     unknownGradient
       .attr("x1", "30%")
       .attr("y1", "30%")
@@ -328,19 +332,19 @@ export class D3Wrapper {
           if (this.opt.polystat.gradientEnabled) {
             switch (data[i].thresholdLevel) {
               case 0:
-                return "url(#linear-gradient-state-ok)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-ok)";
               case 1:
-                return "url(#linear-gradient-state-warning)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-warning)";
               case 2:
-                return "url(#linear-gradient-state-critical)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-critical)";
               default:
-                return "url(#linear-gradient-state-unknown)";
+                return "url(#" + this.d3DivId + "linear-gradient-state-unknown)";
             }
           } else {
             return data[i].color;
           }
         })
-        .on("click", function (_, i) {
+        .on("click", (_, i) => {
           if (data[i].sanitizeURLEnabled) {
             if (data[i].sanitizedURL.length > 0) {
               window.location.replace(data[i].sanitizedURL);
@@ -351,25 +355,34 @@ export class D3Wrapper {
             }
           }
         })
-        .on("mousemove", function () {
-          var mouse = d3.mouse(svg.node());
-          var xpos = mouse[0] + 135;
-          var ypos = mouse[1];
+        .on("mousemove", () => {
+          // use the viewportwidth to prevent the tooltip from going too far right
+          let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+          // use the mouse position for the entire page
+          var mouse = d3.mouse(d3.select("body").node());
+          var xpos = mouse[0] - 50;
+          // don't allow offscreen tooltip
+          if (xpos < 0) {
+            xpos = 0;
+          }
+          // prevent tooltip from rendering outside of viewport
+          if ((xpos + 200) > viewPortWidth) {
+            xpos = viewPortWidth - 200;
+          }
+          var ypos = mouse[1] + 5;
           tooltip
             .style("left", xpos + "px")
-            .style("top", (ypos + 50) + "px");
+            .style("top", ypos + "px");
         })
         .on("mouseover", (d, i) => {
           tooltip.transition().duration(200).style("opacity", 0.9);
           tooltip.html(this.opt.tooltipContent[i])
             .style("font-size", this.opt.tooltipFontSize)
             .style("font-family", this.opt.tooltipFontType)
-            .style("left", (d.x + 135) + "px")
-            .style("top", d.y + 50);
+            .style("left", (d.x - 5) + "px")
+            .style("top", (d.y - 5) + "px");
           })
-
-        .on("mouseout", function(_) {
-              //console.log(d);
+        .on("mouseout", () => {
               tooltip
                 .transition()
                 .duration(500)
@@ -623,6 +636,15 @@ export class D3Wrapper {
     let maxRowsUsed = 0;
     let columnsUsed = 0;
     let maxColumnsUsed = 0;
+    // when duplicating panels, this gets odd
+    if (this.numRows === Infinity) {
+      console.log("numRows infinity...");
+      return points;
+    }
+    if (this.numColumns === NaN) {
+      console.log("numColumns NaN");
+      return points;
+    }
     for (var i = 0; i < this.numRows; i++) {
       if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
         maxRowsUsed += 1;

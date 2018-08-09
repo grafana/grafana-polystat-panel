@@ -29,7 +29,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             return series.alias;
                         });
                     };
-                    this.metricComposites = savedComposites || new Array();
+                    this.metricComposites = savedComposites;
                 }
                 CompositesManager.prototype.addMetricComposite = function () {
                     var aComposite = new MetricComposite();

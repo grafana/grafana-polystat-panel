@@ -23,6 +23,7 @@ export class Tooltip {
             `;
           }
           let content = `
+          <div class="polystat-panel-tooltip-displaytext-empty-compositename">${data[index].name}</div>
           <div class="polystat-panel-tooltip-displaytext-empty">${polystat.tooltipDisplayTextTriggeredEmpty}</div>
           ${timestampContent}
           `;
