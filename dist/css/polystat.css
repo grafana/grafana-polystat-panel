@@ -1,6 +1,6 @@
 .polystat-panel-tooltip {
   position: absolute;
-  width: 250px;
+  width: 200px;
   color: white;
   height: auto;
   padding: 10px;
@@ -39,6 +39,10 @@
 .polystat-panel-tooltip-displaytext-empty {
   text-align: center;
   color: #3aa655; }
+
+.polystat-panel-tooltip-displaytext-empty-compositename {
+  text-align: center;
+  color: white; }
 
 .polystat-panel-tooltip-time {
   text-align: center;

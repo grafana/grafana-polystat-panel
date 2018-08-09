@@ -10,7 +10,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
             d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
         };
     })();
-    var sdk_1, lodash_1, jquery_1, kbn_1, time_series2_1, d3wrapper_1, transformers_1, metric_overrides_manager_1, composites_manager_1, tooltip_1, panelDefaults, D3PolystatPanelCtrl;
+    var sdk_1, lodash_1, jquery_1, kbn_1, time_series2_1, d3wrapper_1, transformers_1, metric_overrides_manager_1, composites_manager_1, tooltip_1, D3PolystatPanelCtrl;
     var __moduleName = context_1 && context_1.id;
     return {
         setters: [
@@ -48,114 +48,114 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
             }
         ],
         execute: function () {
-            panelDefaults = {
-                animationModes: [
-                    { value: "all", text: "Show All" },
-                    { value: "triggered", text: "Show Triggered" },
-                ],
-                displayModes: [
-                    { value: "all", text: "Show All" },
-                    { value: "triggered", text: "Show Triggered" },
-                ],
-                thresholdStates: [
-                    { value: 0, text: "ok" },
-                    { value: 1, text: "warning" },
-                    { value: 2, text: "critical" },
-                    { value: 3, text: "custom" }
-                ],
-                shapes: [
-                    { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
-                    { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
-                    { value: "circle", text: "Circle" },
-                    { value: "cross", text: "Cross" },
-                    { value: "diamond", text: "Diamond" },
-                    { value: "square", text: "Square" },
-                    { value: "star", text: "Star" },
-                    { value: "triangle", text: "Triangle" },
-                    { value: "wye", text: "Wye" },
-                ],
-                savedComposites: [],
-                savedOverrides: [],
-                fontSizes: [
-                    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-                    16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32,
-                    34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
-                    56, 58, 60, 62, 64, 66, 68, 70
-                ],
-                fontTypes: [
-                    "Open Sans", "Arial", "Avant Garde", "Bookman",
-                    "Consolas", "Courier", "Courier New", "Futura",
-                    "Garamond", "Helvetica",
-                    "Palatino", "Times", "Times New Roman",
-                    "Verdana"
-                ],
-                unitFormats: kbn_1.default.getUnitFormats(),
-                operatorOptions: [
-                    { value: "avg", text: "Average" },
-                    { value: "count", text: "Count" },
-                    { value: "current", text: "Current" },
-                    { value: "delta", text: "Delta" },
-                    { value: "diff", text: "Difference" },
-                    { value: "first", text: "First" },
-                    { value: "logmin", text: "Log Min" },
-                    { value: "max", text: "Max" },
-                    { value: "min", text: "Min" },
-                    { value: "name", text: "Name" },
-                    { value: "last_time", text: "Time of Last Point" },
-                    { value: "time_step", text: "Time Step" },
-                    { value: "total", text: "Total" },
-                ],
-                operatorName: "avg",
-                colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
-                notcolors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
-                decimals: 2,
-                format: "none",
-                sortDirections: [
-                    { value: "asc", text: "Ascending" },
-                    { value: "desc", text: "Descending" },
-                ],
-                sortFields: [
-                    { value: "name", text: "Name" },
-                    { value: "thresholdLevel", text: "Threshold Level" },
-                    { value: "value", text: "Value" },
-                ],
-                polystat: {
-                    shape: "hexagon_pointed_top",
-                    globalDisplayMode: "all",
-                    globalOperatorName: "avg",
-                    rows: "",
-                    rowAutoSize: true,
-                    columns: "",
-                    columnAutoSize: true,
-                    displayLimit: 100,
-                    maxMetrics: 0,
-                    radius: "",
-                    radiusAutoSize: true,
-                    tooltipFontSize: 12,
-                    tooltipFontType: "Open Sans",
-                    animationSpeed: 2500,
-                    defaultClickThrough: "",
-                    defaultClickThroughSanitize: true,
-                    hexagonSortByDirection: "asc",
-                    hexagonSortByField: "name",
-                    tooltipDisplayMode: "all",
-                    tooltipDisplayTextTriggeredEmpty: "OK",
-                    tooltipPrimarySortDirection: "desc",
-                    tooltipPrimarySortField: "thresholdLevel",
-                    tooltipSecondarySortDirection: "desc",
-                    tooltipSecondarySortField: "value",
-                    tooltipTimestampEnabled: true,
-                    fontSize: 12,
-                    fontAutoScale: true,
-                    gradientEnabled: true,
-                },
-            };
             D3PolystatPanelCtrl = (function (_super) {
                 __extends(D3PolystatPanelCtrl, _super);
                 function D3PolystatPanelCtrl($scope, $injector, templateSrv, alertSrv, $sanitize) {
                     var _this = _super.call(this, $scope, $injector) || this;
                     _this.$sanitize = $sanitize;
-                    lodash_1.default.defaults(_this.panel, panelDefaults);
+                    _this.panelDefaults = {
+                        animationModes: [
+                            { value: "all", text: "Show All" },
+                            { value: "triggered", text: "Show Triggered" },
+                        ],
+                        displayModes: [
+                            { value: "all", text: "Show All" },
+                            { value: "triggered", text: "Show Triggered" },
+                        ],
+                        thresholdStates: [
+                            { value: 0, text: "ok" },
+                            { value: 1, text: "warning" },
+                            { value: 2, text: "critical" },
+                            { value: 3, text: "custom" }
+                        ],
+                        shapes: [
+                            { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
+                            { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
+                            { value: "circle", text: "Circle" },
+                            { value: "cross", text: "Cross" },
+                            { value: "diamond", text: "Diamond" },
+                            { value: "square", text: "Square" },
+                            { value: "star", text: "Star" },
+                            { value: "triangle", text: "Triangle" },
+                            { value: "wye", text: "Wye" },
+                        ],
+                        savedComposites: [],
+                        savedOverrides: [],
+                        fontSizes: [
+                            4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+                            16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32,
+                            34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
+                            56, 58, 60, 62, 64, 66, 68, 70
+                        ],
+                        fontTypes: [
+                            "Open Sans", "Arial", "Avant Garde", "Bookman",
+                            "Consolas", "Courier", "Courier New", "Futura",
+                            "Garamond", "Helvetica",
+                            "Palatino", "Times", "Times New Roman",
+                            "Verdana"
+                        ],
+                        unitFormats: kbn_1.default.getUnitFormats(),
+                        operatorOptions: [
+                            { value: "avg", text: "Average" },
+                            { value: "count", text: "Count" },
+                            { value: "current", text: "Current" },
+                            { value: "delta", text: "Delta" },
+                            { value: "diff", text: "Difference" },
+                            { value: "first", text: "First" },
+                            { value: "logmin", text: "Log Min" },
+                            { value: "max", text: "Max" },
+                            { value: "min", text: "Min" },
+                            { value: "name", text: "Name" },
+                            { value: "last_time", text: "Time of Last Point" },
+                            { value: "time_step", text: "Time Step" },
+                            { value: "total", text: "Total" },
+                        ],
+                        operatorName: "avg",
+                        colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+                        notcolors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
+                        decimals: 2,
+                        format: "none",
+                        sortDirections: [
+                            { value: "asc", text: "Ascending" },
+                            { value: "desc", text: "Descending" },
+                        ],
+                        sortFields: [
+                            { value: "name", text: "Name" },
+                            { value: "thresholdLevel", text: "Threshold Level" },
+                            { value: "value", text: "Value" },
+                        ],
+                        polystat: {
+                            shape: "hexagon_pointed_top",
+                            globalDisplayMode: "all",
+                            globalOperatorName: "avg",
+                            rows: "",
+                            rowAutoSize: true,
+                            columns: "",
+                            columnAutoSize: true,
+                            displayLimit: 100,
+                            maxMetrics: 0,
+                            radius: "",
+                            radiusAutoSize: true,
+                            tooltipFontSize: 12,
+                            tooltipFontType: "Open Sans",
+                            animationSpeed: 2500,
+                            defaultClickThrough: "",
+                            defaultClickThroughSanitize: true,
+                            hexagonSortByDirection: "asc",
+                            hexagonSortByField: "name",
+                            tooltipDisplayMode: "all",
+                            tooltipDisplayTextTriggeredEmpty: "OK",
+                            tooltipPrimarySortDirection: "desc",
+                            tooltipPrimarySortField: "thresholdLevel",
+                            tooltipSecondarySortDirection: "desc",
+                            tooltipSecondarySortField: "value",
+                            tooltipTimestampEnabled: true,
+                            fontSize: 12,
+                            fontAutoScale: true,
+                            gradientEnabled: true,
+                        },
+                    };
+                    lodash_1.default.defaults(_this.panel, _this.panelDefaults);
                     _this.panel.d3DivId = "d3_svg_" + _this.panel.id;
                     _this.containerDivId = "container_" + _this.panel.d3DivId;
                     _this.alertSrvRef = alertSrv;
@@ -194,7 +194,7 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     this.panelContainer = container;
                     this.panel.svgContainer = container;
                 };
-                D3PolystatPanelCtrl.prototype.getPanelWidth = function () {
+                D3PolystatPanelCtrl.prototype.getPanelWidthFailsafe = function () {
                     var trueWidth = 0;
                     if (typeof this.panel.gridPos !== "undefined") {
                         var viewPortWidth_1 = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -253,7 +253,9 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                 D3PolystatPanelCtrl.prototype.renderD3 = function () {
                     this.setValues(this.data);
                     this.clearSVG();
-                    this.panelWidth = this.getPanelWidth();
+                    if (this.panelWidth === 0) {
+                        this.panelWidth = this.getPanelWidthFailsafe();
+                    }
                     this.panelHeight = this.getPanelHeight();
                     var margin = { top: 0, right: 0, bottom: 0, left: 0 };
                     var width = this.panelWidth;
@@ -312,10 +314,13 @@ System.register(["app/plugins/sdk", "lodash", "jquery", "app/core/utils/kbn", "a
                     d3ByClass.append("<div id=\"" + ctrl.containerDivId + "\"></div>");
                     var container = d3ByClass[0].childNodes[0];
                     ctrl.setContainer(container);
+                    elem = elem.find(".grafana-d3-polystat");
                     function render() {
+                        ctrl.panelWidth = elem.width() + 20;
                         ctrl.renderD3();
                     }
                     this.events.on("render", function () {
+                        ctrl.panelWidth = elem.width() + 20;
                         render();
                         ctrl.renderingCompleted();
                     });

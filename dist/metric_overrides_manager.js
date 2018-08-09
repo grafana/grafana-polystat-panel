@@ -29,7 +29,7 @@ System.register(["lodash", "app/core/utils/kbn"], function (exports_1, context_1
                             return series.alias;
                         });
                     };
-                    this.metricOverrides = savedOverrides || new Array();
+                    this.metricOverrides = savedOverrides;
                 }
                 MetricOverridesManager.prototype.addMetricOverride = function () {
                     var override = new MetricOverride();

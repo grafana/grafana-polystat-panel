@@ -34,6 +34,8 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     this.opt.height -= 10;
                     this.opt.width -= 20;
                     this.data = this.opt.data;
+                    this.numColumns = 5;
+                    this.numRows = 5;
                     this.maxColumnsUsed = 0;
                     this.maxRowsUsed = 0;
                     if (opt.rowAutoSize && opt.columnAutoSize) {
@@ -111,7 +113,8 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     var renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
                     var xoffset = (width - renderWidth + radiusX) / 2;
                     var yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
-                    var tooltip = d3.select(this.svgContainer)
+                    var tooltip = d3
+                        .select("body")
                         .append("div")
                         .attr("id", this.d3DivId + "-tooltip")
                         .attr("class", "polystat-panel-tooltip")
@@ -129,7 +132,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     var data = this.data;
                     var defs = svg.append("defs");
                     var okGradient = defs.append("linearGradient")
-                        .attr("id", "linear-gradient-state-ok");
+                        .attr("id", this.d3DivId + "linear-gradient-state-ok");
                     okGradient
                         .attr("x1", "30%")
                         .attr("y1", "30%")
@@ -144,7 +147,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .attr("offset", "100%")
                         .attr("stop-color", "#389232");
                     var warningGradient = defs.append("linearGradient")
-                        .attr("id", "linear-gradient-state-warning");
+                        .attr("id", this.d3DivId + "linear-gradient-state-warning");
                     warningGradient.attr("x1", "30%")
                         .attr("y1", "30%")
                         .attr("x2", "70%")
@@ -156,7 +159,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .attr("offset", "100%")
                         .attr("stop-color", "#FF8808");
                     var criticalGradient = defs.append("linearGradient")
-                        .attr("id", "linear-gradient-state-critical");
+                        .attr("id", this.d3DivId + "linear-gradient-state-critical");
                     criticalGradient
                         .attr("x1", "30%")
                         .attr("y1", "30%")
@@ -171,7 +174,7 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         .attr("offset", "100%")
                         .attr("stop-color", "#b31217");
                     var unknownGradient = defs.append("linearGradient")
-                        .attr("id", "linear-gradient-state-unknown");
+                        .attr("id", this.d3DivId + "linear-gradient-state-unknown");
                     unknownGradient
                         .attr("x1", "30%")
                         .attr("y1", "30%")
@@ -253,13 +256,13 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         if (_this.opt.polystat.gradientEnabled) {
                             switch (data[i].thresholdLevel) {
                                 case 0:
-                                    return "url(#linear-gradient-state-ok)";
+                                    return "url(#" + _this.d3DivId + "linear-gradient-state-ok)";
                                 case 1:
-                                    return "url(#linear-gradient-state-warning)";
+                                    return "url(#" + _this.d3DivId + "linear-gradient-state-warning)";
                                 case 2:
-                                    return "url(#linear-gradient-state-critical)";
+                                    return "url(#" + _this.d3DivId + "linear-gradient-state-critical)";
                                 default:
-                                    return "url(#linear-gradient-state-unknown)";
+                                    return "url(#" + _this.d3DivId + "linear-gradient-state-unknown)";
                             }
                         }
                         else {
@@ -279,22 +282,29 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                         }
                     })
                         .on("mousemove", function () {
-                        var mouse = d3.mouse(svg.node());
-                        var xpos = mouse[0] + 135;
-                        var ypos = mouse[1];
+                        var viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                        var mouse = d3.mouse(d3.select("body").node());
+                        var xpos = mouse[0] - 50;
+                        if (xpos < 0) {
+                            xpos = 0;
+                        }
+                        if ((xpos + 200) > viewPortWidth) {
+                            xpos = viewPortWidth - 200;
+                        }
+                        var ypos = mouse[1] + 5;
                         tooltip
                             .style("left", xpos + "px")
-                            .style("top", (ypos + 50) + "px");
+                            .style("top", ypos + "px");
                     })
                         .on("mouseover", function (d, i) {
                         tooltip.transition().duration(200).style("opacity", 0.9);
                         tooltip.html(_this.opt.tooltipContent[i])
                             .style("font-size", _this.opt.tooltipFontSize)
                             .style("font-family", _this.opt.tooltipFontType)
-                            .style("left", (d.x + 135) + "px")
-                            .style("top", d.y + 50);
+                            .style("left", (d.x - 5) + "px")
+                            .style("top", (d.y - 5) + "px");
                     })
-                        .on("mouseout", function (_) {
+                        .on("mouseout", function () {
                         tooltip
                             .transition()
                             .duration(500)
@@ -489,6 +499,14 @@ System.register(["./external/d3.min.js", "./external/d3-hexbin.js", "./utils", "
                     var maxRowsUsed = 0;
                     var columnsUsed = 0;
                     var maxColumnsUsed = 0;
+                    if (this.numRows === Infinity) {
+                        console.log("numRows infinity...");
+                        return points;
+                    }
+                    if (this.numColumns === NaN) {
+                        console.log("numColumns NaN");
+                        return points;
+                    }
                     for (var i = 0; i < this.numRows; i++) {
                         if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
                             maxRowsUsed += 1;
