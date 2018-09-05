@@ -1,4 +1,8 @@
+/////<reference path="../node_modules/@types/lodash/index.d.ts" />
+
+// import { isNumber } from "lodash";
 import _ from "lodash";
+//import _ = require("lodash");
 
 function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaledDecimals; } {
   if (_.isNumber(panelDecimals)) {
