@@ -4,6 +4,7 @@
       "outDir": "dist",
       "target": "es6",
       "lib": ["es6", "dom"],
+      "typeRoots": [ "node_modules/@types/" ],
       "rootDir": "src/",
       "module": "commonjs",
       "declaration": true,

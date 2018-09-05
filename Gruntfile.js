@@ -70,10 +70,12 @@ module.exports = function(grunt) {
         dest: 'dist',
         options: {
           module: 'system',
+          skipLibCheck: true,
           target: 'es5',
           rootDir: 'src',
           sourceMap: true,
           sourceRoot: 'src',
+          typeRoots: [ 'node_modules/@types/' ],
           declaration: true,
           emitDecoratorMetadata: true,
           experimentalDecorators: true,
