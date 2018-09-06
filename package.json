@@ -42,6 +42,7 @@
     "jest": "^23.5.0",
     "jquery": "^3.3.1",
     "load-grunt-tasks": "^4.0.0",
+    "moment": "^2.22.2",
     "node-sass": "^4.9.3",
     "plugin-typescript": "^8.0.0",
     "regenerator-runtime": "^0.12.1",

@@ -79,7 +79,7 @@ export class CompositesManager {
             var regex = kbn.stringToJsRegex(aComposite.compositeName);
             var matches = pattern.match(regex);
             if (matches && matches.length > 0) {
-                return index;
+              return index;
             }
         }
         return -1;
@@ -99,7 +99,7 @@ export class CompositesManager {
                     // match regex
                     // seriesname may not be defined yet, skip
                     if (typeof aMetric.seriesName === "undefined") {
-                        continue;
+                      continue;
                     }
                     let regex = kbn.stringToJsRegex(aMetric.seriesName);
                     let matches = data[index].name.match(regex);
@@ -171,25 +171,38 @@ export class CompositesManager {
         var worstSeries = series1;
         var series1thresholdLevel = this.getThresholdLevelForSeriesValue(series1);
         var series2thresholdLevel = this.getThresholdLevelForSeriesValue(series2);
-        //console.log("Series1 " + series1.name + " threshold level: " + series1thresholdLevel);
-        //console.log("Series2 " + series2.name + " threshold level: " + series2thresholdLevel);
+        // State 3 is Unknown and is not be worse than CRITICAL (state 2)
         if (series2thresholdLevel > series1thresholdLevel) {
-            // series2 has higher threshold violation
-            worstSeries = series2;
+          // series2 has higher threshold violation
+          worstSeries = series2;
+        }
+        if (series1thresholdLevel === 3) {
+          // series1 is in state unknown, check if series2 is in state 1 or 2
+          switch (series2thresholdLevel) {
+            case 1:
+              worstSeries = series2;
+              break;
+            case 2:
+              worstSeries = series2;
+            break;
+          }
         }
         return worstSeries;
     }
 
-       // user may define the threshold with just one value
+    // user may define the threshold with just one value
     getThresholdLevelForSeriesValue(series): number {
       var value = series.value;
+      if (value === null) {
+        return 3; // No Data
+      }
+      // assume OK state
       let lastState = 0;
       for (let i = series.thresholds.length - 1; i >= 0; i--) {
         let aThreshold = series.thresholds[i];
-          if (value >= aThreshold.value) {
-            return aThreshold.state;
-          }
-          lastState = aThreshold.state;
+        if (value >= aThreshold.value) {
+          return aThreshold.state;
+        }
       }
       return lastState;
     }

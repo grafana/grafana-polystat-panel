@@ -182,7 +182,6 @@ export class MetricOverridesManager {
         if (value >= aThreshold.value) {
           return aThreshold.state;
         }
-        lastState = aThreshold.state;
       }
       return lastState;
     }
