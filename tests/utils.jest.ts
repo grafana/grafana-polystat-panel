@@ -1,10 +1,11 @@
 /**
  * Tests for utils
  */
+
 import {GetDecimalsForValue} from "../src/utils";
 
 describe("Utils GetDecimalsForValue", () => {
-  describe("With whatever", () => {
+  describe("With decimals", () => {
     it("returns 2 decimals", () => {
       let result = GetDecimalsForValue(10.55, 2);
       expect(result.decimals).toBe(2);

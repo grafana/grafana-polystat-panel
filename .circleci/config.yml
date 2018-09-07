@@ -20,6 +20,9 @@ jobs:
       - run:
           name: Install grunt
           command: 'sudo npm install -g grunt'
+      - run:
+          name: Install jest
+          command: 'sudo npm install -g jest'
       - run: node -p "require('node-sass').info"
       - save_cache:
           key: v2-dependencies-{{ checksum "package.json" }}

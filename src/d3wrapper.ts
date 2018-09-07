@@ -86,7 +86,7 @@ export class D3Wrapper {
       if (this.opt.width > this.opt.height) {
         // ratio of width to height
         let ratio = this.opt.width / this.opt.height * .66;
-        this.numColumns = Math.ceil(squared) * ratio;
+        this.numColumns = Math.ceil(squared * ratio);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
@@ -95,16 +95,14 @@ export class D3Wrapper {
         if ((this.numColumns % 2) && (this.numColumns > 2)) {
           this.numColumns -= 1;
         }
-        this.numRows = Math.ceil(this.data.length / this.numColumns * ratio);
+        this.numRows = Math.floor(this.data.length / this.numColumns * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
-        //console.log("Calculated columns = " + this.numColumns);
-        //console.log("Calculated rows = " + this.numRows);
-        //console.log("Number of data items to render = " + this.data.length);
+        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
       } else {
         let ratio = this.opt.height / this.opt.width * .66;
-        this.numRows = Math.ceil(squared) * ratio;
+        this.numRows = Math.ceil(squared * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
@@ -112,12 +110,24 @@ export class D3Wrapper {
         if ((this.numRows % 2) && (this.numRows > 2)) {
           this.numRows -= 1;
         }
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+        this.numColumns = Math.floor(this.data.length / this.numRows * ratio);
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
       }
+      if (this.data.length === 1) {
+        this.numColumns = 1;
+        this.numRows = 1;
+      }
+      // prefer more columns
+      if (this.data.length === this.numColumns) {
+        this.numRows = 1;
+      }
     }
+    //console.log("Calculated columns = " + this.numColumns);
+    //console.log("Calculated rows = " + this.numRows);
+    //console.log("Number of data items to render = " + this.data.length);
+
     if (this.opt.radiusAutoSize) {
       this.hexRadius = this.getAutoHexRadius();
       this.autoHexRadius = this.getAutoHexRadius();
@@ -143,11 +153,14 @@ export class D3Wrapper {
     // the "space" taken by the hexagons interleaved
     // space taken is 2/3 of diameterY * # rows
     let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
-    //renderHeight = (this.maxRowsUsed * this.autoHexRadius * .66);
     // difference of width and renderwidth is our play room, split that in half
     // offset is from center of hexagon, not from the edge
-    // also, if there is just one column and one row, center it
     let xoffset = (width - renderWidth + radiusX) / 2;
+    // if there is just one column and one row, center it
+    if (this.numRows === 1) {
+      renderHeight = diameterY + (diameterY * .33);
+      xoffset = ((width - renderWidth) / 2) + radiusX;
+    }
     // y diameter of hexagon is larger than x diameter
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
 
@@ -320,14 +333,15 @@ export class D3Wrapper {
 
     //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
+
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
         .attr("class", "hexagon")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
         .attr("d", customShape)
-        .attr("stroke", "black")
-        .attr("stroke-width", "2px")
+        .attr("stroke", this.opt.polystat.polygonBorderColor)
+        .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
         .style("fill", (_, i) => {
           if (this.opt.polystat.gradientEnabled) {
             switch (data[i].thresholdLevel) {
@@ -449,14 +463,19 @@ export class D3Wrapper {
         // get the total count of metrics (with composite members), and loop through
         let submetricCount = this.data[i].members.length;
         let longestDisplayedContent = "";
-        while (counter < submetricCount) {
-          let checkContent = this.formatValueContent(i, counter, this);
-          if (checkContent) {
-            if (checkContent.length > longestDisplayedContent.length) {
-              longestDisplayedContent = checkContent;
+        if (submetricCount > 0) {
+          while (counter < submetricCount) {
+            let checkContent = this.formatValueContent(i, counter, this);
+            if (checkContent) {
+              if (checkContent.length > longestDisplayedContent.length) {
+                longestDisplayedContent = checkContent;
+              }
             }
+            counter++;
           }
-          counter++;
+        } else {
+          // non-composites use the formatted size of the metric value
+          longestDisplayedContent = this.formatValueContent(i, counter, this);
         }
         let content = null;
         counter = 0;
@@ -478,7 +497,6 @@ export class D3Wrapper {
           250);
         var valueTextLocation = svg.select("text.valueLabel" + i);
         valueTextLocation.attr("font-size", dynamicFontSize + "px");
-
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;

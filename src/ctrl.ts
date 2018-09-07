@@ -106,6 +106,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThroughSanitize: true,
       hexagonSortByDirection: "asc",
       hexagonSortByField: "name",
+      polygonBorderSize: 2,
+      polygonBorderColor: "black",
       tooltipDisplayMode: "all",
       tooltipDisplayTextTriggeredEmpty: "OK",
       tooltipPrimarySortDirection: "desc",
@@ -279,6 +281,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       margin.top = 7;
     }
     margin.bottom = 0;
+
+    // new attributes may not be defined in older panel definitions
+    if (typeof this.panel.polystat.polygonBorderSize === "undefined") {
+      this.panel.polystat.polygonBorderSize = 2;
+    }
+    if (typeof this.panel.polystat.polygonBorderColor === "undefined") {
+      this.panel.polystat.polygonBorderColor = "black";
+    }
+
     var opt = {
       width: width,
       height: height,
@@ -511,7 +522,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   validateRadiusValue() {
     let radius = this.panel.polystat.radius;
     let newRadius = 25;
-    if (radius) {
+    if (radius !== null) {
       if (!isNaN(parseInt(radius, 10))) {
         let checkRadius = parseInt(radius, 10);
         if (checkRadius > 0) {
@@ -520,6 +531,25 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
     }
     this.panel.polystat.radius = newRadius;
+    this.render();
+  }
+
+  validateBorderSizeValue() {
+    let borderSize = this.panel.polystat.polygonBorderSize;
+    let newBorderSize = 2;
+    if (borderSize !== null) {
+      if (!isNaN(parseInt(borderSize, 10))) {
+        let checkBorderSize = parseInt(borderSize, 10);
+        if (checkBorderSize >= 0) {
+          newBorderSize = checkBorderSize;
+        }
+      }
+    }
+    this.panel.polystat.polygonBorderSize = newBorderSize;
+    this.render();
+  }
+
+  updatePolygonBorderColor() {
     this.render();
   }
 

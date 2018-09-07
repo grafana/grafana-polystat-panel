@@ -1,3 +1,4 @@
+const sass = require('node-sass');
 module.exports = function(grunt) {
 
   require('load-grunt-tasks')(grunt);
@@ -66,35 +67,13 @@ module.exports = function(grunt) {
 
     ts: {
       build: {
-        src: ['src/**/*.ts', '!src/**/*.d.ts'],
-        dest: 'dist',
-        options: {
-          module: 'system',
-          target: 'es5',
-          rootDir: 'src',
-          sourceMap: true,
-          sourceRoot: 'src',
-          declaration: true,
-          emitDecoratorMetadata: true,
-          experimentalDecorators: true,
-          noImplicitAny: false,
-          noUnusedLocals: true,
-          noUnusedParameters: true,
-          noImplicitReturns: true,
-          noImplicitThis: true,
-          noFallthroughCasesInSwitch: true,
-          strictNullChecks: false,
-          strictPropertyInitialization: false,
-          allowJs: false,
-          jsx: "react",
-          strictFunctionTypes: false,
-          alwaysStrict: true
-        }
+        tsconfig: './tsconfig.json'
       }
     },
 
     sass: {
       options: {
+        implementation: sass,
         sourceMap: true
       },
       dist: {
