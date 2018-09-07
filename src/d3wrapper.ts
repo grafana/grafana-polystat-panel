@@ -320,14 +320,15 @@ export class D3Wrapper {
 
     //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
+
     svg.selectAll(".hexagon")
         .data(ahexbin(this.calculatedPoints))
         .enter().append("path")
         .attr("class", "hexagon")
         .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
         .attr("d", customShape)
-        .attr("stroke", "black")
-        .attr("stroke-width", "2px")
+        .attr("stroke", this.opt.polystat.polygonBorderColor)
+        .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
         .style("fill", (_, i) => {
           if (this.opt.polystat.gradientEnabled) {
             switch (data[i].thresholdLevel) {
