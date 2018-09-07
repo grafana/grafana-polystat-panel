@@ -86,7 +86,7 @@ export class D3Wrapper {
       if (this.opt.width > this.opt.height) {
         // ratio of width to height
         let ratio = this.opt.width / this.opt.height * .66;
-        this.numColumns = Math.ceil(squared) * ratio;
+        this.numColumns = Math.ceil(squared * ratio);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
@@ -95,14 +95,14 @@ export class D3Wrapper {
         if ((this.numColumns % 2) && (this.numColumns > 2)) {
           this.numColumns -= 1;
         }
-        this.numRows = Math.ceil(this.data.length / this.numColumns * ratio);
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+        this.numRows = Math.floor(this.data.length / this.numColumns * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
+        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
       } else {
         let ratio = this.opt.height / this.opt.width * .66;
-        this.numRows = Math.ceil(squared) * ratio;
+        this.numRows = Math.ceil(squared * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
@@ -110,13 +110,17 @@ export class D3Wrapper {
         if ((this.numRows % 2) && (this.numRows > 2)) {
           this.numRows -= 1;
         }
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+        this.numColumns = Math.floor(this.data.length / this.numRows * ratio);
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
       }
       if (this.data.length === 1) {
         this.numColumns = 1;
+        this.numRows = 1;
+      }
+      // prefer more columns
+      if (this.data.length === this.numColumns) {
         this.numRows = 1;
       }
     }
@@ -153,9 +157,9 @@ export class D3Wrapper {
     // offset is from center of hexagon, not from the edge
     let xoffset = (width - renderWidth + radiusX) / 2;
     // if there is just one column and one row, center it
-    if ((this.numColumns === 1) && (this.numRows === 1)) {
+    if (this.numRows === 1) {
       renderHeight = diameterY + (diameterY * .33);
-      xoffset = width / 2;
+      xoffset = ((width - renderWidth) / 2) + radiusX;
     }
     // y diameter of hexagon is larger than x diameter
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
