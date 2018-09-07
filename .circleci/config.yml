@@ -1,0 +1,51 @@
+defaults: &defaults
+  working_directory: ~/grafana-polystat-panel
+  docker:
+    - image: circleci/node:10.9.0-jessie
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@6.4.0'
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "package.json" }}
+      - run: npm install
+      - run: npm audit fix
+      - run:
+          name: Install grunt
+          command: 'sudo npm install -g grunt'
+      - run: node -p "require('node-sass').info"
+      - save_cache:
+          key: v2-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run grunt
+          command: |
+            grunt
+  grunttest:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: npm install
+      - run:
+          name: Install grunt globally
+          command: 'sudo npm install -g grunt'
+      - run:
+          name: Install grunt locally
+          command: 'npm install grunt'
+      - run:
+          name: Test
+          command: grunt test
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - build
