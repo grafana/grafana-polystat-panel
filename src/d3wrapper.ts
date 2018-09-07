@@ -96,12 +96,10 @@ export class D3Wrapper {
           this.numColumns -= 1;
         }
         this.numRows = Math.ceil(this.data.length / this.numColumns * ratio);
+        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
-        //console.log("Calculated columns = " + this.numColumns);
-        //console.log("Calculated rows = " + this.numRows);
-        //console.log("Number of data items to render = " + this.data.length);
       } else {
         let ratio = this.opt.height / this.opt.width * .66;
         this.numRows = Math.ceil(squared) * ratio;
@@ -117,7 +115,15 @@ export class D3Wrapper {
           this.numColumns = 1;
         }
       }
+      if (this.data.length === 1) {
+        this.numColumns = 1;
+        this.numRows = 1;
+      }
     }
+    //console.log("Calculated columns = " + this.numColumns);
+    //console.log("Calculated rows = " + this.numRows);
+    //console.log("Number of data items to render = " + this.data.length);
+
     if (this.opt.radiusAutoSize) {
       this.hexRadius = this.getAutoHexRadius();
       this.autoHexRadius = this.getAutoHexRadius();
@@ -143,11 +149,14 @@ export class D3Wrapper {
     // the "space" taken by the hexagons interleaved
     // space taken is 2/3 of diameterY * # rows
     let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
-    //renderHeight = (this.maxRowsUsed * this.autoHexRadius * .66);
     // difference of width and renderwidth is our play room, split that in half
     // offset is from center of hexagon, not from the edge
-    // also, if there is just one column and one row, center it
     let xoffset = (width - renderWidth + radiusX) / 2;
+    // if there is just one column and one row, center it
+    if ((this.numColumns === 1) && (this.numRows === 1)) {
+      renderHeight = diameterY + (diameterY * .33);
+      xoffset = width / 2;
+    }
     // y diameter of hexagon is larger than x diameter
     let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
 
