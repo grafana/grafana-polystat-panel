@@ -450,14 +450,19 @@ export class D3Wrapper {
         // get the total count of metrics (with composite members), and loop through
         let submetricCount = this.data[i].members.length;
         let longestDisplayedContent = "";
-        while (counter < submetricCount) {
-          let checkContent = this.formatValueContent(i, counter, this);
-          if (checkContent) {
-            if (checkContent.length > longestDisplayedContent.length) {
-              longestDisplayedContent = checkContent;
+        if (submetricCount > 0) {
+          while (counter < submetricCount) {
+            let checkContent = this.formatValueContent(i, counter, this);
+            if (checkContent) {
+              if (checkContent.length > longestDisplayedContent.length) {
+                longestDisplayedContent = checkContent;
+              }
             }
+            counter++;
           }
-          counter++;
+        } else {
+          // non-composites use the formatted size of the metric value
+          longestDisplayedContent = this.formatValueContent(i, counter, this);
         }
         let content = null;
         counter = 0;
@@ -479,7 +484,6 @@ export class D3Wrapper {
           250);
         var valueTextLocation = svg.select("text.valueLabel" + i);
         valueTextLocation.attr("font-size", dynamicFontSize + "px");
-
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
