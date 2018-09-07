@@ -65,6 +65,8 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
             defaultClickThroughSanitize: boolean;
             hexagonSortByDirection: string;
             hexagonSortByField: string;
+            polygonBorderSize: number;
+            polygonBorderColor: string;
             tooltipDisplayMode: string;
             tooltipDisplayTextTriggeredEmpty: string;
             tooltipPrimarySortDirection: string;
@@ -115,6 +117,8 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     validateColumnValue(): void;
     validateRowValue(): void;
     validateRadiusValue(): void;
+    validateBorderSizeValue(): void;
+    updatePolygonBorderColor(): void;
     getDefaultClickThrough(): any;
 }
 export { D3PolystatPanelCtrl, D3PolystatPanelCtrl as MetricsPanelCtrl };

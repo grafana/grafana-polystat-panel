@@ -167,7 +167,7 @@ This panel is based on this D3 example:
 - Panel no longer shares data/affects other panels of same type
 ##### v1.0.12
 - Fixed composite state evaluations
-- Added ability to set color and size of shape border
+- Added ability to set color and size of polygon border
 - Single shape now centers itself
-- Tooltip now has decimal option
+- Non-composites now show their value if possible
 - New tests added to verify fixes
