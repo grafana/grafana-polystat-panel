@@ -1,4 +1,5 @@
 # Grafana Polystat Panel
+[![CircleCI](https://circleci.com/gh/grafana/grafana-polystat-panel/tree/master.svg?style=svg)](https://circleci.com/gh/grafana/grafana-polystat-panel/tree/master)
 
 This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](http://www.grafana.org) 3.x/4.x/5.x.
 
