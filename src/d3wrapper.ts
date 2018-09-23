@@ -26,12 +26,14 @@ export class D3Wrapper {
     bottom : number,
     left : number,
   };
+  fontType: string;
 
   constructor(templateSrv: any, svgContainer: any, d3DivId, opt) {
     this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
     this.d3DivId = d3DivId;
     this.data = opt.data;
+    this.fontType = "Roboto";
     //this.hexRadius = opt.hexRadius;
     this.opt = opt;
     // title is 26px
@@ -301,7 +303,9 @@ export class D3Wrapper {
     }
 
     // calculate the fontsize based on the shape and the text
-    let activeFontSize = this.opt.polystat.fontSize;
+    let activeLabelFontSize = this.opt.polystat.fontSize;
+    // font sizes are independent for label and values
+    let activeValueFontSize = this.opt.polystat.fontSize;
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
       let maxLabel = "";
@@ -312,19 +316,19 @@ export class D3Wrapper {
       }
       // estimate how big of a font can be used
       // if it is too small, hide everything
-      let estimateFontSize = getTextSizeForWidth(
+      let estimateLabelFontSize = getTextSizeForWidth(
         maxLabel,
-        "?px sans-serif",
+        "?px " + this.fontType,
         shapeWidth, // pad
         10,
         250);
-      estimateFontSize = getTextSizeForWidth(
+      estimateLabelFontSize = getTextSizeForWidth(
         maxLabel,
-        "?px sans-serif",
-        shapeWidth - (estimateFontSize * 1.2), // pad
+        "?px " + this.fontType,
+        shapeWidth - (estimateLabelFontSize * 1.2), // pad
         10,
         250);
-      activeFontSize = estimateFontSize;
+        activeLabelFontSize = estimateLabelFontSize;
     }
 
     // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
@@ -414,7 +418,7 @@ export class D3Wrapper {
       .attr("y", function (d) { return d.y; })
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif")
-      .attr("font-size", activeFontSize + "px")
+      .attr("font-size", activeLabelFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
         let item = data[i];
@@ -431,7 +435,8 @@ export class D3Wrapper {
 
     var frames = 0;
 
-    let dynamicFontSize = activeFontSize;
+    let dynamicLabelFontSize = activeLabelFontSize;
+    let dynamicValueFontSize = activeValueFontSize;
 
     textspot.enter()
       .append("text")
@@ -442,12 +447,12 @@ export class D3Wrapper {
         return d.x;
       })
       .attr("y", function (d) {
-        return d.y + activeFontSize + 10; // offset by fontsize and 10px vertical padding
+        return d.y + activeLabelFontSize + 10; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
-      .attr("font-family", "sans-serif")
+      .attr("font-family", this.fontType)
       .attr("fill", "black")
-      .attr("font-size", dynamicFontSize + "px")
+      .attr("font-size", dynamicLabelFontSize + "px")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
@@ -462,41 +467,53 @@ export class D3Wrapper {
         // this always starts from frame 0, look through every metric including composite members for the longest text possible
         // get the total count of metrics (with composite members), and loop through
         let submetricCount = this.data[i].members.length;
-        let longestDisplayedContent = "";
+        let longestDisplayedValueContent = "";
         if (submetricCount > 0) {
           while (counter < submetricCount) {
             let checkContent = this.formatValueContent(i, counter, this);
             if (checkContent) {
-              if (checkContent.length > longestDisplayedContent.length) {
-                longestDisplayedContent = checkContent;
+              if (checkContent.length > longestDisplayedValueContent.length) {
+                longestDisplayedValueContent = checkContent;
               }
             }
             counter++;
           }
         } else {
           // non-composites use the formatted size of the metric value
-          longestDisplayedContent = this.formatValueContent(i, counter, this);
+          longestDisplayedValueContent = this.formatValueContent(i, counter, this);
         }
+        //console.log("longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
         counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        dynamicFontSize = getTextSizeForWidth(
-          longestDisplayedContent,
+        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
+        /*
+        dynamicValueFontSize = getTextSizeForWidth(
+          longestDisplayedValueContent,
           "?px sans-serif",
           shapeWidth,
           6,
           250);
-        dynamicFontSize = getTextSizeForWidth(
-          longestDisplayedContent,
-          "?px sans-serif",
-          shapeWidth - (dynamicFontSize * 3), // pad by 1.5 chars each side
+          */
+        dynamicValueFontSize = getTextSizeForWidth(
+          longestDisplayedValueContent,
+          "?px " + this.fontType,
+          shapeWidth - (dynamicValueFontSize * 2), // pad by 1 chars each side
           6,
-          250);
+          250
+        );
+        // value should never be larger than the label
+        if (dynamicValueFontSize > dynamicLabelFontSize) {
+          dynamicValueFontSize = dynamicLabelFontSize;
+        }
+        //console.log("dynamicLabelFontSize: " + dynamicLabelFontSize);
+        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
-        valueTextLocation.attr("font-size", dynamicFontSize + "px");
+        // use the dynamic size for the value
+        valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
@@ -517,7 +534,7 @@ export class D3Wrapper {
               // TODO: add custom content for composite ok state
               content = "";
               // set the font size to be the same as the label above
-              valueTextLocation.attr("font-size", activeFontSize + "px");
+              valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
             }
             return content;
           });
@@ -656,11 +673,11 @@ export class D3Wrapper {
     let maxColumnsUsed = 0;
     // when duplicating panels, this gets odd
     if (this.numRows === Infinity) {
-      console.log("numRows infinity...");
+      //console.log("numRows infinity...");
       return points;
     }
     if (this.numColumns === NaN) {
-      console.log("numColumns NaN");
+      //console.log("numColumns NaN");
       return points;
     }
     for (var i = 0; i < this.numRows; i++) {
