@@ -72,7 +72,7 @@
 					<tip>Font Size</tip>
 				</label>
 				<div class="gf-form-select-wrapper width-6">
-					<select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.panel.fontSizes"
+					<select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.fontSizes"
 			    		ng-change="ctrl.refresh()">
 					</select>
 				</div>
@@ -93,7 +93,7 @@
 				<tip>Sort direction</tip>
 			</label>
 			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.panel.sortDirections"
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
 				 ng-change="ctrl.refresh()">
 				</select>
 			</div>
@@ -123,7 +123,7 @@
 			<tip>The font of the tooltip</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipFontType" ng-options="f for f in ctrl.panel.fontTypes"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipFontType" ng-options="f for f in ctrl.fontTypes"
 			    ng-change="ctrl.refresh()">
 			</select>
 		</div>
@@ -148,7 +148,7 @@
 			<tip>Primary sort direction</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.panel.sortDirections"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
 			 ng-change="ctrl.refresh()">
 			</select>
 		</div>
@@ -166,7 +166,7 @@
 			<tip>Secondary sort direction</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.panel.sortDirections"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
 			 ng-change="ctrl.refresh()">
 			</select>
 		</div>
@@ -174,7 +174,7 @@
 			<tip>Secondary Field to sort by</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortField" ng-options="f.value as f.text for f  in ctrl.panel.sortFields"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
 			 ng-change="ctrl.refresh()">
 			</select>
 		</div>
@@ -197,10 +197,25 @@
     <div class="gf-form">
       <label class="gf-form-label width-11">Display</label>
       <div class="gf-form-select-wrapper width-13">
-        <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalDisplayMode" ng-options="f.value as f.text for f in ctrl.panel.displayModes"
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalDisplayMode" ng-options="f.value as f.text for f in ctrl.displayModes"
           ng-change="ctrl.refresh()"></select>
       </div>
     </div>
+    <div class="gf-form">
+      <label class="gf-form-label width-9">Unit</label>
+    </div>
+    <div class="gf-form">
+      <div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="ctrl.panel.globalUnitFormat" dropdown-typeahead2="ctrl.unitFormats"
+        dropdown-typeahead-on-select="ctrl.setGlobalUnitFormat($subItem)">
+      </div>
+    </div>
+    
+    <div class="gf-form">
+      <label class="gf-form-label">Decimals</label>
+      <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.globalDecimals" ng-change="ctrl.refresh()"
+        ng-model-onblur>
+    </div>
+
     <div class="gf-form">
       <label class="gf-form-label width-11">Stat</label>
       <div class="gf-form-select-wrapper width-13">
