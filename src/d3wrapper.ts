@@ -26,15 +26,12 @@ export class D3Wrapper {
     bottom : number,
     left : number,
   };
-  fontType: string;
 
-  constructor(templateSrv: any, svgContainer: any, d3DivId, opt) {
+  constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any) {
     this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
     this.d3DivId = d3DivId;
     this.data = opt.data;
-    this.fontType = "Roboto";
-    //this.hexRadius = opt.hexRadius;
     this.opt = opt;
     // title is 26px
     this.margin = {
@@ -133,12 +130,14 @@ export class D3Wrapper {
     if (this.opt.radiusAutoSize) {
       this.hexRadius = this.getAutoHexRadius();
       this.autoHexRadius = this.getAutoHexRadius();
+      console.log("autoHexRadius:" + this.autoHexRadius);
     }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
     var width = this.opt.width;
     var height = this.opt.height;
+    console.log("Detected Width: " + width + " Height: " + height);
     //console.log("autorad:" + this.autoHexRadius);
     var ahexbin = d3hexbin
       .hexbin()
@@ -318,13 +317,13 @@ export class D3Wrapper {
       // if it is too small, hide everything
       let estimateLabelFontSize = getTextSizeForWidth(
         maxLabel,
-        "?px " + this.fontType,
+        "?px " + this.opt.polystat.fontType,
         shapeWidth, // pad
         10,
         250);
       estimateLabelFontSize = getTextSizeForWidth(
         maxLabel,
-        "?px " + this.fontType,
+        "?px " + this.opt.polystat.fontType,
         shapeWidth - (estimateLabelFontSize * 1.2), // pad
         10,
         250);
@@ -450,7 +449,7 @@ export class D3Wrapper {
         return d.y + activeLabelFontSize + 10; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
-      .attr("font-family", this.fontType)
+      .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
       .attr("font-size", dynamicLabelFontSize + "px")
       .text( (_, i) => {
@@ -500,7 +499,7 @@ export class D3Wrapper {
           */
         dynamicValueFontSize = getTextSizeForWidth(
           longestDisplayedValueContent,
-          "?px " + this.fontType,
+          "?px " + this.opt.polystat.fontType,
           shapeWidth - (dynamicValueFontSize * 2), // pad by 1 chars each side
           6,
           250
@@ -659,7 +658,7 @@ export class D3Wrapper {
     //which is the same as
     this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
     this.autoWidth -= this.margin.left - this.margin.right;
-    //console.log("autowidth = " + this.autoWidth);
+    console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
   }
 
   // Builds the placeholder polygons needed to represent each metric
