@@ -152,6 +152,11 @@ Then browse to http://localhost:3000
 * bower
 * grunt
 
+## Enable Grafana TestData
+
+`Grafana TestData` is not enabled by default. To enable it, first navigate to the Plugins section, found in your Grafana main menu. Click the Apps tabs in the Plugins section and select the Grafana TestData App. (Or navigate to http://your_grafana_instance/plugins/testdata/edit to go directly there). Finally click the enable button to enable.
+
+
 #### Acknowledgements
 
 This panel is based on this D3 example:
