@@ -205,7 +205,7 @@
       <label class="gf-form-label width-11">Unit</label>
       <div class="gf-form">
         <div class="gf-form-dropdown-typeahead width-13 max-width-20"
-            ng-model="ctrl.panel.globalUnitFormat" dropdown-typeahead2="ctrl.unitFormats"
+            ng-model="ctrl.panel.polystat.globalUnitFormat" dropdown-typeahead2="ctrl.unitFormats"
             dropdown-typeahead-on-select="ctrl.setGlobalUnitFormat($subItem)">
         </div>
     </div>
@@ -213,7 +213,7 @@
     
     <div class="gf-form">
       <label class="gf-form-label width-11">Decimals</label>
-      <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.globalDecimals" ng-change="ctrl.refresh()"
+      <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.polystat.globalDecimals" ng-change="ctrl.refresh()"
         ng-model-onblur>
     </div>
 

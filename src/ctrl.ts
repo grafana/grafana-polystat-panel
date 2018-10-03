@@ -12,6 +12,7 @@ import { PolystatModel } from "./polystatmodel";
 import { MetricOverridesManager } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
+import { GetDecimalsForValue } from "./utils";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -387,6 +388,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         this.polystatData.push(converted);
       }
     }
+    // apply global unit formatting and decimals
+    this.applyGlobalFormatting(this.polystatData);
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
     // apply composites, this will filter as needed and set clickthrough
@@ -407,6 +410,18 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
+
+  applyGlobalFormatting(data: any) {
+    for (let index = 0; index < data.length; index++) {
+      var formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+      if (formatFunc) {
+        let result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+        data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
+        data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+      }
+    }
+  }
+
 
   filterByGlobalDisplayMode(data: any) {
     let filteredMetrics = new Array<number>();
@@ -561,6 +576,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       url = this.$sanitize(url);
     }
     return url;
+  }
+
+  setGlobalUnitFormat(subItem) {
+    this.panel.polystat.globalUnitFormat = subItem.value;
   }
 }
 
