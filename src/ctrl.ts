@@ -50,7 +50,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     "Open Sans", "Arial", "Avant Garde", "Bookman",
     "Consolas", "Courier", "Courier New", "Futura",
     "Garamond", "Helvetica",
-    "Palatino", "Times", "Times New Roman",
+    "Palatino", "Roboto", "Times", "Times New Roman",
     "Verdana"
   ];
   unitFormats = kbn.getUnitFormats();
