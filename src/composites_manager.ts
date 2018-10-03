@@ -198,6 +198,12 @@ export class CompositesManager {
       }
       // assume OK state
       let lastState = 0;
+      // it is possible to have composites without overrides, and the series passed
+      // does not have a threshold
+      // skip evaluation when there are no thresholds
+      if (typeof series.thresholds === "undefined") {
+        return lastState;
+      }
       for (let i = series.thresholds.length - 1; i >= 0; i--) {
         let aThreshold = series.thresholds[i];
         if (value >= aThreshold.value) {
