@@ -42,7 +42,7 @@
                             <input type="text" ng-model="composite.clickThrough" ng-blur="ctrl.render()" class="gf-form-input width-30">
                     </div>
                     <div class="gf-form">
-				        <editor-checkbox text="Sanitize" model="composite.sanitizeURLEnabled"></editor-checkbox>
+                <gf-form-switch class="gf-form" label-class="width-8" switch-class="max-width-7" label="Sanitize" checked="composite.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
 			        </div>
                 </div>
                 <!-- next row holds metric list -->
