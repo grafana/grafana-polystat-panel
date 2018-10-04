@@ -33,14 +33,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   ];
   shapes = [
     { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
-    { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
+    //{ value: "hexagon_flat_top", text: "Hexagon Flat Top" },
     { value: "circle", text: "Circle" },
-    { value: "cross", text: "Cross" },
-    { value: "diamond", text: "Diamond" },
-    { value: "square", text: "Square" },
-    { value: "star", text: "Star" },
-    { value: "triangle", text: "Triangle" },
-    { value: "wye", text: "Wye" }
+    //{ value: "cross", text: "Cross" },
+    //{ value: "diamond", text: "Diamond" },
+    //{ value: "square", text: "Square" },
+    //{ value: "star", text: "Star" },
+    //{ value: "triangle", text: "Triangle" },
+    //{ value: "wye", text: "Wye" }
   ];
   fontSizes = [
     4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 14, 15,
