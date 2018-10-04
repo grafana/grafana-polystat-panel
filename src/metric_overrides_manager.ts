@@ -2,6 +2,7 @@
 
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
+import { getThresholdLevelForValue, getValueByStatName } from "./threshold_processor";
 
 export class MetricOverride {
     metricName: string;
@@ -73,118 +74,46 @@ export class MetricOverridesManager {
         return -1;
     }
 
+
     applyOverrides(data) {
-        for (let index = 0; index < data.length; index++) {
-            let matchIndex = this.matchOverride(data[index].name);
-            if (matchIndex >= 0) {
-                let anOverride = this.metricOverrides[matchIndex];
-                let dataValue = this.getValueByStatName(anOverride, data[index]);
-                // set value to what was returned
-                data[index].value = dataValue;
-                data[index].color = this.getColorForValue(matchIndex, data[index].value);
-                data[index].thresholdLevel = this.getThresholdLevelForValue(matchIndex, data[index].value);
-                // format it
-                var formatFunc = kbn.valueFormats[anOverride.unitFormat];
-                if (formatFunc) {
-                    // put the value in quotes to escape "most" special characters
-                    data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
-                    data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
-                }
-                // copy the threshold data into the object
-                data[index].thresholds = anOverride.thresholds;
-                data[index].prefix = anOverride.prefix;
-                data[index].suffix = anOverride.suffix;
-                // set the url, replace template vars
-                if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
-                    data[index].clickThrough = this.templateSrv.replaceWithText(anOverride.clickThrough);
-                    if (anOverride.sanitizeURLEnabled) {
-                        data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
-                    }
-                }
-            }
-        }
-    }
-
-    getValueByStatName(settings, data) {
-        let value = data.stats.avg;
-        switch (settings.operatorName) {
-            case "avg":
-                value = data.stats.avg;
-                break;
-            case "count":
-                value = data.stats.count;
-                break;
-            case "current":
-                value = data.stats.current;
-                break;
-            case "delta":
-                value = data.stats.delta;
-                break;
-            case "diff":
-                value = data.stats.diff;
-                break;
-            case "first":
-                value = data.stats.first;
-                break;
-            case "logmin":
-                value = data.stats.logmin;
-                break;
-            case "max":
-                value = data.stats.max;
-                break;
-            case "min":
-                value = data.stats.min;
-                break;
-            case "name":
-                value = data.metricName;
-                break;
-            case "time_step":
-                value = data.stats.timeStep;
-                break;
-            case "last_time":
-                value = data.timestamp;
-                break;
-            case "total":
-                value = data.stats.total;
-                break;
-            default:
-                value = data.stats.avg;
-                break;
-        }
-        return value;
-    }
-
-    getColorForValue(index, value: number): string {
-      let lastColor = "#808080"; // "grey";
-      if (value === null) {
-        return lastColor;
-      }
-      let anOverride = this.metricOverrides[index];
-      for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
-        let aThreshold = anOverride.thresholds[i];
-          if (value >= aThreshold.value) {
-            return aThreshold.color;
+      for (let index = 0; index < data.length; index++) {
+          let matchIndex = this.matchOverride(data[index].name);
+          if (matchIndex >= 0) {
+            let aSeries = data[index];
+              let anOverride = this.metricOverrides[matchIndex];
+              // set the operators
+              aSeries.operatorName = anOverride.operatorName;
+              let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
+              //console.log("series2 operator: " + series2.operatorName);
+              //console.log("series2 value: " + series2Value);
+              var result = getThresholdLevelForValue(anOverride.thresholds, dataValue);
+              // set value to what was returned
+              data[index].value = dataValue;
+              data[index].color = result.color;
+              //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
+              data[index].thresholdLevel = result.thresholdLevel;
+              // format it
+              var formatFunc = kbn.valueFormats[anOverride.unitFormat];
+              if (formatFunc) {
+                  // put the value in quotes to escape "most" special characters
+                  data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
+                  data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
+              }
+              // copy the threshold data into the object
+              data[index].thresholds = anOverride.thresholds;
+              data[index].prefix = anOverride.prefix;
+              data[index].suffix = anOverride.suffix;
+              // set the url, replace template vars
+              if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
+                  data[index].clickThrough = this.templateSrv.replaceWithText(anOverride.clickThrough);
+                  if (anOverride.sanitizeURLEnabled) {
+                      data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
+                  }
+              }
           }
-        lastColor = aThreshold.color;
       }
-      return lastColor;
   }
 
-    // user may define the threshold with just one value
-    getThresholdLevelForValue(index, value: number): number {
-      if (value === null) {
-        return 3; // No Data
-      }
-      let anOverride = this.metricOverrides[index];
-      let lastState = 0;
-      for (let i = anOverride.thresholds.length - 1; i >= 0; i--) {
-        let aThreshold = anOverride.thresholds[i];
-        if (value >= aThreshold.value) {
-          return aThreshold.state;
-        }
-      }
-      return lastState;
-    }
 
     addThreshold(override) {
       override.thresholds.push( {

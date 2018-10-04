@@ -1,4 +1,5 @@
 import {CompositesManager, MetricComposite} from "../src/composites_manager";
+import { getThresholdLevelForValue, getWorstSeries } from "../src/threshold_processor";
 import {PolystatModel} from "../src/polystatmodel";
 import {TimeSeries} from "./timeseries";
 jest.mock("app/core/utils/kbn");
@@ -16,6 +17,7 @@ describe("CompositesManager", () => {
       datapoints: [[200, time], [101, time + 1], [555, time + 2]],
       alias: "A-series",
       seriesName: "A-series",
+      operatorName: "current",
     });
     aSeries.stats = {
       avg: 285,
@@ -37,6 +39,7 @@ describe("CompositesManager", () => {
       datapoints: [[100, time], [1, time + 1], [42, time + 2]],
       alias: "B-series",
       seriesName: "B-series",
+      operatorName: "current",
     });
     bSeries.stats = {
       avg: 68,
@@ -56,6 +59,7 @@ describe("CompositesManager", () => {
     });
     aModel = new PolystatModel("current", aSeries);
     bModel = new PolystatModel("current", bSeries);
+
     let aComposite = new MetricComposite();
     aComposite.compositeName = "composite1";
     aComposite.clickThrough = "";
@@ -86,25 +90,27 @@ describe("CompositesManager", () => {
 
   describe("Worst Series", () => {
     it("returns A-series", () => {
-      let result = mgr.getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries);
       expect(result.alias).toBe("A-series");
     });
     it("returns B-series when aSeries.value is 20", () => {
-      aSeries.value = 20;
-      let result = mgr.getWorstSeries(aSeries, bSeries);
+      aSeries.stats.current = 20;
+      let result = getWorstSeries(aSeries, bSeries);
       expect(result.alias).toBe("B-series");
     });
     it("returns B-series when aSeries.value is null", () => {
       aSeries.value = null;
-      let result = mgr.getWorstSeries(aSeries, bSeries);
+      aSeries.stats.current = null;
+      let result = getWorstSeries(aSeries, bSeries);
       expect(result.alias).toBe("B-series");
     });
     it("returns A-series when aSeries.value and bSeries.value are null", () => {
       aSeries.value = null;
       bSeries.value = null;
-      let result = mgr.getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries);
       expect(result.alias).toBe("A-series");
     });
+
     /* test for nodata
         if (series1.name === "GPU_0") {
           series1.value = NaN;
@@ -134,6 +140,7 @@ describe("CompositesManager", () => {
     });
   });
 
+  /*
   describe("Series Thresholds", () => {
     it("A-series threshold level is critical", () => {
       let result = mgr.getThresholdLevelForSeriesValue(aSeries);
@@ -159,7 +166,7 @@ describe("CompositesManager", () => {
       expect(result).toBe(3);
     });
   });
-
+  */
   // apply composite test
 
   /* needs a mock for this.$scope.ctrl.refresh(); */

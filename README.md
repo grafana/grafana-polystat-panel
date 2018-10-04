@@ -177,3 +177,10 @@ This panel is based on this D3 example:
 - Single shape now centers itself
 - Non-composites now show their value if possible
 - New tests added to verify fixes
+##### v1.0.13
+- Default to roboto font
+- Default to short units and 2 decimals
+- moved panel options outside of saved config
+- add global unit format and global decimals
+- No longer errors when thresholds not found
+- Refactor thresholds to allow range evaluation in overrides
