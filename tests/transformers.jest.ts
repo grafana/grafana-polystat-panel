@@ -14,7 +14,7 @@ class TimeSeries {
     this.target = opts.alias;
   }
 }
-import {Transformers} from "../src/transformers";
+//import {Transformers} from "../src/transformers";
 import {PolystatModel} from "../src/polystatmodel";
 // get this working...
 //import "app/core/time_series2";
