@@ -7,87 +7,43 @@ import { CompositesManager } from "./composites_manager";
 declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     private $sanitize;
     static templateUrl: string;
-    panelDefaults: {
-        animationModes: {
-            value: string;
-            text: string;
-        }[];
-        displayModes: {
-            value: string;
-            text: string;
-        }[];
-        thresholdStates: {
-            value: number;
-            text: string;
-        }[];
-        shapes: {
-            value: string;
-            text: string;
-        }[];
-        savedComposites: any[];
-        savedOverrides: any[];
-        fontSizes: number[];
-        fontTypes: string[];
-        unitFormats: any;
-        operatorOptions: {
-            value: string;
-            text: string;
-        }[];
-        operatorName: string;
-        colors: string[];
-        notcolors: string[];
-        decimals: number;
-        format: string;
-        sortDirections: {
-            value: string;
-            text: string;
-        }[];
-        sortFields: {
-            value: string;
-            text: string;
-        }[];
-        polystat: {
-            shape: string;
-            globalDisplayMode: string;
-            globalOperatorName: string;
-            rows: string;
-            rowAutoSize: boolean;
-            columns: string;
-            columnAutoSize: boolean;
-            displayLimit: number;
-            maxMetrics: number;
-            radius: string;
-            radiusAutoSize: boolean;
-            tooltipFontSize: number;
-            tooltipFontType: string;
-            animationSpeed: number;
-            defaultClickThrough: string;
-            defaultClickThroughSanitize: boolean;
-            hexagonSortByDirection: string;
-            hexagonSortByField: string;
-            polygonBorderSize: number;
-            polygonBorderColor: string;
-            tooltipDisplayMode: string;
-            tooltipDisplayTextTriggeredEmpty: string;
-            tooltipPrimarySortDirection: string;
-            tooltipPrimarySortField: string;
-            tooltipSecondarySortDirection: string;
-            tooltipSecondarySortField: string;
-            tooltipTimestampEnabled: boolean;
-            fontSize: number;
-            fontAutoScale: boolean;
-            gradientEnabled: boolean;
-        };
-    };
+    animationModes: {
+        value: string;
+        text: string;
+    }[];
+    displayModes: {
+        value: string;
+        text: string;
+    }[];
+    thresholdStates: {
+        value: number;
+        text: string;
+    }[];
+    shapes: {
+        value: string;
+        text: string;
+    }[];
+    fontSizes: number[];
+    fontTypes: string[];
+    unitFormats: any;
+    operatorOptions: {
+        value: string;
+        text: string;
+    }[];
+    sortDirections: {
+        value: string;
+        text: string;
+    }[];
+    sortFields: {
+        value: string;
+        text: string;
+    }[];
     dataRaw: any;
     polystatData: PolystatModel[];
-    containerDivId: any;
     scoperef: any;
     alertSrvRef: any;
     initialized: boolean;
     panelContainer: any;
-    panelWidth: any;
-    panelHeight: any;
     d3Object: D3Wrapper;
     data: any;
     series: any[];
@@ -95,6 +51,51 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     overridesCtrl: MetricOverridesManager;
     compositesManager: CompositesManager;
     tooltipContent: string[];
+    d3DivId: string;
+    containerDivId: string;
+    svgContainer: any;
+    panelWidth: any;
+    panelHeight: any;
+    panelDefaults: {
+        savedComposites: any[];
+        savedOverrides: any[];
+        colors: string[];
+        polystat: {
+            animationSpeed: number;
+            columns: string;
+            columnAutoSize: boolean;
+            displayLimit: number;
+            defaultClickThrough: string;
+            defaultClickThroughSanitize: boolean;
+            fontAutoScale: boolean;
+            fontSize: number;
+            fontType: string;
+            globalUnitFormat: string;
+            globalDecimals: number;
+            globalDisplayMode: string;
+            globalOperatorName: string;
+            gradientEnabled: boolean;
+            hexagonSortByDirection: string;
+            hexagonSortByField: string;
+            maxMetrics: number;
+            polygonBorderSize: number;
+            polygonBorderColor: string;
+            radius: string;
+            radiusAutoSize: boolean;
+            rows: string;
+            rowAutoSize: boolean;
+            shape: string;
+            tooltipDisplayMode: string;
+            tooltipDisplayTextTriggeredEmpty: string;
+            tooltipFontSize: number;
+            tooltipFontType: string;
+            tooltipPrimarySortDirection: string;
+            tooltipPrimarySortField: string;
+            tooltipSecondarySortDirection: string;
+            tooltipSecondarySortField: string;
+            tooltipTimestampEnabled: boolean;
+        };
+    };
     constructor($scope: any, $injector: any, templateSrv: any, alertSrv: any, $sanitize: any);
     onInitEditMode(): void;
     setContainer(container: any): void;
@@ -108,6 +109,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     addRangeMap(): void;
     link(scope: any, elem: any, attrs: any, ctrl: any): void;
     setValues(dataList: any): void;
+    applyGlobalFormatting(data: any): void;
     filterByGlobalDisplayMode(data: any): any;
     onDataError(err: any): void;
     onDataReceived(dataList: any): void;
@@ -120,5 +122,6 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     validateBorderSizeValue(): void;
     updatePolygonBorderColor(): void;
     getDefaultClickThrough(): any;
+    setGlobalUnitFormat(subItem: any): void;
 }
 export { D3PolystatPanelCtrl, D3PolystatPanelCtrl as MetricsPanelCtrl };

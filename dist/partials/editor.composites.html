@@ -32,17 +32,17 @@
                       <select class="gf-form-input width-16"
                         style="margin-left: 3px;"
                         ng-model="composite.animateMode"
-                        ng-options="f.value as f.text for f in ctrl.panel.animationModes"
+                        ng-options="f.value as f.text for f in ctrl.animationModes"
                         ng-change="ctrl.refresh()">
                       </select>
 			            </select>
 		            </div>
                     <div class="gf-form">
-                        <label class="gf-form-label width-3" style="margin-left: 3px;">URL</label>
+                        <label class="gf-form-label width-7" style="margin-left: 3px;">Clickthrough</label>
                             <input type="text" ng-model="composite.clickThrough" ng-blur="ctrl.render()" class="gf-form-input width-30">
                     </div>
                     <div class="gf-form">
-				        <editor-checkbox text="Sanitize" model="composite.sanitizeURLEnabled"></editor-checkbox>
+                <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Sanitize" checked="composite.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
 			        </div>
                 </div>
                 <!-- next row holds metric list -->

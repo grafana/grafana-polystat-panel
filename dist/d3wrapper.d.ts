@@ -19,6 +19,8 @@ export declare class D3Wrapper {
         bottom: number;
         left: number;
     };
+    maxFont: number;
+    purelight: any;
     constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any);
     update(data: any): void;
     draw(): void;
