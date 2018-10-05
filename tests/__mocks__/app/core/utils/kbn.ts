@@ -817,6 +817,9 @@ kbn.valueFormats.dtdurations = (size, decimals) => {
 };
 
 kbn.valueFormats.dthms = (size, decimals) => {
+  if (decimals) {
+    console.log("ignoring decimals");
+  }
   return kbn.secondsToHhmmss(size);
 };
 
