@@ -1,5 +1,8 @@
 /*
  Generic class to provide gradient colors
+
+ Based on https://codepen.io/anon/pen/wWxGkr
+
 */
 export class Color {
   r: number;
