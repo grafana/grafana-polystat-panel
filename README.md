@@ -180,7 +180,8 @@ This panel is based on this D3 example:
 ##### v1.0.13
 - Default to roboto font
 - Default to short units and 2 decimals
-- moved panel options outside of saved config
-- add global unit format and global decimals
+- Moved panel options outside of saved config
+- Add global unit format and global decimals
 - No longer errors when thresholds not found
 - Refactor thresholds to allow range evaluation in overrides
+- Refactor and implement custom gradients for overrides
