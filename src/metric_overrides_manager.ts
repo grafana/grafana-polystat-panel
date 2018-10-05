@@ -126,31 +126,13 @@ export class MetricOverridesManager {
 
     // store user selection of color to be used for all items with the corresponding state
     setThresholdColor(threshold) {
-      switch (threshold.state) {
-        case 0:
-          threshold.color = "#299c46";
-          break;
-        case 1:
-          threshold.color = "rgba(237, 129, 40, 0.89)";
-          break;
-        case 2:
-          threshold.color = "#d44a3a";
-          break;
-      }
+      console.log("Threshold color set to " + threshold.color);
+      this.$scope.ctrl.refresh();
     }
 
     validateThresholdColor(threshold) {
-      switch (threshold.state) {
-        case 0:
-          threshold.color = "#299c46";
-          break;
-        case 1:
-          threshold.color = "rgba(237, 129, 40, 0.89)";
-          break;
-        case 2:
-          threshold.color = "#d44a3a";
-          break;
-      }
+      console.log("Validate color " + threshold.color);
+      this.$scope.ctrl.refresh();
     }
 
     sortThresholds(override) {
