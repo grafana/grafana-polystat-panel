@@ -15,7 +15,7 @@ class TimeSeries {
   }
 }
 //import {Transformers} from "../src/transformers";
-import {PolystatModel} from "../src/polystatmodel";
+//import {PolystatModel} from "../src/polystatmodel";
 // get this working...
 //import "app/core/time_series2";
 
