@@ -1,5 +1,5 @@
 import {CompositesManager, MetricComposite} from "../src/composites_manager";
-import { getThresholdLevelForValue, getWorstSeries } from "../src/threshold_processor";
+import {getWorstSeries} from "../src/threshold_processor";
 import {PolystatModel} from "../src/polystatmodel";
 import {TimeSeries} from "./timeseries";
 jest.mock("app/core/utils/kbn");
@@ -127,7 +127,7 @@ describe("CompositesManager", () => {
       let data = mgr.applyComposites([aModel, bModel]);
       //console.log("data is: " + data);
       expect(data.length).toBe(3);
-      var str = JSON.stringify(data[2], null, 2); // spacing level = 2
+      //var str = JSON.stringify(data[2], null, 2); // spacing level = 2
       //console.log("data[2] is: " + str);
       expect(data[2].color === "green");
       aModel.value = 181;

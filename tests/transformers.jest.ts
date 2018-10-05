@@ -78,6 +78,9 @@ describe("Transforms", async() => {
       ],
       type: "table"
     }];
+    it("Converts Table Data", async() => {
+      console.log(tableData);
+    });
     /*
     it("Can convert x and y items to hexbin", async() => {
       let xColumn = 1;
@@ -126,6 +129,7 @@ describe("Transforms", async() => {
           }
         ]
       }];
+      console.log(rawData);
       expect(true).toBeTruthy();
     });
   });

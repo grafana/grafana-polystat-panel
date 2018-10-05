@@ -17,6 +17,8 @@ describe("MetricOverridesManager", () => {
     aSeries = new TimeSeries({
       datapoints: [[200, time], [101, time + 1], [555, time + 2]],
       alias: "A-series",
+      seriesName: "A-series",
+      operatorName: "current",
     });
     aSeries.stats = {
       avg: 285,
@@ -28,6 +30,7 @@ describe("MetricOverridesManager", () => {
   describe("Adding new override", () => {
     it("returns an override", () => {
       mgr.addMetricOverride();
+      console.log(model);
       expect(mgr.metricOverrides.length).toBe(1);
     });
   });
