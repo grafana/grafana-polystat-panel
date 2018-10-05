@@ -514,7 +514,7 @@ export class D3Wrapper {
           // non-composites use the formatted size of the metric value
           longestDisplayedValueContent = this.formatValueContent(i, counter, this);
         }
-        console.log("longestDisplayedValueContent: " + longestDisplayedValueContent);
+        //console.log("longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
         counter = 0;
         while ((content === null) && (counter < dataLen)) {
@@ -540,7 +540,7 @@ export class D3Wrapper {
         if (dynamicValueFontSize > dynamicLabelFontSize) {
           dynamicValueFontSize = dynamicLabelFontSize;
         }
-        console.log("dynamicValueFontSize: " + dynamicValueFontSize);
+        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
         //console.log("dynamicLabelFontSize: " + dynamicLabelFontSize);
         //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
