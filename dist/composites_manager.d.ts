@@ -25,8 +25,6 @@ export declare class CompositesManager {
     removeMetricFromComposite(composite: any, metric: any): void;
     matchComposite(pattern: any): number;
     applyComposites(data: any): any;
-    getWorstSeries(series1: any, series2: any): any;
-    getThresholdLevelForSeriesValue(series: any): number;
     metricNameChanged(item: any): void;
     moveMetricCompositeUp(item: any): void;
     moveMetricCompositeDown(item: any): void;

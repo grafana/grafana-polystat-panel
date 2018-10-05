@@ -7,11 +7,13 @@ export class TimeSeries {
   value: number;
   seriesName: string;
   name: string;
-  constructor(opts: {datapoints: number[][], alias: string, seriesName: string}) {
+  operatorName: string;
+  constructor(opts: {datapoints: number[][], alias: string, seriesName: string, operatorName: string}) {
     this.datapoints = opts.datapoints;
     this.alias = opts.alias;
     this.target = opts.alias;
     this.seriesName = opts.seriesName;
     this.name = this.alias;
+    this.operatorName = opts.operatorName;
   }
 }

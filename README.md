@@ -152,6 +152,11 @@ Then browse to http://localhost:3000
 * bower
 * grunt
 
+## Enable Grafana TestData
+
+`Grafana TestData` is not enabled by default. To enable it, first navigate to the Plugins section, found in your Grafana main menu. Click the Apps tabs in the Plugins section and select the Grafana TestData App. (Or navigate to http://your_grafana_instance/plugins/testdata/edit to go directly there). Finally click the enable button to enable.
+
+
 #### Acknowledgements
 
 This panel is based on this D3 example:
@@ -172,3 +177,11 @@ This panel is based on this D3 example:
 - Single shape now centers itself
 - Non-composites now show their value if possible
 - New tests added to verify fixes
+##### v1.0.13
+- Default to roboto font
+- Default to short units and 2 decimals
+- Moved panel options outside of saved config
+- Add global unit format and global decimals
+- No longer errors when thresholds not found
+- Refactor thresholds to allow range evaluation in overrides
+- Refactor and implement custom gradients for overrides

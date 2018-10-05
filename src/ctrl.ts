@@ -12,124 +12,80 @@ import { PolystatModel } from "./polystatmodel";
 import { MetricOverridesManager } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
+import { GetDecimalsForValue } from "./utils";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   static templateUrl = "partials/template.html";
-
-  panelDefaults = {
-    animationModes: [
-      { value: "all", text: "Show All" },
-      { value: "triggered", text: "Show Triggered" },
-    ],
-    displayModes: [
-      { value: "all", text: "Show All" },
-      { value: "triggered", text: "Show Triggered" },
-    ],
-    thresholdStates: [
-      { value: 0, text: "ok" },
-      { value: 1, text: "warning" },
-      { value: 2, text: "critical" },
-      { value: 3, text: "custom" }
-    ],
-    shapes: [
-      { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
-      { value: "hexagon_flat_top", text: "Hexagon Flat Top" },
-      { value: "circle", text: "Circle" },
-      { value: "cross", text: "Cross" },
-      { value: "diamond", text: "Diamond" },
-      { value: "square", text: "Square" },
-      { value: "star", text: "Star" },
-      { value: "triangle", text: "Triangle" },
-      { value: "wye", text: "Wye" },
-    ],
-    savedComposites : [],
-    savedOverrides : [],
-    fontSizes: [
-      4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 14, 15,
-      16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32,
-      34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
-      56, 58, 60, 62, 64, 66, 68, 70],
-    fontTypes: [
-      "Open Sans", "Arial", "Avant Garde", "Bookman",
-      "Consolas", "Courier", "Courier New", "Futura",
-      "Garamond", "Helvetica",
-      "Palatino", "Times", "Times New Roman",
-      "Verdana"
-    ],
-    unitFormats: kbn.getUnitFormats(),
-    operatorOptions: [
-      { value: "avg", text: "Average" },
-      { value: "count", text: "Count" },
-      { value: "current", text: "Current" },
-      { value: "delta", text: "Delta" },
-      { value: "diff", text: "Difference" },
-      { value: "first", text: "First" },
-      { value: "logmin", text: "Log Min" },
-      { value: "max", text: "Max" },
-      { value: "min", text: "Min" },
-      { value: "name", text: "Name" },
-      { value: "last_time", text: "Time of Last Point" },
-      { value: "time_step", text: "Time Step" },
-      { value: "total", text: "Total" },
-    ],
-    operatorName: "avg", // operator applied to time series
-    colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
-    notcolors: ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"],
-    decimals: 2, // decimal precision
-    format: "none", // unit format
-    sortDirections: [
-      { value: "asc", text: "Ascending" },
-      { value: "desc", text: "Descending" },
-    ],
-    sortFields: [
-      { value: "name", text: "Name" },
-      { value: "thresholdLevel", text: "Threshold Level" },
-      { value: "value", text: "Value" },
-    ],
-    polystat: {
-      shape: "hexagon_pointed_top",
-      globalDisplayMode: "all",
-      globalOperatorName: "avg",
-      rows: "",
-      rowAutoSize: true,
-      columns: "",
-      columnAutoSize: true,
-      displayLimit: 100,
-      maxMetrics: 0,
-      radius: "",
-      radiusAutoSize: true,
-      tooltipFontSize: 12,
-      tooltipFontType: "Open Sans",
-      animationSpeed: 2500,
-      defaultClickThrough: "",
-      defaultClickThroughSanitize: true,
-      hexagonSortByDirection: "asc",
-      hexagonSortByField: "name",
-      polygonBorderSize: 2,
-      polygonBorderColor: "black",
-      tooltipDisplayMode: "all",
-      tooltipDisplayTextTriggeredEmpty: "OK",
-      tooltipPrimarySortDirection: "desc",
-      tooltipPrimarySortField: "thresholdLevel",
-      tooltipSecondarySortDirection: "desc",
-      tooltipSecondarySortField: "value",
-      tooltipTimestampEnabled: true,
-      fontSize: 12,
-      fontAutoScale: true,
-      gradientEnabled: true,
-    },
-  };
+  animationModes = [
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Triggered" }
+  ];
+  displayModes = [
+    { value: "all", text: "Show All" },
+    { value: "triggered", text: "Show Triggered" }
+  ];
+  thresholdStates = [
+    { value: 0, text: "ok" },
+    { value: 1, text: "warning" },
+    { value: 2, text: "critical" },
+    { value: 3, text: "custom" }
+  ];
+  shapes = [
+    { value: "hexagon_pointed_top", text: "Hexagon Pointed Top" },
+    //{ value: "hexagon_flat_top", text: "Hexagon Flat Top" },
+    { value: "circle", text: "Circle" },
+    //{ value: "cross", text: "Cross" },
+    //{ value: "diamond", text: "Diamond" },
+    //{ value: "square", text: "Square" },
+    //{ value: "star", text: "Star" },
+    //{ value: "triangle", text: "Triangle" },
+    //{ value: "wye", text: "Wye" }
+  ];
+  fontSizes = [
+    4, 5, 6, 7, 8, 9, 10, 11, 12 , 13, 14, 15,
+    16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32,
+    34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
+    56, 58, 60, 62, 64, 66, 68, 70];
+  fontTypes = [
+    "Open Sans", "Arial", "Avant Garde", "Bookman",
+    "Consolas", "Courier", "Courier New", "Futura",
+    "Garamond", "Helvetica",
+    "Palatino", "Roboto", "Times", "Times New Roman",
+    "Verdana"
+  ];
+  unitFormats = kbn.getUnitFormats();
+  operatorOptions = [
+    { value: "avg", text: "Average" },
+    { value: "count", text: "Count" },
+    { value: "current", text: "Current" },
+    { value: "delta", text: "Delta" },
+    { value: "diff", text: "Difference" },
+    { value: "first", text: "First" },
+    { value: "logmin", text: "Log Min" },
+    { value: "max", text: "Max" },
+    { value: "min", text: "Min" },
+    { value: "name", text: "Name" },
+    { value: "last_time", text: "Time of Last Point" },
+    { value: "time_step", text: "Time Step" },
+    { value: "total", text: "Total" }
+  ];
+  sortDirections = [
+    { value: "asc", text: "Ascending" },
+    { value: "desc", text: "Descending" }
+  ];
+  sortFields = [
+    { value: "name", text: "Name" },
+    { value: "thresholdLevel", text: "Threshold Level" },
+    { value: "value", text: "Value" }
+  ];
 
   dataRaw : any;
   polystatData: PolystatModel[];
-  containerDivId: any;
   scoperef: any;
   alertSrvRef: any;
   initialized: boolean;
   panelContainer: any;
-  panelWidth: any;
-  panelHeight: any;
   d3Object: D3Wrapper;
   data: any;
   series: any[];
@@ -137,18 +93,65 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   overridesCtrl: MetricOverridesManager;
   compositesManager : CompositesManager;
   tooltipContent: string[];
+  d3DivId: string;
+  containerDivId: string;
+  svgContainer: any;
+  panelWidth: any;
+  panelHeight: any;
+
+  panelDefaults = {
+    savedComposites : [],
+    savedOverrides : [],
+    colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
+    polystat: {
+      animationSpeed: 2500,
+      columns: "",
+      columnAutoSize: true,
+      displayLimit: 100,
+      defaultClickThrough: "",
+      defaultClickThroughSanitize: true,
+      fontAutoScale: true,
+      fontSize: 12,
+      fontType: "Roboto",
+      globalUnitFormat: "short",
+      globalDecimals: 2,
+      globalDisplayMode: "all",
+      globalOperatorName: "avg",
+      gradientEnabled: true,
+      hexagonSortByDirection: "asc",
+      hexagonSortByField: "name",
+      maxMetrics: 0,
+      polygonBorderSize: 2,
+      polygonBorderColor: "black",
+      radius: "",
+      radiusAutoSize: true,
+      rows: "",
+      rowAutoSize: true,
+      shape: "hexagon_pointed_top",
+      tooltipDisplayMode: "all",
+      tooltipDisplayTextTriggeredEmpty: "OK",
+      tooltipFontSize: 12,
+      tooltipFontType: "Roboto",
+      tooltipPrimarySortDirection: "desc",
+      tooltipPrimarySortField: "thresholdLevel",
+      tooltipSecondarySortDirection: "desc",
+      tooltipSecondarySortField: "value",
+      tooltipTimestampEnabled: true,
+    },
+  };
+
 
   constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaults(this.panel, this.panelDefaults);
-    this.panel.d3DivId = "d3_svg_" + this.panel.id;
-    this.containerDivId = "container_" + this.panel.d3DivId;
+    this.d3DivId = "d3_svg_" + this.panel.id;
+    this.containerDivId = "container_" + this.d3DivId;
     this.alertSrvRef = alertSrv;
     this.initialized = false;
     this.panelContainer = null;
     this.templateSrv = templateSrv;
-    this.panel.svgContainer = null;
+    this.svgContainer = null;
     this.panelWidth = null;
     this.panelHeight = null;
     this.polystatData = new Array<PolystatModel>();
@@ -186,7 +189,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
    */
   setContainer(container) {
     this.panelContainer = container;
-    this.panel.svgContainer = container;
+    this.svgContainer = container;
   }
 
   // determine the width of a panel by the span and viewport
@@ -253,14 +256,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   clearSVG() {
-    if ($("#" + this.panel.d3DivId).length) {
-      $("#" + this.panel.d3DivId).remove();
+    if ($("#" + this.d3DivId).length) {
+      $("#" + this.d3DivId).remove();
     }
-    if ($("#" + this.panel.d3DivId + "-panel").length) {
-      $("#" + this.panel.d3DivId + "-panel").remove();
+    if ($("#" + this.d3DivId + "-panel").length) {
+      $("#" + this.d3DivId + "-panel").remove();
     }
-    if ($("#" + this.panel.d3DivId + "-tooltip").length) {
-      $("#" + this.panel.d3DivId + "-tooltip").remove();
+    if ($("#" + this.d3DivId + "-tooltip").length) {
+      $("#" + this.d3DivId + "-tooltip").remove();
     }
   }
 
@@ -309,7 +312,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: this.getDefaultClickThrough(),
       polystat: this.panel.polystat,
     };
-    this.d3Object = new D3Wrapper(this.templateSrv, this.panel.svgContainer, this.panel.d3DivId, opt);
+    this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
     this.d3Object.draw();
   }
 
@@ -385,6 +388,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         this.polystatData.push(converted);
       }
     }
+    // apply global unit formatting and decimals
+    this.applyGlobalFormatting(this.polystatData);
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
     // apply composites, this will filter as needed and set clickthrough
@@ -405,6 +410,18 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
+
+  applyGlobalFormatting(data: any) {
+    for (let index = 0; index < data.length; index++) {
+      var formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+      if (formatFunc) {
+        let result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+        data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
+        data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+      }
+    }
+  }
+
 
   filterByGlobalDisplayMode(data: any) {
     let filteredMetrics = new Array<number>();
@@ -559,6 +576,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       url = this.$sanitize(url);
     }
     return url;
+  }
+
+  setGlobalUnitFormat(subItem) {
+    this.panel.polystat.globalUnitFormat = subItem.value;
   }
 }
 

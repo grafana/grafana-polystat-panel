@@ -14,14 +14,15 @@ class TimeSeries {
     this.target = opts.alias;
   }
 }
-import {Transformers} from "../src/transformers";
-import {PolystatModel} from "../src/polystatmodel";
+//import {Transformers} from "../src/transformers";
+//import {PolystatModel} from "../src/polystatmodel";
 // get this working...
 //import "app/core/time_series2";
 
 describe("Transforms", async() => {
     // Datasource sends timeseries
   describe("With time series data", async() => {
+    /*
     let xAxisSeries: TimeSeries;
     let yAxisSeries: TimeSeries;
 
@@ -37,7 +38,7 @@ describe("Transforms", async() => {
         alias: "B-Series",
       });
     });
-
+    */
     /*
     it("Can convert to hexbin", async() => {
       let bins = Transformers.TimeSeriesToHexbin(xAxisSeries, yAxisSeries);
@@ -77,6 +78,9 @@ describe("Transforms", async() => {
       ],
       type: "table"
     }];
+    it("Converts Table Data", async() => {
+      console.log(tableData);
+    });
     /*
     it("Can convert x and y items to hexbin", async() => {
       let xColumn = 1;
@@ -125,6 +129,7 @@ describe("Transforms", async() => {
           }
         ]
       }];
+      console.log(rawData);
       expect(true).toBeTruthy();
     });
   });

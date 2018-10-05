@@ -29,7 +29,7 @@
 			</div>
       <div class="gf-form">
         <div class="gf-form">
-          <editor-checkbox text="Enabled" model="override.enabled"></editor-checkbox>
+          <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Enabled" checked="override.enabled" on-change="ctrl.render()"></gf-form-switch>
         </div>
         <div class="gf-form">
 				  <label class="gf-form-label width-9">Name or regex</label>
@@ -64,12 +64,12 @@
 
       <div class="gf-form">
         <div class="gf-form">
-          <label class="gf-form-label width-4">Click</label>
+          <label class="gf-form-label width-7">Clickthrough</label>
           <input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="override.clickThrough"
             ng-change="ctrl.refresh()" ng-model-onblur>
         </div>
         <div class="gf-form">
-          <editor-checkbox text="Sanitize" model="override.sanitizeURLEnabled"></editor-checkbox>
+          <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Sanitize" checked="override.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
         </div>
       </div>
   
@@ -78,7 +78,7 @@
           <label class="gf-form-label width-9">Unit</label>
         </div>
         <div class="gf-form">
-          <div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="override.unitFormat" dropdown-typeahead2="ctrl.panel.unitFormats"
+          <div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="override.unitFormat" dropdown-typeahead2="ctrl.unitFormats"
             dropdown-typeahead-on-select="ctrl.overridesCtrl.setUnitFormat(override, $subItem)">
           </div>
         </div>
@@ -92,7 +92,7 @@
         <div class="gf-form">
           <label class="gf-form-label width-4">Stat</label>
           <div class="gf-form-select-wrapper width-12">
-            <select class="gf-form-input" ng-model="override.operatorName" ng-options="f.value as f.text for f in ctrl.panel.operatorOptions"
+            <select class="gf-form-input" ng-model="override.operatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
               ng-change="ctrl.refresh()"></select>
           </div>
         </div>
@@ -119,7 +119,7 @@
             <span class="gf-form-select-wrapper width-8">
               <select class="gf-form-input"
                 ng-model="threshold.state"
-                ng-options="f.value as f.text for f in ctrl.panel.thresholdStates"
+                ng-options="f.value as f.text for f in ctrl.thresholdStates"
                 ng-change="ctrl.overridesCtrl.validateThresholdColor(threshold)">
               </select>
             </span>

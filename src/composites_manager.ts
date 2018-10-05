@@ -3,7 +3,7 @@
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { PolystatModel } from "./polystatmodel";
-
+import { getWorstSeries } from "./threshold_processor";
 export class MetricComposite {
     compositeName: string;
     members: Array<any>;
@@ -129,7 +129,7 @@ export class CompositesManager {
                 if (currentWorstSeries === null) {
                     currentWorstSeries = seriesItem;
                 } else {
-                    currentWorstSeries = this.getWorstSeries(currentWorstSeries, seriesItem);
+                    currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem);
                 }
             }
             // Prefix the valueFormatted with the actual metric name
@@ -167,45 +167,6 @@ export class CompositesManager {
         return data;
     }
 
-    getWorstSeries(series1, series2) {
-        var worstSeries = series1;
-        var series1thresholdLevel = this.getThresholdLevelForSeriesValue(series1);
-        var series2thresholdLevel = this.getThresholdLevelForSeriesValue(series2);
-        // State 3 is Unknown and is not be worse than CRITICAL (state 2)
-        if (series2thresholdLevel > series1thresholdLevel) {
-          // series2 has higher threshold violation
-          worstSeries = series2;
-        }
-        if (series1thresholdLevel === 3) {
-          // series1 is in state unknown, check if series2 is in state 1 or 2
-          switch (series2thresholdLevel) {
-            case 1:
-              worstSeries = series2;
-              break;
-            case 2:
-              worstSeries = series2;
-            break;
-          }
-        }
-        return worstSeries;
-    }
-
-    // user may define the threshold with just one value
-    getThresholdLevelForSeriesValue(series): number {
-      var value = series.value;
-      if (value === null) {
-        return 3; // No Data
-      }
-      // assume OK state
-      let lastState = 0;
-      for (let i = series.thresholds.length - 1; i >= 0; i--) {
-        let aThreshold = series.thresholds[i];
-        if (value >= aThreshold.value) {
-          return aThreshold.state;
-        }
-      }
-      return lastState;
-    }
 
     metricNameChanged(item) {
         // TODO: validate item is a valid regex

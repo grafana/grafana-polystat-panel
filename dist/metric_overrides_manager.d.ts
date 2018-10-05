@@ -25,9 +25,6 @@ export declare class MetricOverridesManager {
     removeMetricOverride(override: any): void;
     matchOverride(pattern: any): number;
     applyOverrides(data: any): void;
-    getValueByStatName(settings: any, data: any): any;
-    getColorForValue(index: any, value: number): string;
-    getThresholdLevelForValue(index: any, value: number): number;
     addThreshold(override: any): void;
     setThresholdColor(threshold: any): void;
     validateThresholdColor(threshold: any): void;

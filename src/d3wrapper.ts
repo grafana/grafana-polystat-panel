@@ -4,6 +4,7 @@ import * as d3 from "./external/d3.min.js";
 import * as d3hexbin from "./external/d3-hexbin.js";
 import { getTextSizeForWidth } from "./utils";
 import _ from "lodash";
+import { Color } from "./color";
 
 export class D3Wrapper {
   svgContainer: any;
@@ -26,14 +27,17 @@ export class D3Wrapper {
     bottom : number,
     left : number,
   };
+  maxFont = 240;
+  purelight: any;
 
-  constructor(templateSrv: any, svgContainer: any, d3DivId, opt) {
+  constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any) {
     this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
     this.d3DivId = d3DivId;
     this.data = opt.data;
-    //this.hexRadius = opt.hexRadius;
     this.opt = opt;
+
+    this.purelight = new Color(255, 255, 255);
     // title is 26px
     this.margin = {
       top: 30 + 26,
@@ -67,13 +71,8 @@ export class D3Wrapper {
 }
 
   update(data: any) {
-    //console.log("update");
     if (data) {
       this.data = data;
-      //console.log("have data" + data);
-      //var randomX = d3.randomNormal(this.opt.width / 2, 80);
-      //var randomY = d3.randomNormal(this.opt.height / 2, 80);
-      //this.calculatedPoints = d3.range(2000).map(function() { return [randomX(), randomY()]; });
     }
   }
 
@@ -131,12 +130,14 @@ export class D3Wrapper {
     if (this.opt.radiusAutoSize) {
       this.hexRadius = this.getAutoHexRadius();
       this.autoHexRadius = this.getAutoHexRadius();
+      console.log("autoHexRadius:" + this.autoHexRadius);
     }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
     var width = this.opt.width;
     var height = this.opt.height;
+    console.log("Detected Width: " + width + " Height: " + height);
     //console.log("autorad:" + this.autoHexRadius);
     var ahexbin = d3hexbin
       .hexbin()
@@ -186,7 +187,27 @@ export class D3Wrapper {
     var data = this.data;
     var defs = svg.append("defs");
 
-    // https://uigradients.com/#LittleLeaf (similar)
+    let colorGradients = Color.createGradients(data);
+    for (let i = 0; i < colorGradients.length; i++) {
+      //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
+      let aGradient = defs.append("linearGradient")
+        .attr("id", this.d3DivId + "linear-gradient-state-data-" + i);
+      aGradient
+        .attr("x1", "30%")
+        .attr("y1", "30%")
+        .attr("x2", "70%")
+        .attr("y2", "70%");
+      aGradient
+        .append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", colorGradients[i].start);
+      aGradient
+        .append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", colorGradients[i].end);
+    }
+    let okColorStart = new Color(82, 194, 52); // #52c234
+    let okColorEnd = okColorStart.Mul(this.purelight, 0.7);
     let okGradient = defs.append("linearGradient")
       .attr("id", this.d3DivId + "linear-gradient-state-ok");
     okGradient
@@ -197,13 +218,15 @@ export class D3Wrapper {
     okGradient
       .append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#52c234"); // light green
+        .attr("stop-color", okColorStart.asHex());
     okGradient
       .append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#389232"); // dark green
+        .attr("stop-color", okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
+    let warningColorStart = new Color(255, 200, 55); // #FFC837
+    let warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
     let warningGradient = defs.append("linearGradient")
         .attr("id", this.d3DivId + "linear-gradient-state-warning");
     warningGradient.attr("x1", "30%")
@@ -212,12 +235,14 @@ export class D3Wrapper {
         .attr("y2", "70%");
     warningGradient.append("stop")
           .attr("offset", "0%")
-          .attr("stop-color", "#FFC837"); // light orange
+          .attr("stop-color", warningColorStart.asHex()); // light orange
     warningGradient.append("stop")
           .attr("offset", "100%")
-          .attr("stop-color", "#FF8808"); // dark orange
+          .attr("stop-color", warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
+    let criticalColorStart = new Color(229, 45, 39); // e52d27
+    let criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
     let criticalGradient = defs.append("linearGradient")
       .attr("id", this.d3DivId + "linear-gradient-state-critical");
     criticalGradient
@@ -228,11 +253,11 @@ export class D3Wrapper {
     criticalGradient
       .append("stop")
         .attr("offset", "0%")
-        .attr("stop-color", "#e52d27"); // light red
+        .attr("stop-color", criticalColorStart.asHex()); // light red
     criticalGradient
       .append("stop")
         .attr("offset", "100%")
-        .attr("stop-color", "#b31217"); // dark red
+        .attr("stop-color", criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
     let unknownGradient = defs.append("linearGradient")
@@ -301,7 +326,9 @@ export class D3Wrapper {
     }
 
     // calculate the fontsize based on the shape and the text
-    let activeFontSize = this.opt.polystat.fontSize;
+    let activeLabelFontSize = this.opt.polystat.fontSize;
+    // font sizes are independent for label and values
+    let activeValueFontSize = this.opt.polystat.fontSize;
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
       let maxLabel = "";
@@ -312,19 +339,24 @@ export class D3Wrapper {
       }
       // estimate how big of a font can be used
       // if it is too small, hide everything
-      let estimateFontSize = getTextSizeForWidth(
+      let estimateLabelFontSize = getTextSizeForWidth(
+        maxLabel,
+        "?px sans-serif", // use sans-serif for sizing
+        shapeWidth - 60,  // pad
+        10,
+        this.maxFont);
+      activeLabelFontSize = estimateLabelFontSize;
+
+      // get the size for the value
+      /*
+      estimateLabelFontSize = getTextSizeForWidth(
         maxLabel,
         "?px sans-serif",
-        shapeWidth, // pad
+        shapeWidth - (estimateLabelFontSize * 1.2), // pad
         10,
         250);
-      estimateFontSize = getTextSizeForWidth(
-        maxLabel,
-        "?px sans-serif",
-        shapeWidth - (estimateFontSize * 1.2), // pad
-        10,
-        250);
-      activeFontSize = estimateFontSize;
+        activeLabelFontSize = estimateLabelFontSize;
+      */
     }
 
     // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
@@ -344,6 +376,8 @@ export class D3Wrapper {
         .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
         .style("fill", (_, i) => {
           if (this.opt.polystat.gradientEnabled) {
+            return "url(#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
+            /*
             switch (data[i].thresholdLevel) {
               case 0:
                 return "url(#" + this.d3DivId + "linear-gradient-state-ok)";
@@ -354,6 +388,7 @@ export class D3Wrapper {
               default:
                 return "url(#" + this.d3DivId + "linear-gradient-state-unknown)";
             }
+            */
           } else {
             return data[i].color;
           }
@@ -406,6 +441,9 @@ export class D3Wrapper {
     var textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
 
+    let dynamicLabelFontSize = activeLabelFontSize;
+    let dynamicValueFontSize = activeValueFontSize;
+
     textspot
       .enter()
       .append("text")
@@ -413,8 +451,8 @@ export class D3Wrapper {
       .attr("x", function (d) { return d.x; })
       .attr("y", function (d) { return d.y; })
       .attr("text-anchor", "middle")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", activeFontSize + "px")
+      .attr("font-family", this.opt.polystat.fontType)
+      .attr("font-size", dynamicLabelFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
         let item = data[i];
@@ -431,7 +469,6 @@ export class D3Wrapper {
 
     var frames = 0;
 
-    let dynamicFontSize = activeFontSize;
 
     textspot.enter()
       .append("text")
@@ -442,19 +479,19 @@ export class D3Wrapper {
         return d.x;
       })
       .attr("y", function (d) {
-        return d.y + activeFontSize + 10; // offset by fontsize and 10px vertical padding
+        return d.y + activeLabelFontSize + 10; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
-      .attr("font-family", "sans-serif")
+      .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
-      .attr("font-size", dynamicFontSize + "px")
+      .attr("font-size", dynamicLabelFontSize + "px")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
         let dataLen = this.data.length;
         // search for a value but not more than number of data items
         // need to find the longest content string generated to determine the
-        // dynamic fire size
+        // dynamic font size
         //while ((content === null) && (counter < dataLen)) {
         //  content = this.formatValueContent(i, (frames + counter), this);
         //  counter++;
@@ -462,46 +499,60 @@ export class D3Wrapper {
         // this always starts from frame 0, look through every metric including composite members for the longest text possible
         // get the total count of metrics (with composite members), and loop through
         let submetricCount = this.data[i].members.length;
-        let longestDisplayedContent = "";
+        let longestDisplayedValueContent = "";
         if (submetricCount > 0) {
           while (counter < submetricCount) {
             let checkContent = this.formatValueContent(i, counter, this);
             if (checkContent) {
-              if (checkContent.length > longestDisplayedContent.length) {
-                longestDisplayedContent = checkContent;
+              if (checkContent.length > longestDisplayedValueContent.length) {
+                longestDisplayedValueContent = checkContent;
               }
             }
             counter++;
           }
         } else {
           // non-composites use the formatted size of the metric value
-          longestDisplayedContent = this.formatValueContent(i, counter, this);
+          longestDisplayedValueContent = this.formatValueContent(i, counter, this);
         }
+        //console.log("longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
         counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        dynamicFontSize = getTextSizeForWidth(
-          longestDisplayedContent,
-          "?px sans-serif",
-          shapeWidth,
+        dynamicValueFontSize = getTextSizeForWidth(
+          longestDisplayedValueContent,
+          "?px sans-serif",  // use sans-serif for sizing
+          shapeWidth - 60,   // pad
           6,
-          250);
-        dynamicFontSize = getTextSizeForWidth(
-          longestDisplayedContent,
+          this.maxFont);
+        /*
+        dynamicValueFontSize = getTextSizeForWidth(
+          longestDisplayedValueContent,
           "?px sans-serif",
-          shapeWidth - (dynamicFontSize * 3), // pad by 1.5 chars each side
+          shapeWidth - (dynamicValueFontSize * 2), // pad by 1 chars each side
           6,
-          250);
+          250
+        );
+        */
+        // value should never be larger than the label
+        if (dynamicValueFontSize > dynamicLabelFontSize) {
+          dynamicValueFontSize = dynamicLabelFontSize;
+        }
+        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
+        //console.log("dynamicLabelFontSize: " + dynamicLabelFontSize);
+        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
-        valueTextLocation.attr("font-size", dynamicFontSize + "px");
+        // use the dynamic size for the value
+        valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
           valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
+            valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+
             let content = null;
             let counter = 0;
             let dataLen = this.data.length * 2;
@@ -517,7 +568,7 @@ export class D3Wrapper {
               // TODO: add custom content for composite ok state
               content = "";
               // set the font size to be the same as the label above
-              valueTextLocation.attr("font-size", activeFontSize + "px");
+              //valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
             }
             return content;
           });
@@ -642,7 +693,7 @@ export class D3Wrapper {
     //which is the same as
     this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
     this.autoWidth -= this.margin.left - this.margin.right;
-    //console.log("autowidth = " + this.autoWidth);
+    console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
   }
 
   // Builds the placeholder polygons needed to represent each metric
@@ -656,11 +707,11 @@ export class D3Wrapper {
     let maxColumnsUsed = 0;
     // when duplicating panels, this gets odd
     if (this.numRows === Infinity) {
-      console.log("numRows infinity...");
+      //console.log("numRows infinity...");
       return points;
     }
     if (this.numColumns === NaN) {
-      console.log("numColumns NaN");
+      //console.log("numColumns NaN");
       return points;
     }
     for (var i = 0; i < this.numRows; i++) {
