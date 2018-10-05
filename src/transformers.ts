@@ -35,7 +35,7 @@ export class Transformers {
     return aPolystat;
   }
 
-/*
+  /*
   static TimeSeriesToHexbin(xTimeSeries : any, yTimeSeries : any) : PolystatModel {
     //console.log("Converting time series to hexbin");
     // only use min length, and start from the "end"
@@ -45,7 +45,7 @@ export class Transformers {
     if (tsYLength < tsLength) {
       tsLength = tsYLength;
     }
-    let bins = new PolystatModel();
+    let bins = new PolystatModel("avg", xTimeSeries);
     //console.log("Number of time series in X: " + tsLength);
     //for (let index = tsLength - 1; index >= 0; index--) {
     for (let index = 0; index < tsLength; index++) {
@@ -59,8 +59,8 @@ export class Transformers {
     }
     return bins;
   }
+  */
 
-*/
 
 /*
   static TableDataToHexbin(tableData : any, xColumn : number, yColumn : number) : PolystatModel {

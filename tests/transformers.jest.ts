@@ -22,6 +22,7 @@ import {PolystatModel} from "../src/polystatmodel";
 describe("Transforms", async() => {
     // Datasource sends timeseries
   describe("With time series data", async() => {
+    /*
     let xAxisSeries: TimeSeries;
     let yAxisSeries: TimeSeries;
 
@@ -37,7 +38,7 @@ describe("Transforms", async() => {
         alias: "B-Series",
       });
     });
-
+    */
     /*
     it("Can convert to hexbin", async() => {
       let bins = Transformers.TimeSeriesToHexbin(xAxisSeries, yAxisSeries);
