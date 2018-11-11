@@ -15,10 +15,10 @@ jobs:
       - run:
           name: Build
           command: |
-            yarn
-            yarn add global grunt-cli
-            yarn add global jest
-            #npm install -g grunt
+            yarn install
+            sudo yarn add global grunt-cli
+            sudo yarn add global jest
+            #npm install -g grunt-cli
             #npm install -g jest
             node -p "require('node-sass').info"
             grunt
