@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/grafana-polystat-panel
   docker:
-    - image: circleci/node:10.9.0-jessie
+    - image: circleci/node:11.1.0-stretch-browsers
 
 version: 2
 jobs:
