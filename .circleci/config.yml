@@ -11,19 +11,23 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "package.json" }}
+            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
           name: Build
           command: |
             yarn
-            yarn global add grunt
-            yarn global add jest
+            yarn add global grunt-cli
+            yarn add global jest
+            #npm install -g grunt
+            #npm install -g jest
             node -p "require('node-sass').info"
             grunt
       - save_cache:
-          key: v2-dependencies-{{ checksum "package.json" }}
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
           paths:
-            - node_modules
+            - ~/.cache/yarn
+
   grunttest:
     <<: *defaults
     steps:
