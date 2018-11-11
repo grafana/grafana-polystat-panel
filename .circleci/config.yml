@@ -12,36 +12,29 @@ jobs:
       - restore_cache:
           keys:
             - v2-dependencies-{{ checksum "package.json" }}
-      - run: yarn
       - run:
-          name: Install grunt
-          command: yarn global add grunt
-      - run:
-          name: Install jest
-          command: yarn global add jest
-      - run: node -p "require('node-sass').info"
+          name: Build
+          command: |
+            yarn
+            yarn global add grunt
+            yarn global add jest
+            node -p "require('node-sass').info"
+            grunt
       - save_cache:
           key: v2-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-      - run:
-          name: Run grunt
-          command: |
-            grunt
   grunttest:
     <<: *defaults
     steps:
       - checkout
-      - run: yarn
-      - run:
-          name: Install grunt globally
-          command: yarn global add grunt
-      - run:
-          name: Install grunt locally
-          command: yarn add grunt
       - run:
           name: Test
-          command: grunt test
+          command: |
+            yarn
+            yarn global add grunt
+            yarn add grunt
+            grunt test
 
 workflows:
   version: 2
