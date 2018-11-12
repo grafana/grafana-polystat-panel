@@ -10,8 +10,8 @@
         },
         "keywords": ["hexbin", "honeycomb", "panel"],
         "logos": {
-            "small": "img/honeycomb-svgrepo-com.svg",
-            "large": "img/honeycomb-svgrepo-com.svg"
+            "small": "img/polystat.svg",
+            "large": "img/polystat.svg"
         },
         "links": [{
             "name": "Project site",
