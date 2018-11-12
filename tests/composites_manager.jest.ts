@@ -93,10 +93,10 @@ describe("CompositesManager", () => {
       let result = getWorstSeries(aSeries, bSeries);
       expect(result.alias).toBe("A-series");
     });
-    it("returns B-series when aSeries.value is 20", () => {
+    it("returns A-series when aSeries.value is 20", () => {
       aSeries.stats.current = 20;
       let result = getWorstSeries(aSeries, bSeries);
-      expect(result.alias).toBe("B-series");
+      expect(result.alias).toBe("A-series");
     });
     it("returns B-series when aSeries.value is null", () => {
       aSeries.value = null;

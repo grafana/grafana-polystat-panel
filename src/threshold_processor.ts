@@ -123,6 +123,11 @@ function getThresholdLevelForValue(thresholds: any, value: number): {thresholdLe
       }
     }
   }
+  // last check, if currentState is not set, and there is a lower threshold, use that value (inclusive range up to T1)
+  if (currentState === -1) {
+    currentState = thresholds[0].state;
+    currentColor = thresholds[0].color;
+  }
   //console.log("Returning threshold level: " + currentState);
   return { thresholdLevel: currentState, color: currentColor};
 }

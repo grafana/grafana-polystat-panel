@@ -35,9 +35,9 @@ jobs:
       - run:
           name: Test
           command: |
-            yarn
-            yarn global add grunt
-            yarn add grunt
+            yarn install
+            sudo npm install -g grunt-cli
+            sudo npm install -g jest
             grunt test
 
 workflows:
