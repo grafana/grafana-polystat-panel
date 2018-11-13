@@ -80,6 +80,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
             maxMetrics: number;
             polygonBorderSize: number;
             polygonBorderColor: string;
+            polygonGlobalFillColor: string;
             radius: string;
             radiusAutoSize: boolean;
             rows: string;
@@ -121,6 +122,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     validateRadiusValue(): void;
     validateBorderSizeValue(): void;
     updatePolygonBorderColor(): void;
+    updatePolygonGlobalFillColor(): void;
     getDefaultClickThrough(): any;
     setGlobalUnitFormat(subItem: any): void;
 }
