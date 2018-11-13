@@ -123,6 +123,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       maxMetrics: 0,
       polygonBorderSize: 2,
       polygonBorderColor: "black",
+      polygonGlobalFillColor: "white",
       radius: "",
       radiusAutoSize: true,
       rows: "",
@@ -179,8 +180,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.addEditorTab("Overrides", overridesPath, 3);
     var compositesPath = thisPanelPath + "partials/editor.composites.html";
     this.addEditorTab("Composites", compositesPath, 4);
-    var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
-    this.addEditorTab("Value Mappings", mappingsPath, 5);
+    // disabled for now
+    //var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
+    //this.addEditorTab("Value Mappings", mappingsPath, 5);
   }
 
   /**
@@ -419,6 +421,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
         data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
       }
+      // default the color to the global setting
+      data[index].color = this.panel.polystat.polygonGlobalFillColor;
     }
   }
 
@@ -567,6 +571,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   updatePolygonBorderColor() {
+    this.render();
+  }
+
+  updatePolygonGlobalFillColor() {
     this.render();
   }
 

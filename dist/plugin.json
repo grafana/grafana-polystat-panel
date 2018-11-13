@@ -10,8 +10,8 @@
         },
         "keywords": ["hexbin", "honeycomb", "panel"],
         "logos": {
-            "small": "img/honeycomb-svgrepo-com.svg",
-            "large": "img/honeycomb-svgrepo-com.svg"
+            "small": "img/polystat.svg",
+            "large": "img/polystat.svg"
         },
         "links": [{
             "name": "Project site",
@@ -40,8 +40,8 @@
             "name": "Composites",
             "path": "screenshots/polystat-composites-all.png"
         }],
-        "version": "1.0.13",
-        "updated": "2018-10-04"
+        "version": "1.0.14",
+        "updated": "2018-11-11"
     },
 
     "dependencies": {

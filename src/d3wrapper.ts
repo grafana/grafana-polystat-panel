@@ -2,7 +2,7 @@
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
 import * as d3 from "./external/d3.min.js";
 import * as d3hexbin from "./external/d3-hexbin.js";
-import { getTextSizeForWidth } from "./utils";
+import { getTextSizeForWidthAndHeight } from "./utils";
 import _ from "lodash";
 import { Color } from "./color";
 
@@ -130,14 +130,14 @@ export class D3Wrapper {
     if (this.opt.radiusAutoSize) {
       this.hexRadius = this.getAutoHexRadius();
       this.autoHexRadius = this.getAutoHexRadius();
-      console.log("autoHexRadius:" + this.autoHexRadius);
+      //console.log("autoHexRadius:" + this.autoHexRadius);
     }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
     var width = this.opt.width;
     var height = this.opt.height;
-    console.log("Detected Width: " + width + " Height: " + height);
+    //console.log("Detected Width: " + width + " Height: " + height);
     //console.log("autorad:" + this.autoHexRadius);
     var ahexbin = d3hexbin
       .hexbin()
@@ -279,6 +279,7 @@ export class D3Wrapper {
     let customShape = null;
     // this is used to calculate the fontsize
     let shapeWidth = diameterX;
+    let shapeHeight = diameterY;
     // symbols use the area for their size
     let innerArea = diameterX * diameterY;
     // use the smaller of diameterX or Y
@@ -329,6 +330,8 @@ export class D3Wrapper {
     let activeLabelFontSize = this.opt.polystat.fontSize;
     // font sizes are independent for label and values
     let activeValueFontSize = this.opt.polystat.fontSize;
+    let longestDisplayedValueContent = "";
+
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
       let maxLabel = "";
@@ -338,25 +341,36 @@ export class D3Wrapper {
         }
       }
       // estimate how big of a font can be used
+      // Two lines of text must fit with vertical spacing included
       // if it is too small, hide everything
-      let estimateLabelFontSize = getTextSizeForWidth(
+      let estimateLabelFontSize = getTextSizeForWidthAndHeight(
         maxLabel,
         "?px sans-serif", // use sans-serif for sizing
-        shapeWidth - 60,  // pad
+        shapeWidth,
+        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
         10,
         this.maxFont);
-      activeLabelFontSize = estimateLabelFontSize;
 
-      // get the size for the value
-      /*
-      estimateLabelFontSize = getTextSizeForWidth(
-        maxLabel,
-        "?px sans-serif",
-        shapeWidth - (estimateLabelFontSize * 1.2), // pad
+      //console.log("Calc: Estimated Label Font Size: " + estimateLabelFontSize);
+      activeLabelFontSize = estimateLabelFontSize;
+      // same for the value
+      let maxValue = "";
+      for (let i = 0; i < this.data.length; i++) {
+        //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
+        if (this.data[i].valueFormatted.length > maxValue.length) {
+          maxValue = this.data[i].valueFormatted;
+        }
+      }
+      //console.log("Max Value: " + maxValue);
+      let estimateValueFontSize = getTextSizeForWidthAndHeight(
+        maxValue,
+        "?px sans-serif", // use sans-serif for sizing
+        shapeWidth,
+        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
         10,
-        250);
-        activeLabelFontSize = estimateLabelFontSize;
-      */
+        this.maxFont);
+      activeValueFontSize = estimateValueFontSize;
+      longestDisplayedValueContent = maxValue;
     }
 
     // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
@@ -377,18 +391,6 @@ export class D3Wrapper {
         .style("fill", (_, i) => {
           if (this.opt.polystat.gradientEnabled) {
             return "url(#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
-            /*
-            switch (data[i].thresholdLevel) {
-              case 0:
-                return "url(#" + this.d3DivId + "linear-gradient-state-ok)";
-              case 1:
-                return "url(#" + this.d3DivId + "linear-gradient-state-warning)";
-              case 2:
-                return "url(#" + this.d3DivId + "linear-gradient-state-critical)";
-              default:
-                return "url(#" + this.d3DivId + "linear-gradient-state-unknown)";
-            }
-            */
           } else {
             return data[i].color;
           }
@@ -443,7 +445,8 @@ export class D3Wrapper {
 
     let dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
-
+    //console.log("DynamicLabelFontSize: " + dynamicLabelFontSize);
+    //console.log("DynamicValueFontSize: " + dynamicValueFontSize);
     textspot
       .enter()
       .append("text")
@@ -479,7 +482,7 @@ export class D3Wrapper {
         return d.x;
       })
       .attr("y", function (d) {
-        return d.y + activeLabelFontSize + 10; // offset by fontsize and 10px vertical padding
+        return d.y + (activeLabelFontSize / 2 ) + 20; // offset by fontsize and 10px vertical padding
       })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
@@ -492,14 +495,10 @@ export class D3Wrapper {
         // search for a value but not more than number of data items
         // need to find the longest content string generated to determine the
         // dynamic font size
-        //while ((content === null) && (counter < dataLen)) {
-        //  content = this.formatValueContent(i, (frames + counter), this);
-        //  counter++;
-        //}
         // this always starts from frame 0, look through every metric including composite members for the longest text possible
         // get the total count of metrics (with composite members), and loop through
         let submetricCount = this.data[i].members.length;
-        let longestDisplayedValueContent = "";
+        //let longestDisplayedValueContent = "";
         if (submetricCount > 0) {
           while (counter < submetricCount) {
             let checkContent = this.formatValueContent(i, counter, this);
@@ -510,39 +509,32 @@ export class D3Wrapper {
             }
             counter++;
           }
-        } else {
+        }// else {
           // non-composites use the formatted size of the metric value
-          longestDisplayedValueContent = this.formatValueContent(i, counter, this);
-        }
-        //console.log("longestDisplayedValueContent: " + longestDisplayedValueContent);
+        //  longestDisplayedValueContent = this.formatValueContent(i, counter, this);
+        //}
+        //console.log("animated: longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
         counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        dynamicValueFontSize = getTextSizeForWidth(
+        dynamicValueFontSize = getTextSizeForWidthAndHeight(
           longestDisplayedValueContent,
           "?px sans-serif",  // use sans-serif for sizing
-          shapeWidth - 60,   // pad
+          shapeWidth,   // pad
+          shapeHeight / 3,
           6,
           this.maxFont);
-        /*
-        dynamicValueFontSize = getTextSizeForWidth(
-          longestDisplayedValueContent,
-          "?px sans-serif",
-          shapeWidth - (dynamicValueFontSize * 2), // pad by 1 chars each side
-          6,
-          250
-        );
-        */
+        //console.log("Calc: Dynamic Value Font Size: " + dynamicValueFontSize);
+
         // value should never be larger than the label
         if (dynamicValueFontSize > dynamicLabelFontSize) {
           dynamicValueFontSize = dynamicLabelFontSize;
         }
-        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
-        //console.log("dynamicLabelFontSize: " + dynamicLabelFontSize);
-        //console.log("dynamicValueFontSize: " + dynamicValueFontSize);
+        //console.log("animated: dynamicLabelFontSize: " + dynamicLabelFontSize);
+        //console.log("animated: dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
         // use the dynamic size for the value
         valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
@@ -682,18 +674,18 @@ export class D3Wrapper {
   }
 
   calculateSVGSize() {
-    //The height of the total display will be
-    //this.autoHeight = this.numRows * 3 / 2 * this.hexRadius + 1 / 2 * this.hexRadius;
-      //which is the same as
+    // The height of the total display will be
+    // this.autoHeight = this.numRows * 3 / 2 * this.hexRadius + 1 / 2 * this.hexRadius;
+    // which is the same as
     this.autoHeight = (this.numRows + 1 / 3) * 3 / 2 * this.hexRadius;
     this.autoHeight -= this.margin.top - this.margin.bottom;
     //console.log("autoheight = " + this.autoHeight);
-    //The width of the total display will be
-    //this.autoWidth = this.numColumns * Math.sqrt(3) * this.hexRadius + Math.sqrt(3) / 2 * this.hexRadius;
-    //which is the same as
+    // The width of the total display will be
+    // this.autoWidth = this.numColumns * Math.sqrt(3) * this.hexRadius + Math.sqrt(3) / 2 * this.hexRadius;
+    // which is the same as
     this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
     this.autoWidth -= this.margin.left - this.margin.right;
-    console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
+    //console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
   }
 
   // Builds the placeholder polygons needed to represent each metric
