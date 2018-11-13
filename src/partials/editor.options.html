@@ -58,14 +58,6 @@
 				<input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.polygonBorderSize" ng-blur="ctrl.validateBorderSizeValue()" placeholder="2">
 			</div>
     </div>
-    <div class="gf-form-inline">
-      <div class="gf-form">
-        <label class="gf-form-label width-11">Polygon Border Color</label>
-        <span class="gf-form-label">
-          <spectrum-picker ng-model="ctrl.panel.polystat.polygonBorderColor" ng-change="ctrl.updatePolygonBorderColor()"></spectrum-picker>
-        </span>
-      </div>
-    </div>
 		<div class="gf-form-inline">
         <div class="gf-form">
 				<label class="gf-form-label width-11">Font Size
@@ -215,6 +207,15 @@
         <label class="gf-form-label width-11">Fill Color</label>
         <span class="gf-form-label">
           <spectrum-picker ng-model="ctrl.panel.polystat.polygonGlobalFillColor" ng-change="ctrl.updatePolygonGlobalFillColor()"></spectrum-picker>
+        </span>
+      </div>
+    </div>
+
+    <div class="gf-form-inline">
+      <div class="gf-form">
+        <label class="gf-form-label width-11">Polygon Border Color</label>
+        <span class="gf-form-label">
+          <spectrum-picker ng-model="ctrl.panel.polystat.polygonBorderColor" ng-change="ctrl.updatePolygonBorderColor()"></spectrum-picker>
         </span>
       </div>
     </div>

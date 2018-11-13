@@ -180,8 +180,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.addEditorTab("Overrides", overridesPath, 3);
     var compositesPath = thisPanelPath + "partials/editor.composites.html";
     this.addEditorTab("Composites", compositesPath, 4);
-    var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
-    this.addEditorTab("Value Mappings", mappingsPath, 5);
+    // disabled for now
+    //var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
+    //this.addEditorTab("Value Mappings", mappingsPath, 5);
   }
 
   /**
