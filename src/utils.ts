@@ -78,6 +78,43 @@ function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontP
 }
 
 /**
+ *
+ *
+ * Find the largest font size (in pixels) that allows the string to fit in the given width.
+ *
+ * @param {String} text The text to be rendered.
+ * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold ?px verdana")
+ *                      -- note the use of ? in place of the font size.
+ * @param {width} the width in pixels the string must fit in
+ * @param {height} the height in pixels
+ * @param {minFontPx} the smallest acceptable font size in pixels
+ * @param {maxFontPx} the largest acceptable font size in pixels
+**/
+function getTextSizeForWidthAndHeight(text: string, font: any, width: number, height: number, minFontPx: number, maxFontPx: number) {
+  var s = font.replace("?", maxFontPx);
+  var w = getTextWidth(text, s);
+  // need to pad the width to allow space on each side
+  width = width - 72;
+  //console.log("Estimating size for text: " + text + " inside width: " + width + " using font: " + font);
+  if ((w <= width) && (maxFontPx <= height)) {
+    return maxFontPx;
+  }
+  // start from large to small, return 0 for no-fit
+  for (let fontSize = maxFontPx; fontSize >= minFontPx; fontSize--) {
+    s = font.replace("?", fontSize);
+    w = getTextWidth(text, s);
+    //console.log("calc width = " + w);
+    // has to fit within the width of the text area, and not exceed the height
+    if ((w < width) && (fontSize <= height)) {
+      //console.log("estimated size: " + Math.ceil(fontSize));
+      return Math.ceil(fontSize);
+    }
+  }
+  // 0 if no fit
+  return 0;
+}
+
+/**
  * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
  *
  * @param {String} text The text to be rendered.
@@ -94,9 +131,30 @@ function getTextWidth(text: string, font: string) {
   return metrics.width;
 }
 
+function RGBToHex(text: string) {
+  // check if in rgb notation
+  if (!text.startsWith("rgb")) {
+    return text;
+  }
+  let hex = "#FFFFFF";
+  try {
+    let a = text.split("(")[1].split(")")[0];
+    let b = a.split(",");
+    let c = b.map(function(x) {               // For each array element
+      x = parseInt(x, 10).toString(16);       // Convert to a base16 string
+      return (x.length === 1) ? "0" + x : x;  // Add zero if we get only one character
+    });
+    hex = "#" + c.join("");
+  } catch (e) {
+    return hex;
+  }
+  return hex;
+}
 
 export {
 GetDecimalsForValue,
 getTextSizeForWidth,
-getTextWidth
+getTextSizeForWidthAndHeight,
+getTextWidth,
+RGBToHex
 };
