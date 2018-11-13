@@ -185,3 +185,9 @@ This panel is based on this D3 example:
 - No longer errors when thresholds not found
 - Refactor thresholds to allow range evaluation in overrides
 - Refactor and implement custom gradients for overrides
+##### v1.0.14
+- Update Logo
+- Fixed threshold evaluation
+- Added global fill color option
+- Autoscaling fonts has better results
+
