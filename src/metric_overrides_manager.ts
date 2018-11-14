@@ -28,7 +28,7 @@ export class MetricOverridesManager {
     templateSrv: any;
     suggestMetricNames: any;
 
-    constructor($scope, templateSrv, $sanitize, savedOverrides) {
+    constructor($scope, templateSrv, $sanitize, metricOverrides: Array<MetricOverride>) {
         this.$scope = $scope;
         this.$sanitize = $sanitize;
         this.templateSrv = templateSrv;
@@ -38,7 +38,7 @@ export class MetricOverridesManager {
                 return series.alias;
             });
         };
-        this.metricOverrides = savedOverrides;
+        this.metricOverrides = metricOverrides;
         // upgrade if no label present
         for (let index = 0; index < this.metricOverrides.length; index++) {
           if (typeof this.metricOverrides[index].label === "undefined") {
@@ -52,7 +52,12 @@ export class MetricOverridesManager {
         override.label = "OVERRIDE " + (this.metricOverrides.length + 1);
         override.metricName = "";
         override.thresholds = [];
-        override.colors = ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"];
+        override.colors = [
+          "#299c46", // "rgba(50, 172, 45, 1)", // green
+          "#e5ac0e", // "rgba(237, 129, 40, 1)", // yellow
+          "#bf1b00", // "rgba(245, 54, 54, 1)", // red
+          "#ffffff" // white
+        ];
         override.decimals = "";
         override.enabled = true;
         override.unitFormat = "short";
@@ -66,12 +71,15 @@ export class MetricOverridesManager {
     }
 
     removeMetricOverride(override) {
-        this.metricOverrides = _.without(this.metricOverrides, override);
-        // fix the labels
-        for (let index = 0; index < this.metricOverrides.length; index++) {
-          this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
-        }
-        this.$scope.ctrl.refresh();
+      // lodash _.without creates a new array, need to reassign to the panel where it will be saved
+      this.metricOverrides = _.without(this.metricOverrides, override);
+      // fix the labels
+      for (let index = 0; index < this.metricOverrides.length; index++) {
+        this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
+      }
+      // reassign reference in panel
+      this.$scope.ctrl.panel.savedOverrides = this.metricOverrides;
+      this.$scope.ctrl.refresh();
     }
 
     toggleHide(override) {
@@ -156,6 +164,16 @@ export class MetricOverridesManager {
       this.$scope.ctrl.refresh();
     }
 
+    updateThresholdColor(override, threshold) {
+      // threshold.state determines the color used
+      //console.log("threshold state = " + threshold.state);
+      //console.log("override color[0]: " + override.colors[0]);
+      //console.log("override color[1]: " + override.colors[1]);
+      //console.log("override color[2]: " + override.colors[2]);
+      threshold.color = override.colors[threshold.state];
+      this.$scope.ctrl.refresh();
+    }
+
     sortThresholds(override) {
       override.thresholds = _.orderBy(override.thresholds, ["value"], ["asc"]);
       this.$scope.ctrl.refresh();
@@ -164,11 +182,6 @@ export class MetricOverridesManager {
     removeThreshold(override, threshold) {
       override.thresholds = _.without(override.thresholds, threshold);
       this.sortThresholds(override);
-    }
-
-    invertColorOrder(override) {
-      override.colors.reverse();
-      this.$scope.ctrl.refresh();
     }
 
     setUnitFormat(override, subItem) {

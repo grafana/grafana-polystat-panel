@@ -92,7 +92,7 @@
 
         <div class="gf-form">
           <h5 class="section-heading width-10">Thresholds
-            <tip>Evaluates to state if value is greater than or equal to specified threshold</tip>
+            <tip>Evaluates to state if value is greater than or equal to specified threshold. Values below and equal to T1 use state of T1.</tip>
           </h5>
           <button class="btn btn-inverse width-10" ng-click="ctrl.overridesCtrl.addThreshold(override)">
             <i class="fa fa-plus"></i>&nbsp;Add Threshold
@@ -109,7 +109,7 @@
               <select class="gf-form-input"
                 ng-model="threshold.state"
                 ng-options="f.value as f.text for f in ctrl.thresholdStates"
-                ng-change="ctrl.overridesCtrl.validateThresholdColor(threshold)">
+                ng-change="ctrl.overridesCtrl.updateThresholdColor(override, threshold)">
               </select>
             </span>
           </div>

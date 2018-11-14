@@ -9,7 +9,7 @@ import "./css/polystat.css!";
 import { D3Wrapper } from "./d3wrapper";
 import { Transformers } from "./transformers";
 import { PolystatModel } from "./polystatmodel";
-import { MetricOverridesManager } from "./metric_overrides_manager";
+import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
 import { GetDecimalsForValue } from "./utils";
@@ -101,7 +101,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   panelDefaults = {
     savedComposites : [],
-    savedOverrides : [],
+    savedOverrides: Array<MetricOverride>(),
     colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
     polystat: {
       animationSpeed: 2500,
@@ -145,7 +145,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
-    _.defaults(this.panel, this.panelDefaults);
+    _.defaultsDeep(this.panel, this.panelDefaults);
+
     this.d3DivId = "d3_svg_" + this.panel.id;
     this.containerDivId = "container_" + this.d3DivId;
     this.alertSrvRef = alertSrv;
