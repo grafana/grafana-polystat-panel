@@ -51,12 +51,12 @@ When there is no n+1 threshold, the highest value threshold T(n), a simple inclu
 The "worst" state is returned after checking every threshold range
 
 */
-function getWorstSeries(series1: any, series2: any): any {
+function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
   var worstSeries = series1;
   var series1Value = getValueByStatName(series1.operatorName, series1);
   var series2Value = getValueByStatName(series2.operatorName, series2);
-  var series1result = getThresholdLevelForValue(series1.thresholds, series1Value);
-  var series2result = getThresholdLevelForValue(series2.thresholds, series2Value);
+  var series1result = getThresholdLevelForValue(series1.thresholds, series1Value, defaultColor);
+  var series2result = getThresholdLevelForValue(series2.thresholds, series2Value, defaultColor);
 
   // State 3 is Unknown and is not be worse than CRITICAL (state 2)
   if (series2result.thresholdLevel > series1result.thresholdLevel) {
@@ -77,46 +77,37 @@ function getWorstSeries(series1: any, series2: any): any {
   return worstSeries;
 }
 
-function getThresholdLevelForValue(thresholds: any, value: number): {thresholdLevel: number, color: string} {
+function getThresholdLevelForValue(thresholds: any, value: number, defaultColor: string): {thresholdLevel: number, color: string} {
   let colorGrey = "#808080"; // "grey"
-  let colorWhite = "#FFFFFF"; // "white"
-  let currentColor = colorWhite;
+  let currentColor = defaultColor;
   if (value === null) {
-    //console.log("getThresholdLevelForValue: NO DATA");
     return { thresholdLevel: 3, color: colorGrey}; // No Data
   }
   // assume UNKNOWN state
   let currentState = -1;
   // skip evaluation when there are no thresholds
   if (typeof thresholds === "undefined") {
-    //console.log("getThresholdLevelForValue: NO thresholds defined");
-    return { thresholdLevel: currentState, color: colorWhite};
+    return { thresholdLevel: currentState, color: defaultColor};
   }
   // test "Nth" threshold
   let thresholdCount = thresholds.length;
   if (thresholdCount === 0) {
-    //console.log("getThresholdLevelForValue: NO thresholds defined");
-    return { thresholdLevel: currentState, color: colorWhite};
+    return { thresholdLevel: currentState, color: defaultColor};
   }
   let aThreshold = thresholds[thresholdCount - 1];
   if (value >= aThreshold.value) {
-    //console.log("getThresholdLevelForValue: value " + value + " ge " + aThreshold.value);
     currentState = aThreshold.state;
     currentColor = aThreshold.color;
   }
   // if there's one threshold, just return the result
   if (thresholds.length === 1) {
-    //console.log("getThresholdLevelForValue: single threshold, returning state " + currentState);
     return { thresholdLevel: currentState, color: currentColor};
   }
   // now test in reverse
   for (let i = thresholdCount - 1; i > 0; i--) {
     let upperThreshold = thresholds[i];
     let lowerThreshold = thresholds[i - 1];
-    //console.log("lowerThreshold = " + lowerThreshold.value);
-    //console.log("upperThreshold = " + upperThreshold.value);
     if ((lowerThreshold.value <= value) && (value < upperThreshold.value)) {
-      //console.log("getThresholdLevelForValue: value " + value + " is between " + lowerThreshold.value + " and " + upperThreshold.value);
       if (currentState < lowerThreshold.state) {
         currentState = lowerThreshold.state;
         currentColor = lowerThreshold.color;

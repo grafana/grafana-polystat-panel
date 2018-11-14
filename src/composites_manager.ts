@@ -129,7 +129,10 @@ export class CompositesManager {
                 if (currentWorstSeries === null) {
                     currentWorstSeries = seriesItem;
                 } else {
-                    currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem);
+                    currentWorstSeries = getWorstSeries(
+                      currentWorstSeries,
+                      seriesItem,
+                      this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
                 }
             }
             // Prefix the valueFormatted with the actual metric name

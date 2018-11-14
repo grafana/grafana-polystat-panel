@@ -104,7 +104,10 @@ export class MetricOverridesManager {
               let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
               //console.log("series2 operator: " + series2.operatorName);
               //console.log("series2 value: " + series2Value);
-              var result = getThresholdLevelForValue(anOverride.thresholds, dataValue);
+              var result = getThresholdLevelForValue(
+                anOverride.thresholds,
+                dataValue,
+                this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
               // set value to what was returned
               data[index].value = dataValue;
               data[index].color = result.color;
