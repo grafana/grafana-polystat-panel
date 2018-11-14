@@ -5,19 +5,20 @@ import kbn from "app/core/utils/kbn";
 import { getThresholdLevelForValue, getValueByStatName } from "./threshold_processor";
 
 export class MetricOverride {
-    metricName: string;
-    thresholds: Array<any>;
-    colors: Array<string>;
-    unitFormat: string;
-    decimals: string;
-    scaledDecimals: number;
-    enabled: boolean;
-    operatorName: string; // avg/min/max etc
-    prefix: string;
-    suffix: string;
-    clickThrough: string;
-    sanitizeURLEnabled: boolean;
-    sanitizedURL: string;
+  label: string;
+  metricName: string;
+  thresholds: Array<any>;
+  colors: Array<string>;
+  unitFormat: string;
+  decimals: string;
+  scaledDecimals: number;
+  enabled: boolean;
+  operatorName: string; // avg/min/max etc
+  prefix: string;
+  suffix: string;
+  clickThrough: string;
+  sanitizeURLEnabled: boolean;
+  sanitizedURL: string;
 }
 
 export class MetricOverridesManager {
@@ -38,16 +39,23 @@ export class MetricOverridesManager {
             });
         };
         this.metricOverrides = savedOverrides;
+        // upgrade if no label present
+        for (let index = 0; index < this.metricOverrides.length; index++) {
+          if (typeof this.metricOverrides[index].label === "undefined") {
+            this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
+          }
+        }
     }
 
     addMetricOverride() {
         let override = new MetricOverride();
+        override.label = "OVERRIDE " + (this.metricOverrides.length + 1);
         override.metricName = "";
         override.thresholds = [];
         override.colors = ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"];
         override.decimals = "";
         override.enabled = true;
-        override.unitFormat = "";
+        override.unitFormat = "short";
         override.clickThrough = "";
         override.operatorName = "avg";
         override.scaledDecimals = null;
@@ -59,7 +67,17 @@ export class MetricOverridesManager {
 
     removeMetricOverride(override) {
         this.metricOverrides = _.without(this.metricOverrides, override);
+        // fix the labels
+        for (let index = 0; index < this.metricOverrides.length; index++) {
+          this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
+        }
         this.$scope.ctrl.refresh();
+    }
+
+    toggleHide(override) {
+      console.log("override enabled =  " + override.enabled);
+      override.enabled = !override.enabled;
+      this.$scope.ctrl.refresh();
     }
 
     matchOverride(pattern) : number {
@@ -67,7 +85,7 @@ export class MetricOverridesManager {
             let anOverride = this.metricOverrides[index];
             var regex = kbn.stringToJsRegex(anOverride.metricName);
             var matches = pattern.match(regex);
-            if (matches && matches.length > 0) {
+            if (matches && matches.length > 0 && anOverride.enabled ) {
                 return index;
             }
         }
@@ -154,32 +172,4 @@ export class MetricOverridesManager {
         override.unitFormat = subItem.value;
     }
 
-    moveMetricOverrideUp(override) {
-        for (let index = 0; index < this.metricOverrides.length; index++) {
-            let anOverride = this.metricOverrides[index];
-            if (override === anOverride) {
-                if (index > 0) {
-                    this.arraymove(this.metricOverrides, index, index - 1);
-                    break;
-                }
-            }
-        }
-    }
-    moveMetricOverrideDown(override) {
-        for (let index = 0; index < this.metricOverrides.length; index++) {
-            let anOverride = this.metricOverrides[index];
-            if (override === anOverride) {
-                if (index < this.metricOverrides.length) {
-                    this.arraymove(this.metricOverrides, index, index + 1);
-                    break;
-                }
-            }
-        }
-    }
-
-    arraymove(arr, fromIndex, toIndex) {
-        var element = arr[fromIndex];
-        arr.splice(fromIndex, 1);
-        arr.splice(toIndex, 0, element);
-    }
 }
