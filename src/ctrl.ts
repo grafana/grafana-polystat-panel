@@ -117,7 +117,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       maxMetrics: 0,
       polygonBorderSize: 2,
       polygonBorderColor: "black",
-      polygonGlobalFillColor: "white",
+      polygonGlobalFillColor: "#0a50a1",
       radius: "",
       radiusAutoSize: true,
       rows: "",
