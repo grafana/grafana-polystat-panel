@@ -11,10 +11,11 @@
     "type": "git",
     "url": "git+https://github.com/grafana/grafana-polystat-panel.git"
   },
-  "author": "Brian Gann",
+  "author": "Grafana Labs <team@grafana.com> (https://grafana.com)",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/grafana/grafana-polystat-panel/issues"
+    "url": "https://github.com/grafana/grafana-polystat-panel/issues",
+    "email": "plugins@grafana.com"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
