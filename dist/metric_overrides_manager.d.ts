@@ -21,6 +21,7 @@ export declare class MetricOverridesManager {
     $sanitize: any;
     templateSrv: any;
     suggestMetricNames: any;
+    activeOverrideIndex: number;
     constructor($scope: any, templateSrv: any, $sanitize: any, metricOverrides: Array<MetricOverride>);
     addMetricOverride(): void;
     removeMetricOverride(override: any): void;

@@ -110,31 +110,23 @@
 			on-change="ctrl.refresh()">
 		</gf-form-switch>
 	</div>
-	<div class="gf-form">
-		<label class="gf-form-label width-13">Font Type
-			<tip>The font of the tooltip</tip>
-		</label>
-		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipFontType" ng-options="f for f in ctrl.fontTypes"
-			    ng-change="ctrl.refresh()">
-			</select>
-		</div>
-  </div>
 
-  <div class="gf-form">
-    <label class="gf-form-label width-13">Display</label>
-    <div class="gf-form-select-wrapper width-12">
-      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayMode" ng-options="f.value as f.text for f in ctrl.displayModes"
-        ng-change="ctrl.refresh()"></select>
+  <div class="gf-form-inline">
+    <div class="gf-form">
+      <label class="gf-form-label width-13">Display</label>
+      <div class="gf-form-select-wrapper width-12">
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayMode" ng-options="f.value as f.text for f in ctrl.displayModes"
+          ng-change="ctrl.refresh()"></select>
+      </div>
+    </div>
+    <div class="gf-form" ng-if="ctrl.panel.polystat.tooltipDisplayMode === 'triggered'">
+      <label class="gf-form-label width-13">Non Triggered State Text
+        <tip>Text to be displayed by tooltip when there are no triggered thresholds and tooltip display mode is set to triggered</tip>
+      </label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
     </div>
   </div>
 
-  <div class="gf-form" ng-if="ctrl.panel.polystat.tooltipDisplayMode === 'triggered'">
-    <label class="gf-form-label width-13">Non Triggered State Text
-      <tip>Text to be displayed by tooltip when there are no triggered thresholds and display mode is set to triggered</tip>
-    </label>
-    <input type="text" class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
-  </div>
 	<div class="gf-form">
 		<label class="gf-form-label width-13">Primary Sort Direction
 			<tip>Primary sort direction</tip>
@@ -174,6 +166,22 @@
   </div>
 	<div class="section gf-form-group">
     <h5 class="section-heading">Global</h5>
+    <div class="gf-form-inline">
+        <div class="gf-form">
+          <label class="gf-form-label width-11">Display</label>
+          <div class="gf-form-select-wrapper width-13">
+            <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalDisplayMode" ng-options="f.value as f.text for f in ctrl.displayModes"
+              ng-change="ctrl.refresh()"></select>
+          </div>
+        </div>
+        <div class="gf-form" ng-if="ctrl.panel.polystat.globalDisplayMode === 'triggered'">
+          <label class="gf-form-label width-13">Non Triggered State Text
+            <tip>Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered</tip>
+          </label>
+          <input type="text" class="gf-form-input width-13" ng-model="ctrl.panel.polystat.globalDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
+        </div>
+      </div>
+  
     <div class="gf-form">
       <label class="gf-form-label width-11">Shape</label>
       <div class="gf-form-select-wrapper width-13">
@@ -182,58 +190,55 @@
       </div>
     </div>
     <div class="gf-form-inline">
-      <gf-form-switch class="gf-form" label-class="width-11" label="Gradient Colors" checked="ctrl.panel.polystat.gradientEnabled"
-        on-change="ctrl.refresh()">
-      </gf-form-switch>
-    </div>
-    <div class="gf-form">
-      <label class="gf-form-label width-11">Display</label>
-      <div class="gf-form-select-wrapper width-13">
-        <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalDisplayMode" ng-options="f.value as f.text for f in ctrl.displayModes"
-          ng-change="ctrl.refresh()"></select>
+        <div class="gf-form-inline">
+        <gf-form-switch class="gf-form" label-class="width-11" label="Gradient Colors" checked="ctrl.panel.polystat.gradientEnabled"
+          on-change="ctrl.refresh()">
+        </gf-form-switch>
       </div>
-    </div>
-    <div class="gf-form">
-      <label class="gf-form-label width-11">Unit</label>
-      <div class="gf-form">
-        <div class="gf-form-dropdown-typeahead width-13 max-width-20"
-            ng-model="ctrl.panel.polystat.globalUnitFormat" dropdown-typeahead2="ctrl.unitFormats"
-            dropdown-typeahead-on-select="ctrl.setGlobalUnitFormat($subItem)">
+      <div class="gf-form-inline">
+        <div class="gf-form">
+          <label class="gf-form-label width-11">Polygon Fill Color</label>
+          <span class="gf-form-label">
+            <spectrum-picker ng-model="ctrl.panel.polystat.polygonGlobalFillColor" ng-change="ctrl.updatePolygonGlobalFillColor()"></spectrum-picker>
+          </span>
+        </div>
+      </div>
+      <div class="gf-form-inline">
+        <div class="gf-form">
+          <label class="gf-form-label width-11">Polygon Border Color</label>
+          <span class="gf-form-label">
+            <spectrum-picker ng-model="ctrl.panel.polystat.polygonBorderColor" ng-change="ctrl.updatePolygonBorderColor()"></spectrum-picker>
+          </span>
         </div>
       </div>
     </div>
-    <div class="gf-form-inline">
-      <div class="gf-form">
-        <label class="gf-form-label width-11">Fill Color</label>
-        <span class="gf-form-label">
-          <spectrum-picker ng-model="ctrl.panel.polystat.polygonGlobalFillColor" ng-change="ctrl.updatePolygonGlobalFillColor()"></spectrum-picker>
-        </span>
-      </div>
-    </div>
+
 
     <div class="gf-form-inline">
       <div class="gf-form">
-        <label class="gf-form-label width-11">Polygon Border Color</label>
-        <span class="gf-form-label">
-          <spectrum-picker ng-model="ctrl.panel.polystat.polygonBorderColor" ng-change="ctrl.updatePolygonBorderColor()"></spectrum-picker>
-        </span>
+        <label class="gf-form-label width-11">Unit</label>
+        <div class="gf-form">
+          <div class="gf-form-dropdown-typeahead width-13 max-width-20"
+            ng-model="ctrl.panel.polystat.globalUnitFormat" dropdown-typeahead2="ctrl.unitFormats"
+            dropdown-typeahead-on-select="ctrl.setGlobalUnitFormat($subItem)">
+          </div>
+        </div>
       </div>
+      <div class="gf-form">
+        <label class="gf-form-label width-5">Stat</label>
+        <div class="gf-form-select-wrapper width-13">
+          <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalOperatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
+            ng-change="ctrl.refresh()"></select>
+        </div>
+      </div> 
     </div>
-
     <div class="gf-form">
-      <label class="gf-form-label width-11">Decimals</label>
-      <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.polystat.globalDecimals" ng-change="ctrl.refresh()"
-        ng-model-onblur>
-    </div>
-
-    <div class="gf-form">
-      <label class="gf-form-label width-11">Stat</label>
-      <div class="gf-form-select-wrapper width-13">
-        <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalOperatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
-          ng-change="ctrl.refresh()"></select>
+        <label class="gf-form-label width-11">Decimals</label>
+        <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.polystat.globalDecimals" ng-change="ctrl.refresh()"
+          ng-model-onblur>
       </div>
-    </div>
-		<div class="gf-form-inline">
+
+    <div class="gf-form-inline">
 			<label class="gf-form-label width-11">Default Clickthrough
 				<tip>URL to use when none defined by overrides</tip>
 			</label>
@@ -242,18 +247,5 @@
       <gf-form-switch class="gf-form" label="Sanitize" label-class="width-5" checked="ctrl.panel.polystat.defaultClickThroughSanitize" on-change="ctrl.refresh()">
       </gf-form-switch>
     </div>
-	</div>
-</div>
-
-<div class="editor-row">
-	<div class="section gf-form-group">
-		<h5 class="section-heading">Animation</h5>
-		<div class="gf-form-inline">
-			<label class="gf-form-label width-8">Speed
-				<tip>Speed in milliseconds (500 min, 5000 default)</tip>
-			</label>
-			<input type="number" class="gf-form-input width-8" ng-model="ctrl.panel.polystat.animationSpeed" ng-blur="ctrl.validateAnimationSpeed()" placeholder="5000">
-			</input>
-		</div>
 	</div>
 </div>

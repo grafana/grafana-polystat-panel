@@ -24,7 +24,6 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         text: string;
     }[];
     fontSizes: number[];
-    fontTypes: string[];
     unitFormats: any;
     operatorOptions: {
         value: string;
@@ -74,6 +73,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
             globalDecimals: number;
             globalDisplayMode: string;
             globalOperatorName: string;
+            globalDisplayTextTriggeredEmpty: string;
             gradientEnabled: boolean;
             hexagonSortByDirection: string;
             hexagonSortByField: string;
