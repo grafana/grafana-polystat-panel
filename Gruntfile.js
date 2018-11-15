@@ -42,7 +42,7 @@ module.exports = function(grunt) {
       },
       pluginDef: {
         expand: true,
-        src: ['README.md'],
+        src: ['README.md', 'CHANGELOG.md'],
         dest: 'dist',
       }
     },
@@ -99,7 +99,7 @@ module.exports = function(grunt) {
     },
 
     watch: {
-      files: ['src/**/*.ts', 'src/**/*.html', 'src/**/*.scss', 'src/**/*.css', 'src/img/*.*', 'src/plugin.json', 'tests/**/*.ts', 'README.md'],
+      files: ['src/**/*.ts', 'src/**/*.html', 'src/**/*.scss', 'src/**/*.css', 'src/img/*.*', 'src/plugin.json', 'tests/**/*.ts', 'README.md', 'CHANGELOG.md'],
       tasks: ['default'],
       options: {
         debounceDelay: 250,
