@@ -3,7 +3,7 @@
 
 This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](http://www.grafana.org) 3.x/4.x/5.x.
 
-A hexagon is create for each metric received, with the ability to group metrics into a composite metric, and display the alert state of the composite.
+A hexagon is create for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
 ## Screenshots
 
@@ -53,17 +53,12 @@ Set the font to be used for Tooltips
 
 ![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-global.png)
 
-### Animation
-
-![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-animation.png)
-
-#### Speed
-
-Speed of animation in milliseconds
 
 #### Display
 Show all
 Show triggered
+
+![Show all example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-show-all-example.png)
 
 
 ### Actions
@@ -80,19 +75,36 @@ Display the metric in the hexagon
 
 Display the metric value
 
+
+## Overrides
+
+![Overrides without Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-no-thresholds.png)
+
+![Overrides with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-all.png)
+
+![Overrides Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-gpu0-rendered.png)
+
+## Composites
+
+![Composites with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-all.png)
+
+![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-with-tooltip.png)
+
+
+### Animation
+
+![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-options-animation.png)
+
 #### Animate Composites
 
 Animate hexagon to display metrics if there are composites
 
-## Overrides
+![Animation Example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-animated.png)
 
-![Overrides](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-overrides-all.png)
 
-## Composites
+#### Speed
 
-![Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-all.png)
-
-## Value Mappings
+Speed of animation in milliseconds
 
 ## Time Range
 

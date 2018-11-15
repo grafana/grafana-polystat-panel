@@ -390,7 +390,8 @@ export class D3Wrapper {
         .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
         .style("fill", (_, i) => {
           if (this.opt.polystat.gradientEnabled) {
-            return "url(#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
+            // safari needs the location.href
+            return "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
           } else {
             return data[i].color;
           }

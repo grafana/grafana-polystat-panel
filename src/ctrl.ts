@@ -47,13 +47,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32,
     34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54,
     56, 58, 60, 62, 64, 66, 68, 70];
-  fontTypes = [
-    "Open Sans", "Arial", "Avant Garde", "Bookman",
-    "Consolas", "Courier", "Courier New", "Futura",
-    "Garamond", "Helvetica",
-    "Palatino", "Roboto", "Times", "Times New Roman",
-    "Verdana"
-  ];
   unitFormats = kbn.getUnitFormats();
   operatorOptions = [
     { value: "avg", text: "Average" },
@@ -117,13 +110,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       globalDecimals: 2,
       globalDisplayMode: "all",
       globalOperatorName: "avg",
+      globalDisplayTextTriggeredEmpty: "OK",
       gradientEnabled: true,
       hexagonSortByDirection: "asc",
       hexagonSortByField: "name",
       maxMetrics: 0,
       polygonBorderSize: 2,
       polygonBorderColor: "black",
-      polygonGlobalFillColor: "white",
+      polygonGlobalFillColor: "#0a50a1",
       radius: "",
       radiusAutoSize: true,
       rows: "",
@@ -572,6 +566,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   updatePolygonBorderColor() {
+    this.panel.polystat.polygonBorderColor = RGBToHex(this.panel.polystat.polygonBorderColor);
     this.render();
   }
 

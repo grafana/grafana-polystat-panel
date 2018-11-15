@@ -19,6 +19,7 @@ export declare class CompositesManager {
     $sanitize: any;
     suggestMetricNames: any;
     metricComposites: Array<MetricComposite>;
+    subTabIndex: number;
     constructor($scope: any, templateSrv: any, $sanitize: any, savedComposites: any);
     addMetricComposite(): void;
     removeMetricComposite(item: any): void;
