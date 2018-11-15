@@ -346,9 +346,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (!attrs) {
       return;
     }
-    var d3ByClass = elem.find(".grafana-d3-polystat");
-    d3ByClass.append("<div id=\"" + ctrl.containerDivId + "\"></div>");
-    var container = d3ByClass[0].childNodes[0];
+    var panelByClass = elem.find(".grafana-d3-polystat");
+    panelByClass.append("<div style=\"width: 100%; height: 100%;\" id=\"" + ctrl.containerDivId + "\"></div>");
+    var container = panelByClass[0].childNodes[0];
     ctrl.setContainer(container);
 
     elem = elem.find(".grafana-d3-polystat");
