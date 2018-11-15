@@ -12,7 +12,7 @@ import { PolystatModel } from "./polystatmodel";
 import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
-import { GetDecimalsForValue } from "./utils";
+import { GetDecimalsForValue, RGBToHex } from "./utils";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -576,6 +576,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   updatePolygonGlobalFillColor() {
+    this.panel.polystat.polygonGlobalFillColor = RGBToHex(this.panel.polystat.polygonGlobalFillColor);
     this.render();
   }
 

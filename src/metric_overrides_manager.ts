@@ -3,6 +3,7 @@
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { getThresholdLevelForValue, getValueByStatName } from "./threshold_processor";
+import { RGBToHex } from "./utils";
 
 export class MetricOverride {
   label: string;
@@ -155,7 +156,9 @@ export class MetricOverridesManager {
 
     // store user selection of color to be used for all items with the corresponding state
     setThresholdColor(threshold) {
-      console.log("Threshold color set to " + threshold.color);
+      //console.log("setThresholdColor: color set to " + threshold.color);
+      threshold.color = RGBToHex(threshold.color);
+      //console.log("setThresholdColor: parsed color set to " + threshold.color);
       this.$scope.ctrl.refresh();
     }
 
