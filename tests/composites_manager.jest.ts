@@ -63,6 +63,7 @@ describe("CompositesManager", () => {
     let aComposite = new MetricComposite();
     aComposite.compositeName = "composite1";
     aComposite.clickThrough = "";
+    aComposite.enabled = true;
     aComposite.members = [
       {seriesName: "A-series"}
     ];
