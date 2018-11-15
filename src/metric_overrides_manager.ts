@@ -28,11 +28,13 @@ export class MetricOverridesManager {
     $sanitize: any;
     templateSrv: any;
     suggestMetricNames: any;
+    activeOverrideIndex: number;
 
     constructor($scope, templateSrv, $sanitize, metricOverrides: Array<MetricOverride>) {
         this.$scope = $scope;
         this.$sanitize = $sanitize;
         this.templateSrv = templateSrv;
+        this.activeOverrideIndex = 0;
         // typeahead requires this form
         this.suggestMetricNames = () => {
             return _.map(this.$scope.ctrl.series, function (series) {

@@ -1,8 +1,11 @@
 <div class="edit-tab-with-sidemenu">
   <aside class="edit-sidemenu-aside">
     <ul class="edit-sidemenu">
-      <li ng-repeat="composite in ctrl.compositesManager.metricComposites" ng-class="{active: ctrl.compositesManager.activeStyleIndex === $index}">
-        <a ng-click="ctrl.compositesManager.activeStyleIndex = $index">{{ composite.label || 'New Composite'}}</a>
+      <li ng-class="{active: ctrl.compositesManager.subTabIndex === 0}">
+        <a ng-click="ctrl.compositesManager.subTabIndex = 0">Options</a>
+      </li>
+      <li ng-class="{active: ctrl.compositesManager.subTabIndex === 1 && ctrl.compositesManager.activeStyleIndex === $index}" ng-repeat="composite in ctrl.compositesManager.metricComposites">
+          <a ng-click="ctrl.compositesManager.subTabIndex = 1; ctrl.compositesManager.activeStyleIndex = $index">{{ composite.label || 'New Composite'}}</a>
       </li>
       <li>
         <a class="pointer" ng-click="ctrl.compositesManager.addMetricComposite()">
@@ -11,7 +14,18 @@
       </li>
     </ul>
   </aside>
-  <div class="edit-tab-content" ng-repeat="composite in ctrl.compositesManager.metricComposites" ng-if="ctrl.compositesManager.activeStyleIndex === $index">
+  <div class="edit-tab-content" ng-if="ctrl.compositesManager.subTabIndex === 0">
+    <div class="section gf-form-group">
+      <h5 class="section-heading">Animation</h5>
+      <div class="gf-form-inline">
+        <label class="gf-form-label width-8">Speed
+          <tip>When multiple metrics are to be displayed by a composite, this sets the animation speed in milliseconds (500 min, 5000 default)</tip>
+        </label>
+        <input type="number" class="gf-form-input width-8" ng-model="ctrl.panel.polystat.animationSpeed" ng-blur="ctrl.validateAnimationSpeed()" placeholder="5000">
+      </div>
+    </div>
+  </div>
+  <div class="edit-tab-content" ng-repeat="composite in ctrl.compositesManager.metricComposites" ng-if="ctrl.compositesManager.subTabIndex === 1 && ctrl.compositesManager.activeStyleIndex === $index">
     <div class="section gf-form-group">
       <h5 class="section-heading">Composites
         <tip>Combines multiple metrics into a new name</tip>

@@ -25,11 +25,13 @@ export class CompositesManager {
     $sanitize: any;
     suggestMetricNames: any;
     metricComposites: Array<MetricComposite>;
+    subTabIndex: number;
 
     constructor($scope, templateSrv, $sanitize, savedComposites) {
       this.$scope = $scope;
       this.$sanitize = $sanitize;
       this.templateSrv = templateSrv;
+      this.subTabIndex = 0;
       // typeahead requires this form
       this.suggestMetricNames = () => {
         return _.map(this.$scope.ctrl.series, function (series) {
