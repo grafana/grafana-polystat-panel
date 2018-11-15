@@ -9,10 +9,10 @@ import "./css/polystat.css!";
 import { D3Wrapper } from "./d3wrapper";
 import { Transformers } from "./transformers";
 import { PolystatModel } from "./polystatmodel";
-import { MetricOverridesManager } from "./metric_overrides_manager";
+import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
-import { GetDecimalsForValue } from "./utils";
+import { GetDecimalsForValue, RGBToHex } from "./utils";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -101,7 +101,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   panelDefaults = {
     savedComposites : [],
-    savedOverrides : [],
+    savedOverrides: Array<MetricOverride>(),
     colors: ["#299c46", "rgba(237, 129, 40, 0.89)", "#d44a3a"],
     polystat: {
       animationSpeed: 2500,
@@ -145,7 +145,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
-    _.defaults(this.panel, this.panelDefaults);
+    _.defaultsDeep(this.panel, this.panelDefaults);
+
     this.d3DivId = "d3_svg_" + this.panel.id;
     this.containerDivId = "container_" + this.d3DivId;
     this.alertSrvRef = alertSrv;
@@ -345,9 +346,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (!attrs) {
       return;
     }
-    var d3ByClass = elem.find(".grafana-d3-polystat");
-    d3ByClass.append("<div id=\"" + ctrl.containerDivId + "\"></div>");
-    var container = d3ByClass[0].childNodes[0];
+    var panelByClass = elem.find(".grafana-d3-polystat");
+    panelByClass.append("<div style=\"width: 100%; height: 100%;\" id=\"" + ctrl.containerDivId + "\"></div>");
+    var container = panelByClass[0].childNodes[0];
     ctrl.setContainer(container);
 
     elem = elem.find(".grafana-d3-polystat");
@@ -575,6 +576,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   updatePolygonGlobalFillColor() {
+    this.panel.polystat.polygonGlobalFillColor = RGBToHex(this.panel.polystat.polygonGlobalFillColor);
     this.render();
   }
 

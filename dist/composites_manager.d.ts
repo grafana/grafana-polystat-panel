@@ -11,6 +11,7 @@ export declare class MetricComposite {
     clickThrough: string;
     sanitizeURLEnabled: boolean;
     sanitizedURL: string;
+    label: string;
 }
 export declare class CompositesManager {
     $scope: any;
@@ -26,7 +27,5 @@ export declare class CompositesManager {
     matchComposite(pattern: any): number;
     applyComposites(data: any): any;
     metricNameChanged(item: any): void;
-    moveMetricCompositeUp(item: any): void;
-    moveMetricCompositeDown(item: any): void;
-    arraymove(arr: any, fromIndex: any, toIndex: any): void;
+    toggleHide(composite: any): void;
 }

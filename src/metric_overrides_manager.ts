@@ -3,21 +3,23 @@
 import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { getThresholdLevelForValue, getValueByStatName } from "./threshold_processor";
+import { RGBToHex } from "./utils";
 
 export class MetricOverride {
-    metricName: string;
-    thresholds: Array<any>;
-    colors: Array<string>;
-    unitFormat: string;
-    decimals: string;
-    scaledDecimals: number;
-    enabled: boolean;
-    operatorName: string; // avg/min/max etc
-    prefix: string;
-    suffix: string;
-    clickThrough: string;
-    sanitizeURLEnabled: boolean;
-    sanitizedURL: string;
+  label: string;
+  metricName: string;
+  thresholds: Array<any>;
+  colors: Array<string>;
+  unitFormat: string;
+  decimals: string;
+  scaledDecimals: number;
+  enabled: boolean;
+  operatorName: string; // avg/min/max etc
+  prefix: string;
+  suffix: string;
+  clickThrough: string;
+  sanitizeURLEnabled: boolean;
+  sanitizedURL: string;
 }
 
 export class MetricOverridesManager {
@@ -27,7 +29,7 @@ export class MetricOverridesManager {
     templateSrv: any;
     suggestMetricNames: any;
 
-    constructor($scope, templateSrv, $sanitize, savedOverrides) {
+    constructor($scope, templateSrv, $sanitize, metricOverrides: Array<MetricOverride>) {
         this.$scope = $scope;
         this.$sanitize = $sanitize;
         this.templateSrv = templateSrv;
@@ -37,17 +39,29 @@ export class MetricOverridesManager {
                 return series.alias;
             });
         };
-        this.metricOverrides = savedOverrides;
+        this.metricOverrides = metricOverrides;
+        // upgrade if no label present
+        for (let index = 0; index < this.metricOverrides.length; index++) {
+          if (typeof this.metricOverrides[index].label === "undefined") {
+            this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
+          }
+        }
     }
 
     addMetricOverride() {
         let override = new MetricOverride();
+        override.label = "OVERRIDE " + (this.metricOverrides.length + 1);
         override.metricName = "";
         override.thresholds = [];
-        override.colors = ["rgba(245, 54, 54, 0.9)", "rgba(237, 129, 40, 0.89)", "rgba(50, 172, 45, 0.97)"];
+        override.colors = [
+          "#299c46", // "rgba(50, 172, 45, 1)", // green
+          "#e5ac0e", // "rgba(237, 129, 40, 1)", // yellow
+          "#bf1b00", // "rgba(245, 54, 54, 1)", // red
+          "#ffffff" // white
+        ];
         override.decimals = "";
         override.enabled = true;
-        override.unitFormat = "";
+        override.unitFormat = "short";
         override.clickThrough = "";
         override.operatorName = "avg";
         override.scaledDecimals = null;
@@ -58,8 +72,21 @@ export class MetricOverridesManager {
     }
 
     removeMetricOverride(override) {
-        this.metricOverrides = _.without(this.metricOverrides, override);
-        this.$scope.ctrl.refresh();
+      // lodash _.without creates a new array, need to reassign to the panel where it will be saved
+      this.metricOverrides = _.without(this.metricOverrides, override);
+      // fix the labels
+      for (let index = 0; index < this.metricOverrides.length; index++) {
+        this.metricOverrides[index].label = "OVERRIDE " + (index + 1);
+      }
+      // reassign reference in panel
+      this.$scope.ctrl.panel.savedOverrides = this.metricOverrides;
+      this.$scope.ctrl.refresh();
+    }
+
+    toggleHide(override) {
+      console.log("override enabled =  " + override.enabled);
+      override.enabled = !override.enabled;
+      this.$scope.ctrl.refresh();
     }
 
     matchOverride(pattern) : number {
@@ -67,7 +94,7 @@ export class MetricOverridesManager {
             let anOverride = this.metricOverrides[index];
             var regex = kbn.stringToJsRegex(anOverride.metricName);
             var matches = pattern.match(regex);
-            if (matches && matches.length > 0) {
+            if (matches && matches.length > 0 && anOverride.enabled ) {
                 return index;
             }
         }
@@ -86,7 +113,10 @@ export class MetricOverridesManager {
               let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
               //console.log("series2 operator: " + series2.operatorName);
               //console.log("series2 value: " + series2Value);
-              var result = getThresholdLevelForValue(anOverride.thresholds, dataValue);
+              var result = getThresholdLevelForValue(
+                anOverride.thresholds,
+                dataValue,
+                this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
               // set value to what was returned
               data[index].value = dataValue;
               data[index].color = result.color;
@@ -126,12 +156,24 @@ export class MetricOverridesManager {
 
     // store user selection of color to be used for all items with the corresponding state
     setThresholdColor(threshold) {
-      console.log("Threshold color set to " + threshold.color);
+      //console.log("setThresholdColor: color set to " + threshold.color);
+      threshold.color = RGBToHex(threshold.color);
+      //console.log("setThresholdColor: parsed color set to " + threshold.color);
       this.$scope.ctrl.refresh();
     }
 
     validateThresholdColor(threshold) {
       console.log("Validate color " + threshold.color);
+      this.$scope.ctrl.refresh();
+    }
+
+    updateThresholdColor(override, threshold) {
+      // threshold.state determines the color used
+      //console.log("threshold state = " + threshold.state);
+      //console.log("override color[0]: " + override.colors[0]);
+      //console.log("override color[1]: " + override.colors[1]);
+      //console.log("override color[2]: " + override.colors[2]);
+      threshold.color = override.colors[threshold.state];
       this.$scope.ctrl.refresh();
     }
 
@@ -145,41 +187,8 @@ export class MetricOverridesManager {
       this.sortThresholds(override);
     }
 
-    invertColorOrder(override) {
-      override.colors.reverse();
-      this.$scope.ctrl.refresh();
-    }
-
     setUnitFormat(override, subItem) {
         override.unitFormat = subItem.value;
     }
 
-    moveMetricOverrideUp(override) {
-        for (let index = 0; index < this.metricOverrides.length; index++) {
-            let anOverride = this.metricOverrides[index];
-            if (override === anOverride) {
-                if (index > 0) {
-                    this.arraymove(this.metricOverrides, index, index - 1);
-                    break;
-                }
-            }
-        }
-    }
-    moveMetricOverrideDown(override) {
-        for (let index = 0; index < this.metricOverrides.length; index++) {
-            let anOverride = this.metricOverrides[index];
-            if (override === anOverride) {
-                if (index < this.metricOverrides.length) {
-                    this.arraymove(this.metricOverrides, index, index + 1);
-                    break;
-                }
-            }
-        }
-    }
-
-    arraymove(arr, fromIndex, toIndex) {
-        var element = arr[fromIndex];
-        arr.splice(fromIndex, 1);
-        arr.splice(toIndex, 0, element);
-    }
 }

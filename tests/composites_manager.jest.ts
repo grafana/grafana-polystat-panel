@@ -63,6 +63,7 @@ describe("CompositesManager", () => {
     let aComposite = new MetricComposite();
     aComposite.compositeName = "composite1";
     aComposite.clickThrough = "";
+    aComposite.enabled = true;
     aComposite.members = [
       {seriesName: "A-series"}
     ];
@@ -90,24 +91,24 @@ describe("CompositesManager", () => {
 
   describe("Worst Series", () => {
     it("returns A-series", () => {
-      let result = getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
     it("returns A-series when aSeries.value is 20", () => {
       aSeries.stats.current = 20;
-      let result = getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
     it("returns B-series when aSeries.value is null", () => {
       aSeries.value = null;
       aSeries.stats.current = null;
-      let result = getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("B-series");
     });
     it("returns A-series when aSeries.value and bSeries.value are null", () => {
       aSeries.value = null;
       bSeries.value = null;
-      let result = getWorstSeries(aSeries, bSeries);
+      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
 

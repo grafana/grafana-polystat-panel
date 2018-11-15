@@ -5,8 +5,8 @@
     "info": {
         "description": "Polystat panel for Grafana",
         "author": {
-            "name": "Brian Gann (bkgann@gmail.com)",
-            "url": "https://github.com/briangann"
+            "name": "Grafana Project",
+            "url": "https://github.com/grafana/grafana-polystat-panel"
         },
         "keywords": ["hexbin", "honeycomb", "panel"],
         "logos": {
@@ -41,7 +41,7 @@
             "path": "screenshots/polystat-composites-all.png"
         }],
         "version": "1.0.14",
-        "updated": "2018-11-11"
+        "updated": "2018-11-14"
     },
 
     "dependencies": {

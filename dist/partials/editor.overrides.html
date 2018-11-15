@@ -1,115 +1,104 @@
-<div class="editor-row">
-	<div class="section gf-form-group">
-		<h5 class="section-heading">Overrides
-		</h5>
-      <div class="gf-form" ng-repeat="override in ctrl.overridesCtrl.metricOverrides">
+<div class="edit-tab-with-sidemenu">
+  <aside class="edit-sidemenu-aside">
+    <ul class="edit-sidemenu">
+      <li ng-repeat="override in ctrl.overridesCtrl.metricOverrides" ng-class="{active: ctrl.overridesCtrl.activeStyleIndex === $index}">
+        <a ng-click="ctrl.overridesCtrl.activeStyleIndex = $index">{{ override.label || 'New Override'}}</a>
+      </li>
+      <li>
+        <a class="pointer" ng-click="ctrl.overridesCtrl.addMetricOverride()">
+          <i class="fa fa-plus"></i>&nbsp;Add
+        </a>
+      </li>
+    </ul>
+  </aside>
+  <div class="edit-tab-content" ng-repeat="override in ctrl.overridesCtrl.metricOverrides" ng-if="ctrl.overridesCtrl.activeStyleIndex === $index">
+    <div class="section gf-form-group">
+      <!-- <h5 class="section-heading">Override Setting
+      </h5> -->
+      <div ng-class="{'gf-form-disabled': !override.enabled}">
         <div class="gf-form-inline">
-            <div class="gf-form">
-                <label class="gf-form-label width-7">OVERRIDE {{$index+1}}</label>
-            </div>
-			<div class="gf-form">
-				<label class="gf-form-label">
-				<i class="fa fa-trash pointer" ng-click="ctrl.overridesCtrl.removeMetricOverride(override)"></i>
-				</label>
-			</div>
-			<div class="gf-form">
-          <label class="gf-form-label">
-          <i class="fa fa-eye pointer" ng-click="ctrl.overridesCtrl.hideMetricOverride(override)"></i>
-          </label>
-        </div>
-        <div class="gf-form">
-				<label class="gf-form-label">
-					<i class="fa fa-arrow-up pointer" ng-click="ctrl.overridesCtrl.moveMetricOverrideUp(override)"></i>
-				</label>
-			</div>
-			<div class="gf-form">
-				<label class="gf-form-label">
-					<i class="fa fa-arrow-down pointer" ng-click="ctrl.overridesCtrl.moveMetricOverrideDown(override)"></i>
-				</label>
-			</div>
-      <div class="gf-form">
-        <div class="gf-form">
-          <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Enabled" checked="override.enabled" on-change="ctrl.render()"></gf-form-switch>
-        </div>
-        <div class="gf-form">
-				  <label class="gf-form-label width-9">Name or regex</label>
-				  <input type="text" class="gf-form-input width-13"
-					  ng-model="override.metricName"
-					  spellcheck='false'
-					  bs-typeahead="ctrl.overridesCtrl.suggestMetricNames"
-					  placeholder="metric name"
-					  data-min-length=0 data-items=500
-					  ng-blur="ctrl.overridesCtrl.metricNameChanged(override)">
-        </div>
-        
-        <!-- 
-        <div class="gf-form gf-form--grow">
-            <div class="gf-form-label gf-form-label--grow"></div>
-          </div>
-        -->
-      </div>
-      
-      <div class="gf-form">
-        <div class="gf-form">
-          <label class="gf-form-label width-9">Prefix</label>
-          <input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.prefix"
-            ng-change="ctrl.refresh()" ng-model-onblur>
-        </div>
-        <div class="gf-form">
-          <label class="gf-form-label width-4">Suffix</label>
-          <input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.suffix"
-            ng-change="ctrl.refresh()" ng-model-onblur>
-        </div>
-      </div>
-
-      <div class="gf-form">
-        <div class="gf-form">
-          <label class="gf-form-label width-7">Clickthrough</label>
-          <input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="override.clickThrough"
-            ng-change="ctrl.refresh()" ng-model-onblur>
-        </div>
-        <div class="gf-form">
-          <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Sanitize" checked="override.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
-        </div>
-      </div>
-  
-      <div class="gf-form">
-        <div class="gf-form">
-          <label class="gf-form-label width-9">Unit</label>
-        </div>
-        <div class="gf-form">
-          <div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="override.unitFormat" dropdown-typeahead2="ctrl.unitFormats"
-            dropdown-typeahead-on-select="ctrl.overridesCtrl.setUnitFormat(override, $subItem)">
-          </div>
-        </div>
-        
-        <div class="gf-form">
-          <label class="gf-form-label">Decimals</label>
-          <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.refresh()"
-            ng-model-onblur>
-        </div>
-  
-        <div class="gf-form">
-          <label class="gf-form-label width-4">Stat</label>
-          <div class="gf-form-select-wrapper width-12">
-            <select class="gf-form-input" ng-model="override.operatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
-              ng-change="ctrl.refresh()"></select>
-          </div>
-        </div>
-  
-      </div>
-    </div>
-
-    <div class="gf-form-group" style="border-width: 0px; border-color:rgb(51,51,51); border-style: solid; margin: 25px !important;">
-        <div class="gf-form">
-            <label class="gf-form-label width-16">OVERRIDE {{$index+1}} Thresholds
-              <tip>Evaluates to state if value is greater than or equal to specified threshold</tip>
+          <div class="gf-form">
+            <label class="gf-form-label">
+              <a ng-click="ctrl.overridesCtrl.toggleHide(override)" role="menuitem">
+                <i class="fa fa-eye" ng-show="override.enabled"></i>
+                <i class="fa fa-eye-slash" ng-hide="override.enabled"></i>
+              </a>
             </label>
-            <button class="btn btn-inverse width-10" ng-click="ctrl.overridesCtrl.addThreshold(override)">
-                <i class="fa fa-plus"></i>&nbsp;Add Threshold
-            </button>    
+          </div>
+          <div class="gf-form">
+            <label class="gf-form-label width-9">Name or regex</label>
+            <input type="text" class="gf-form-input width-13"
+              ng-model="override.metricName"
+              spellcheck='false'
+              bs-typeahead="ctrl.overridesCtrl.suggestMetricNames"
+              placeholder="metric name"
+              data-min-length=0 data-items=1000
+              ng-blur="ctrl.overridesCtrl.metricNameChanged(override)">
+          </div>
+        
+          <div class="gf-form">
+            <div class="gf-form">
+              <label class="gf-form-label width-9">Prefix</label>
+              <input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.prefix"
+                ng-change="ctrl.refresh()" ng-model-onblur>
+            </div>
+            <div class="gf-form">
+              <label class="gf-form-label width-4">Suffix</label>
+              <input type="string" class="gf-form-input width-13" placeholder="" data-placement="right" ng-model="override.suffix"
+              ng-change="ctrl.refresh()" ng-model-onblur>
+            </div>
+          </div>
         </div>
-      <div class="gf-form" ng-repeat="threshold in override.thresholds">
+
+        <div class="gf-form-inline">
+          <div class="gf-form">
+            <div class="gf-form">
+              <label class="gf-form-label width-7">Clickthrough</label>
+              <input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="override.clickThrough"
+                ng-change="ctrl.refresh()" ng-model-onblur>
+            </div>
+            <div class="gf-form">
+              <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Sanitize" checked="override.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
+            </div>
+          </div>
+        </div>
+
+        <div class="gf-form-inline">
+          <div class="gf-form">
+            <div class="gf-form">
+              <label class="gf-form-label width-9">Unit</label>
+            </div>
+            <div class="gf-form">
+              <div class="gf-form-dropdown-typeahead width-13 max-width-20" ng-model="override.unitFormat" dropdown-typeahead2="ctrl.unitFormats"
+                dropdown-typeahead-on-select="ctrl.overridesCtrl.setUnitFormat(override, $subItem)">
+              </div>
+            </div>
+          
+            <div class="gf-form">
+              <label class="gf-form-label">Decimals</label>
+              <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.refresh()"
+                ng-model-onblur>
+            </div>
+    
+            <div class="gf-form">
+              <label class="gf-form-label width-4">Stat</label>
+              <div class="gf-form-select-wrapper width-12">
+                <select class="gf-form-input" ng-model="override.operatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
+                  ng-change="ctrl.refresh()"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="gf-form">
+          <h5 class="section-heading width-10">Thresholds
+            <tip>Evaluates to state if value is greater than or equal to specified threshold. Values below and equal to T1 use state of T1.</tip>
+          </h5>
+          <button class="btn btn-inverse width-10" ng-click="ctrl.overridesCtrl.addThreshold(override)">
+            <i class="fa fa-plus"></i>&nbsp;Add Threshold
+          </button>    
+        </div>
+        <div class="gf-form" ng-repeat="threshold in override.thresholds">
           <div class="gf-form">
             <label class="gf-form-label width-3">T{{$index+1}}</label>
             <input type="number" class="gf-form-input width-5" ng-model="threshold.value" ng-blur="ctrl.overridesCtrl.sortThresholds(override)">
@@ -120,30 +109,25 @@
               <select class="gf-form-input"
                 ng-model="threshold.state"
                 ng-options="f.value as f.text for f in ctrl.thresholdStates"
-                ng-change="ctrl.overridesCtrl.validateThresholdColor(threshold)">
+                ng-change="ctrl.overridesCtrl.updateThresholdColor(override, threshold)">
               </select>
             </span>
-            </div>
-            <div class="gf-form">
-              <label class="gf-form-label">Color</label>
-              <span class="gf-form-label">
-                <spectrum-picker ng-model="threshold.color" ng-change="ctrl.overridesCtrl.setThresholdColor(threshold)"></spectrum-picker>
-              </span>
-              <label class="gf-form-label">
-                <i class="fa fa-trash pointer" ng-click="ctrl.overridesCtrl.removeThreshold(override, threshold)"></i>
-              </label>  
           </div>
-      </div>
-      </div>
-
-    </div> <!-- end override repeat -->
-	</div> <!-- end section group-->
-</div> <!-- end editor row-->
-
-<div class="editor-row">
-	<div class="section gf-form-group">
-		<button class="btn btn-inverse" ng-click="ctrl.overridesCtrl.addMetricOverride()">
-			<i class="fa fa-plus"></i>&nbsp;Add Override
-		</button>
-	</div>
+          <div class="gf-form">
+            <label class="gf-form-label">Color</label>
+            <span class="gf-form-label">
+              <spectrum-picker ng-model="threshold.color" ng-change="ctrl.overridesCtrl.setThresholdColor(threshold)"></spectrum-picker>
+            </span>
+            <label class="gf-form-label">
+              <i class="fa fa-trash pointer" ng-click="ctrl.overridesCtrl.removeThreshold(override, threshold)"></i>
+            </label>  
+          </div>
+        </div>
+      </div> <!-- end section group-->
+    <div class="clearfix"></div>
+    <button class="btn btn-danger btn-small" ng-click="ctrl.overridesCtrl.removeMetricOverride(override)">
+      <i class="fa fa-trash"></i> Remove Override
+    </button>
+    </div>
+  </div> <!-- end override repeat -->
 </div>

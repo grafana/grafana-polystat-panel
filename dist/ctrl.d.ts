@@ -2,7 +2,7 @@ import { MetricsPanelCtrl } from "app/plugins/sdk";
 import "./css/polystat.css!";
 import { D3Wrapper } from "./d3wrapper";
 import { PolystatModel } from "./polystatmodel";
-import { MetricOverridesManager } from "./metric_overrides_manager";
+import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     private $sanitize;
@@ -58,7 +58,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     panelHeight: any;
     panelDefaults: {
         savedComposites: any[];
-        savedOverrides: any[];
+        savedOverrides: MetricOverride[];
         colors: string[];
         polystat: {
             animationSpeed: number;
