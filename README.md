@@ -3,7 +3,7 @@
 
 This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](http://www.grafana.org) 3.x/4.x/5.x.
 
-A hexagon is create for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
+A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
 ## Screenshots
 
