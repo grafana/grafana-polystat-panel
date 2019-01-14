@@ -133,6 +133,8 @@ export class CompositesManager {
               }
               if (aComposite.clickThrough.length > 0) {
                 seriesItem.clickThrough = aComposite.clickThrough;
+                // process template variables
+                seriesItem.clickThrough = this.templateSrv.replaceWithText(seriesItem.clickThrough);
                 seriesItem.sanitizedURL = this.$sanitize(aComposite.clickThrough);
               }
             }

@@ -3,7 +3,10 @@
  * Tests for transforms
  */
 
+//import {TimeSeries} from "../../tests/timeseries";
+
 // Helper class
+/*
 class TimeSeries {
   datapoints: number[][];
   alias: string;
@@ -14,6 +17,7 @@ class TimeSeries {
     this.target = opts.alias;
   }
 }
+*/
 //import {Transformers} from "../src/transformers";
 //import {PolystatModel} from "../src/polystatmodel";
 // get this working...

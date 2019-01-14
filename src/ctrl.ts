@@ -394,7 +394,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
-        this.polystatData[index].clickThrough = this.getDefaultClickThrough();
+        // add the series alias as a var to the clickthroughurl
+        this.polystatData[index].clickThrough = this.getDefaultClickThrough(this.polystatData[index].name);
       }
     }
     // filter out by globalDisplayMode
@@ -575,8 +576,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
-  getDefaultClickThrough() {
+  getDefaultClickThrough(name: string) {
     let url = this.panel.polystat.defaultClickThrough;
+    // process template variables inside clickthrough
+    url = this.templateSrv.replaceWithText(url);
     if ((url) && (this.panel.polystat.defaultClickThroughSanitize)) {
       url = this.$sanitize(url);
     }

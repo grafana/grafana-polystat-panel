@@ -1,7 +1,7 @@
-import {CompositesManager, MetricComposite} from "../src/composites_manager";
-import {getWorstSeries} from "../src/threshold_processor";
-import {PolystatModel} from "../src/polystatmodel";
-import {TimeSeries} from "./timeseries";
+import {CompositesManager, MetricComposite} from "../composites_manager";
+import {getWorstSeries} from "../threshold_processor";
+import {PolystatModel} from "../polystatmodel";
+import {TimeSeries} from "../../tests/timeseries";
 jest.mock("app/core/utils/kbn");
 
 describe("CompositesManager", () => {

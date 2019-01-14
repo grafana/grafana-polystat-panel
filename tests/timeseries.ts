@@ -1,3 +1,5 @@
+// Helper class
+
 export class TimeSeries {
   datapoints: number[][];
   alias: string;

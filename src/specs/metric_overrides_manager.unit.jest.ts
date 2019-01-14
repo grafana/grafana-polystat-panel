@@ -1,9 +1,9 @@
 /**
  * Tests for utils
  */
-import {MetricOverridesManager} from "../src/metric_overrides_manager";
-import {PolystatModel} from "../src/polystatmodel";
-import {TimeSeries} from "./timeseries";
+import {MetricOverridesManager} from "../metric_overrides_manager";
+import {PolystatModel} from "../polystatmodel";
+import {TimeSeries} from "../../tests/timeseries";
 jest.mock("app/core/utils/kbn");
 
 describe("MetricOverridesManager", () => {
