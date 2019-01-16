@@ -13,6 +13,7 @@ import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manag
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
 import { GetDecimalsForValue, RGBToHex } from "./utils";
+import {ClickThroughTransformer} from "./clickThroughTransformer";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -306,7 +307,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       rowAutoSize : this.panel.polystat.rowAutoSize,
       tooltipContent: this.tooltipContent,
       animationSpeed: this.panel.polystat.animationSpeed,
-      defaultClickThrough: this.getDefaultClickThrough(),
+      defaultClickThrough: this.getDefaultClickThrough(NaN),
       polystat: this.panel.polystat,
     };
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
@@ -387,16 +388,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
-    // apply overrides
-    this.overridesCtrl.applyOverrides(this.polystatData);
-    // apply composites, this will filter as needed and set clickthrough
-    this.polystatData = this.compositesManager.applyComposites(this.polystatData);
-    // apply global clickthrough to all items not set
-    for (let index = 0; index < this.polystatData.length; index++) {
-      if (this.polystatData[index].clickThrough.length === 0) {
-        this.polystatData[index].clickThrough = this.getDefaultClickThrough();
-      }
-    }
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
@@ -404,6 +395,22 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       this.polystatData,
       [this.panel.polystat.hexagonSortByField],
       [this.panel.polystat.hexagonSortByDirection]);
+    // this needs to be performed after sorting rules are applied
+    // apply overrides
+    this.overridesCtrl.applyOverrides(this.polystatData);
+    // apply composites, this will filter as needed and set clickthrough
+    this.polystatData = this.compositesManager.applyComposites(this.polystatData);
+    // apply global clickthrough to all items not set
+    for (let index = 0; index < this.polystatData.length; index++) {
+      if (this.polystatData[index].clickThrough.length === 0) {
+        // add the series alias as a var to the clickthroughurl
+        this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
+        this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
+        if (this.polystatData[index].sanitizeURLEnabled) {
+          this.polystatData[index].sanitizedURL = this.polystatData[index].clickThrough;
+        }
+      }
+    }
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
@@ -431,7 +438,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         let item = data[i];
         // keep if composite
         if (item.isComposite) {
-          compositeMetrics.push(item);
+         compositeMetrics.push(item);
         }
         if (item.thresholdLevel < 1) {
           // push the index number
@@ -575,11 +582,24 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
-  getDefaultClickThrough() {
+  getDefaultClickThrough(index: number) {
     let url = this.panel.polystat.defaultClickThrough;
+    // console.log("getDefaultClickThrough: url is: " + url);
+    // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
+    url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
+    url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
+    // process template variables inside clickthrough
+    url = this.templateSrv.replaceWithText(url);
+    // alternative default variable to append
+    // to be enabled via options
+    // append var-METRICNAME=name to the clickthrough
+    //if (typeof name !== "undefined" && name) {
+    //  url = url + `&var-${name}`;
+    //}
     if ((url) && (this.panel.polystat.defaultClickThroughSanitize)) {
       url = this.$sanitize(url);
     }
+    //console.log("getDefaultClickThrough: url final: " + url);
     return url;
   }
 

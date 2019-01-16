@@ -123,7 +123,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     validateBorderSizeValue(): void;
     updatePolygonBorderColor(): void;
     updatePolygonGlobalFillColor(): void;
-    getDefaultClickThrough(): any;
+    getDefaultClickThrough(index: number): any;
     setGlobalUnitFormat(subItem: any): void;
 }
 export { D3PolystatPanelCtrl, D3PolystatPanelCtrl as MetricsPanelCtrl };

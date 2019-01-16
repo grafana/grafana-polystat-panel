@@ -4,6 +4,8 @@ import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { PolystatModel } from "./polystatmodel";
 import { getWorstSeries } from "./threshold_processor";
+import {ClickThroughTransformer} from "./clickThroughTransformer";
+
 export class MetricComposite {
     compositeName: string;
     members: Array<any>;
@@ -132,8 +134,14 @@ export class CompositesManager {
                 filteredMetrics.push(index);
               }
               if (aComposite.clickThrough.length > 0) {
-                seriesItem.clickThrough = aComposite.clickThrough;
-                seriesItem.sanitizedURL = this.$sanitize(aComposite.clickThrough);
+                // process template variables
+                let url = this.templateSrv.replaceWithText(aComposite.clickThrough);
+                // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
+                url = ClickThroughTransformer.tranformComposite(aComposite.compositeName, url);
+                url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
+                url = ClickThroughTransformer.tranformNthMetric(url, data);
+                seriesItem.clickThrough = url;
+                seriesItem.sanitizedURL = this.$sanitize(url);
               }
             }
           }

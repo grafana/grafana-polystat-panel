@@ -9,7 +9,7 @@ export class PolystatModel {
   displayMode: string;
   thresholdLevel: number; // 0 = ok, 1 = warn, 2 = crit, 3 = unknown (same as sensu)
   value: number;
-  valueFormatted: number;
+  valueFormatted: string;
   stats: any;
   name: string;
   timestamp: number;
