@@ -1,7 +1,7 @@
 {
   "name": "grafana-polystat-panel",
   "private": true,
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Grafana Polystat Panel",
   "main": "module.js",
   "scripts": {
