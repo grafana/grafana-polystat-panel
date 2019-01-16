@@ -12,9 +12,12 @@ class ClickThroughTransformer {
   static nthCellValue: RegExp = /\${__cell_(\d+)}/;
   static nthCellRawValue: RegExp = /\${__cell_(\d+):raw}/;
 
-  static tranformSingleMetric(url: string, data: Array<PolystatModel>) {
-    let item = data[0];
-    // check if url contains any derefencing
+  static tranformSingleMetric(index: number, url: string, data: Array<PolystatModel>) {
+    if (isNaN(index)) {
+      return url;
+    }
+    let item = data[index];
+    // check if url contains any dereferencing
     if (url.match(this.cellName)) {
       // replace with series name
       url = url.replace(this.cellName, item.name);

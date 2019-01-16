@@ -49,7 +49,7 @@ describe("ClickThroughTransformer", () => {
     it("returns cell name", () => {
       model[0].clickThrough = "/dashboard/test?var-CUSTOM=${__cell_name}";
       let url = model[0].clickThrough;
-      let result = ClickThroughTransformer.tranformSingleMetric(url, model);
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
       expect(result).toBe("/dashboard/test?var-CUSTOM=A-series");
     });
   });
@@ -57,7 +57,7 @@ describe("ClickThroughTransformer", () => {
     it("returns cell value", () => {
       model[0].clickThrough = "/dashboard/test?var-CUSTOM=${__cell}";
       let url = model[0].clickThrough;
-      let result = ClickThroughTransformer.tranformSingleMetric(url, model);
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
       expect(result).toBe("/dashboard/test?var-CUSTOM=285%20MB%2Fs");
     });
   });
@@ -65,7 +65,7 @@ describe("ClickThroughTransformer", () => {
     it("returns cell raw value", () => {
       model[0].clickThrough = "/dashboard/test?var-CUSTOM=${__cell:raw}";
       let url = model[0].clickThrough;
-      let result = ClickThroughTransformer.tranformSingleMetric(url, model);
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
       expect(result).toBe("/dashboard/test?var-CUSTOM=285");
     });
   });

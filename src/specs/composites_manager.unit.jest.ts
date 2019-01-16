@@ -132,7 +132,7 @@ describe("CompositesManager", () => {
       //console.log("data[2] is: " + str);
       expect(data[2].color === "green");
       aModel.value = 181;
-      aModel.valueFormatted = 181;
+      aModel.valueFormatted = "181";
       //console.log("trying value 20");
       let datax = mgr.applyComposites([aModel, bModel]);
       //str = JSON.stringify(datax[2], null, 2);
