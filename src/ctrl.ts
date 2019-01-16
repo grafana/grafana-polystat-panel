@@ -588,7 +588,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
     url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
     url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
-    console.log("getDefaultClickThrough: url after transformer: " + url);
     // process template variables inside clickthrough
     url = this.templateSrv.replaceWithText(url);
     // alternative default variable to append

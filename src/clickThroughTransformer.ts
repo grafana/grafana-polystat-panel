@@ -12,6 +12,8 @@ class ClickThroughTransformer {
   static nthCellValue: RegExp = /\${__cell_(\d+)}/;
   static nthCellRawValue: RegExp = /\${__cell_(\d+):raw}/;
 
+  static compositeName: RegExp = /\${__composite_name}/;
+
   static tranformSingleMetric(index: number, url: string, data: Array<PolystatModel>) {
     if (isNaN(index)) {
       return url;
@@ -64,6 +66,15 @@ class ClickThroughTransformer {
         // replace with raw value
         url = url.replace(this.nthCellRawValue, nthValue.toString());
       }
+    }
+    return url;
+  }
+
+  static tranformComposite(name: string, url: string) {
+    // check if url contains any dereferencing
+    if (url.match(this.compositeName)) {
+      // replace with series name
+      url = url.replace(this.compositeName, name);
     }
     return url;
   }

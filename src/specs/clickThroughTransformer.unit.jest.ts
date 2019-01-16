@@ -144,4 +144,14 @@ describe("ClickThroughTransformer", () => {
     });
   });
 
+  /* composites */
+  describe("Composite: Reference the composite name", () => {
+    it("returns composite name", () => {
+      let compositeName = "CompositeA";
+      let url = "/dashboard/test?var-COMPOSITE=${__composite_name}";
+      let result = ClickThroughTransformer.tranformComposite(compositeName, url);
+      expect(result).toBe("/dashboard/test?var-COMPOSITE=CompositeA");
+    });
+  });
+
 });
