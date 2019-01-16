@@ -388,10 +388,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
-    // apply overrides
-    this.overridesCtrl.applyOverrides(this.polystatData);
-    // apply composites, this will filter as needed and set clickthrough
-    this.polystatData = this.compositesManager.applyComposites(this.polystatData);
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
@@ -400,6 +396,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       [this.panel.polystat.hexagonSortByField],
       [this.panel.polystat.hexagonSortByDirection]);
     // this needs to be performed after sorting rules are applied
+    // apply overrides
+    this.overridesCtrl.applyOverrides(this.polystatData);
+    // apply composites, this will filter as needed and set clickthrough
+    this.polystatData = this.compositesManager.applyComposites(this.polystatData);
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
