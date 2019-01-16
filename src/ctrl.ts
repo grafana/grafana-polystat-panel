@@ -392,6 +392,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.overridesCtrl.applyOverrides(this.polystatData);
     // apply composites, this will filter as needed and set clickthrough
     this.polystatData = this.compositesManager.applyComposites(this.polystatData);
+    // filter out by globalDisplayMode
+    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
+    // now sort
+    this.polystatData = _.orderBy(
+      this.polystatData,
+      [this.panel.polystat.hexagonSortByField],
+      [this.panel.polystat.hexagonSortByDirection]);
+    // this needs to be performed after sorting rules are applied
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
@@ -403,13 +411,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
-    // filter out by globalDisplayMode
-    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
-    // now sort
-    this.polystatData = _.orderBy(
-      this.polystatData,
-      [this.panel.polystat.hexagonSortByField],
-      [this.panel.polystat.hexagonSortByDirection]);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
