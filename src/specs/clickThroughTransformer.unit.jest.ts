@@ -158,13 +158,6 @@ describe("ClickThroughTransformer", () => {
   });
 
   /* encoding */
-  /*
-  When I am using multiple variables in clickthrough URL of polystat panel it is replacing & with &amp;
-  For example if I am providing:
-   `/instance-details?orgId=1&var-job=node_exporter&var-node=${__cell_name}&var-port=9100`
-  as clickthrough URL after clicking the polygon the URL in browser I see:
-   `/instance-details?orgId=1&amp;var-job=node_exporter&amp;var-node=${__cell_name}&amp;var-port=9100`
-  */
   describe("Clickthrough: transformSingleMetric", () => {
     it("returns non-encoded params", () => {
       model[0].clickThrough =
