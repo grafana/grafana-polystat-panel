@@ -23,9 +23,9 @@ class TimeSeries {
 // get this working...
 //import "app/core/time_series2";
 
-describe("Transforms", async() => {
+describe("Transforms", () => {
     // Datasource sends timeseries
-  describe("With time series data", async() => {
+  describe("With time series data", () => {
     /*
     let xAxisSeries: TimeSeries;
     let yAxisSeries: TimeSeries;
@@ -57,13 +57,13 @@ describe("Transforms", async() => {
 
   // Datasource sends ElasticSearch results
   describe("With elasticsearch data", () => {
-    it("Can convert to hexbin", async() => {
+    it("Can convert to hexbin", () => {
       expect(true).toBeTruthy();
     });
   });
 
   // Datasource sends a table
-  describe("With Table data", async() => {
+  describe("With Table data", () => {
     const tableData = [{
       columns: [
         {
@@ -82,7 +82,7 @@ describe("Transforms", async() => {
       ],
       type: "table"
     }];
-    it("Converts Table Data", async() => {
+    it("Converts Table Data", () => {
       console.log(tableData);
     });
     /*
@@ -119,7 +119,7 @@ describe("Transforms", async() => {
 
   // Datasource sends JSON
   describe("With JSON data", () => {
-    it("Can convert to hexbin", async() => {
+    it("Can convert to hexbin", () => {
       let rawData = [
         {
           type: "docs",
