@@ -1765,6 +1765,11 @@ csproj2ts@^1.1.0:
     semver "^5.4.1"
     xml2js "^0.4.19"
 
+cssfilter@0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/cssfilter/-/cssfilter-0.0.10.tgz#c6d2672632a2e5c83e013e6864a42ce8defd20ae"
+  integrity sha1-xtJnJjKi5cg+AT5oZKQs6N79IK4=
+
 cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/cssom/-/cssom-0.3.4.tgz#8cd52e8a3acfd68d3aed38ee0a640177d2f9d797"
@@ -6943,6 +6948,14 @@ xmlbuilder@~9.0.1:
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-9.0.7.tgz#132ee63d2ec5565c557e20f4c22df9aca686b10d"
   integrity sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=
+
+xss@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/xss/-/xss-1.0.3.tgz#d04bd2558fd6c29c46113824d5e8b2a910054e23"
+  integrity sha512-LTpz3jXPLUphMMmyufoZRSKnqMj41OVypZ8uYGzvjkMV9C1EdACrhQl/EM8Qfh5htSAuMIQFOejmKAZGkJfaCg==
+  dependencies:
+    commander "^2.9.0"
+    cssfilter "0.0.10"
 
 xtend@^4.0.0, xtend@~4.0.0:
   version "4.0.1"
