@@ -34,3 +34,5 @@
 - implemented composite name referencing
 - implemented template variables for clickthroughs
 - fixed bug with default clickthrough and sanitize url
+## v1.0.16
+- fixes variable encoding in clickthrough urls
