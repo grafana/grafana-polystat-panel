@@ -397,8 +397,7 @@ export class D3Wrapper {
           }
         })
         .on("click", (_, i) => {
-          console.log("click detected: " + data[i].clickThrough);
-          if (data[i].sanitizeURLEnabled) {
+          if (data[i].sanitizeURLEnabled === true) {
             console.log("click detected sanitized enabled" + data[i].sanitizedURL);
             if (data[i].sanitizedURL.length > 0) {
               window.location.replace(data[i].sanitizedURL);

@@ -103,7 +103,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       columnAutoSize: true,
       displayLimit: 100,
       defaultClickThrough: "",
-      defaultClickThroughSanitize: true,
+      defaultClickThroughSanitize: false,
       fontAutoScale: true,
       fontSize: 12,
       fontType: "Roboto",
@@ -406,9 +406,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         // add the series alias as a var to the clickthroughurl
         this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
         this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
-        if (this.polystatData[index].sanitizeURLEnabled) {
-          this.polystatData[index].sanitizedURL = this.polystatData[index].clickThrough;
-        }
+        this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }
     }
     // generate tooltips
@@ -584,22 +582,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   getDefaultClickThrough(index: number) {
     let url = this.panel.polystat.defaultClickThrough;
-    // console.log("getDefaultClickThrough: url is: " + url);
     // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
     url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
     url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
     // process template variables inside clickthrough
     url = this.templateSrv.replaceWithText(url);
-    // alternative default variable to append
-    // to be enabled via options
-    // append var-METRICNAME=name to the clickthrough
-    //if (typeof name !== "undefined" && name) {
-    //  url = url + `&var-${name}`;
-    //}
-    if ((url) && (this.panel.polystat.defaultClickThroughSanitize)) {
-      url = this.$sanitize(url);
-    }
-    //console.log("getDefaultClickThrough: url final: " + url);
     return url;
   }
 

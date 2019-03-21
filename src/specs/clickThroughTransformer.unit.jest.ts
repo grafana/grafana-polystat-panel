@@ -8,8 +8,6 @@ import {PolystatModel} from "../polystatmodel";
 
 import {TimeSeries} from "./timeseries";
 
-import {sanitize} from "../../tests/__mocks__/app/core/utils/text";
-
 jest.mock("app/core/utils/kbn");
 
 describe("ClickThroughTransformer", () => {
@@ -164,10 +162,7 @@ describe("ClickThroughTransformer", () => {
         "https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=${__cell_name}&var-port=9100";
       let url = model[0].clickThrough;
       let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
-      let sanitizedResult = sanitize(result);
       expect(result)
-        .toBe("https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=A-series&var-port=9100");
-      expect(sanitizedResult)
         .toBe("https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=A-series&var-port=9100");
     });
   });
@@ -180,10 +175,6 @@ describe("ClickThroughTransformer", () => {
       let result = ClickThroughTransformer.tranformNthMetric(url, model);
       expect(result)
         .toBe("https://test.grafana.net/dashboard/instance-details?orgId=1&var-CUSTOM0=285&var-CUSTOM1=385&var-port=9100");
-      let sanitizedResult = sanitize(result);
-      expect(sanitizedResult)
-        .toBe("https://test.grafana.net/dashboard/instance-details?orgId=1&var-CUSTOM0=285&var-CUSTOM1=385&var-port=9100");
-
     });
   });
 
@@ -194,10 +185,6 @@ describe("ClickThroughTransformer", () => {
       let result = ClickThroughTransformer.tranformComposite(compositeName, url);
       expect(result)
         .toBe("https://test.grafana.net/dashboard/test?orgId=1&var-COMPOSITE=CompositeA&var-port=9100");
-      let sanitizedResult = sanitize(result);
-      expect(sanitizedResult)
-        .toBe("https://test.grafana.net/dashboard/test?orgId=1&var-COMPOSITE=CompositeA&var-port=9100");
-
     });
   });
 
