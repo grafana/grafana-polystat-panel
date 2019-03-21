@@ -40,8 +40,8 @@
             "name": "Composites",
             "path": "screenshots/polystat-composites-all.png"
         }],
-        "version": "1.0.15",
-        "updated": "2019-01-16"
+        "version": "1.0.16",
+        "updated": "2019-03-19"
     },
 
     "dependencies": {

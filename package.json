@@ -1,7 +1,7 @@
 {
   "name": "grafana-polystat-panel",
   "private": true,
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Grafana Polystat Panel",
   "main": "module.js",
   "scripts": {
@@ -40,17 +40,20 @@
     "grunt-systemjs-builder": "^1.0.0",
     "grunt-ts": "^6.0.0-beta.21",
     "grunt-tslint": "^5.0.2",
-    "jest": "^23.5.0",
+    "jest": "^24.5.0",
+    "jest-haste-map": "^24.5.0",
+    "jest-resolve": "^24.5.0",
     "jquery": "^3.3.1",
     "load-grunt-tasks": "^4.0.0",
     "moment": "^2.23.0",
     "node-sass": "^4.11.0",
     "regenerator-runtime": "^0.13.1",
     "sass": "^1.16.0",
-    "ts-jest": "^23.10.5",
+    "ts-jest": "^24.0.0",
     "tslint": "^5.12.1",
     "typescript": "^3.2.2",
-    "typescript-formatter": "^7.2.2"
+    "typescript-formatter": "^7.2.2",
+    "xss": "^1.0.3"
   },
   "dependencies": {},
   "homepage": "https://github.com/grafana/grafana-polystat-panel"

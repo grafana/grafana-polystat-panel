@@ -119,7 +119,7 @@ function getThresholdLevelForValue(thresholds: any, value: number, defaultColor:
     currentState = thresholds[0].state;
     currentColor = thresholds[0].color;
   }
-  console.log("Returning threshold level: " + currentState + " color: " + currentColor);
+  //console.log("Returning threshold level: " + currentState + " color: " + currentColor);
   return { thresholdLevel: currentState, color: currentColor};
 }
 

@@ -143,7 +143,6 @@ export class MetricOverridesManager {
             url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
             url = ClickThroughTransformer.tranformNthMetric(url, data);
             data[index].clickThrough = url;
-            //console.log("applyOverrides: url after transformer: " + url);
             if (anOverride.sanitizeURLEnabled) {
               data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
             }
