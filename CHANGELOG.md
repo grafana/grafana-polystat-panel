@@ -29,3 +29,5 @@
 - Refactor UI for composites, implement enable/disable
 - Implement global fill color for no thresholds
 - Now correctly parses custom color selection
+## v1.0.15
+- New sort options for polygons and tooltips
