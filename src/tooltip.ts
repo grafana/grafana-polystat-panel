@@ -67,6 +67,7 @@ export class Tooltip {
           [scope.ctrl.panel.polystat.tooltipPrimarySortField, scope.ctrl.panel.polystat.tooltipSecondarySortField],
           [scope.ctrl.panel.polystat.tooltipPrimarySortDirection, scope.ctrl.panel.polystat.tooltipSecondarySortDirection]
         );
+        // use new sort method
         for (let j = 0; j < sortedMembers.length; j++) {
           let aMember = sortedMembers[j];
           let aRow = `

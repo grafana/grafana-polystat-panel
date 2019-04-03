@@ -3,7 +3,7 @@ export declare class PolystatModel {
     displayMode: string;
     thresholdLevel: number;
     value: number;
-    valueFormatted: number;
+    valueFormatted: string;
     stats: any;
     name: string;
     timestamp: number;

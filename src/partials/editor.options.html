@@ -85,7 +85,7 @@
 				<tip>Sort direction</tip>
 			</label>
 			<div class="gf-form-select-wrapper width-12">
-				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
 				 ng-change="ctrl.refresh()">
 				</select>
 			</div>
@@ -132,7 +132,7 @@
 			<tip>Primary sort direction</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
 			 ng-change="ctrl.refresh()">
 			</select>
 		</div>
@@ -150,7 +150,7 @@
 			<tip>Secondary sort direction</tip>
 		</label>
 		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
 			 ng-change="ctrl.refresh()">
 			</select>
 		</div>

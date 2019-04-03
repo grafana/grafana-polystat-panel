@@ -13,6 +13,7 @@ import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manag
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
 import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from "./utils";
+import {ClickThroughTransformer} from "./clickThroughTransformer";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -112,7 +113,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       columnAutoSize: true,
       displayLimit: 100,
       defaultClickThrough: "",
-      defaultClickThroughSanitize: true,
+      defaultClickThroughSanitize: false,
       fontAutoScale: true,
       fontSize: 12,
       fontType: "Roboto",
@@ -338,7 +339,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       rowAutoSize : this.panel.polystat.rowAutoSize,
       tooltipContent: this.tooltipContent,
       animationSpeed: this.panel.polystat.animationSpeed,
-      defaultClickThrough: this.getDefaultClickThrough(),
+      defaultClickThrough: this.getDefaultClickThrough(NaN),
       polystat: this.panel.polystat,
     };
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
@@ -419,6 +420,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
+    // filter out by globalDisplayMode
+    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
+    // now sort
+    this.polystatData = _.orderBy(
+      this.polystatData,
+      [this.panel.polystat.hexagonSortByField],
+      [this.panel.polystat.hexagonSortByDirection]);
+    // this needs to be performed after sorting rules are applied
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
     // apply composites, this will filter as needed and set clickthrough
@@ -426,7 +435,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
-        this.polystatData[index].clickThrough = this.getDefaultClickThrough();
+        // add the series alias as a var to the clickthroughurl
+        this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
+        this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
+        this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }
     }
     // filter out by globalDisplayMode
@@ -467,7 +479,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         let item = data[i];
         // keep if composite
         if (item.isComposite) {
-          compositeMetrics.push(item);
+         compositeMetrics.push(item);
         }
         if (item.thresholdLevel < 1) {
           // push the index number
@@ -611,11 +623,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
-  getDefaultClickThrough() {
+  getDefaultClickThrough(index: number) {
     let url = this.panel.polystat.defaultClickThrough;
-    if ((url) && (this.panel.polystat.defaultClickThroughSanitize)) {
-      url = this.$sanitize(url);
-    }
+    // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
+    url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
+    url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
+    // process template variables inside clickthrough
+    url = this.templateSrv.replaceWithText(url);
     return url;
   }
 

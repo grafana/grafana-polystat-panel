@@ -3,7 +3,7 @@
 
 This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](http://www.grafana.org) 3.x/4.x/5.x.
 
-A hexagon is create for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
+A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
 ## Screenshots
 
@@ -126,6 +126,44 @@ This shows creation of composites, where you select which metrics comprise the c
 This shows composites configured for GPU 0,1,2,3, and non-grouped metrics from GPU4-7.
 
 ![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-gpu-state-composites.png)
+
+### Templating
+
+#### Using Dashboard Template Variables
+
+Template variables are available in the clickThroughUrl setting, specified by using ${varname}.
+They can also be passed to another dashboard by appending var-VARNAME=value to the url
+```
+/dasboard/xyz?var-VARNAME=${VARNAME}
+```
+
+#### Using Polystat Variables
+Each polygon represents either a single metric, or a composite metric
+
+An example drilldown clickthrough url can be specified like this:
+```
+dashboard/db/drilldown?var-HOSTNAME=${__cell_name}
+```
+
+NOTE: Metrics are sorted using the global options "Sorting" settings. Global filters are also applied before dereferencing is performed.
+
+##### Single Metric Variables
+The name and value of a polygon can be referenced using the following syntax:
+
+* Metric Name: `${__cell_name}`
+* Metric Value: `${__cell}`
+* Metric Raw Value: `${__cell:raw}` syntax.
+   By default values are URI encoded. Use this syntax to *disable* encoding
+
+##### Composite Metric Variables
+The names and values of a composite polygon can be referenced using the following syntax:
+
+* Composite Name: `${__composite_name}`
+* Metric Name: `${__cell_name_n}`
+* Metric Value: `${__cell_n}`
+* Metric Raw Value: `${__cell_n:raw}` syntax.
+   By default values are URI encoded. Use this syntax to *disable* encoding
+
 
 ## Building
 

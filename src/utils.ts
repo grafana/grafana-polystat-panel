@@ -151,10 +151,45 @@ function RGBToHex(text: string) {
   return hex;
 }
 
+function SortVariableValuesByField(options, field: any, sortOrder: number) {
+  if (sortOrder === 0) {
+    return options;
+  }
+
+  const sortType = Math.ceil(sortOrder / 2);
+  const reverseSort = sortOrder % 2 === 0;
+
+  if (sortType === 1) {
+    let sortField = options[field];
+    options = _.sortBy(options, sortField);
+  } else if (sortType === 2) {
+    options = _.sortBy(options, opt => {
+      let matchField = opt[field];
+      const matches = matchField.match(/.*?(\d+).*/);
+      if (!matches || matches.length < 2) {
+        return -1;
+      } else {
+        return parseInt(matches[1], 10);
+      }
+    });
+  } else if (sortType === 3) {
+    options = _.sortBy(options, opt => {
+      return _.toLower(opt[field]);
+    });
+  }
+
+  if (reverseSort) {
+    options = options.reverse();
+  }
+
+  return options;
+}
+
 export {
 GetDecimalsForValue,
 getTextSizeForWidth,
 getTextSizeForWidthAndHeight,
 getTextWidth,
-RGBToHex
+RGBToHex,
+SortVariableValuesByField
 };

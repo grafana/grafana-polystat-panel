@@ -2,7 +2,7 @@
  * Tests for utils
  */
 
-import {GetDecimalsForValue} from "../src/utils";
+import {GetDecimalsForValue} from "../utils";
 
 describe("Utils GetDecimalsForValue", () => {
   describe("With decimals", () => {

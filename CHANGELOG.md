@@ -30,4 +30,11 @@
 - Implement global fill color for no thresholds
 - Now correctly parses custom color selection
 ## v1.0.15
-- New sort options for polygons and tooltips
+- implemented metric referencing for clickthroughs (issue #38)
+- implemented composite name referencing
+- implemented template variables for clickthroughs
+- fixed bug with default clickthrough and sanitize url
+## v1.0.16
+- fixes variable encoding in clickthrough urls
+## v1.0.17
+- New sort options for polygons and tooltips (issue #37)

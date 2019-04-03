@@ -29,3 +29,8 @@
 - Refactor UI for composites, implement enable/disable
 - Implement global fill color for no thresholds
 - Now correctly parses custom color selection
+## v1.0.15
+- implemented metric referencing for clickthroughs (issue #38)
+- implemented composite name referencing
+- implemented template variables for clickthroughs
+- fixed bug with default clickthrough and sanitize url

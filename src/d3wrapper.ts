@@ -397,11 +397,13 @@ export class D3Wrapper {
           }
         })
         .on("click", (_, i) => {
-          if (data[i].sanitizeURLEnabled) {
+          if (data[i].sanitizeURLEnabled === true) {
+            console.log("click detected sanitized enabled" + data[i].sanitizedURL);
             if (data[i].sanitizedURL.length > 0) {
               window.location.replace(data[i].sanitizedURL);
             }
           } else {
+            console.log("click detected sanitized disabled" + data[i].clickThrough);
             if (data[i].clickThrough.length > 0) {
               window.location.replace(data[i].clickThrough);
             }

@@ -4,6 +4,7 @@ import _ from "lodash";
 import kbn from "app/core/utils/kbn";
 import { getThresholdLevelForValue, getValueByStatName } from "./threshold_processor";
 import { RGBToHex } from "./utils";
+import {ClickThroughTransformer} from "./clickThroughTransformer";
 
 export class MetricOverride {
   label: string;
@@ -86,7 +87,7 @@ export class MetricOverridesManager {
     }
 
     toggleHide(override) {
-      console.log("override enabled =  " + override.enabled);
+      //console.log("override enabled =  " + override.enabled);
       override.enabled = !override.enabled;
       this.$scope.ctrl.refresh();
     }
@@ -106,43 +107,47 @@ export class MetricOverridesManager {
 
     applyOverrides(data) {
       for (let index = 0; index < data.length; index++) {
-          let matchIndex = this.matchOverride(data[index].name);
-          if (matchIndex >= 0) {
-            let aSeries = data[index];
-              let anOverride = this.metricOverrides[matchIndex];
-              // set the operators
-              aSeries.operatorName = anOverride.operatorName;
-              let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
-              //console.log("series2 operator: " + series2.operatorName);
-              //console.log("series2 value: " + series2Value);
-              var result = getThresholdLevelForValue(
-                anOverride.thresholds,
-                dataValue,
-                this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
-              // set value to what was returned
-              data[index].value = dataValue;
-              data[index].color = result.color;
-              //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
-              data[index].thresholdLevel = result.thresholdLevel;
-              // format it
-              var formatFunc = kbn.valueFormats[anOverride.unitFormat];
-              if (formatFunc) {
-                  // put the value in quotes to escape "most" special characters
-                  data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
-                  data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
-              }
-              // copy the threshold data into the object
-              data[index].thresholds = anOverride.thresholds;
-              data[index].prefix = anOverride.prefix;
-              data[index].suffix = anOverride.suffix;
-              // set the url, replace template vars
-              if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
-                  data[index].clickThrough = this.templateSrv.replaceWithText(anOverride.clickThrough);
-                  if (anOverride.sanitizeURLEnabled) {
-                      data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
-                  }
-              }
+        let matchIndex = this.matchOverride(data[index].name);
+        if (matchIndex >= 0) {
+          let aSeries = data[index];
+          let anOverride = this.metricOverrides[matchIndex];
+          // set the operators
+          aSeries.operatorName = anOverride.operatorName;
+          let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
+          //console.log("series2 operator: " + series2.operatorName);
+          //console.log("series2 value: " + series2Value);
+          var result = getThresholdLevelForValue(
+            anOverride.thresholds,
+            dataValue,
+            this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
+          // set value to what was returned
+          data[index].value = dataValue;
+          data[index].color = result.color;
+          //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
+          data[index].thresholdLevel = result.thresholdLevel;
+          // format it
+          var formatFunc = kbn.valueFormats[anOverride.unitFormat];
+          if (formatFunc) {
+            // put the value in quotes to escape "most" special characters
+            data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
+            data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
           }
+          // copy the threshold data into the object
+          data[index].thresholds = anOverride.thresholds;
+          data[index].prefix = anOverride.prefix;
+          data[index].suffix = anOverride.suffix;
+          // set the url, replace template vars
+          if ((anOverride.clickThrough) && (anOverride.clickThrough.length > 0)) {
+            let url = this.templateSrv.replaceWithText(anOverride.clickThrough);
+            // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
+            url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
+            url = ClickThroughTransformer.tranformNthMetric(url, data);
+            data[index].clickThrough = url;
+            if (anOverride.sanitizeURLEnabled) {
+              data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
+            }
+          }
+        }
       }
   }
 
