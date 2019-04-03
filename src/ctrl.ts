@@ -12,7 +12,7 @@ import { PolystatModel } from "./polystatmodel";
 import { MetricOverridesManager, MetricOverride } from "./metric_overrides_manager";
 import { CompositesManager } from "./composites_manager";
 import { Tooltip } from "./tooltip";
-import { GetDecimalsForValue, RGBToHex } from "./utils";
+import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from "./utils";
 
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
@@ -71,6 +71,16 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     { value: "name", text: "Name" },
     { value: "thresholdLevel", text: "Threshold Level" },
     { value: "value", text: "Value" }
+  ];
+  // new method for sorting same as template vars
+  sortOptions = [
+    { value: 0, text: "Disabled" },
+    { value: 1, text: "Alphabetical (asc)" },
+    { value: 2, text: "Alphabetical (desc)" },
+    { value: 3, text: "Numerical (asc)" },
+    { value: 4, text: "Numerical (desc)" },
+    { value: 5, text: "Alphabetical (case-insensitive, asc)" },
+    { value: 6, text: "Alphabetical (case-insensitive, desc)" },
   ];
 
   dataRaw : any;
@@ -156,6 +166,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.series = [];
     this.polystatData = [];
     this.tooltipContent = [];
+    // convert old sort method to new
+    this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
     this.events.on("init-edit-mode", this.onInitEditMode.bind(this));
@@ -164,6 +176,26 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.events.on("data-snapshot-load", this.onDataReceived.bind(this));
   }
 
+  migrateSortDirections() {
+    if (this.panel.polystat.hexagonSortByDirection === "asc") {
+      this.panel.polystat.hexagonSortByDirection = 1;
+    }
+    if (this.panel.polystat.hexagonSortByDirection === "desc") {
+      this.panel.polystat.hexagonSortByDirection = 2;
+    }
+    if (this.panel.polystat.tooltipPrimarySortDirection === "asc") {
+      this.panel.polystat.tooltipPrimarySortDirection = 1;
+    }
+    if (this.panel.polystat.tooltipPrimarySortDirection === "desc") {
+      this.panel.polystat.tooltipPrimarySortDirection = 2;
+    }
+    if (this.panel.polystat.tooltipSecondarySortDirection === "asc") {
+      this.panel.polystat.tooltipSecondarySortDirection = 1;
+    }
+    if (this.panel.polystat.tooltipSecondarySortDirection === "desc") {
+      this.panel.polystat.tooltipSecondarySortDirection = 2;
+    }
+  }
 
   onInitEditMode() {
     // determine the path to this plugin base on the name found in panel.type
@@ -400,8 +432,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
+    this.polystatData = SortVariableValuesByField(this.polystatData, "name", this.panel.polystat.hexagonSortByDirection);
     this.polystatData = _.orderBy(
       this.polystatData,
+      function (o) {
+        if (isNaN(o.name)) { return o.name; } else { return Number(o.name); }
+      }
       [this.panel.polystat.hexagonSortByField],
       [this.panel.polystat.hexagonSortByDirection]);
     // generate tooltips
