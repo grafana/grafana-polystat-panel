@@ -52,11 +52,11 @@ The "worst" state is returned after checking every threshold range
 
 */
 function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
-  var worstSeries = series1;
-  var series1Value = getValueByStatName(series1.operatorName, series1);
-  var series2Value = getValueByStatName(series2.operatorName, series2);
-  var series1result = getThresholdLevelForValue(series1.thresholds, series1Value, defaultColor);
-  var series2result = getThresholdLevelForValue(series2.thresholds, series2Value, defaultColor);
+  let worstSeries = series1;
+  const series1Value = getValueByStatName(series1.operatorName, series1);
+  const series2Value = getValueByStatName(series2.operatorName, series2);
+  const series1result = getThresholdLevelForValue(series1.thresholds, series1Value, defaultColor);
+  const series2result = getThresholdLevelForValue(series2.thresholds, series2Value, defaultColor);
 
   // State 3 is Unknown and is not be worse than CRITICAL (state 2)
   if (series2result.thresholdLevel > series1result.thresholdLevel) {
@@ -78,7 +78,7 @@ function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
 }
 
 function getThresholdLevelForValue(thresholds: any, value: number, defaultColor: string): {thresholdLevel: number, color: string} {
-  let colorGrey = "#808080"; // "grey"
+  const colorGrey = "#808080"; // "grey"
   let currentColor = defaultColor;
   if (value === null) {
     return { thresholdLevel: 3, color: colorGrey}; // No Data
@@ -90,11 +90,11 @@ function getThresholdLevelForValue(thresholds: any, value: number, defaultColor:
     return { thresholdLevel: currentState, color: defaultColor};
   }
   // test "Nth" threshold
-  let thresholdCount = thresholds.length;
+  const thresholdCount = thresholds.length;
   if (thresholdCount === 0) {
     return { thresholdLevel: currentState, color: defaultColor};
   }
-  let aThreshold = thresholds[thresholdCount - 1];
+  const aThreshold = thresholds[thresholdCount - 1];
   if (value >= aThreshold.value) {
     currentState = aThreshold.state;
     currentColor = aThreshold.color;
@@ -105,8 +105,8 @@ function getThresholdLevelForValue(thresholds: any, value: number, defaultColor:
   }
   // now test in reverse
   for (let i = thresholdCount - 1; i > 0; i--) {
-    let upperThreshold = thresholds[i];
-    let lowerThreshold = thresholds[i - 1];
+    const upperThreshold = thresholds[i];
+    const lowerThreshold = thresholds[i - 1];
     if ((lowerThreshold.value <= value) && (value < upperThreshold.value)) {
       if (currentState < lowerThreshold.state) {
         currentState = lowerThreshold.state;

@@ -12,7 +12,7 @@ describe("CompositesManager", () => {
   let mgr: CompositesManager;
 
   beforeEach(() => {
-    var time = new Date().getTime();
+    const time = new Date().getTime();
     aSeries = new TimeSeries({
       datapoints: [[200, time], [101, time + 1], [555, time + 2]],
       alias: "A-series",
@@ -60,7 +60,7 @@ describe("CompositesManager", () => {
     aModel = new PolystatModel("current", aSeries);
     bModel = new PolystatModel("current", bSeries);
 
-    let aComposite = new MetricComposite();
+    const aComposite = new MetricComposite();
     aComposite.compositeName = "composite1";
     aComposite.clickThrough = "";
     aComposite.enabled = true;
@@ -80,35 +80,35 @@ describe("CompositesManager", () => {
   /* needs real kbn, not a mock */
   describe("Matching composites", () => {
     it("does not find composite5", () => {
-      let found = mgr.matchComposite("composite5");
+      const found = mgr.matchComposite("composite5");
       expect(found).toBe(-1);
     });
     it("finds composite1", () => {
-      let found = mgr.matchComposite("composite1");
+      const found = mgr.matchComposite("composite1");
       expect(found).toBe(0);
     });
   });
 
   describe("Worst Series", () => {
     it("returns A-series", () => {
-      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
+      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
     it("returns A-series when aSeries.value is 20", () => {
       aSeries.stats.current = 20;
-      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
+      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
     it("returns B-series when aSeries.value is null", () => {
       aSeries.value = null;
       aSeries.stats.current = null;
-      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
+      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("B-series");
     });
     it("returns A-series when aSeries.value and bSeries.value are null", () => {
       aSeries.value = null;
       bSeries.value = null;
-      let result = getWorstSeries(aSeries, bSeries, "#ffffff");
+      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
       expect(result.alias).toBe("A-series");
     });
 
@@ -125,7 +125,7 @@ describe("CompositesManager", () => {
   describe("Composite Colors", () => {
     it("returns A-series", () => {
       //let data = mgr.applyComposites([aSeries, bSeries]);
-      let data = mgr.applyComposites([aModel, bModel]);
+      const data = mgr.applyComposites([aModel, bModel]);
       //console.log("data is: " + data);
       expect(data.length).toBe(3);
       //var str = JSON.stringify(data[2], null, 2); // spacing level = 2
@@ -134,7 +134,7 @@ describe("CompositesManager", () => {
       aModel.value = 181;
       aModel.valueFormatted = "181";
       //console.log("trying value 20");
-      let datax = mgr.applyComposites([aModel, bModel]);
+      const datax = mgr.applyComposites([aModel, bModel]);
       //str = JSON.stringify(datax[2], null, 2);
       //console.log("datax[2] is: " + str);
       expect(datax[2].color).toBe("green");

@@ -24,7 +24,7 @@ export class PolystatModel {
   showName: boolean;
   showValue: boolean;
   isComposite: boolean;
-  members: Array<PolystatModel>;
+  members: PolystatModel[];
 
   constructor(operatorName: string, aSeries: any) {
     if (aSeries === null) {
@@ -34,7 +34,7 @@ export class PolystatModel {
     this.displayMode = "all";
     this.operatorName = operatorName;
     this.name = aSeries.alias;
-    let operatorValue = this.getValueByOperator(operatorName, aSeries);
+    const operatorValue = this.getValueByOperator(operatorName, aSeries);
     this.value = operatorValue;
     this.valueFormatted = operatorValue;
     this.stats = aSeries.stats;
@@ -106,7 +106,7 @@ export class PolystatModel {
    * Copies values, leaves members empty
    */
   shallowClone(): PolystatModel {
-    let clone = new PolystatModel(this.operatorName, null);
+    const clone = new PolystatModel(this.operatorName, null);
     clone.operatorName = this.operatorName;
     clone.thresholdLevel = this.thresholdLevel;
     clone.value = this.value;
@@ -125,7 +125,7 @@ export class PolystatModel {
     return clone;
   }
   deepClone(): PolystatModel {
-    let clone = new PolystatModel(this.operatorName, null);
+    const clone = new PolystatModel(this.operatorName, null);
     clone.operatorName = this.operatorName;
     clone.thresholdLevel = this.thresholdLevel;
     clone.value = this.value;

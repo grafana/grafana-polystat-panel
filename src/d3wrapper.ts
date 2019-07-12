@@ -1,5 +1,3 @@
-/////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
-/////<reference path="../node_modules/@types/d3/index.d.ts" />
 import * as d3 from "./external/d3.min.js";
 import * as d3hexbin from "./external/d3-hexbin.js";
 import { getTextSizeForWidthAndHeight } from "./utils";
@@ -16,16 +14,16 @@ export class D3Wrapper {
   templateSrv: any;
   calculatedPoints: any;
   hexRadius: number;
-  autoHexRadius : number;
-  autoWidth : number;
+  autoHexRadius: number;
+  autoWidth: number;
   autoHeight: number;
   numColumns: number;
   numRows: number;
   margin: {
     top: number,
-    right : number,
-    bottom : number,
-    left : number,
+    right: number,
+    bottom: number,
+    left: number,
   };
   maxFont = 240;
   purelight: any;
@@ -79,12 +77,12 @@ export class D3Wrapper {
   draw() {
     if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
       // sqrt of # data items
-      let squared = Math.sqrt(this.data.length);
+      const squared = Math.sqrt(this.data.length);
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
         // ratio of width to height
-        let ratio = this.opt.width / this.opt.height * .66;
+        const ratio = this.opt.width / this.opt.height * .66;
         this.numColumns = Math.ceil(squared * ratio);
         // always at least 1 column
         if (this.numColumns < 1) {
@@ -100,7 +98,7 @@ export class D3Wrapper {
         }
         this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
       } else {
-        let ratio = this.opt.height / this.opt.width * .66;
+        const ratio = this.opt.height / this.opt.width * .66;
         this.numRows = Math.ceil(squared * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
@@ -135,21 +133,21 @@ export class D3Wrapper {
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
-    var width = this.opt.width;
-    var height = this.opt.height;
+    const width = this.opt.width;
+    const height = this.opt.height;
     //console.log("Detected Width: " + width + " Height: " + height);
     //console.log("autorad:" + this.autoHexRadius);
-    var ahexbin = d3hexbin
+    const ahexbin = d3hexbin
       .hexbin()
       .radius(this.autoHexRadius)
       .extent([[0, 0], [width, height]]);
 
     // d3 calculates the radius for x and y separately based on the value passed in
-    var thirdPi = Math.PI / 3;
-    let diameterX = this.autoHexRadius * 2 * Math.sin(thirdPi);
-    let diameterY = this.autoHexRadius * 1.5;
-    let radiusX = diameterX / 2;
-    let renderWidth = this.maxColumnsUsed * diameterX;
+    const thirdPi = Math.PI / 3;
+    const diameterX = this.autoHexRadius * 2 * Math.sin(thirdPi);
+    const diameterY = this.autoHexRadius * 1.5;
+    const radiusX = diameterX / 2;
+    const renderWidth = this.maxColumnsUsed * diameterX;
     // renderHeight is calculated based on the #rows used, and
     // the "space" taken by the hexagons interleaved
     // space taken is 2/3 of diameterY * # rows
@@ -163,17 +161,17 @@ export class D3Wrapper {
       xoffset = ((width - renderWidth) / 2) + radiusX;
     }
     // y diameter of hexagon is larger than x diameter
-    let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
+    const yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
-    var tooltip = d3
+    const tooltip = d3
       .select("body")
       .append("div")
       .attr("id", this.d3DivId + "-tooltip")
       .attr("class", "polystat-panel-tooltip")
       .style("opacity", 0);
-    var svg : any = d3.select(this.svgContainer)
+    const svg: any = d3.select(this.svgContainer)
       .attr("width", width + "px")
       .attr("height", height + "px")
       .append("svg")
@@ -184,13 +182,13 @@ export class D3Wrapper {
       .append("g")
       .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
 
-    var data = this.data;
-    var defs = svg.append("defs");
+    const data = this.data;
+    const defs = svg.append("defs");
 
-    let colorGradients = Color.createGradients(data);
+    const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
       //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
-      let aGradient = defs.append("linearGradient")
+      const aGradient = defs.append("linearGradient")
         .attr("id", this.d3DivId + "linear-gradient-state-data-" + i);
       aGradient
         .attr("x1", "30%")
@@ -206,9 +204,9 @@ export class D3Wrapper {
           .attr("offset", "100%")
           .attr("stop-color", colorGradients[i].end);
     }
-    let okColorStart = new Color(82, 194, 52); // #52c234
-    let okColorEnd = okColorStart.Mul(this.purelight, 0.7);
-    let okGradient = defs.append("linearGradient")
+    const okColorStart = new Color(82, 194, 52); // #52c234
+    const okColorEnd = okColorStart.Mul(this.purelight, 0.7);
+    const okGradient = defs.append("linearGradient")
       .attr("id", this.d3DivId + "linear-gradient-state-ok");
     okGradient
       .attr("x1", "30%")
@@ -225,9 +223,9 @@ export class D3Wrapper {
         .attr("stop-color", okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
-    let warningColorStart = new Color(255, 200, 55); // #FFC837
-    let warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
-    let warningGradient = defs.append("linearGradient")
+    const warningColorStart = new Color(255, 200, 55); // #FFC837
+    const warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
+    const warningGradient = defs.append("linearGradient")
         .attr("id", this.d3DivId + "linear-gradient-state-warning");
     warningGradient.attr("x1", "30%")
         .attr("y1", "30%")
@@ -241,9 +239,9 @@ export class D3Wrapper {
           .attr("stop-color", warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
-    let criticalColorStart = new Color(229, 45, 39); // e52d27
-    let criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
-    let criticalGradient = defs.append("linearGradient")
+    const criticalColorStart = new Color(229, 45, 39); // e52d27
+    const criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
+    const criticalGradient = defs.append("linearGradient")
       .attr("id", this.d3DivId + "linear-gradient-state-critical");
     criticalGradient
       .attr("x1", "30%")
@@ -260,7 +258,7 @@ export class D3Wrapper {
         .attr("stop-color", criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
-    let unknownGradient = defs.append("linearGradient")
+    const unknownGradient = defs.append("linearGradient")
       .attr("id", this.d3DivId + "linear-gradient-state-unknown");
     unknownGradient
       .attr("x1", "30%")
@@ -279,7 +277,7 @@ export class D3Wrapper {
     let customShape = null;
     // this is used to calculate the fontsize
     let shapeWidth = diameterX;
-    let shapeHeight = diameterY;
+    const shapeHeight = diameterY;
     // symbols use the area for their size
     let innerArea = diameterX * diameterY;
     // use the smaller of diameterX or Y
@@ -289,7 +287,7 @@ export class D3Wrapper {
     if (diameterY < diameterX) {
       innerArea = diameterY * diameterY;
     }
-    let symbol = d3.symbol().size(innerArea);
+    const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
       case "hexagon_pointed_top":
         customShape = ahexbin.hexagon(this.autoHexRadius);
@@ -343,7 +341,7 @@ export class D3Wrapper {
       // estimate how big of a font can be used
       // Two lines of text must fit with vertical spacing included
       // if it is too small, hide everything
-      let estimateLabelFontSize = getTextSizeForWidthAndHeight(
+      const estimateLabelFontSize = getTextSizeForWidthAndHeight(
         maxLabel,
         "?px sans-serif", // use sans-serif for sizing
         shapeWidth,
@@ -362,7 +360,7 @@ export class D3Wrapper {
         }
       }
       //console.log("Max Value: " + maxValue);
-      let estimateValueFontSize = getTextSizeForWidthAndHeight(
+      const estimateValueFontSize = getTextSizeForWidthAndHeight(
         maxValue,
         "?px sans-serif", // use sans-serif for sizing
         shapeWidth,
@@ -411,10 +409,10 @@ export class D3Wrapper {
         })
         .on("mousemove", () => {
           // use the viewportwidth to prevent the tooltip from going too far right
-          let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
           // use the mouse position for the entire page
-          var mouse = d3.mouse(d3.select("body").node());
-          var xpos = mouse[0] - 50;
+          const mouse = d3.mouse(d3.select("body").node());
+          let xpos = mouse[0] - 50;
           // don't allow offscreen tooltip
           if (xpos < 0) {
             xpos = 0;
@@ -423,7 +421,7 @@ export class D3Wrapper {
           if ((xpos + 200) > viewPortWidth) {
             xpos = viewPortWidth - 200;
           }
-          var ypos = mouse[1] + 5;
+          const ypos = mouse[1] + 5;
           tooltip
             .style("left", xpos + "px")
             .style("top", ypos + "px");
@@ -443,10 +441,10 @@ export class D3Wrapper {
                 .style("opacity", 0);
         });
     // now labels
-    var textspot = svg.selectAll("text.toplabel")
+    const textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
 
-    let dynamicLabelFontSize = activeLabelFontSize;
+    const dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
     //console.log("DynamicLabelFontSize: " + dynamicLabelFontSize);
     //console.log("DynamicValueFontSize: " + dynamicValueFontSize);
@@ -461,7 +459,7 @@ export class D3Wrapper {
       .attr("font-size", dynamicLabelFontSize + "px")
       .attr("fill", "black")
       .text(function (_, i) {
-        let item = data[i];
+        const item = data[i];
         // check if property exist
         if (!("showName" in item)) {
           return item.name;
@@ -473,7 +471,7 @@ export class D3Wrapper {
         }
       });
 
-    var frames = 0;
+    let frames = 0;
 
 
     textspot.enter()
@@ -494,17 +492,17 @@ export class D3Wrapper {
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
-        let dataLen = this.data.length;
+        const dataLen = this.data.length;
         // search for a value but not more than number of data items
         // need to find the longest content string generated to determine the
         // dynamic font size
         // this always starts from frame 0, look through every metric including composite members for the longest text possible
         // get the total count of metrics (with composite members), and loop through
-        let submetricCount = this.data[i].members.length;
+        const submetricCount = this.data[i].members.length;
         //let longestDisplayedValueContent = "";
         if (submetricCount > 0) {
           while (counter < submetricCount) {
-            let checkContent = this.formatValueContent(i, counter, this);
+            const checkContent = this.formatValueContent(i, counter, this);
             if (checkContent) {
               if (checkContent.length > longestDisplayedValueContent.length) {
                 longestDisplayedValueContent = checkContent;
@@ -538,19 +536,19 @@ export class D3Wrapper {
         }
         //console.log("animated: dynamicLabelFontSize: " + dynamicLabelFontSize);
         //console.log("animated: dynamicValueFontSize: " + dynamicValueFontSize);
-        var valueTextLocation = svg.select("text.valueLabel" + i);
+        const valueTextLocation = svg.select("text.valueLabel" + i);
         // use the dynamic size for the value
         valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
         d3.interval( () => {
-          var valueTextLocation = svg.select("text.valueLabel" + i);
-          var compositeIndex = i;
+          const valueTextLocation = svg.select("text.valueLabel" + i);
+          const compositeIndex = i;
           valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
             valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
 
             let content = null;
             let counter = 0;
-            let dataLen = this.data.length * 2;
+            const dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
             while ((content === null) && (counter < dataLen)) {
               content = this.formatValueContent(compositeIndex, (frames + counter), this);
@@ -574,7 +572,7 @@ export class D3Wrapper {
   }
 
   formatValueContent(i, frames, thisRef): string {
-    let data = thisRef.data[i];
+    const data = thisRef.data[i];
     // options can specify to not show the value
     if (typeof(data) !== "undefined") {
       if (data.hasOwnProperty("showValue")) {
@@ -612,7 +610,7 @@ export class D3Wrapper {
     // a composite will contain the "worst" case as the valueFormatted,
     // and will have all of the members of the composite included.
     // as frames increment find a triggered member starting from the frame mod len
-    let len = data.members.length;
+    const len = data.members.length;
     if (len > 0) {
       let triggeredIndex = -1;
       if (data.animateMode === "all") {
@@ -622,11 +620,11 @@ export class D3Wrapper {
         if (typeof(data.triggerCache) === "undefined") {
           data.triggerCache = this.buildTriggerCache(data);
         }
-        let z = frames % data.triggerCache.length;
+        const z = frames % data.triggerCache.length;
         triggeredIndex = data.triggerCache[z].index;
         //console.log("triggeredIndex from cache is: " + triggeredIndex);
       }
-      let aMember = data.members[triggeredIndex];
+      const aMember = data.members[triggeredIndex];
 
       content = aMember.name + ": " + aMember.valueFormatted;
       if ((aMember.prefix) && (aMember.prefix.length > 0)) {
@@ -640,7 +638,7 @@ export class D3Wrapper {
     //
     if ((content) && (content.length > 0)) {
       try {
-        let replacedContent = thisRef.templateSrv.replaceWithText(content);
+        const replacedContent = thisRef.templateSrv.replaceWithText(content);
         content = replacedContent;
       } catch (err) {
         console.log("ERROR: template server threw error: " + err);
@@ -653,10 +651,10 @@ export class D3Wrapper {
     //console.log("Building trigger cache for item");
     let triggerCache = [];
     for (let i = 0; i < item.members.length; i++) {
-      let aMember = item.members[i];
+      const aMember = item.members[i];
       if (aMember.thresholdLevel > 0) {
         // add to list
-        let cachedMemberState = { index: i, name: aMember.name, value: aMember.value, thresholdLevel: aMember.thresholdLevel };
+        const cachedMemberState = { index: i, name: aMember.name, value: aMember.value, thresholdLevel: aMember.thresholdLevel };
         triggerCache.push(cachedMemberState);
       }
     }
@@ -667,7 +665,7 @@ export class D3Wrapper {
 
   getAutoHexRadius(): number {
     //The maximum radius the hexagons can have to still fit the screen
-    var hexRadius = d3.min(
+    const hexRadius = d3.min(
       [
         this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
         this.opt.height / ((this.numRows + 1 / 3) * 1.5)
@@ -692,8 +690,8 @@ export class D3Wrapper {
   }
 
   // Builds the placeholder polygons needed to represent each metric
-  generatePoints() : any {
-    let points = [];
+  generatePoints(): any {
+    const points = [];
     if (typeof(this.data) === "undefined") {
       return points;
     }
@@ -709,11 +707,11 @@ export class D3Wrapper {
       //console.log("numColumns NaN");
       return points;
     }
-    for (var i = 0; i < this.numRows; i++) {
+    for (let i = 0; i < this.numRows; i++) {
       if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
         maxRowsUsed += 1;
         columnsUsed = 0;
-        for (var j = 0; j < this.numColumns; j++) {
+        for (let j = 0; j < this.numColumns; j++) {
           if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
             columnsUsed += 1;
             // track the most number of columns

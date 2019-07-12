@@ -120,7 +120,7 @@ describe("Transforms", () => {
   // Datasource sends JSON
   describe("With JSON data", () => {
     it("Can convert to hexbin", () => {
-      let rawData = [
+      const rawData = [
         {
           type: "docs",
           datapoints: [

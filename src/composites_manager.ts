@@ -1,14 +1,12 @@
-///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
-
 import _ from "lodash";
-import kbn from "app/core/utils/kbn";
+import kbn from "grafana/app/core/utils/kbn";
 import { PolystatModel } from "./polystatmodel";
 import { getWorstSeries } from "./threshold_processor";
 import {ClickThroughTransformer} from "./clickThroughTransformer";
 
 export class MetricComposite {
     compositeName: string;
-    members: Array<any>;
+    members: any[];
     enabled: boolean;
     hideMembers: boolean;
     showName: boolean;
@@ -26,7 +24,7 @@ export class CompositesManager {
     templateSrv: any;
     $sanitize: any;
     suggestMetricNames: any;
-    metricComposites: Array<MetricComposite>;
+    metricComposites: MetricComposite[];
     subTabIndex: number;
 
     constructor($scope, templateSrv, $sanitize, savedComposites) {
@@ -50,7 +48,7 @@ export class CompositesManager {
     }
 
     addMetricComposite() {
-      let aComposite = new MetricComposite();
+      const aComposite = new MetricComposite();
       aComposite.label = "COMPOSITE " + (this.metricComposites.length + 1);
       aComposite.compositeName = "";
       aComposite.members = [{}];
@@ -92,11 +90,11 @@ export class CompositesManager {
       this.$scope.ctrl.refresh();
     }
 
-    matchComposite(pattern) : number {
+    matchComposite(pattern): number {
       for (let index = 0; index < this.metricComposites.length; index++) {
-        let aComposite = this.metricComposites[index];
-        var regex = kbn.stringToJsRegex(aComposite.compositeName);
-        var matches = pattern.match(regex);
+        const aComposite = this.metricComposites[index];
+        const regex = kbn.stringToJsRegex(aComposite.compositeName);
+        const matches = pattern.match(regex);
         if (matches && matches.length > 0 && aComposite.enabled) {
           return index;
         }
@@ -105,17 +103,17 @@ export class CompositesManager {
     }
 
     applyComposites(data) {
-      let filteredMetrics = new Array<number>();
-      let clonedComposites = new Array<PolystatModel>();
+      const filteredMetrics = new Array<number>();
+      const clonedComposites = new Array<PolystatModel>();
       for (let i = 0; i < this.metricComposites.length; i++) {
-        let matchedMetrics = new Array<number>();
-        let aComposite = this.metricComposites[i];
+        const matchedMetrics = new Array<number>();
+        const aComposite = this.metricComposites[i];
         if (!aComposite.enabled) {
           continue;
         }
         let currentWorstSeries = null;
         for (let j = 0; j < aComposite.members.length; j++) {
-          let aMetric = aComposite.members[j];
+          const aMetric = aComposite.members[j];
           // look for the matches to the pattern in the data
           for (let index = 0; index < data.length; index++) {
             // match regex
@@ -123,10 +121,10 @@ export class CompositesManager {
             if (typeof aMetric.seriesName === "undefined") {
               continue;
             }
-            let regex = kbn.stringToJsRegex(aMetric.seriesName);
-            let matches = data[index].name.match(regex);
+            const regex = kbn.stringToJsRegex(aMetric.seriesName);
+            const matches = data[index].name.match(regex);
             if (matches && matches.length > 0) {
-              let seriesItem = data[index];
+              const seriesItem = data[index];
               // keep index of the matched metric
               matchedMetrics.push(index);
               // only hide if requested
@@ -151,8 +149,8 @@ export class CompositesManager {
         }
         // now determine the most triggered threshold
         for (let k = 0; k < matchedMetrics.length; k++) {
-          let itemIndex = matchedMetrics[k];
-          let seriesItem = data[itemIndex];
+          const itemIndex = matchedMetrics[k];
+          const seriesItem = data[itemIndex];
           // check thresholds
           if (currentWorstSeries === null) {
             currentWorstSeries = seriesItem;
@@ -165,11 +163,11 @@ export class CompositesManager {
         }
         // Prefix the valueFormatted with the actual metric name
         if (currentWorstSeries !== null) {
-          let clone = currentWorstSeries.shallowClone();
+          const clone = currentWorstSeries.shallowClone();
           clone.name = aComposite.compositeName;
           // tooltip/legend uses this to expand what values are inside the composite
           for (let index = 0; index < matchedMetrics.length; index++) {
-            let itemIndex = matchedMetrics[index];
+            const itemIndex = matchedMetrics[index];
             clone.members.push(data[itemIndex]);
           }
           clone.thresholdLevel = currentWorstSeries.thresholdLevel;

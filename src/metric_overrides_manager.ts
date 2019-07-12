@@ -9,8 +9,8 @@ import {ClickThroughTransformer} from "./clickThroughTransformer";
 export class MetricOverride {
   label: string;
   metricName: string;
-  thresholds: Array<any>;
-  colors: Array<string>;
+  thresholds: any[];
+  colors: string[];
   unitFormat: string;
   decimals: string;
   scaledDecimals: number;
@@ -24,14 +24,14 @@ export class MetricOverride {
 }
 
 export class MetricOverridesManager {
-    metricOverrides : Array < MetricOverride >;
+    metricOverrides: MetricOverride[];
     $scope: any;
     $sanitize: any;
     templateSrv: any;
     suggestMetricNames: any;
     activeOverrideIndex: number;
 
-    constructor($scope, templateSrv, $sanitize, metricOverrides: Array<MetricOverride>) {
+    constructor($scope, templateSrv, $sanitize, metricOverrides: MetricOverride[]) {
         this.$scope = $scope;
         this.$sanitize = $sanitize;
         this.templateSrv = templateSrv;
@@ -52,7 +52,7 @@ export class MetricOverridesManager {
     }
 
     addMetricOverride() {
-        let override = new MetricOverride();
+        const override = new MetricOverride();
         override.label = "OVERRIDE " + (this.metricOverrides.length + 1);
         override.metricName = "";
         override.thresholds = [];
@@ -92,11 +92,11 @@ export class MetricOverridesManager {
       this.$scope.ctrl.refresh();
     }
 
-    matchOverride(pattern) : number {
+    matchOverride(pattern): number {
         for (let index = 0; index < this.metricOverrides.length; index++) {
-            let anOverride = this.metricOverrides[index];
-            var regex = kbn.stringToJsRegex(anOverride.metricName);
-            var matches = pattern.match(regex);
+            const anOverride = this.metricOverrides[index];
+            const regex = kbn.stringToJsRegex(anOverride.metricName);
+            const matches = pattern.match(regex);
             if (matches && matches.length > 0 && anOverride.enabled ) {
                 return index;
             }
@@ -107,16 +107,16 @@ export class MetricOverridesManager {
 
     applyOverrides(data) {
       for (let index = 0; index < data.length; index++) {
-        let matchIndex = this.matchOverride(data[index].name);
+        const matchIndex = this.matchOverride(data[index].name);
         if (matchIndex >= 0) {
-          let aSeries = data[index];
-          let anOverride = this.metricOverrides[matchIndex];
+          const aSeries = data[index];
+          const anOverride = this.metricOverrides[matchIndex];
           // set the operators
           aSeries.operatorName = anOverride.operatorName;
-          let dataValue = getValueByStatName(aSeries.operatorName, aSeries);
+          const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
           //console.log("series2 operator: " + series2.operatorName);
           //console.log("series2 value: " + series2Value);
-          var result = getThresholdLevelForValue(
+          const result = getThresholdLevelForValue(
             anOverride.thresholds,
             dataValue,
             this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
@@ -126,7 +126,7 @@ export class MetricOverridesManager {
           //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
           data[index].thresholdLevel = result.thresholdLevel;
           // format it
-          var formatFunc = kbn.valueFormats[anOverride.unitFormat];
+          const formatFunc = kbn.valueFormats[anOverride.unitFormat];
           if (formatFunc) {
             // put the value in quotes to escape "most" special characters
             data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);

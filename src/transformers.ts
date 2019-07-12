@@ -24,7 +24,7 @@ export class Transformers {
     // use timestamp of X
     //let tsLength = series.datapoints.length;
     //let bins = [];
-    let aPolystat = new PolystatModel(operatorName, series);
+    const aPolystat = new PolystatModel(operatorName, series);
     //console.log("Number of time series in X: " + tsLength);
     //for (let index = tsLength - 1; index >= 0; index--) {
     //for (let index = 0; index < tsLength; index++) {
@@ -86,19 +86,19 @@ export class Transformers {
     if (!data || data.length === 0) {
       return [];
     }
-    var names: any = {};
-    for (var i = 0; i < data.length; i++) {
-      var series = data[i];
+    const names: any = {};
+    for (let i = 0; i < data.length; i++) {
+      const series = data[i];
       if (series.type !== "docs") {
         continue;
       }
 
       // only look at 100 docs
-      var maxDocs = Math.min(series.datapoints.length, 100);
-      for (var y = 0; y < maxDocs; y++) {
-        var doc = series.datapoints[y];
-        var flattened = flatten(doc, null);
-        for (var propName in flattened) {
+      const maxDocs = Math.min(series.datapoints.length, 100);
+      for (let y = 0; y < maxDocs; y++) {
+        const doc = series.datapoints[y];
+        const flattened = flatten(doc, null);
+        for (const propName in flattened) {
           if (flattened.hasOwnProperty(propName)) {
             names[propName] = true;
           }

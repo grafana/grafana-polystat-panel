@@ -5,19 +5,19 @@
 export function flatten(target, opts): any {
     opts = opts || {};
 
-    var delimiter = opts.delimiter || ".";
-    var maxDepth = opts.maxDepth || 3;
-    var currentDepth = 1;
-    var output = {};
+    let delimiter = opts.delimiter || ".";
+    let maxDepth = opts.maxDepth || 3;
+    let currentDepth = 1;
+    let output = {};
 
     function step(object, prev) {
         Object.keys(object).forEach(function (key) {
-            var value = object[key];
-            var isarray = opts.safe && Array.isArray(value);
-            var type = Object.prototype.toString.call(value);
-            var isobject = type === "[object Object]";
+            let value = object[key];
+            let isarray = opts.safe && Array.isArray(value);
+            let type = Object.prototype.toString.call(value);
+            let isobject = type === "[object Object]";
 
-            var newKey = prev ? prev + delimiter + key : key;
+            let newKey = prev ? prev + delimiter + key : key;
 
             if (!opts.maxDepth) {
                 maxDepth = currentDepth + 1;
