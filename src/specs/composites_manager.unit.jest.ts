@@ -2,7 +2,6 @@ import { CompositesManager, MetricComposite } from '../composites_manager';
 import { getWorstSeries } from '../threshold_processor';
 import { PolystatModel } from '../polystatmodel';
 import { TimeSeries } from './timeseries';
-jest.mock('app/core/utils/kbn');
 
 describe('CompositesManager', () => {
   let aModel: PolystatModel;
