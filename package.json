@@ -54,7 +54,7 @@
     "tslint": "^5.12.1",
     "typescript": "^3.2.2",
     "typescript-formatter": "^7.2.2",
-    "xss": "^1.0.3",
+    "xss": "^1.0.3"
   },
   "homepage": "https://github.com/grafana/grafana-polystat-panel",
   "jest": {
