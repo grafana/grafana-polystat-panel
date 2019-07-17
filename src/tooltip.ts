@@ -1,19 +1,16 @@
 /**
  * Tooltip generation
  */
-import _ from "lodash";
+import _ from 'lodash';
 
 export class Tooltip {
   static generate(scope, data, polystat): string[] {
     const items = [];
     for (let index = 0; index < data.length; index++) {
-      const tooltipTimeFormat = "YYYY-MM-DD HH:mm:ss";
-      const time = scope
-        .ctrl
-        .dashboard
-        .formatDate(data[index].timestamp, tooltipTimeFormat);
-      let timestampContent = "";
-      if (polystat.tooltipDisplayMode === "triggered") {
+      const tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+      const time = scope.ctrl.dashboard.formatDate(data[index].timestamp, tooltipTimeFormat);
+      let timestampContent = '';
+      if (polystat.tooltipDisplayMode === 'triggered') {
         const triggeredCount = Tooltip.getTriggeredCount(data[index]);
         if (triggeredCount === 0) {
           // use the displaytext instead
@@ -76,7 +73,7 @@ export class Tooltip {
             </tr>
           `;
           switch (polystat.tooltipDisplayMode) {
-            case "triggered":
+            case 'triggered':
               if (aMember.thresholdLevel !== 0) {
                 content.push(aRow);
               }
@@ -94,7 +91,7 @@ export class Tooltip {
         </tr>
         `;
         switch (polystat.tooltipDisplayMode) {
-          case "triggered":
+          case 'triggered':
             if (data[index].thresholdLevel !== 0) {
               content.push(aRow);
             }
@@ -104,8 +101,8 @@ export class Tooltip {
             break;
         }
       }
-      content.push("</tbody></table>");
-      items.push(content.join("\n"));
+      content.push('</tbody></table>');
+      items.push(content.join('\n'));
     }
     return items;
   }

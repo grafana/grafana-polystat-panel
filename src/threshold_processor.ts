@@ -71,28 +71,28 @@ function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
         break;
       case 2:
         worstSeries = series2;
-      break;
+        break;
     }
   }
   return worstSeries;
 }
 
-function getThresholdLevelForValue(thresholds: any, value: number, defaultColor: string): {thresholdLevel: number, color: string} {
-  const colorGrey = "#808080"; // "grey"
+function getThresholdLevelForValue(thresholds: any, value: number, defaultColor: string): { thresholdLevel: number; color: string } {
+  const colorGrey = '#808080'; // "grey"
   let currentColor = defaultColor;
   if (value === null) {
-    return { thresholdLevel: 3, color: colorGrey}; // No Data
+    return { thresholdLevel: 3, color: colorGrey }; // No Data
   }
   // assume UNKNOWN state
   let currentState = -1;
   // skip evaluation when there are no thresholds
-  if (typeof thresholds === "undefined") {
-    return { thresholdLevel: currentState, color: defaultColor};
+  if (typeof thresholds === 'undefined') {
+    return { thresholdLevel: currentState, color: defaultColor };
   }
   // test "Nth" threshold
   const thresholdCount = thresholds.length;
   if (thresholdCount === 0) {
-    return { thresholdLevel: currentState, color: defaultColor};
+    return { thresholdLevel: currentState, color: defaultColor };
   }
   const aThreshold = thresholds[thresholdCount - 1];
   if (value >= aThreshold.value) {
@@ -101,13 +101,13 @@ function getThresholdLevelForValue(thresholds: any, value: number, defaultColor:
   }
   // if there's one threshold, just return the result
   if (thresholds.length === 1) {
-    return { thresholdLevel: currentState, color: currentColor};
+    return { thresholdLevel: currentState, color: currentColor };
   }
   // now test in reverse
   for (let i = thresholdCount - 1; i > 0; i--) {
     const upperThreshold = thresholds[i];
     const lowerThreshold = thresholds[i - 1];
-    if ((lowerThreshold.value <= value) && (value < upperThreshold.value)) {
+    if (lowerThreshold.value <= value && value < upperThreshold.value) {
       if (currentState < lowerThreshold.state) {
         currentState = lowerThreshold.state;
         currentColor = lowerThreshold.color;
@@ -120,61 +120,56 @@ function getThresholdLevelForValue(thresholds: any, value: number, defaultColor:
     currentColor = thresholds[0].color;
   }
   //console.log("Returning threshold level: " + currentState + " color: " + currentColor);
-  return { thresholdLevel: currentState, color: currentColor};
+  return { thresholdLevel: currentState, color: currentColor };
 }
-
 
 function getValueByStatName(operatorName: string, data: any): number {
   let value = data.stats.avg;
   switch (operatorName) {
-    case "avg":
+    case 'avg':
       value = data.stats.avg;
       break;
-    case "count":
+    case 'count':
       value = data.stats.count;
       break;
-    case "current":
+    case 'current':
       value = data.stats.current;
       break;
-    case "delta":
+    case 'delta':
       value = data.stats.delta;
       break;
-    case "diff":
+    case 'diff':
       value = data.stats.diff;
       break;
-    case "first":
+    case 'first':
       value = data.stats.first;
       break;
-    case "logmin":
+    case 'logmin':
       value = data.stats.logmin;
       break;
-    case "max":
+    case 'max':
       value = data.stats.max;
       break;
-    case "min":
+    case 'min':
       value = data.stats.min;
       break;
-    case "name":
+    case 'name':
       value = data.metricName;
       break;
-    case "time_step":
+    case 'time_step':
       value = data.stats.timeStep;
       break;
-    case "last_time":
+    case 'last_time':
       value = data.timestamp;
       break;
-    case "total":
+    case 'total':
       value = data.stats.total;
       break;
     default:
       value = data.stats.avg;
       break;
-   }
+  }
   return value;
 }
 
-export {
-  getWorstSeries,
-  getThresholdLevelForValue,
-  getValueByStatName
-};
+export { getWorstSeries, getThresholdLevelForValue, getValueByStatName };

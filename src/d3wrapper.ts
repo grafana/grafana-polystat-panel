@@ -1,8 +1,8 @@
-import * as d3 from "./external/d3.min.js";
-import * as d3hexbin from "./external/d3-hexbin.js";
-import { getTextSizeForWidthAndHeight } from "./utils";
-import _ from "lodash";
-import { Color } from "./color";
+import * as d3 from './external/d3.min.js';
+import * as d3hexbin from './external/d3-hexbin.js';
+import { getTextSizeForWidthAndHeight } from './utils';
+import _ from 'lodash';
+import { Color } from './color';
 
 export class D3Wrapper {
   svgContainer: any;
@@ -20,10 +20,10 @@ export class D3Wrapper {
   numColumns: number;
   numRows: number;
   margin: {
-    top: number,
-    right: number,
-    bottom: number,
-    left: number,
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
   };
   maxFont = 240;
   purelight: any;
@@ -41,7 +41,7 @@ export class D3Wrapper {
       top: 30 + 26,
       right: 0,
       bottom: 20,
-      left: 50
+      left: 50,
     };
     // take 10 off the height
     this.opt.height -= 10;
@@ -57,7 +57,7 @@ export class D3Wrapper {
       this.numColumns = opt.columns || 6;
       this.numRows = opt.rows || 6;
     }
-    if ((!opt.radiusAutoSize) && (opt.radius)) {
+    if (!opt.radiusAutoSize && opt.radius) {
       this.hexRadius = opt.radius;
       this.autoHexRadius = opt.radius;
     } else {
@@ -66,7 +66,7 @@ export class D3Wrapper {
     }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
-}
+  }
 
   update(data: any) {
     if (data) {
@@ -82,32 +82,32 @@ export class D3Wrapper {
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
         // ratio of width to height
-        const ratio = this.opt.width / this.opt.height * .66;
+        const ratio = (this.opt.width / this.opt.height) * 0.66;
         this.numColumns = Math.ceil(squared * ratio);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
         // prefer evens and smaller
-        if ((this.numColumns % 2) && (this.numColumns > 2)) {
+        if (this.numColumns % 2 && this.numColumns > 2) {
           this.numColumns -= 1;
         }
-        this.numRows = Math.floor(this.data.length / this.numColumns * ratio);
+        this.numRows = Math.floor((this.data.length / this.numColumns) * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
+        this.numColumns = Math.ceil((this.data.length / this.numRows) * ratio);
       } else {
-        const ratio = this.opt.height / this.opt.width * .66;
+        const ratio = (this.opt.height / this.opt.width) * 0.66;
         this.numRows = Math.ceil(squared * ratio);
         if (this.numRows < 1) {
           this.numRows = 1;
         }
         // prefer evens and smaller
-        if ((this.numRows % 2) && (this.numRows > 2)) {
+        if (this.numRows % 2 && this.numRows > 2) {
           this.numRows -= 1;
         }
-        this.numColumns = Math.floor(this.data.length / this.numRows * ratio);
+        this.numColumns = Math.floor((this.data.length / this.numRows) * ratio);
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
@@ -151,128 +151,127 @@ export class D3Wrapper {
     // renderHeight is calculated based on the #rows used, and
     // the "space" taken by the hexagons interleaved
     // space taken is 2/3 of diameterY * # rows
-    let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
+    let renderHeight = this.maxRowsUsed * diameterY + diameterY * 0.33;
     // difference of width and renderwidth is our play room, split that in half
     // offset is from center of hexagon, not from the edge
     let xoffset = (width - renderWidth + radiusX) / 2;
     // if there is just one column and one row, center it
     if (this.numRows === 1) {
-      renderHeight = diameterY + (diameterY * .33);
-      xoffset = ((width - renderWidth) / 2) + radiusX;
+      renderHeight = diameterY + diameterY * 0.33;
+      xoffset = (width - renderWidth) / 2 + radiusX;
     }
     // y diameter of hexagon is larger than x diameter
-    const yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
+    const yoffset = (height - renderHeight) / 2 + diameterY * 0.66;
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
     const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("id", this.d3DivId + "-tooltip")
-      .attr("class", "polystat-panel-tooltip")
-      .style("opacity", 0);
-    const svg: any = d3.select(this.svgContainer)
-      .attr("width", width + "px")
-      .attr("height", height + "px")
-      .append("svg")
-      .attr("width", width + "px")
-      .attr("height", height + "px")
-      .style("border", "0px solid white")
-      .attr("id", this.d3DivId)
-      .append("g")
-      .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
+      .select('body')
+      .append('div')
+      .attr('id', this.d3DivId + '-tooltip')
+      .attr('class', 'polystat-panel-tooltip')
+      .style('opacity', 0);
+    const svg: any = d3
+      .select(this.svgContainer)
+      .attr('width', width + 'px')
+      .attr('height', height + 'px')
+      .append('svg')
+      .attr('width', width + 'px')
+      .attr('height', height + 'px')
+      .style('border', '0px solid white')
+      .attr('id', this.d3DivId)
+      .append('g')
+      .attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
 
     const data = this.data;
-    const defs = svg.append("defs");
+    const defs = svg.append('defs');
 
     const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
       //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
-      const aGradient = defs.append("linearGradient")
-        .attr("id", this.d3DivId + "linear-gradient-state-data-" + i);
+      const aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
       aGradient
-        .attr("x1", "30%")
-        .attr("y1", "30%")
-        .attr("x2", "70%")
-        .attr("y2", "70%");
+        .attr('x1', '30%')
+        .attr('y1', '30%')
+        .attr('x2', '70%')
+        .attr('y2', '70%');
       aGradient
-        .append("stop")
-          .attr("offset", "0%")
-          .attr("stop-color", colorGradients[i].start);
+        .append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', colorGradients[i].start);
       aGradient
-        .append("stop")
-          .attr("offset", "100%")
-          .attr("stop-color", colorGradients[i].end);
+        .append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', colorGradients[i].end);
     }
     const okColorStart = new Color(82, 194, 52); // #52c234
     const okColorEnd = okColorStart.Mul(this.purelight, 0.7);
-    const okGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-ok");
+    const okGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-ok');
     okGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     okGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", okColorStart.asHex());
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', okColorStart.asHex());
     okGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", okColorEnd.asHex());
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
     const warningColorStart = new Color(255, 200, 55); // #FFC837
     const warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
-    const warningGradient = defs.append("linearGradient")
-        .attr("id", this.d3DivId + "linear-gradient-state-warning");
-    warningGradient.attr("x1", "30%")
-        .attr("y1", "30%")
-        .attr("x2", "70%")
-        .attr("y2", "70%");
-    warningGradient.append("stop")
-          .attr("offset", "0%")
-          .attr("stop-color", warningColorStart.asHex()); // light orange
-    warningGradient.append("stop")
-          .attr("offset", "100%")
-          .attr("stop-color", warningColorEnd.asHex()); // dark orange
+    const warningGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-warning');
+    warningGradient
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
+    warningGradient
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', warningColorStart.asHex()); // light orange
+    warningGradient
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
     const criticalColorStart = new Color(229, 45, 39); // e52d27
     const criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
-    const criticalGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-critical");
+    const criticalGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-critical');
     criticalGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     criticalGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", criticalColorStart.asHex()); // light red
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', criticalColorStart.asHex()); // light red
     criticalGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", criticalColorEnd.asHex()); // dark red
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
-    const unknownGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-unknown");
+    const unknownGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-unknown');
     unknownGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     unknownGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", "#73808A"); // light grey
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', '#73808A'); // light grey
     unknownGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", "#757F9A"); // dark grey
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', '#757F9A'); // dark grey
 
     let customShape = null;
     // this is used to calculate the fontsize
@@ -289,37 +288,37 @@ export class D3Wrapper {
     }
     const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
-      case "hexagon_pointed_top":
+      case 'hexagon_pointed_top':
         customShape = ahexbin.hexagon(this.autoHexRadius);
         shapeWidth = this.autoHexRadius * 2;
         break;
-      case "hexagon_flat_top":
+      case 'hexagon_flat_top':
         // TODO: use pointed for now
         customShape = ahexbin.hexagon(this.autoHexRadius);
         shapeWidth = this.autoHexRadius * 2;
         break;
-      case "circle":
+      case 'circle':
         customShape = symbol.type(d3.symbolCircle);
         break;
-      case "cross":
+      case 'cross':
         customShape = symbol.type(d3.symbolCross);
         break;
-      case "diamond":
+      case 'diamond':
         customShape = symbol.type(d3.symbolDiamond);
         break;
-      case "square":
+      case 'square':
         customShape = symbol.type(d3.symbolSquare);
         break;
-      case "star":
+      case 'star':
         customShape = symbol.type(d3.symbolStar);
         break;
-      case "triangle":
+      case 'triangle':
         customShape = symbol.type(d3.symbolTriangle);
         break;
-      case "wye":
+      case 'wye':
         customShape = symbol.type(d3.symbolWye);
         break;
-     default:
+      default:
         customShape = ahexbin.hexagon(this.autoHexRadius);
         break;
     }
@@ -328,11 +327,11 @@ export class D3Wrapper {
     let activeLabelFontSize = this.opt.polystat.fontSize;
     // font sizes are independent for label and values
     let activeValueFontSize = this.opt.polystat.fontSize;
-    let longestDisplayedValueContent = "";
+    let longestDisplayedValueContent = '';
 
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
-      let maxLabel = "";
+      let maxLabel = '';
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i].name.length > maxLabel.length) {
           maxLabel = this.data[i].name;
@@ -343,16 +342,17 @@ export class D3Wrapper {
       // if it is too small, hide everything
       const estimateLabelFontSize = getTextSizeForWidthAndHeight(
         maxLabel,
-        "?px sans-serif", // use sans-serif for sizing
+        '?px sans-serif', // use sans-serif for sizing
         shapeWidth,
         shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
         10,
-        this.maxFont);
+        this.maxFont
+      );
 
       //console.log("Calc: Estimated Label Font Size: " + estimateLabelFontSize);
       activeLabelFontSize = estimateLabelFontSize;
       // same for the value
-      let maxValue = "";
+      let maxValue = '';
       for (let i = 0; i < this.data.length; i++) {
         //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
@@ -362,11 +362,12 @@ export class D3Wrapper {
       //console.log("Max Value: " + maxValue);
       const estimateValueFontSize = getTextSizeForWidthAndHeight(
         maxValue,
-        "?px sans-serif", // use sans-serif for sizing
+        '?px sans-serif', // use sans-serif for sizing
         shapeWidth,
         shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
         10,
-        this.maxFont);
+        this.maxFont
+      );
       activeValueFontSize = estimateValueFontSize;
       longestDisplayedValueContent = maxValue;
     }
@@ -377,72 +378,76 @@ export class D3Wrapper {
 
     //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
 
-
-    svg.selectAll(".hexagon")
-        .data(ahexbin(this.calculatedPoints))
-        .enter().append("path")
-        .attr("class", "hexagon")
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("d", customShape)
-        .attr("stroke", this.opt.polystat.polygonBorderColor)
-        .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
-        .style("fill", (_, i) => {
-          if (this.opt.polystat.gradientEnabled) {
-            // safari needs the location.href
-            return "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
-          } else {
-            return data[i].color;
+    svg
+      .selectAll('.hexagon')
+      .data(ahexbin(this.calculatedPoints))
+      .enter()
+      .append('path')
+      .attr('class', 'hexagon')
+      .attr('transform', d => {
+        return 'translate(' + d.x + ',' + d.y + ')';
+      })
+      .attr('d', customShape)
+      .attr('stroke', this.opt.polystat.polygonBorderColor)
+      .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+      .style('fill', (_, i) => {
+        if (this.opt.polystat.gradientEnabled) {
+          // safari needs the location.href
+          return 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
+        } else {
+          return data[i].color;
+        }
+      })
+      .on('click', (_, i) => {
+        if (data[i].sanitizeURLEnabled === true) {
+          console.log('click detected sanitized enabled' + data[i].sanitizedURL);
+          if (data[i].sanitizedURL.length > 0) {
+            window.location.replace(data[i].sanitizedURL);
           }
-        })
-        .on("click", (_, i) => {
-          if (data[i].sanitizeURLEnabled === true) {
-            console.log("click detected sanitized enabled" + data[i].sanitizedURL);
-            if (data[i].sanitizedURL.length > 0) {
-              window.location.replace(data[i].sanitizedURL);
-            }
-          } else {
-            console.log("click detected sanitized disabled" + data[i].clickThrough);
-            if (data[i].clickThrough.length > 0) {
-              window.location.replace(data[i].clickThrough);
-            }
+        } else {
+          console.log('click detected sanitized disabled' + data[i].clickThrough);
+          if (data[i].clickThrough.length > 0) {
+            window.location.replace(data[i].clickThrough);
           }
-        })
-        .on("mousemove", () => {
-          // use the viewportwidth to prevent the tooltip from going too far right
-          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-          // use the mouse position for the entire page
-          const mouse = d3.mouse(d3.select("body").node());
-          let xpos = mouse[0] - 50;
-          // don't allow offscreen tooltip
-          if (xpos < 0) {
-            xpos = 0;
-          }
-          // prevent tooltip from rendering outside of viewport
-          if ((xpos + 200) > viewPortWidth) {
-            xpos = viewPortWidth - 200;
-          }
-          const ypos = mouse[1] + 5;
-          tooltip
-            .style("left", xpos + "px")
-            .style("top", ypos + "px");
-        })
-        .on("mouseover", (d, i) => {
-          tooltip.transition().duration(200).style("opacity", 0.9);
-          tooltip.html(this.opt.tooltipContent[i])
-            .style("font-size", this.opt.tooltipFontSize)
-            .style("font-family", this.opt.tooltipFontType)
-            .style("left", (d.x - 5) + "px")
-            .style("top", (d.y - 5) + "px");
-          })
-        .on("mouseout", () => {
-              tooltip
-                .transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+        }
+      })
+      .on('mousemove', () => {
+        // use the viewportwidth to prevent the tooltip from going too far right
+        const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+        // use the mouse position for the entire page
+        const mouse = d3.mouse(d3.select('body').node());
+        let xpos = mouse[0] - 50;
+        // don't allow offscreen tooltip
+        if (xpos < 0) {
+          xpos = 0;
+        }
+        // prevent tooltip from rendering outside of viewport
+        if (xpos + 200 > viewPortWidth) {
+          xpos = viewPortWidth - 200;
+        }
+        const ypos = mouse[1] + 5;
+        tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
+      })
+      .on('mouseover', (d, i) => {
+        tooltip
+          .transition()
+          .duration(200)
+          .style('opacity', 0.9);
+        tooltip
+          .html(this.opt.tooltipContent[i])
+          .style('font-size', this.opt.tooltipFontSize)
+          .style('font-family', this.opt.tooltipFontType)
+          .style('left', d.x - 5 + 'px')
+          .style('top', d.y - 5 + 'px');
+      })
+      .on('mouseout', () => {
+        tooltip
+          .transition()
+          .duration(500)
+          .style('opacity', 0);
+      });
     // now labels
-    const textspot = svg.selectAll("text.toplabel")
-      .data(ahexbin(this.calculatedPoints));
+    const textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
 
     const dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
@@ -450,46 +455,50 @@ export class D3Wrapper {
     //console.log("DynamicValueFontSize: " + dynamicValueFontSize);
     textspot
       .enter()
-      .append("text")
-      .attr("class", "toplabel")
-      .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y; })
-      .attr("text-anchor", "middle")
-      .attr("font-family", this.opt.polystat.fontType)
-      .attr("font-size", dynamicLabelFontSize + "px")
-      .attr("fill", "black")
-      .text(function (_, i) {
+      .append('text')
+      .attr('class', 'toplabel')
+      .attr('x', d => {
+        return d.x;
+      })
+      .attr('y', d => {
+        return d.y;
+      })
+      .attr('text-anchor', 'middle')
+      .attr('font-family', this.opt.polystat.fontType)
+      .attr('font-size', dynamicLabelFontSize + 'px')
+      .attr('fill', 'black')
+      .text((_, i) => {
         const item = data[i];
         // check if property exist
-        if (!("showName" in item)) {
+        if (!('showName' in item)) {
           return item.name;
         }
         if (item.showName) {
           return item.name;
         } else {
-          return "";
+          return '';
         }
       });
 
     let frames = 0;
 
-
-    textspot.enter()
-      .append("text")
-      .attr("class", function(_, i) {
-        return "valueLabel" + i;
+    textspot
+      .enter()
+      .append('text')
+      .attr('class', (_, i) => {
+        return 'valueLabel' + i;
       })
-      .attr("x", function (d) {
+      .attr('x', d => {
         return d.x;
       })
-      .attr("y", function (d) {
-        return d.y + (activeLabelFontSize / 2 ) + 20; // offset by fontsize and 10px vertical padding
+      .attr('y', d => {
+        return d.y + activeLabelFontSize / 2 + 20; // offset by fontsize and 10px vertical padding
       })
-      .attr("text-anchor", "middle")
-      .attr("font-family", this.opt.polystat.fontType)
-      .attr("fill", "black")
-      .attr("font-size", dynamicLabelFontSize + "px")
-      .text( (_, i) => {
+      .attr('text-anchor', 'middle')
+      .attr('font-family', this.opt.polystat.fontType)
+      .attr('fill', 'black')
+      .attr('font-size', dynamicLabelFontSize + 'px')
+      .text((_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
         const dataLen = this.data.length;
@@ -510,24 +519,25 @@ export class D3Wrapper {
             }
             counter++;
           }
-        }// else {
-          // non-composites use the formatted size of the metric value
+        } // else {
+        // non-composites use the formatted size of the metric value
         //  longestDisplayedValueContent = this.formatValueContent(i, counter, this);
         //}
         //console.log("animated: longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
         counter = 0;
-        while ((content === null) && (counter < dataLen)) {
-          content = this.formatValueContent(i, (frames + counter), this);
+        while (content === null && counter < dataLen) {
+          content = this.formatValueContent(i, frames + counter, this);
           counter++;
         }
         dynamicValueFontSize = getTextSizeForWidthAndHeight(
           longestDisplayedValueContent,
-          "?px sans-serif",  // use sans-serif for sizing
-          shapeWidth,   // pad
+          '?px sans-serif', // use sans-serif for sizing
+          shapeWidth, // pad
           shapeHeight / 3,
           6,
-          this.maxFont);
+          this.maxFont
+        );
         //console.log("Calc: Dynamic Value Font Size: " + dynamicValueFontSize);
 
         // value should never be larger than the label
@@ -536,30 +546,30 @@ export class D3Wrapper {
         }
         //console.log("animated: dynamicLabelFontSize: " + dynamicLabelFontSize);
         //console.log("animated: dynamicValueFontSize: " + dynamicValueFontSize);
-        const valueTextLocation = svg.select("text.valueLabel" + i);
+        const valueTextLocation = svg.select('text.valueLabel' + i);
         // use the dynamic size for the value
-        valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
-        d3.interval( () => {
-          const valueTextLocation = svg.select("text.valueLabel" + i);
+        valueTextLocation.attr('font-size', dynamicValueFontSize + 'px');
+        d3.interval(() => {
+          const valueTextLocation = svg.select('text.valueLabel' + i);
           const compositeIndex = i;
-          valueTextLocation.text( () => {
+          valueTextLocation.text(() => {
             // animation/displaymode can modify what is being displayed
-            valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+            valueTextLocation.attr('font-size', dynamicValueFontSize + 'px');
 
             let content = null;
             let counter = 0;
             const dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
-            while ((content === null) && (counter < dataLen)) {
-              content = this.formatValueContent(compositeIndex, (frames + counter), this);
+            while (content === null && counter < dataLen) {
+              content = this.formatValueContent(compositeIndex, frames + counter, this);
               counter++;
             }
             if (content === null) {
-              return "";
+              return '';
             }
-            if (content === "") {
+            if (content === '') {
               // TODO: add custom content for composite ok state
-              content = "";
+              content = '';
               // set the font size to be the same as the label above
               //valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
             }
@@ -574,26 +584,26 @@ export class D3Wrapper {
   formatValueContent(i, frames, thisRef): string {
     const data = thisRef.data[i];
     // options can specify to not show the value
-    if (typeof(data) !== "undefined") {
-      if (data.hasOwnProperty("showValue")) {
+    if (typeof data !== 'undefined') {
+      if (data.hasOwnProperty('showValue')) {
         if (!data.showValue) {
-          return "";
+          return '';
         }
       }
-      if (!data.hasOwnProperty("valueFormatted")) {
-        return "";
+      if (!data.hasOwnProperty('valueFormatted')) {
+        return '';
       }
     } else {
       // no data, return nothing
-      return "";
+      return '';
     }
     switch (data.animateMode) {
-      case "all":
+      case 'all':
         break;
-      case "triggered":
+      case 'triggered':
         // return nothing if mode is triggered and the state is 0
         if (data.thresholdLevel < 1) {
-          return "";
+          return '';
         }
     }
     let content = data.valueFormatted;
@@ -601,11 +611,11 @@ export class D3Wrapper {
     if (!content) {
       return null;
     }
-    if ((data.prefix) && (data.prefix.length > 0)) {
-      content = data.prefix + " " + content;
+    if (data.prefix && data.prefix.length > 0) {
+      content = data.prefix + ' ' + content;
     }
-    if ((data.suffix) && (data.suffix.length > 0)) {
-      content = content + " " + data.suffix;
+    if (data.suffix && data.suffix.length > 0) {
+      content = content + ' ' + data.suffix;
     }
     // a composite will contain the "worst" case as the valueFormatted,
     // and will have all of the members of the composite included.
@@ -613,11 +623,11 @@ export class D3Wrapper {
     const len = data.members.length;
     if (len > 0) {
       let triggeredIndex = -1;
-      if (data.animateMode === "all") {
+      if (data.animateMode === 'all') {
         triggeredIndex = frames % len;
         //console.log("triggeredIndex from all mode: " + triggeredIndex);
       } else {
-        if (typeof(data.triggerCache) === "undefined") {
+        if (typeof data.triggerCache === 'undefined') {
           data.triggerCache = this.buildTriggerCache(data);
         }
         const z = frames % data.triggerCache.length;
@@ -626,22 +636,22 @@ export class D3Wrapper {
       }
       const aMember = data.members[triggeredIndex];
 
-      content = aMember.name + ": " + aMember.valueFormatted;
-      if ((aMember.prefix) && (aMember.prefix.length > 0)) {
-        content = aMember.prefix + " " + content;
+      content = aMember.name + ': ' + aMember.valueFormatted;
+      if (aMember.prefix && aMember.prefix.length > 0) {
+        content = aMember.prefix + ' ' + content;
       }
-      if ((aMember.suffix) && (aMember.suffix.length > 0)) {
-        content = content + " " + aMember.suffix;
+      if (aMember.suffix && aMember.suffix.length > 0) {
+        content = content + ' ' + aMember.suffix;
       }
     }
     // allow templating
     //
-    if ((content) && (content.length > 0)) {
+    if (content && content.length > 0) {
       try {
         const replacedContent = thisRef.templateSrv.replaceWithText(content);
         content = replacedContent;
       } catch (err) {
-        console.log("ERROR: template server threw error: " + err);
+        console.log('ERROR: template server threw error: ' + err);
       }
     }
     return content;
@@ -659,18 +669,13 @@ export class D3Wrapper {
       }
     }
     // sort it
-    triggerCache = _.orderBy(triggerCache, ["thresholdLevel", "value", "name"], ["desc", "desc", "asc"]);
+    triggerCache = _.orderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
     return triggerCache;
   }
 
   getAutoHexRadius(): number {
     //The maximum radius the hexagons can have to still fit the screen
-    const hexRadius = d3.min(
-      [
-        this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
-        this.opt.height / ((this.numRows + 1 / 3) * 1.5)
-      ]
-    );
+    const hexRadius = d3.min([this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)), this.opt.height / ((this.numRows + 1 / 3) * 1.5)]);
     return hexRadius;
   }
 
@@ -678,7 +683,7 @@ export class D3Wrapper {
     // The height of the total display will be
     // this.autoHeight = this.numRows * 3 / 2 * this.hexRadius + 1 / 2 * this.hexRadius;
     // which is the same as
-    this.autoHeight = (this.numRows + 1 / 3) * 3 / 2 * this.hexRadius;
+    this.autoHeight = (((this.numRows + 1 / 3) * 3) / 2) * this.hexRadius;
     this.autoHeight -= this.margin.top - this.margin.bottom;
     //console.log("autoheight = " + this.autoHeight);
     // The width of the total display will be
@@ -692,7 +697,7 @@ export class D3Wrapper {
   // Builds the placeholder polygons needed to represent each metric
   generatePoints(): any {
     const points = [];
-    if (typeof(this.data) === "undefined") {
+    if (typeof this.data === 'undefined') {
       return points;
     }
     let maxRowsUsed = 0;
@@ -703,16 +708,16 @@ export class D3Wrapper {
       //console.log("numRows infinity...");
       return points;
     }
-    if (this.numColumns === NaN) {
+    if (isNaN(this.numColumns)) {
       //console.log("numColumns NaN");
       return points;
     }
     for (let i = 0; i < this.numRows; i++) {
-      if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+      if (points.length < this.opt.displayLimit && points.length < this.data.length) {
         maxRowsUsed += 1;
         columnsUsed = 0;
         for (let j = 0; j < this.numColumns; j++) {
-          if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+          if (points.length < this.opt.displayLimit && points.length < this.data.length) {
             columnsUsed += 1;
             // track the most number of columns
             if (columnsUsed > maxColumnsUsed) {
@@ -729,5 +734,4 @@ export class D3Wrapper {
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
-
 }

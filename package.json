@@ -26,5 +26,11 @@
     "d3": "^5.7.0",
     "d3-hexbin": "^0.2.2"
   },
-  "homepage": "https://github.com/grafana/grafana-polystat-panel"
+    "grafana-sdk-mocks": "github:grafana/grafana-sdk-mocks",
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "grafana/app/core/utils/kbn": "<rootDir>/src/__mocks__/app/core/utils/kbn.ts"
+    }
+  }
 }

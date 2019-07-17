@@ -1,7 +1,7 @@
 /**
  * Convert model data to url params
  */
-import {PolystatModel} from "./polystatmodel";
+import { PolystatModel } from './polystatmodel';
 
 class ClickThroughTransformer {
   static cellName: RegExp = /\${__cell_name}/;
@@ -78,9 +78,6 @@ class ClickThroughTransformer {
     }
     return url;
   }
-
 }
 
-export {
-  ClickThroughTransformer
-};
+export { ClickThroughTransformer };

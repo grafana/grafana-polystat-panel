@@ -1,4 +1,3 @@
-
 /**
  * Tests for transforms
  */
@@ -23,9 +22,9 @@ class TimeSeries {
 // get this working...
 //import "app/core/time_series2";
 
-describe("Transforms", () => {
-    // Datasource sends timeseries
-  describe("With time series data", () => {
+describe('Transforms', () => {
+  // Datasource sends timeseries
+  describe('With time series data', () => {
     /*
     let xAxisSeries: TimeSeries;
     let yAxisSeries: TimeSeries;
@@ -56,33 +55,36 @@ describe("Transforms", () => {
   });
 
   // Datasource sends ElasticSearch results
-  describe("With elasticsearch data", () => {
-    it("Can convert to hexbin", () => {
+  describe('With elasticsearch data', () => {
+    it('Can convert to hexbin', () => {
       expect(true).toBeTruthy();
     });
   });
 
   // Datasource sends a table
-  describe("With Table data", () => {
-    const tableData = [{
-      columns: [
-        {
-          text: "Time",
-          type: "time"
-        }, {
-          text: "xitem"
-        }, {
-          text: "yitem"
-        }, {
-          text: "nonitem"
-        }
-      ],
-      rows: [
-        [1492759673649, 20, 15, "ignore2"]
-      ],
-      type: "table"
-    }];
-    it("Converts Table Data", () => {
+  describe('With Table data', () => {
+    const tableData = [
+      {
+        columns: [
+          {
+            text: 'Time',
+            type: 'time',
+          },
+          {
+            text: 'xitem',
+          },
+          {
+            text: 'yitem',
+          },
+          {
+            text: 'nonitem',
+          },
+        ],
+        rows: [[1492759673649, 20, 15, 'ignore2']],
+        type: 'table',
+      },
+    ];
+    it('Converts Table Data', () => {
       console.log(tableData);
     });
     /*
@@ -115,24 +117,25 @@ describe("Transforms", () => {
       expect(bins.series[0][1]).toEqual(15);
     });
     */
-});
+  });
 
   // Datasource sends JSON
-  describe("With JSON data", () => {
-    it("Can convert to hexbin", () => {
+  describe('With JSON data', () => {
+    it('Can convert to hexbin', () => {
       const rawData = [
         {
-          type: "docs",
+          type: 'docs',
           datapoints: [
-          {
-            timestamp: "time",
-            message: "message",
-            nested: {
-              level2: "level2-value"
-            }
-          }
-        ]
-      }];
+            {
+              timestamp: 'time',
+              message: 'message',
+              nested: {
+                level2: 'level2-value',
+              },
+            },
+          ],
+        },
+      ];
       console.log(rawData);
       expect(true).toBeTruthy();
     });

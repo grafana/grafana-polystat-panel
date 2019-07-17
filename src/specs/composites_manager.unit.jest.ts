@@ -1,10 +1,10 @@
-import {CompositesManager, MetricComposite} from "../composites_manager";
-import {getWorstSeries} from "../threshold_processor";
-import {PolystatModel} from "../polystatmodel";
-import {TimeSeries} from "./timeseries";
-jest.mock("app/core/utils/kbn");
+import { CompositesManager, MetricComposite } from '../composites_manager';
+import { getWorstSeries } from '../threshold_processor';
+import { PolystatModel } from '../polystatmodel';
+import { TimeSeries } from './timeseries';
+jest.mock('app/core/utils/kbn');
 
-describe("CompositesManager", () => {
+describe('CompositesManager', () => {
   let aModel: PolystatModel;
   let bModel: PolystatModel;
   let aSeries: TimeSeries;
@@ -15,101 +15,99 @@ describe("CompositesManager", () => {
     const time = new Date().getTime();
     aSeries = new TimeSeries({
       datapoints: [[200, time], [101, time + 1], [555, time + 2]],
-      alias: "A-series",
-      seriesName: "A-series",
-      operatorName: "current",
+      alias: 'A-series',
+      seriesName: 'A-series',
+      operatorName: 'current',
     });
     aSeries.stats = {
       avg: 285,
-      current: 200
+      current: 200,
     };
     aSeries.value = 200;
     aSeries.thresholds = [];
-    aSeries.thresholds.push( {
+    aSeries.thresholds.push({
       value: 180,
       state: 1,
-      color: "yellow",
+      color: 'yellow',
     });
-    aSeries.thresholds.push( {
+    aSeries.thresholds.push({
       value: 200,
       state: 2,
-      color: "red",
+      color: 'red',
     });
     bSeries = new TimeSeries({
       datapoints: [[100, time], [1, time + 1], [42, time + 2]],
-      alias: "B-series",
-      seriesName: "B-series",
-      operatorName: "current",
+      alias: 'B-series',
+      seriesName: 'B-series',
+      operatorName: 'current',
     });
     bSeries.stats = {
       avg: 68,
-      current: 100
+      current: 100,
     };
     bSeries.value = 100;
     bSeries.thresholds = [];
-    bSeries.thresholds.push( {
+    bSeries.thresholds.push({
       value: 50,
       state: 1,
-      color: "yellow",
+      color: 'yellow',
     });
-    bSeries.thresholds.push( {
+    bSeries.thresholds.push({
       value: 120,
       state: 2,
-      color: "red",
+      color: 'red',
     });
-    aModel = new PolystatModel("current", aSeries);
-    bModel = new PolystatModel("current", bSeries);
+    aModel = new PolystatModel('current', aSeries);
+    bModel = new PolystatModel('current', bSeries);
 
     const aComposite = new MetricComposite();
-    aComposite.compositeName = "composite1";
-    aComposite.clickThrough = "";
+    aComposite.compositeName = 'composite1';
+    aComposite.clickThrough = '';
     aComposite.enabled = true;
-    aComposite.members = [
-      {seriesName: "A-series"}
-    ];
+    aComposite.members = [{ seriesName: 'A-series' }];
     mgr = new CompositesManager(null, null, null, [aComposite]);
   });
 
-  describe("Adding new composite", () => {
-    it("returns 2 composites", () => {
+  describe('Adding new composite', () => {
+    it('returns 2 composites', () => {
       mgr.addMetricComposite();
       expect(mgr.metricComposites.length).toBe(2);
     });
   });
 
   /* needs real kbn, not a mock */
-  describe("Matching composites", () => {
-    it("does not find composite5", () => {
-      const found = mgr.matchComposite("composite5");
+  describe('Matching composites', () => {
+    it('does not find composite5', () => {
+      const found = mgr.matchComposite('composite5');
       expect(found).toBe(-1);
     });
-    it("finds composite1", () => {
-      const found = mgr.matchComposite("composite1");
+    it('finds composite1', () => {
+      const found = mgr.matchComposite('composite1');
       expect(found).toBe(0);
     });
   });
 
-  describe("Worst Series", () => {
-    it("returns A-series", () => {
-      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
-      expect(result.alias).toBe("A-series");
+  describe('Worst Series', () => {
+    it('returns A-series', () => {
+      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+      expect(result.alias).toBe('A-series');
     });
-    it("returns A-series when aSeries.value is 20", () => {
+    it('returns A-series when aSeries.value is 20', () => {
       aSeries.stats.current = 20;
-      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
-      expect(result.alias).toBe("A-series");
+      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+      expect(result.alias).toBe('A-series');
     });
-    it("returns B-series when aSeries.value is null", () => {
+    it('returns B-series when aSeries.value is null', () => {
       aSeries.value = null;
       aSeries.stats.current = null;
-      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
-      expect(result.alias).toBe("B-series");
+      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+      expect(result.alias).toBe('B-series');
     });
-    it("returns A-series when aSeries.value and bSeries.value are null", () => {
+    it('returns A-series when aSeries.value and bSeries.value are null', () => {
       aSeries.value = null;
       bSeries.value = null;
-      const result = getWorstSeries(aSeries, bSeries, "#ffffff");
-      expect(result.alias).toBe("A-series");
+      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+      expect(result.alias).toBe('A-series');
     });
 
     /* test for nodata
@@ -122,22 +120,22 @@ describe("CompositesManager", () => {
     */
   });
 
-  describe("Composite Colors", () => {
-    it("returns A-series", () => {
+  describe('Composite Colors', () => {
+    it('returns A-series', () => {
       //let data = mgr.applyComposites([aSeries, bSeries]);
       const data = mgr.applyComposites([aModel, bModel]);
       //console.log("data is: " + data);
       expect(data.length).toBe(3);
       //var str = JSON.stringify(data[2], null, 2); // spacing level = 2
       //console.log("data[2] is: " + str);
-      expect(data[2].color === "green");
+      expect(data[2].color === 'green');
       aModel.value = 181;
-      aModel.valueFormatted = "181";
+      aModel.valueFormatted = '181';
       //console.log("trying value 20");
       const datax = mgr.applyComposites([aModel, bModel]);
       //str = JSON.stringify(datax[2], null, 2);
       //console.log("datax[2] is: " + str);
-      expect(datax[2].color).toBe("green");
+      expect(datax[2].color).toBe('green');
     });
   });
 

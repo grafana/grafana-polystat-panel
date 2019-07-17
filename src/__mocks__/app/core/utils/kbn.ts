@@ -143,7 +143,7 @@ kbn.secondsToHhmmss = seconds => {
 };
 
 kbn.to_percent = (nr, outof) => {
-  return Math.floor(nr / outof * 10000) / 100 + '%';
+  return Math.floor((nr / outof) * 10000) / 100 + '%';
 };
 
 kbn.addslashes = str => {
@@ -214,11 +214,7 @@ kbn.interval_to_seconds = str => {
 };
 
 kbn.query_color_dot = (color, diameter) => {
-  return (
-    '<div class="icon-circle" style="' +
-    ['display:inline-block', 'color:' + color, 'font-size:' + diameter + 'px'].join(';') +
-    '"></div>'
-  );
+  return '<div class="icon-circle" style="' + ['display:inline-block', 'color:' + color, 'font-size:' + diameter + 'px'].join(';') + '"></div>';
 };
 
 kbn.slugifyForUrl = str => {
@@ -377,17 +373,7 @@ kbn.formatBuilders.simpleCountUnit = symbol => {
 
 // Dimensionless Units
 kbn.valueFormats.none = kbn.toFixed;
-kbn.valueFormats.short = kbn.formatBuilders.scaledUnits(1000, [
-  '',
-  ' K',
-  ' Mil',
-  ' Bil',
-  ' Tri',
-  ' Quadr',
-  ' Quint',
-  ' Sext',
-  ' Sept',
-]);
+kbn.valueFormats.short = kbn.formatBuilders.scaledUnits(1000, ['', ' K', ' Mil', ' Bil', ' Tri', ' Quadr', ' Quint', ' Sext', ' Sept']);
 kbn.valueFormats.dB = kbn.formatBuilders.fixedUnit('dB');
 
 kbn.valueFormats.percent = (size, decimals) => {
@@ -818,7 +804,7 @@ kbn.valueFormats.dtdurations = (size, decimals) => {
 
 kbn.valueFormats.dthms = (size, decimals) => {
   if (decimals) {
-    console.log("ignoring decimals");
+    console.log('ignoring decimals');
   }
   return kbn.secondsToHhmmss(size);
 };
@@ -1049,11 +1035,7 @@ kbn.getUnitFormats = () => {
     },
     {
       text: 'temperature',
-      submenu: [
-        { text: 'Celsius (°C)', value: 'celsius' },
-        { text: 'Farenheit (°F)', value: 'farenheit' },
-        { text: 'Kelvin (K)', value: 'kelvin' },
-      ],
+      submenu: [{ text: 'Celsius (°C)', value: 'celsius' }, { text: 'Farenheit (°F)', value: 'farenheit' }, { text: 'Kelvin (K)', value: 'kelvin' }],
     },
     {
       text: 'pressure',
@@ -1090,19 +1072,11 @@ kbn.getUnitFormats = () => {
     },
     {
       text: 'angle',
-      submenu: [
-        { text: 'Degrees (°)', value: 'degree' },
-        { text: 'Radians', value: 'radian' },
-        { text: 'Gradian', value: 'grad' },
-      ],
+      submenu: [{ text: 'Degrees (°)', value: 'degree' }, { text: 'Radians', value: 'radian' }, { text: 'Gradian', value: 'grad' }],
     },
     {
       text: 'acceleration',
-      submenu: [
-        { text: 'Meters/sec²', value: 'accMS2' },
-        { text: 'Feet/sec²', value: 'accFS2' },
-        { text: 'G unit', value: 'accG' },
-      ],
+      submenu: [{ text: 'Meters/sec²', value: 'accMS2' }, { text: 'Feet/sec²', value: 'accFS2' }, { text: 'G unit', value: 'accG' }],
     },
     {
       text: 'radiation',

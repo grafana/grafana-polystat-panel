@@ -16,11 +16,11 @@ export class Color {
   }
 
   asHex() {
-    return "#" + ((1 << 24) + (this.r << 16) + (this.g << 8) + this.b).toString(16).slice(1);
+    return '#' + ((1 << 24) + (this.r << 16) + (this.g << 8) + this.b).toString(16).slice(1);
   }
 
   asRGB() {
-    return "rgb(" + this.r + "," + this.g + "," + this.b + ")";
+    return 'rgb(' + this.r + ',' + this.g + ',' + this.b + ')';
   }
 
   blendWith(col, a) {
@@ -31,9 +31,9 @@ export class Color {
   }
 
   Mul(col, a) {
-    const r = Math.round(col.r / 255 * this.r * a);
-    const g = Math.round(col.g / 255 * this.g * a);
-    const b = Math.round(col.b / 255 * this.b * a);
+    const r = Math.round((col.r / 255) * this.r * a);
+    const g = Math.round((col.g / 255) * this.g * a);
+    const b = Math.round((col.b / 255) * this.b * a);
     return new Color(r, g, b);
   }
 
@@ -53,7 +53,7 @@ export class Color {
       const aColorStart = new Color(0, 0, 0);
       aColorStart.fromHex(data[i].color);
       const aColorEnd = aColorStart.Mul(purelight, 0.7);
-      gradients.push({start: aColorStart.asHex(), end: aColorEnd.asHex()});
+      gradients.push({ start: aColorStart.asHex(), end: aColorEnd.asHex() });
     }
     return gradients;
   }

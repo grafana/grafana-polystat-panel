@@ -3,36 +3,36 @@
 //
 
 export function flatten(target, opts): any {
-    opts = opts || {};
+  opts = opts || {};
 
-    let delimiter = opts.delimiter || ".";
-    let maxDepth = opts.maxDepth || 3;
-    let currentDepth = 1;
-    let output = {};
+  const delimiter = opts.delimiter || '.';
+  let maxDepth = opts.maxDepth || 3;
+  let currentDepth = 1;
+  const output = {};
 
-    function step(object, prev) {
-        Object.keys(object).forEach(function (key) {
-            let value = object[key];
-            let isarray = opts.safe && Array.isArray(value);
-            let type = Object.prototype.toString.call(value);
-            let isobject = type === "[object Object]";
+  function step(object, prev) {
+    Object.keys(object).forEach(key => {
+      const value = object[key];
+      const isarray = opts.safe && Array.isArray(value);
+      const type = Object.prototype.toString.call(value);
+      const isobject = type === '[object Object]';
 
-            let newKey = prev ? prev + delimiter + key : key;
+      const newKey = prev ? prev + delimiter + key : key;
 
-            if (!opts.maxDepth) {
-                maxDepth = currentDepth + 1;
-            }
+      if (!opts.maxDepth) {
+        maxDepth = currentDepth + 1;
+      }
 
-            if (!isarray && isobject && Object.keys(value).length && currentDepth < maxDepth) {
-                ++currentDepth;
-                return step(value, newKey);
-            }
+      if (!isarray && isobject && Object.keys(value).length && currentDepth < maxDepth) {
+        ++currentDepth;
+        return step(value, newKey);
+      }
 
-            output[newKey] = value;
-        });
-    }
+      output[newKey] = value;
+    });
+  }
 
-    step(target, null);
+  step(target, null);
 
-    return output;
+  return output;
 }
