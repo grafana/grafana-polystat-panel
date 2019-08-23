@@ -13,6 +13,7 @@ export declare class PolystatModel {
     color: string;
     clickThrough: string;
     operatorName: string;
+    newTabEnabled: boolean;
     sanitizedURL: string;
     sanitizeURLEnabled: boolean;
     showName: boolean;

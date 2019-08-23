@@ -121,6 +121,30 @@ describe("ClickThroughTransformer", () => {
 
   /* multiple substitutions */
   describe("Multiple Metrics: Reference multiple metric names", () => {
+    it("returns cell name multiple times", () => {
+      model[0].clickThrough = "/dashboard/test?orgId=1&var-CUSTOM0=${__cell_name}&var-CUSTOM1=${__cell_name}";
+      let url = model[0].clickThrough;
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
+      expect(result).toBe("/dashboard/test?orgId=1&var-CUSTOM0=A-series&var-CUSTOM1=A-series");
+    });
+  });
+  describe("Multiple Metrics: Reference multiple metric names", () => {
+    it("returns cell value multiple times", () => {
+      model[0].clickThrough = "/dashboard/test?orgId=1&var-CUSTOM0=${__cell}&var-CUSTOM1=${__cell}";
+      let url = model[0].clickThrough;
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
+      expect(result).toBe("/dashboard/test?orgId=1&var-CUSTOM0=285%20MB%2Fs&var-CUSTOM1=285%20MB%2Fs");
+    });
+  });
+  describe("Multiple Metrics: Reference multiple metric names", () => {
+    it("returns cell raw value multiple times", () => {
+      model[0].clickThrough = "/dashboard/test?orgId=1&var-CUSTOM0=${__cell:raw}&var-CUSTOM1=${__cell:raw}";
+      let url = model[0].clickThrough;
+      let result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
+      expect(result).toBe("/dashboard/test?orgId=1&var-CUSTOM0=285&var-CUSTOM1=285");
+    });
+  });
+  describe("Multiple Metrics: Reference multiple metric names", () => {
     it("returns cell names", () => {
       model[0].clickThrough = "/dashboard/test?orgId=1&var-CUSTOM0=${__cell_name_0}&var-CUSTOM1=${__cell_name_1}";
       let url = model[0].clickThrough;

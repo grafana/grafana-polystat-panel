@@ -6,6 +6,22 @@ import { getTextSizeForWidthAndHeight } from "./utils";
 import _ from "lodash";
 import { Color } from "./color";
 
+function resolveClickThroughURL(d : any) : string {
+  let clickThroughURL = d.clickThrough;
+  if (d.sanitizeURLEnabled === true && d.sanitizedURL.length > 0) {
+    clickThroughURL = d.sanitizedURL;
+  }
+  return clickThroughURL;
+}
+
+function resolveClickThroughTarget(d : any) : string {
+  let clickThroughTarget = "_self";
+  if (d.newTabEnabled === true) {
+    clickThroughTarget = "_blank";
+  }
+  return clickThroughTarget;
+}
+
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
@@ -68,7 +84,7 @@ export class D3Wrapper {
     }
     this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
-}
+  }
 
   update(data: any) {
     if (data) {
@@ -177,6 +193,7 @@ export class D3Wrapper {
       .attr("width", width + "px")
       .attr("height", height + "px")
       .append("svg")
+      .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
       .attr("width", width + "px")
       .attr("height", height + "px")
       .style("border", "0px solid white")
@@ -373,85 +390,71 @@ export class D3Wrapper {
       longestDisplayedValueContent = maxValue;
     }
 
-    // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
-    //.attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")rotate(90)"; })
-    // see http://bl.ocks.org/jasondavies/f5922ed4d0ac1ac2161f
-
-    //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-
-
     svg.selectAll(".hexagon")
-        .data(ahexbin(this.calculatedPoints))
-        .enter().append("path")
-        .attr("class", "hexagon")
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("d", customShape)
-        .attr("stroke", this.opt.polystat.polygonBorderColor)
-        .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
-        .style("fill", (_, i) => {
-          if (this.opt.polystat.gradientEnabled) {
-            // safari needs the location.href
-            return "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
-          } else {
-            return data[i].color;
-          }
-        })
-        .on("click", (_, i) => {
-          if (data[i].sanitizeURLEnabled === true) {
-            console.log("click detected sanitized enabled" + data[i].sanitizedURL);
-            if (data[i].sanitizedURL.length > 0) {
-              window.location.replace(data[i].sanitizedURL);
+      .data(ahexbin(this.calculatedPoints))
+      .enter()
+      .each((_, i, nodes) => {
+        let node = d3.select(nodes[i]);
+        let clickThroughURL = resolveClickThroughURL(data[i]);
+        if (clickThroughURL.length > 0) {
+          node = node.append("a")
+            .attr("target", resolveClickThroughTarget(data[i]))
+            .attr("xlink:href", clickThroughURL);
+        }
+        let fillColor = data[i].color;
+        if (this.opt.polystat.gradientEnabled) {
+          // safari needs the location.href
+          fillColor = "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
+        }
+        node.append("path")
+          .attr("class", "hexagon")
+          .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+          .attr("d", customShape)
+          .attr("stroke", this.opt.polystat.polygonBorderColor)
+          .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
+          .style("fill", fillColor)
+          .on("mousemove", () => {
+            // use the viewportwidth to prevent the tooltip from going too far right
+            let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            // use the mouse position for the entire page
+            var mouse = d3.mouse(d3.select("body").node());
+            var xpos = mouse[0] - 50;
+            // don't allow offscreen tooltip
+            if (xpos < 0) {
+              xpos = 0;
             }
-          } else {
-            console.log("click detected sanitized disabled" + data[i].clickThrough);
-            if (data[i].clickThrough.length > 0) {
-              window.location.replace(data[i].clickThrough);
+            // prevent tooltip from rendering outside of viewport
+            if ((xpos + 200) > viewPortWidth) {
+              xpos = viewPortWidth - 200;
             }
-          }
-        })
-        .on("mousemove", () => {
-          // use the viewportwidth to prevent the tooltip from going too far right
-          let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-          // use the mouse position for the entire page
-          var mouse = d3.mouse(d3.select("body").node());
-          var xpos = mouse[0] - 50;
-          // don't allow offscreen tooltip
-          if (xpos < 0) {
-            xpos = 0;
-          }
-          // prevent tooltip from rendering outside of viewport
-          if ((xpos + 200) > viewPortWidth) {
-            xpos = viewPortWidth - 200;
-          }
-          var ypos = mouse[1] + 5;
-          tooltip
-            .style("left", xpos + "px")
-            .style("top", ypos + "px");
-        })
-        .on("mouseover", (d, i) => {
-          tooltip.transition().duration(200).style("opacity", 0.9);
-          tooltip.html(this.opt.tooltipContent[i])
-            .style("font-size", this.opt.tooltipFontSize)
-            .style("font-family", this.opt.tooltipFontType)
-            .style("left", (d.x - 5) + "px")
-            .style("top", (d.y - 5) + "px");
+            var ypos = mouse[1] + 5;
+            tooltip
+              .style("left", xpos + "px")
+              .style("top", ypos + "px");
           })
-        .on("mouseout", () => {
-              tooltip
-                .transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+          .on("mouseover", (d) => {
+            tooltip.transition().duration(200).style("opacity", 0.9);
+            tooltip.html(this.opt.tooltipContent[i])
+              .style("font-size", this.opt.tooltipFontSize)
+              .style("font-family", this.opt.tooltipFontType)
+              .style("left", (d.x - 5) + "px")
+              .style("top", (d.y - 5) + "px");
+            })
+          .on("mouseout", () => {
+                tooltip
+                  .transition()
+                  .duration(500)
+                  .style("opacity", 0);
+          });
+      });
+
     // now labels
     var textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
-
     let dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
-    //console.log("DynamicLabelFontSize: " + dynamicLabelFontSize);
-    //console.log("DynamicValueFontSize: " + dynamicValueFontSize);
-    textspot
-      .enter()
+
+    textspot.enter()
       .append("text")
       .attr("class", "toplabel")
       .attr("x", function (d) { return d.x; })
@@ -460,6 +463,7 @@ export class D3Wrapper {
       .attr("font-family", this.opt.polystat.fontType)
       .attr("font-size", dynamicLabelFontSize + "px")
       .attr("fill", "black")
+      .style("pointer-events", "none")
       .text(function (_, i) {
         let item = data[i];
         // check if property exist
@@ -474,7 +478,6 @@ export class D3Wrapper {
       });
 
     var frames = 0;
-
 
     textspot.enter()
       .append("text")
@@ -491,6 +494,7 @@ export class D3Wrapper {
       .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
       .attr("font-size", dynamicLabelFontSize + "px")
+      .style("pointer-events", "none")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;

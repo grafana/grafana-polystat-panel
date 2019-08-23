@@ -35,7 +35,7 @@
               data-min-length=0 data-items=1000
               ng-blur="ctrl.overridesCtrl.metricNameChanged(override)">
           </div>
-        
+
           <div class="gf-form">
             <div class="gf-form">
               <label class="gf-form-label width-9">Prefix</label>
@@ -60,6 +60,9 @@
             <div class="gf-form">
               <gf-form-switch class="gf-form" label-class="width-5" switch-class="max-width-7" label="Sanitize" checked="override.sanitizeURLEnabled" on-change="ctrl.render()"></gf-form-switch>
             </div>
+            <div class="gf-form">
+              <gf-form-switch class="gf-form" label-class="width-9" switch-class="max-width-11" label="Open in new tab" checked="override.newTabEnabled" on-change="ctrl.render()"></gf-form-switch>
+            </div>
           </div>
         </div>
 
@@ -73,13 +76,13 @@
                 dropdown-typeahead-on-select="ctrl.overridesCtrl.setUnitFormat(override, $subItem)">
               </div>
             </div>
-          
+
             <div class="gf-form">
               <label class="gf-form-label">Decimals</label>
               <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="override.decimals" ng-change="ctrl.refresh()"
                 ng-model-onblur>
             </div>
-    
+
             <div class="gf-form">
               <label class="gf-form-label width-4">Stat</label>
               <div class="gf-form-select-wrapper width-12">
@@ -96,7 +99,7 @@
           </h5>
           <button class="btn btn-inverse width-10" ng-click="ctrl.overridesCtrl.addThreshold(override)">
             <i class="fa fa-plus"></i>&nbsp;Add Threshold
-          </button>    
+          </button>
         </div>
         <div class="gf-form" ng-repeat="threshold in override.thresholds">
           <div class="gf-form">

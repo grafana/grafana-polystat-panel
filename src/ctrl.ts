@@ -103,6 +103,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       columnAutoSize: true,
       displayLimit: 100,
       defaultClickThrough: "",
+      defaultClickThroughNewTab: false,
       defaultClickThroughSanitize: false,
       fontAutoScale: true,
       fontSize: 12,
@@ -405,6 +406,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       if (this.polystatData[index].clickThrough.length === 0) {
         // add the series alias as a var to the clickthroughurl
         this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
+        this.polystatData[index].newTabEnabled = this.panel.polystat.defaultClickThroughNewTab;
         this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
         this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }

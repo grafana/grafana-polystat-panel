@@ -8,6 +8,7 @@ export declare class MetricComposite {
     animateMode: string;
     thresholdLevel: number;
     clickThrough: string;
+    newTabEnabled: boolean;
     sanitizeURLEnabled: boolean;
     sanitizedURL: string;
     label: string;
@@ -26,6 +27,6 @@ export declare class CompositesManager {
     removeMetricFromComposite(composite: any, metric: any): void;
     matchComposite(pattern: any): number;
     applyComposites(data: any): any;
-    metricNameChanged(item: any): void;
+    metricNameChanged(metric: any): void;
     toggleHide(composite: any): void;
 }

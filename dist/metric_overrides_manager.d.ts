@@ -11,6 +11,7 @@ export declare class MetricOverride {
     prefix: string;
     suffix: string;
     clickThrough: string;
+    newTabEnabled: boolean;
     sanitizeURLEnabled: boolean;
     sanitizedURL: string;
 }
@@ -24,6 +25,7 @@ export declare class MetricOverridesManager {
     constructor($scope: any, templateSrv: any, $sanitize: any, metricOverrides: Array<MetricOverride>);
     addMetricOverride(): void;
     removeMetricOverride(override: any): void;
+    metricNameChanged(override: any): void;
     toggleHide(override: any): void;
     matchOverride(pattern: any): number;
     applyOverrides(data: any): void;
