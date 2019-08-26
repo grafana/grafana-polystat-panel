@@ -99,44 +99,29 @@ export class D3Wrapper {
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
-        // ratio of width to height
-        let ratio = this.opt.width / this.opt.height * .66;
-        this.numColumns = Math.ceil(squared * ratio);
+        this.numColumns = Math.ceil((this.opt.width / this.opt.height) * squared);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
-        // prefer evens and smaller
-        if ((this.numColumns % 2) && (this.numColumns > 2)) {
-          this.numColumns -= 1;
-        }
-        this.numRows = Math.floor(this.data.length / this.numColumns * ratio);
+        // Align rows count to computed columns count
+        this.numRows = Math.ceil(this.data.length / this.numColumns);
+        // always at least 1 row
         if (this.numRows < 1) {
           this.numRows = 1;
         }
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
       } else {
-        let ratio = this.opt.height / this.opt.width * .66;
-        this.numRows = Math.ceil(squared * ratio);
+        this.numRows = Math.ceil((this.opt.height / this.opt.width) * squared);
+        // always at least 1 row
         if (this.numRows < 1) {
           this.numRows = 1;
         }
-        // prefer evens and smaller
-        if ((this.numRows % 2) && (this.numRows > 2)) {
-          this.numRows -= 1;
-        }
-        this.numColumns = Math.floor(this.data.length / this.numRows * ratio);
+        // Align colunns count to computed rows count
+        this.numColumns = Math.ceil(this.data.length / this.numRows);
+        // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
-      }
-      if (this.data.length === 1) {
-        this.numColumns = 1;
-        this.numRows = 1;
-      }
-      // prefer more columns
-      if (this.data.length === this.numColumns) {
-        this.numRows = 1;
       }
     }
     //console.log("Calculated columns = " + this.numColumns);
@@ -365,7 +350,7 @@ export class D3Wrapper {
         "?px sans-serif", // use sans-serif for sizing
         shapeWidth,
         shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        10,
+        8,
         this.maxFont);
 
       //console.log("Calc: Estimated Label Font Size: " + estimateLabelFontSize);
@@ -384,7 +369,7 @@ export class D3Wrapper {
         "?px sans-serif", // use sans-serif for sizing
         shapeWidth,
         shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        10,
+        8,
         this.maxFont);
       activeValueFontSize = estimateValueFontSize;
       longestDisplayedValueContent = maxValue;
@@ -454,11 +439,21 @@ export class D3Wrapper {
     let dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
 
+    // Compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
+    // - Value text (bottom text) will be aligned (positively i.e. lower) exactly on the bottom of block:
+    //     (labelSize + valueSize) / 2
+    // - Label text (top text) will be aligned (negatively, i.e. higher) to top of the block minus its own size:
+    //     (labelSize + valueSize) / 2 - labelSize == (valueSize - labelSize) / 2
+    //
+    // NB: do not force padding in this formula, it will be rendered by the browser from CSS.
+    let bottomTextAlignement = (dynamicLabelFontSize + dynamicValueFontSize) / 2;
+    let topTextAlignment = -((dynamicValueFontSize - dynamicLabelFontSize) / 2); // aligned negatively
+
     textspot.enter()
       .append("text")
       .attr("class", "toplabel")
       .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y; })
+      .attr("y", function (d) { return d.y + topTextAlignment; })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
       .attr("font-size", dynamicLabelFontSize + "px")
@@ -484,12 +479,8 @@ export class D3Wrapper {
       .attr("class", function(_, i) {
         return "valueLabel" + i;
       })
-      .attr("x", function (d) {
-        return d.x;
-      })
-      .attr("y", function (d) {
-        return d.y + (activeLabelFontSize / 2 ) + 20; // offset by fontsize and 10px vertical padding
-      })
+      .attr("x", function (d) { return d.x; })
+      .attr("y", function (d) { return d.y + bottomTextAlignement; })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
@@ -671,10 +662,15 @@ export class D3Wrapper {
 
   getAutoHexRadius(): number {
     //The maximum radius the hexagons can have to still fit the screen
+    // With (long) radius being R:
+    // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
+    // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
+    let radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * ( 1 + 2 * this.numColumns));
+    let radiusFromHeight = (2 * this.opt.height) / (3 * this.numRows + 1);
     var hexRadius = d3.min(
       [
-        this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
-        this.opt.height / ((this.numRows + 1 / 3) * 1.5)
+        radiusFromWidth,
+        radiusFromHeight
       ]
     );
     return hexRadius;
