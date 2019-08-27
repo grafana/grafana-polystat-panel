@@ -100,10 +100,13 @@ export class D3Wrapper {
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
         this.numColumns = Math.ceil((this.opt.width / this.opt.height) * squared);
-        // always at least 1 column
+        // always at least 1 column and max. data.length columns
         if (this.numColumns < 1) {
           this.numColumns = 1;
+        } else if (this.numColumns > this.data.length) {
+          this.numColumns = this.data.length;
         }
+
         // Align rows count to computed columns count
         this.numRows = Math.ceil(this.data.length / this.numColumns);
         // always at least 1 row
@@ -112,9 +115,11 @@ export class D3Wrapper {
         }
       } else {
         this.numRows = Math.ceil((this.opt.height / this.opt.width) * squared);
-        // always at least 1 row
+        // always at least 1 row and max. data.length rows
         if (this.numRows < 1) {
           this.numRows = 1;
+        } else if (this.numRows > this.data.length) {
+          this.numRows = this.data.length;
         }
         // Align colunns count to computed rows count
         this.numColumns = Math.ceil(this.data.length / this.numRows);
@@ -123,6 +128,20 @@ export class D3Wrapper {
           this.numColumns = 1;
         }
       }
+    } else if (this.opt.rowAutoSize) {
+      // Align rows count to fixed columns count
+      this.numRows = Math.ceil(this.data.length / this.numColumns);
+      // always at least 1 row
+      if (this.numRows < 1) {
+        this.numRows = 1;
+      }
+    } else if (this.opt.columnAutoSize) {
+        // Align colunns count to fixed rows count
+        this.numColumns = Math.ceil(this.data.length / this.numRows);
+        // always at least 1 column
+        if (this.numColumns < 1) {
+          this.numColumns = 1;
+        }
     }
     //console.log("Calculated columns = " + this.numColumns);
     //console.log("Calculated rows = " + this.numRows);
@@ -715,11 +734,11 @@ export class D3Wrapper {
       return points;
     }
     for (var i = 0; i < this.numRows; i++) {
-      if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
         maxRowsUsed += 1;
         columnsUsed = 0;
         for (var j = 0; j < this.numColumns; j++) {
-          if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
             columnsUsed += 1;
             // track the most number of columns
             if (columnsUsed > maxColumnsUsed) {

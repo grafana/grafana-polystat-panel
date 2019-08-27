@@ -6,13 +6,13 @@
             <label class="gf-form-label width-8">Columns
           <tip>Number of columns</tip>
         </label>
-        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.columns" ng-blur="ctrl.validateColumnValue()"
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.columns" ng-blur="ctrl.validateColumnValue()" ng-disabled="ctrl.panel.polystat.columnAutoSize"
           placeholder="auto">
       </div>
       <gf-form-switch 
         class="gf-form" label-class="width-6" label="Auto Size"
         checked="ctrl.panel.polystat.columnAutoSize"
-        on-change="ctrl.render()">
+        on-change="ctrl.validateColumnValue()">
       </gf-form-switch>
     </div>
     <div class="gf-form-inline">
@@ -20,19 +20,19 @@
         <label class="gf-form-label width-8">Rows
           <tip>Number of rows</tip>
         </label>
-        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.rows" ng-blur="ctrl.validateRowValue()" placeholder="auto">
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.rows" ng-blur="ctrl.validateRowValue()" ng-disabled="ctrl.panel.polystat.rowAutoSize" placeholder="auto">
       </div>
       <gf-form-switch
         class="gf-form" label-class="width-6" label="Auto Size"
-        checked="ctrl.panel.polystat.rowAutoSize" on-change="ctrl.refresh()">
+        checked="ctrl.panel.polystat.rowAutoSize" on-change="ctrl.validateRowValue()">
       </gf-form-switch>
     </div>
     <div class="gf-form-inline">
       <div class="gf-form">
         <label class="gf-form-label width-8">Display Limit
-          <tip>Max number of metrics to display, 0 for no limit</tip>
+          <tip>Max number of metrics to display (0 for no limit, 100 default)</tip>
         </label>
-        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.displayLimit" ng-blur="ctrl.refresh()" placeholder="0">
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.displayLimit" ng-blur="ctrl.validateDisplayLimit()" placeholder="unlimited">
       </div>
     </div>
   </div>
@@ -44,9 +44,9 @@
         <label class="gf-form-label width-11">Polygon Size
           <tip>Radius of Polygon</tip>
         </label>
-        <input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.radius" ng-blur="ctrl.validateRadiusValue()" placeholder="20">
+        <input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.radius" ng-blur="ctrl.validateRadiusValue()" ng-disabled="ctrl.panel.polystat.radiusAutoSize" placeholder="auto">
         <gf-form-switch class="gf-form" label-class="width-4" label="Auto"
-          checked="ctrl.panel.polystat.radiusAutoSize" on-change="ctrl.refresh()">
+          checked="ctrl.panel.polystat.radiusAutoSize" on-change="ctrl.validateRadiusValue()">
         </gf-form-switch>
       </div>
     </div>
@@ -64,7 +64,7 @@
           <tip>Font Size</tip>
         </label>
         <div class="gf-form-select-wrapper width-6">
-          <select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.fontSizes"
+          <select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.fontSizes" ng-disabled="ctrl.panel.polystat.fontAutoScale"
               ng-change="ctrl.refresh()">
           </select>
         </div>

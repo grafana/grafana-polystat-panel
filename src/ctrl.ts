@@ -505,6 +505,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         let checkSpeed = parseInt(speed, 10);
         if (checkSpeed >= 500) {
           newSpeed = checkSpeed;
+        } else {
+          // Min speed is 500
+          newSpeed = 500;
         }
       }
     }
@@ -512,48 +515,82 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
-  validateColumnValue() {
-    let columns = this.panel.polystat.columns;
-    let newColumns = 1;
-    if (columns) {
-      if (!isNaN(parseInt(columns, 10))) {
-        let checkColumns = parseInt(columns, 10);
-        if (checkColumns > 0) {
-          newColumns = checkColumns;
+  validateDisplayLimit() {
+    let limit = this.panel.polystat.displayLimit;
+    let newLimit = 100;
+    if (limit === null) {
+      newLimit = 0;
+    } else {
+      if (!isNaN(parseInt(limit, 10))) {
+        let checkLimit = parseInt(limit, 10);
+        if (checkLimit >= 0) {
+          newLimit = checkLimit;
         }
       }
     }
-    this.panel.polystat.columns = newColumns;
+    // 0 means unlimited
+    if (newLimit === 0) {
+      this.panel.polystat.displayLimit = "";
+    } else {
+      this.panel.polystat.displayLimit = newLimit;
+    }
+    this.render();
+  }
+
+  validateColumnValue() {
+    if (this.panel.polystat.columnAutoSize) {
+      this.panel.polystat.columns = "";
+    } else {
+      let columns = this.panel.polystat.columns;
+      let newColumns = 1;
+      if (columns) {
+        if (!isNaN(parseInt(columns, 10))) {
+          let checkColumns = parseInt(columns, 10);
+          if (checkColumns > 0) {
+            newColumns = checkColumns;
+          }
+        }
+      }
+      this.panel.polystat.columns = newColumns;
+    }
     this.render();
   }
 
   validateRowValue() {
-    let rows = this.panel.polystat.rows;
-    let newRows = 1;
-    if (rows) {
-      if (!isNaN(parseInt(rows, 10))) {
-        let checkRows = parseInt(rows, 10);
-        if (checkRows > 0) {
-          newRows = checkRows;
+    if (this.panel.polystat.rowAutoSize) {
+      this.panel.polystat.rows = "";
+    } else {
+      let rows = this.panel.polystat.rows;
+      let newRows = 1;
+      if (rows) {
+        if (!isNaN(parseInt(rows, 10))) {
+          let checkRows = parseInt(rows, 10);
+          if (checkRows > 0) {
+            newRows = checkRows;
+          }
         }
       }
+      this.panel.polystat.rows = newRows;
     }
-    this.panel.polystat.rows = newRows;
     this.render();
   }
 
   validateRadiusValue() {
-    let radius = this.panel.polystat.radius;
-    let newRadius = 25;
-    if (radius !== null) {
-      if (!isNaN(parseInt(radius, 10))) {
-        let checkRadius = parseInt(radius, 10);
-        if (checkRadius > 0) {
-          newRadius = checkRadius;
+    if (this.panel.polystat.radiusAutoSize) {
+      this.panel.polystat.radius = "";
+    } else {
+      let radius = this.panel.polystat.radius;
+      let newRadius = 25;
+      if (radius !== null) {
+        if (!isNaN(parseInt(radius, 10))) {
+          let checkRadius = parseInt(radius, 10);
+          if (checkRadius > 0) {
+            newRadius = checkRadius;
+          }
         }
       }
+      this.panel.polystat.radius = newRadius;
     }
-    this.panel.polystat.radius = newRadius;
     this.render();
   }
 

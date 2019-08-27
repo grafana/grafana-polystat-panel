@@ -118,6 +118,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     seriesHandler(seriesData: any): any;
     invertColorOrder(): void;
     validateAnimationSpeed(): void;
+    validateDisplayLimit(): void;
     validateColumnValue(): void;
     validateRowValue(): void;
     validateRadiusValue(): void;
