@@ -438,16 +438,21 @@ export class D3Wrapper {
       .data(ahexbin(this.calculatedPoints));
     let dynamicLabelFontSize = activeLabelFontSize;
     let dynamicValueFontSize = activeValueFontSize;
+    // value should never be larger than the label
+    if (dynamicValueFontSize > dynamicLabelFontSize) {
+      dynamicValueFontSize = dynamicLabelFontSize;
+    }
+    // compute text block size: labelSize + valueSize + 25% total padding (25% * 2 lines == 1/2 line)
+    // NB: below we use labelSize instead of valueSize to compute the padding (valuSize value can be dynamic and is <= labelSize)
+    let textBlockSize = (2 * dynamicLabelFontSize) * 1.25;
 
-    // Compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
+    // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
     // - Value text (bottom text) will be aligned (positively i.e. lower) exactly on the bottom of block:
-    //     (labelSize + valueSize) / 2
+    //     blockSize / 2
     // - Label text (top text) will be aligned (negatively, i.e. higher) to top of the block minus its own size:
-    //     (labelSize + valueSize) / 2 - labelSize == (valueSize - labelSize) / 2
-    //
-    // NB: do not force padding in this formula, it will be rendered by the browser from CSS.
-    let bottomTextAlignement = (dynamicLabelFontSize + dynamicValueFontSize) / 2;
-    let topTextAlignment = -((dynamicValueFontSize - dynamicLabelFontSize) / 2); // aligned negatively
+    //     blockSize / 2 - labelSize
+    let bottomTextAlignement = textBlockSize / 2;
+    let topTextAlignment = -(textBlockSize / 2 - dynamicLabelFontSize); // aligned negatively
 
     textspot.enter()
       .append("text")
@@ -484,7 +489,7 @@ export class D3Wrapper {
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
-      .attr("font-size", dynamicLabelFontSize + "px")
+      .attr("font-size", dynamicValueFontSize + "px")
       .style("pointer-events", "none")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
