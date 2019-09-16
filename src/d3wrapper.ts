@@ -22,6 +22,16 @@ function resolveClickThroughTarget(d : any) : string {
   return clickThroughTarget;
 }
 
+function showName(item: any): boolean {
+  // check if property exist and check its value
+  return (!("showName" in item) || item.showName);
+}
+
+function showValue(item: any): boolean {
+  // check if property exist and check its value
+  return (!("showValue" in item) || item.showValue);
+}
+
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
@@ -33,8 +43,6 @@ export class D3Wrapper {
   calculatedPoints: any;
   hexRadius: number;
   autoHexRadius : number;
-  autoWidth : number;
-  autoHeight: number;
   numColumns: number;
   numRows: number;
   margin: {
@@ -43,6 +51,7 @@ export class D3Wrapper {
     bottom : number,
     left : number,
   };
+  minFont = 8;
   maxFont = 240;
   purelight: any;
 
@@ -82,8 +91,17 @@ export class D3Wrapper {
       this.hexRadius = this.getAutoHexRadius(); // || 50;
       this.autoHexRadius = this.getAutoHexRadius(); //|| 50;
     }
-    this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
+  }
+
+  computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
+    return getTextSizeForWidthAndHeight(
+      text,
+      "?px sans-serif", // use sans-serif for sizing
+      textAreaWidth,
+      textAreaHeight / linesToDisplay, // multiple lines of text
+      this.minFont,
+      this.maxFont);
   }
 
   update(data: any) {
@@ -152,7 +170,6 @@ export class D3Wrapper {
       this.autoHexRadius = this.getAutoHexRadius();
       //console.log("autoHexRadius:" + this.autoHexRadius);
     }
-    this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
     var width = this.opt.width;
@@ -165,25 +182,24 @@ export class D3Wrapper {
       .extent([[0, 0], [width, height]]);
 
     // d3 calculates the radius for x and y separately based on the value passed in
-    var thirdPi = Math.PI / 3;
-    let diameterX = this.autoHexRadius * 2 * Math.sin(thirdPi);
-    let diameterY = this.autoHexRadius * 1.5;
-    let radiusX = diameterX / 2;
+    let diameterX = this.autoHexRadius * Math.sqrt(3);
+    let diameterY = this.autoHexRadius * 2;
     let renderWidth = this.maxColumnsUsed * diameterX;
-    // renderHeight is calculated based on the #rows used, and
-    // the "space" taken by the hexagons interleaved
-    // space taken is 2/3 of diameterY * # rows
-    let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
-    // difference of width and renderwidth is our play room, split that in half
-    // offset is from center of hexagon, not from the edge
-    let xoffset = (width - renderWidth + radiusX) / 2;
-    // if there is just one column and one row, center it
-    if (this.numRows === 1) {
-      renderHeight = diameterY + (diameterY * .33);
-      xoffset = ((width - renderWidth) / 2) + radiusX;
+    // Even rows are shifted by an x-radius (half x-diameter) on the right
+    // Check if at least one even row is full (first one is row 2)
+    if (this.maxRowsUsed >= 2 && this.data.length >= (2 * this.maxColumnsUsed)) {
+      renderWidth += (diameterX / 2);
     }
-    // y diameter of hexagon is larger than x diameter
-    let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
+    // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
+    // At then end we need to add the pointy bottom of the last row (1/4 of the height)
+    let renderHeight = ((this.maxRowsUsed * 0.75) + 0.25) * diameterY;
+    // Translate the whole hexagons graph to have it cenetered in the drawing area
+    // - center the rendered area with the drawing area, translate by:
+    //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
+    // - go to the center of the first hexagon, translate by:
+    //     (diameterX / 2, diameterY / 2)
+    let xoffset = ((width - renderWidth + diameterX) / 2);
+    let yoffset = ((height - renderHeight + diameterY) / 2);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
@@ -298,9 +314,9 @@ export class D3Wrapper {
         .attr("stop-color", "#757F9A"); // dark grey
 
     let customShape = null;
-    // this is used to calculate the fontsize
-    let shapeWidth = diameterX;
-    let shapeHeight = diameterY;
+    // compute text area size (used to calculate the fontsize)
+    let textAreaWidth = diameterX;
+    let textAreaHeight = (diameterY / 2); // Top and bottom of hexagon are not used
     // symbols use the area for their size
     let innerArea = diameterX * diameterY;
     // use the smaller of diameterX or Y
@@ -314,7 +330,6 @@ export class D3Wrapper {
     switch (this.opt.polystat.shape) {
       case "hexagon_pointed_top":
         customShape = ahexbin.hexagon(this.autoHexRadius);
-        shapeWidth = this.autoHexRadius * 2;
         break;
       case "hexagon_flat_top":
         // TODO: use pointed for now
@@ -351,8 +366,8 @@ export class D3Wrapper {
     let activeLabelFontSize = this.opt.polystat.fontSize;
     // font sizes are independent for label and values
     let activeValueFontSize = this.opt.polystat.fontSize;
-    let longestDisplayedValueContent = "";
 
+    // compute font size if autoscale is activated
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
       let maxLabel = "";
@@ -361,38 +376,45 @@ export class D3Wrapper {
           maxLabel = this.data[i].name;
         }
       }
-      // estimate how big of a font can be used
-      // Two lines of text must fit with vertical spacing included
-      // if it is too small, hide everything
-      let estimateLabelFontSize = getTextSizeForWidthAndHeight(
-        maxLabel,
-        "?px sans-serif", // use sans-serif for sizing
-        shapeWidth,
-        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        8,
-        this.maxFont);
-
-      //console.log("Calc: Estimated Label Font Size: " + estimateLabelFontSize);
-      activeLabelFontSize = estimateLabelFontSize;
-      // same for the value
+      // same for the value, also check for submetrics size in case of composite
       let maxValue = "";
       for (let i = 0; i < this.data.length; i++) {
         //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
           maxValue = this.data[i].valueFormatted;
         }
+        let submetricCount = this.data[i].members.length;
+        if (submetricCount > 0) {
+          let counter = 0;
+          while (counter < submetricCount) {
+            let checkContent = this.formatValueContent(i, counter, this);
+            //console.log("Checking len: \"" + checkContent + "\" vs: \"" + maxValue + "\"");
+            if (checkContent && checkContent.length > maxValue.length) {
+              maxValue = checkContent;
+            }
+            counter++;
+          }
+        }
       }
-      //console.log("Max Value: " + maxValue);
-      let estimateValueFontSize = getTextSizeForWidthAndHeight(
-        maxValue,
-        "?px sans-serif", // use sans-serif for sizing
-        shapeWidth,
-        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        8,
-        this.maxFont);
-      activeValueFontSize = estimateValueFontSize;
-      longestDisplayedValueContent = maxValue;
+      // estimate how big of a font can be used
+      // Two lines of text must fit with vertical spacing included
+      // if it is too small, hide everything
+      activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
+      activeValueFontSize = this.computeTextFontSize(maxValue, 2, textAreaWidth, textAreaHeight);
+
+      // value should never be larger than the label
+      if (activeValueFontSize > activeLabelFontSize) {
+        activeValueFontSize = activeLabelFontSize;
+      }
     }
+
+    // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
+    // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
+    // - Label text (top text) will be aligned (negatively, i.e. higher) in the middle of the top half of the text area
+    let valueWithLabelTextAlignment = ((textAreaHeight / 2) / 2) + (activeValueFontSize / 2);
+    let valueOnlyTextAlignment = (activeValueFontSize / 2);
+    let labelWithValueTextAlignment = -((textAreaHeight / 2) / 2) + (activeLabelFontSize / 2);
+    let labelOnlyTextAlignment = (activeLabelFontSize / 2);
 
     svg.selectAll(".hexagon")
       .data(ahexbin(this.calculatedPoints))
@@ -455,45 +477,30 @@ export class D3Wrapper {
     // now labels
     var textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
-    let dynamicLabelFontSize = activeLabelFontSize;
-    let dynamicValueFontSize = activeValueFontSize;
-    // value should never be larger than the label
-    if (dynamicValueFontSize > dynamicLabelFontSize) {
-      dynamicValueFontSize = dynamicLabelFontSize;
-    }
-    // compute text block size: labelSize + valueSize + 25% total padding (25% * 2 lines == 1/2 line)
-    // NB: below we use labelSize instead of valueSize to compute the padding (valuSize value can be dynamic and is <= labelSize)
-    let textBlockSize = (2 * dynamicLabelFontSize) * 1.25;
-
-    // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
-    // - Value text (bottom text) will be aligned (positively i.e. lower) exactly on the bottom of block:
-    //     blockSize / 2
-    // - Label text (top text) will be aligned (negatively, i.e. higher) to top of the block minus its own size:
-    //     blockSize / 2 - labelSize
-    let bottomTextAlignement = textBlockSize / 2;
-    let topTextAlignment = -(textBlockSize / 2 - dynamicLabelFontSize); // aligned negatively
 
     textspot.enter()
       .append("text")
       .attr("class", "toplabel")
       .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y + topTextAlignment; })
+      .attr("y", function (d, i) {
+        let item = data[i];
+        let alignment = labelOnlyTextAlignment;
+        if (showValue(item) && item.value && activeValueFontSize) {
+          alignment = labelWithValueTextAlignment;
+        }
+        return d.y + alignment;
+      })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
-      .attr("font-size", dynamicLabelFontSize + "px")
+      .attr("font-size", activeLabelFontSize + "px")
       .attr("fill", "black")
       .style("pointer-events", "none")
       .text(function (_, i) {
         let item = data[i];
-        // check if property exist
-        if (!("showName" in item)) {
+        if (showName(item)) {
           return item.name;
         }
-        if (item.showName) {
-          return item.name;
-        } else {
-          return "";
-        }
+        return "";
       });
 
     var frames = 0;
@@ -504,68 +511,37 @@ export class D3Wrapper {
         return "valueLabel" + i;
       })
       .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y + bottomTextAlignement; })
+      .attr("y", function (d, i) {
+        let item = data[i];
+        let alignment = valueOnlyTextAlignment;
+        if (showName(item) && item.name && activeLabelFontSize) {
+          alignment = valueWithLabelTextAlignment;
+        }
+        return d.y + alignment;
+      })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
-      .attr("font-size", dynamicValueFontSize + "px")
+      .attr("font-size", activeValueFontSize + "px")
       .style("pointer-events", "none")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
         let dataLen = this.data.length;
-        // search for a value but not more than number of data items
-        // need to find the longest content string generated to determine the
-        // dynamic font size
-        // this always starts from frame 0, look through every metric including composite members for the longest text possible
-        // get the total count of metrics (with composite members), and loop through
-        let submetricCount = this.data[i].members.length;
-        //let longestDisplayedValueContent = "";
-        if (submetricCount > 0) {
-          while (counter < submetricCount) {
-            let checkContent = this.formatValueContent(i, counter, this);
-            if (checkContent) {
-              if (checkContent.length > longestDisplayedValueContent.length) {
-                longestDisplayedValueContent = checkContent;
-              }
-            }
-            counter++;
-          }
-        }// else {
-          // non-composites use the formatted size of the metric value
-        //  longestDisplayedValueContent = this.formatValueContent(i, counter, this);
-        //}
-        //console.log("animated: longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
-        counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        dynamicValueFontSize = getTextSizeForWidthAndHeight(
-          longestDisplayedValueContent,
-          "?px sans-serif",  // use sans-serif for sizing
-          shapeWidth,   // pad
-          shapeHeight / 3,
-          6,
-          this.maxFont);
-        //console.log("Calc: Dynamic Value Font Size: " + dynamicValueFontSize);
-
-        // value should never be larger than the label
-        if (dynamicValueFontSize > dynamicLabelFontSize) {
-          dynamicValueFontSize = dynamicLabelFontSize;
-        }
-        //console.log("animated: dynamicLabelFontSize: " + dynamicLabelFontSize);
-        //console.log("animated: dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
         // use the dynamic size for the value
-        valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+        valueTextLocation.attr("font-size", activeValueFontSize + "px");
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
           valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
-            valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+            valueTextLocation.attr("font-size", activeValueFontSize + "px");
 
             let content = null;
             let counter = 0;
@@ -698,21 +674,6 @@ export class D3Wrapper {
       ]
     );
     return hexRadius;
-  }
-
-  calculateSVGSize() {
-    // The height of the total display will be
-    // this.autoHeight = this.numRows * 3 / 2 * this.hexRadius + 1 / 2 * this.hexRadius;
-    // which is the same as
-    this.autoHeight = (this.numRows + 1 / 3) * 3 / 2 * this.hexRadius;
-    this.autoHeight -= this.margin.top - this.margin.bottom;
-    //console.log("autoheight = " + this.autoHeight);
-    // The width of the total display will be
-    // this.autoWidth = this.numColumns * Math.sqrt(3) * this.hexRadius + Math.sqrt(3) / 2 * this.hexRadius;
-    // which is the same as
-    this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
-    this.autoWidth -= this.margin.left - this.margin.right;
-    //console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
   }
 
   // Builds the placeholder polygons needed to represent each metric

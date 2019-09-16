@@ -9,8 +9,6 @@ export declare class D3Wrapper {
     calculatedPoints: any;
     hexRadius: number;
     autoHexRadius: number;
-    autoWidth: number;
-    autoHeight: number;
     numColumns: number;
     numRows: number;
     margin: {
@@ -19,14 +17,15 @@ export declare class D3Wrapper {
         bottom: number;
         left: number;
     };
+    minFont: number;
     maxFont: number;
     purelight: any;
     constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any);
+    computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number;
     update(data: any): void;
     draw(): void;
     formatValueContent(i: any, frames: any, thisRef: any): string;
     buildTriggerCache(item: any): any[];
     getAutoHexRadius(): number;
-    calculateSVGSize(): void;
     generatePoints(): any;
 }
