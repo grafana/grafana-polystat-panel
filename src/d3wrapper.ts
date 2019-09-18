@@ -484,7 +484,7 @@ export class D3Wrapper {
       .attr("y", function (d, i) {
         let item = data[i];
         let alignment = labelOnlyTextAlignment;
-        if (showValue(item) && item.value && activeValueFontSize) {
+        if (showValue(item)) {
           alignment = labelWithValueTextAlignment;
         }
         return d.y + alignment;
@@ -513,7 +513,7 @@ export class D3Wrapper {
       .attr("y", function (d, i) {
         let item = data[i];
         let alignment = valueOnlyTextAlignment;
-        if (showName(item) && item.name && activeLabelFontSize) {
+        if (showName(item)) {
           alignment = valueWithLabelTextAlignment;
         }
         return d.y + alignment;
