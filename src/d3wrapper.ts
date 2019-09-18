@@ -334,7 +334,6 @@ export class D3Wrapper {
       case "hexagon_flat_top":
         // TODO: use pointed for now
         customShape = ahexbin.hexagon(this.autoHexRadius);
-        shapeWidth = this.autoHexRadius * 2;
         break;
       case "circle":
         customShape = symbol.type(d3.symbolCircle);
