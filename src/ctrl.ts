@@ -137,6 +137,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   };
 
 
+  /** @ngInject */
   constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
