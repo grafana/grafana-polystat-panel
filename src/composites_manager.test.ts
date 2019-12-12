@@ -2,7 +2,8 @@ import { CompositesManager, MetricComposite } from './composites_manager';
 import { getWorstSeries } from './threshold_processor';
 import { PolystatModel } from './polystatmodel';
 import { TimeSeries } from './specs/timeseries';
-jest.mock('app/core/utils/kbn');
+
+jest.mock('grafana/app/core/utils/kbn');
 
 describe('CompositesManager', () => {
   let aModel: PolystatModel;
@@ -85,7 +86,7 @@ describe('CompositesManager', () => {
 
   /* needs real kbn, not a mock */
   describe('Matching composites', () => {
-    it.skip('does not find composite5', () => {
+    it.only('does not find composite5', () => {
       const found = mgr.matchComposite('composite5');
       expect(found).toBe(-1);
     });

@@ -3,6 +3,7 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { PolystatModel } from './polystatmodel';
 import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
+import { stringToJsRegex } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
@@ -95,7 +96,7 @@ export class CompositesManager {
   matchComposite(pattern): number {
     for (let index = 0; index < this.metricComposites.length; index++) {
       const aComposite = this.metricComposites[index];
-      const regex = kbn.stringToJsRegex(aComposite.compositeName);
+      const regex = stringToJsRegex(aComposite.compositeName);
       const matches = pattern.match(regex);
       if (matches && matches.length > 0 && aComposite.enabled) {
         return index;
@@ -123,7 +124,7 @@ export class CompositesManager {
           if (typeof aMetric.seriesName === 'undefined') {
             continue;
           }
-          const regex = kbn.stringToJsRegex(aMetric.seriesName);
+          const regex = stringToJsRegex(aMetric.seriesName);
           const matches = data[index].name.match(regex);
           if (matches && matches.length > 0) {
             const seriesItem = data[index];

@@ -5,7 +5,7 @@ import { MetricOverridesManager } from './metric_overrides_manager';
 import { PolystatModel } from './polystatmodel';
 
 import { TimeSeries } from './specs/timeseries';
-jest.mock('app/core/utils/kbn');
+jest.mock('grafana/app/core/utils/kbn');
 
 describe('MetricOverridesManager', () => {
   let model: PolystatModel;

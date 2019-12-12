@@ -3,6 +3,7 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { RGBToHex } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
+import { stringToJsRegex } from '@grafana/data';
 
 export class MetricOverride {
   label: string;
@@ -101,7 +102,7 @@ export class MetricOverridesManager {
   matchOverride(pattern): number {
     for (let index = 0; index < this.metricOverrides.length; index++) {
       const anOverride = this.metricOverrides[index];
-      const regex = kbn.stringToJsRegex(anOverride.metricName);
+      const regex = stringToJsRegex(anOverride.metricName);
       const matches = pattern.match(regex);
       if (matches && matches.length > 0 && anOverride.enabled) {
         return index;
