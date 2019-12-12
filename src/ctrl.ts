@@ -132,7 +132,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   panelDefaults = {
     savedComposites: [],
-    savedOverrides: Array<MetricOverride>(),
+    savedOverrides: [], // Array<MetricOverride>(),
     colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a'],
     polystat: {
       animationSpeed: 2500,
@@ -204,13 +204,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   onInitEditMode() {
     // determine the path to this plugin base on the name found in panel.type
-    var thisPanelPath = 'public/plugins/' + this.panel.type + '/';
+    const thisPanelPath = 'public/plugins/' + this.panel.type + '/';
     // add the relative path to the partial
-    var optionsPath = thisPanelPath + 'partials/editor.options.html';
+    const optionsPath = thisPanelPath + 'partials/editor.options.html';
     this.addEditorTab('Options', optionsPath, 2);
-    var overridesPath = thisPanelPath + 'partials/editor.overrides.html';
+    const overridesPath = thisPanelPath + 'partials/editor.overrides.html';
     this.addEditorTab('Overrides', overridesPath, 3);
-    var compositesPath = thisPanelPath + 'partials/editor.composites.html';
+    const compositesPath = thisPanelPath + 'partials/editor.composites.html';
     this.addEditorTab('Composites', compositesPath, 4);
     // disabled for now
     //var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
@@ -229,11 +229,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   // determine the width of a panel by the span and viewport
   // the link element object can be used to get the width more reliably
   getPanelWidthFailsafe() {
-    var trueWidth = 0;
+    let trueWidth = 0;
     if (typeof this.panel.gridPos !== 'undefined') {
       // 24 slots is fullscreen, get the viewport and divide to approximate the width
-      let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      let pixelsPerSlot = viewPortWidth / 24;
+      const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const pixelsPerSlot = viewPortWidth / 24;
       trueWidth = Math.round(this.panel.gridPos.w * pixelsPerSlot);
       return trueWidth;
     }
@@ -249,9 +249,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
     } else {
       // v4 and previous used fixed spans
-      var viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
       // get the pixels of a span
-      var pixelsPerSpan = viewPortWidth / 12;
+      const pixelsPerSpan = viewPortWidth / 12;
       // multiply num spans by pixelsPerSpan
       trueWidth = Math.round(this.panel.span * pixelsPerSpan);
     }
@@ -260,14 +260,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   getPanelHeight() {
     // panel can have a fixed height set via "General" tab in panel editor
-    var tmpPanelHeight = this.panel.height;
+    let tmpPanelHeight = this.panel.height;
     if (typeof tmpPanelHeight === 'undefined' || tmpPanelHeight === '') {
       // grafana also supplies the height, try to use that if the panel does not have a height
       tmpPanelHeight = String(this.height);
       // v4 and earlier define this height, detect span for pre-v5
       if (typeof this.panel.span !== 'undefined') {
         // if there is no header, adjust height to use all space available
-        var panelTitleOffset = 20;
+        let panelTitleOffset = 20;
         if (this.panel.title !== '') {
           panelTitleOffset = 42;
         }
@@ -285,7 +285,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // replace px
     tmpPanelHeight = tmpPanelHeight.replace('px', '');
     // convert to numeric value
-    var actualHeight = parseInt(tmpPanelHeight, 10);
+    const actualHeight = parseInt(tmpPanelHeight, 10);
     return actualHeight;
   }
 
@@ -308,9 +308,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       this.panelWidth = this.getPanelWidthFailsafe();
     }
     this.panelHeight = this.getPanelHeight();
-    var margin = { top: 0, right: 0, bottom: 0, left: 0 };
-    var width = this.panelWidth;
-    var height = this.panelHeight;
+    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+    const width = this.panelWidth;
+    const height = this.panelHeight;
 
     margin.top = 0;
     // pre-v5, with title, set top margin to at least 7px
@@ -327,7 +327,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       this.panel.polystat.polygonBorderColor = 'black';
     }
 
-    var opt = {
+    const opt = {
       width: width,
       height: height,
       radius: this.panel.polystat.radius,
@@ -351,7 +351,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   removeValueMap(map) {
-    var index = _.indexOf(this.panel.valueMaps, map);
+    const index = _.indexOf(this.panel.valueMaps, map);
     this.panel.valueMaps.splice(index, 1);
     this.render();
   }
@@ -361,7 +361,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   removeRangeMap(rangeMap) {
-    var index = _.indexOf(this.panel.rangeMaps, rangeMap);
+    const index = _.indexOf(this.panel.rangeMaps, rangeMap);
     this.panel.rangeMaps.splice(index, 1);
     this.render();
   }
@@ -377,9 +377,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (!attrs) {
       return;
     }
-    var panelByClass = elem.find('.grafana-d3-polystat');
+    const panelByClass = elem.find('.grafana-d3-polystat');
     panelByClass.append('<div style="width: 100%; height: 100%;" id="' + ctrl.containerDivId + '"></div>');
-    var container = panelByClass[0].childNodes[0];
+    const container = panelByClass[0].childNodes[0];
     ctrl.setContainer(container);
 
     elem = elem.find('.grafana-d3-polystat');
@@ -417,8 +417,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
-        let aSeries = this.series[index];
-        let converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
+        const aSeries = this.series[index];
+        const converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
         this.polystatData.push(converted);
       }
     }
@@ -449,9 +449,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   applyGlobalFormatting(data: any) {
     for (let index = 0; index < data.length; index++) {
-      var formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+      const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
       if (formatFunc) {
-        let result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+        const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
         data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
         data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
       }
@@ -461,12 +461,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   filterByGlobalDisplayMode(data: any) {
-    let filteredMetrics = new Array<number>();
-    let compositeMetrics = new Array<PolystatModel>();
+    const filteredMetrics = new Array<number>();
+    const compositeMetrics = new Array<PolystatModel>();
     if (this.panel.polystat.globalDisplayMode !== 'all') {
-      let dataLen = data.length;
+      const dataLen = data.length;
       for (let i = 0; i < dataLen; i++) {
-        let item = data[i];
+        const item = data[i];
         // keep if composite
         if (item.isComposite) {
           compositeMetrics.push(item);
@@ -499,7 +499,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   onDataReceived(dataList) {
     this.series = dataList.map(this.seriesHandler.bind(this));
-    var data = {
+    const data = {
       value: 0,
       valueFormatted: 0,
       valueRounded: 0,
@@ -510,7 +510,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   seriesHandler(seriesData) {
-    var series = new TimeSeries({
+    const series = new TimeSeries({
       datapoints: seriesData.datapoints,
       alias: seriesData.target,
     });
@@ -519,7 +519,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   invertColorOrder() {
-    var tmp = this.panel.colors[0];
+    const tmp = this.panel.colors[0];
     this.panel.colors[0] = this.panel.colors[2];
     this.panel.colors[2] = tmp;
     this.render();
@@ -529,11 +529,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
    * Speed must not be less than 500ms
    */
   validateAnimationSpeed() {
-    let speed = this.panel.polystat.animationSpeed;
+    const speed = this.panel.polystat.animationSpeed;
     let newSpeed = 5000;
     if (speed) {
       if (!isNaN(parseInt(speed, 10))) {
-        let checkSpeed = parseInt(speed, 10);
+        const checkSpeed = parseInt(speed, 10);
         if (checkSpeed >= 500) {
           newSpeed = checkSpeed;
         } else {
@@ -547,13 +547,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   validateDisplayLimit() {
-    let limit = this.panel.polystat.displayLimit;
+    const limit = this.panel.polystat.displayLimit;
     let newLimit = 100;
     if (limit === null) {
       newLimit = 0;
     } else {
       if (!isNaN(parseInt(limit, 10))) {
-        let checkLimit = parseInt(limit, 10);
+        const checkLimit = parseInt(limit, 10);
         if (checkLimit >= 0) {
           newLimit = checkLimit;
         }
@@ -572,11 +572,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.panel.polystat.columnAutoSize) {
       this.panel.polystat.columns = '';
     } else {
-      let columns = this.panel.polystat.columns;
+      const columns = this.panel.polystat.columns;
       let newColumns = 1;
       if (columns) {
         if (!isNaN(parseInt(columns, 10))) {
-          let checkColumns = parseInt(columns, 10);
+          const checkColumns = parseInt(columns, 10);
           if (checkColumns > 0) {
             newColumns = checkColumns;
           }
@@ -591,11 +591,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.panel.polystat.rowAutoSize) {
       this.panel.polystat.rows = '';
     } else {
-      let rows = this.panel.polystat.rows;
+      const rows = this.panel.polystat.rows;
       let newRows = 1;
       if (rows) {
         if (!isNaN(parseInt(rows, 10))) {
-          let checkRows = parseInt(rows, 10);
+          const checkRows = parseInt(rows, 10);
           if (checkRows > 0) {
             newRows = checkRows;
           }
@@ -610,11 +610,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.panel.polystat.radiusAutoSize) {
       this.panel.polystat.radius = '';
     } else {
-      let radius = this.panel.polystat.radius;
+      const radius = this.panel.polystat.radius;
       let newRadius = 25;
       if (radius !== null) {
         if (!isNaN(parseInt(radius, 10))) {
-          let checkRadius = parseInt(radius, 10);
+          const checkRadius = parseInt(radius, 10);
           if (checkRadius > 0) {
             newRadius = checkRadius;
           }
@@ -626,11 +626,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   validateBorderSizeValue() {
-    let borderSize = this.panel.polystat.polygonBorderSize;
+    const borderSize = this.panel.polystat.polygonBorderSize;
     let newBorderSize = 2;
     if (borderSize !== null) {
       if (!isNaN(parseInt(borderSize, 10))) {
-        let checkBorderSize = parseInt(borderSize, 10);
+        const checkBorderSize = parseInt(borderSize, 10);
         if (checkBorderSize >= 0) {
           newBorderSize = checkBorderSize;
         }
