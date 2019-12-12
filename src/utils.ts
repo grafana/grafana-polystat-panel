@@ -8,9 +8,9 @@ function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaled
   const delta = value / 2;
   let dec = -Math.floor(Math.log(delta) / Math.LN10);
 
-  let magn = Math.pow(10, -dec),
-    norm = delta / magn, // norm is between 1.0 and 10.0
-    size;
+  const magn = Math.pow(10, -dec);
+  const norm = delta / magn; // norm is between 1.0 and 10.0
+  let size;
 
   if (norm < 1.5) {
     size = 1;
@@ -134,7 +134,7 @@ function RGBToHex(text: string) {
   try {
     const a = text.split('(')[1].split(')')[0];
     const b = a.split(',');
-    const c = b.map((x) => {
+    const c = b.map(x => {
       // For each array element
       x = parseInt(x, 10).toString(16); // Convert to a base16 string
       return x.length === 1 ? '0' + x : x; // Add zero if we get only one character

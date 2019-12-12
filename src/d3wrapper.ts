@@ -1,12 +1,12 @@
 /////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
-import * as d3 from "./external/d3.min.js";
-import * as d3hexbin from "./external/d3-hexbin.js";
-import { getTextSizeForWidthAndHeight } from "./utils";
-import _ from "lodash";
-import { Color } from "./color";
+import * as d3 from './external/d3.min.js';
+import * as d3hexbin from './external/d3-hexbin.js';
+import { getTextSizeForWidthAndHeight } from './utils';
+import _ from 'lodash';
+import { Color } from './color';
 
-function resolveClickThroughURL(d : any) : string {
+function resolveClickThroughURL(d: any): string {
   let clickThroughURL = d.clickThrough;
   if (d.sanitizeURLEnabled === true && d.sanitizedURL.length > 0) {
     clickThroughURL = d.sanitizedURL;
@@ -14,22 +14,22 @@ function resolveClickThroughURL(d : any) : string {
   return clickThroughURL;
 }
 
-function resolveClickThroughTarget(d : any) : string {
-  let clickThroughTarget = "_self";
+function resolveClickThroughTarget(d: any): string {
+  let clickThroughTarget = '_self';
   if (d.newTabEnabled === true) {
-    clickThroughTarget = "_blank";
+    clickThroughTarget = '_blank';
   }
   return clickThroughTarget;
 }
 
 function showName(item: any): boolean {
   // check if property exist and check its value
-  return (!("showName" in item) || item.showName);
+  return !('showName' in item) || item.showName;
 }
 
 function showValue(item: any): boolean {
   // check if property exist and check its value
-  return (!("showValue" in item) || item.showValue);
+  return !('showValue' in item) || item.showValue;
 }
 
 export class D3Wrapper {
@@ -42,14 +42,14 @@ export class D3Wrapper {
   templateSrv: any;
   calculatedPoints: any;
   hexRadius: number;
-  autoHexRadius : number;
+  autoHexRadius: number;
   numColumns: number;
   numRows: number;
   margin: {
-    top: number,
-    right : number,
-    bottom : number,
-    left : number,
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
   };
   minFont = 8;
   maxFont = 240;
@@ -68,7 +68,7 @@ export class D3Wrapper {
       top: 30 + 26,
       right: 0,
       bottom: 20,
-      left: 50
+      left: 50,
     };
     // take 10 off the height
     this.opt.height -= 10;
@@ -84,7 +84,7 @@ export class D3Wrapper {
       this.numColumns = opt.columns || 6;
       this.numRows = opt.rows || 6;
     }
-    if ((!opt.radiusAutoSize) && (opt.radius)) {
+    if (!opt.radiusAutoSize && opt.radius) {
       this.hexRadius = opt.radius;
       this.autoHexRadius = opt.radius;
     } else {
@@ -97,11 +97,12 @@ export class D3Wrapper {
   computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
     return getTextSizeForWidthAndHeight(
       text,
-      "?px sans-serif", // use sans-serif for sizing
+      '?px sans-serif', // use sans-serif for sizing
       textAreaWidth,
       textAreaHeight / linesToDisplay, // multiple lines of text
       this.minFont,
-      this.maxFont);
+      this.maxFont
+    );
   }
 
   update(data: any) {
@@ -154,12 +155,12 @@ export class D3Wrapper {
         this.numRows = 1;
       }
     } else if (this.opt.columnAutoSize) {
-        // Align colunns count to fixed rows count
-        this.numColumns = Math.ceil(this.data.length / this.numRows);
-        // always at least 1 column
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        }
+      // Align colunns count to fixed rows count
+      this.numColumns = Math.ceil(this.data.length / this.numRows);
+      // always at least 1 column
+      if (this.numColumns < 1) {
+        this.numColumns = 1;
+      }
     }
     //console.log("Calculated columns = " + this.numColumns);
     //console.log("Calculated rows = " + this.numRows);
@@ -179,7 +180,10 @@ export class D3Wrapper {
     var ahexbin = d3hexbin
       .hexbin()
       .radius(this.autoHexRadius)
-      .extent([[0, 0], [width, height]]);
+      .extent([
+        [0, 0],
+        [width, height],
+      ]);
 
     // d3 calculates the radius for x and y separately based on the value passed in
     let diameterX = this.autoHexRadius * Math.sqrt(3);
@@ -187,136 +191,135 @@ export class D3Wrapper {
     let renderWidth = this.maxColumnsUsed * diameterX;
     // Even rows are shifted by an x-radius (half x-diameter) on the right
     // Check if at least one even row is full (first one is row 2)
-    if (this.maxRowsUsed >= 2 && this.data.length >= (2 * this.maxColumnsUsed)) {
-      renderWidth += (diameterX / 2);
+    if (this.maxRowsUsed >= 2 && this.data.length >= 2 * this.maxColumnsUsed) {
+      renderWidth += diameterX / 2;
     }
     // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
     // At then end we need to add the pointy bottom of the last row (1/4 of the height)
-    let renderHeight = ((this.maxRowsUsed * 0.75) + 0.25) * diameterY;
+    let renderHeight = (this.maxRowsUsed * 0.75 + 0.25) * diameterY;
     // Translate the whole hexagons graph to have it cenetered in the drawing area
     // - center the rendered area with the drawing area, translate by:
     //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
     // - go to the center of the first hexagon, translate by:
     //     (diameterX / 2, diameterY / 2)
-    let xoffset = ((width - renderWidth + diameterX) / 2);
-    let yoffset = ((height - renderHeight + diameterY) / 2);
+    let xoffset = (width - renderWidth + diameterX) / 2;
+    let yoffset = (height - renderHeight + diameterY) / 2;
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
     var tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("id", this.d3DivId + "-tooltip")
-      .attr("class", "polystat-panel-tooltip")
-      .style("opacity", 0);
-    var svg : any = d3.select(this.svgContainer)
-      .attr("width", width + "px")
-      .attr("height", height + "px")
-      .append("svg")
-      .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
-      .attr("width", width + "px")
-      .attr("height", height + "px")
-      .style("border", "0px solid white")
-      .attr("id", this.d3DivId)
-      .append("g")
-      .attr("transform", "translate(" + xoffset + "," + yoffset + ")");
+      .select('body')
+      .append('div')
+      .attr('id', this.d3DivId + '-tooltip')
+      .attr('class', 'polystat-panel-tooltip')
+      .style('opacity', 0);
+    var svg: any = d3
+      .select(this.svgContainer)
+      .attr('width', width + 'px')
+      .attr('height', height + 'px')
+      .append('svg')
+      .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
+      .attr('width', width + 'px')
+      .attr('height', height + 'px')
+      .style('border', '0px solid white')
+      .attr('id', this.d3DivId)
+      .append('g')
+      .attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
 
     var data = this.data;
-    var defs = svg.append("defs");
+    var defs = svg.append('defs');
 
     let colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
       //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
-      let aGradient = defs.append("linearGradient")
-        .attr("id", this.d3DivId + "linear-gradient-state-data-" + i);
+      let aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
       aGradient
-        .attr("x1", "30%")
-        .attr("y1", "30%")
-        .attr("x2", "70%")
-        .attr("y2", "70%");
+        .attr('x1', '30%')
+        .attr('y1', '30%')
+        .attr('x2', '70%')
+        .attr('y2', '70%');
       aGradient
-        .append("stop")
-          .attr("offset", "0%")
-          .attr("stop-color", colorGradients[i].start);
+        .append('stop')
+        .attr('offset', '0%')
+        .attr('stop-color', colorGradients[i].start);
       aGradient
-        .append("stop")
-          .attr("offset", "100%")
-          .attr("stop-color", colorGradients[i].end);
+        .append('stop')
+        .attr('offset', '100%')
+        .attr('stop-color', colorGradients[i].end);
     }
     let okColorStart = new Color(82, 194, 52); // #52c234
     let okColorEnd = okColorStart.Mul(this.purelight, 0.7);
-    let okGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-ok");
+    let okGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-ok');
     okGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     okGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", okColorStart.asHex());
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', okColorStart.asHex());
     okGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", okColorEnd.asHex());
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
     let warningColorStart = new Color(255, 200, 55); // #FFC837
     let warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
-    let warningGradient = defs.append("linearGradient")
-        .attr("id", this.d3DivId + "linear-gradient-state-warning");
-    warningGradient.attr("x1", "30%")
-        .attr("y1", "30%")
-        .attr("x2", "70%")
-        .attr("y2", "70%");
-    warningGradient.append("stop")
-          .attr("offset", "0%")
-          .attr("stop-color", warningColorStart.asHex()); // light orange
-    warningGradient.append("stop")
-          .attr("offset", "100%")
-          .attr("stop-color", warningColorEnd.asHex()); // dark orange
+    let warningGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-warning');
+    warningGradient
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
+    warningGradient
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', warningColorStart.asHex()); // light orange
+    warningGradient
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
     let criticalColorStart = new Color(229, 45, 39); // e52d27
     let criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
-    let criticalGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-critical");
+    let criticalGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-critical');
     criticalGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     criticalGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", criticalColorStart.asHex()); // light red
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', criticalColorStart.asHex()); // light red
     criticalGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", criticalColorEnd.asHex()); // dark red
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
-    let unknownGradient = defs.append("linearGradient")
-      .attr("id", this.d3DivId + "linear-gradient-state-unknown");
+    let unknownGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-unknown');
     unknownGradient
-      .attr("x1", "30%")
-      .attr("y1", "30%")
-      .attr("x2", "70%")
-      .attr("y2", "70%");
+      .attr('x1', '30%')
+      .attr('y1', '30%')
+      .attr('x2', '70%')
+      .attr('y2', '70%');
     unknownGradient
-      .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", "#73808A"); // light grey
+      .append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', '#73808A'); // light grey
     unknownGradient
-      .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", "#757F9A"); // dark grey
+      .append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', '#757F9A'); // dark grey
 
     let customShape = null;
     // compute text area size (used to calculate the fontsize)
     let textAreaWidth = diameterX;
-    let textAreaHeight = (diameterY / 2); // Top and bottom of hexagon are not used
+    let textAreaHeight = diameterY / 2; // Top and bottom of hexagon are not used
     // symbols use the area for their size
     let innerArea = diameterX * diameterY;
     // use the smaller of diameterX or Y
@@ -328,35 +331,35 @@ export class D3Wrapper {
     }
     let symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
-      case "hexagon_pointed_top":
+      case 'hexagon_pointed_top':
         customShape = ahexbin.hexagon(this.autoHexRadius);
         break;
-      case "hexagon_flat_top":
+      case 'hexagon_flat_top':
         // TODO: use pointed for now
         customShape = ahexbin.hexagon(this.autoHexRadius);
         break;
-      case "circle":
+      case 'circle':
         customShape = symbol.type(d3.symbolCircle);
         break;
-      case "cross":
+      case 'cross':
         customShape = symbol.type(d3.symbolCross);
         break;
-      case "diamond":
+      case 'diamond':
         customShape = symbol.type(d3.symbolDiamond);
         break;
-      case "square":
+      case 'square':
         customShape = symbol.type(d3.symbolSquare);
         break;
-      case "star":
+      case 'star':
         customShape = symbol.type(d3.symbolStar);
         break;
-      case "triangle":
+      case 'triangle':
         customShape = symbol.type(d3.symbolTriangle);
         break;
-      case "wye":
+      case 'wye':
         customShape = symbol.type(d3.symbolWye);
         break;
-     default:
+      default:
         customShape = ahexbin.hexagon(this.autoHexRadius);
         break;
     }
@@ -369,14 +372,14 @@ export class D3Wrapper {
     // compute font size if autoscale is activated
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
-      let maxLabel = "";
+      let maxLabel = '';
       for (let i = 0; i < this.data.length; i++) {
         if (this.data[i].name.length > maxLabel.length) {
           maxLabel = this.data[i].name;
         }
       }
       // same for the value, also check for submetrics size in case of composite
-      let maxValue = "";
+      let maxValue = '';
       for (let i = 0; i < this.data.length; i++) {
         //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
@@ -410,78 +413,87 @@ export class D3Wrapper {
     // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
     // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
     // - Label text (top text) will be aligned (negatively, i.e. higher) in the middle of the top half of the text area
-    let valueWithLabelTextAlignment = ((textAreaHeight / 2) / 2) + (activeValueFontSize / 2);
-    let valueOnlyTextAlignment = (activeValueFontSize / 2);
-    let labelWithValueTextAlignment = -((textAreaHeight / 2) / 2) + (activeLabelFontSize / 2);
-    let labelOnlyTextAlignment = (activeLabelFontSize / 2);
+    let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
+    let valueOnlyTextAlignment = activeValueFontSize / 2;
+    let labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
+    let labelOnlyTextAlignment = activeLabelFontSize / 2;
 
-    svg.selectAll(".hexagon")
+    svg
+      .selectAll('.hexagon')
       .data(ahexbin(this.calculatedPoints))
       .enter()
       .each((_, i, nodes) => {
         let node = d3.select(nodes[i]);
         let clickThroughURL = resolveClickThroughURL(data[i]);
         if (clickThroughURL.length > 0) {
-          node = node.append("a")
-            .attr("target", resolveClickThroughTarget(data[i]))
-            .attr("xlink:href", clickThroughURL);
+          node = node
+            .append('a')
+            .attr('target', resolveClickThroughTarget(data[i]))
+            .attr('xlink:href', clickThroughURL);
         }
         let fillColor = data[i].color;
         if (this.opt.polystat.gradientEnabled) {
           // safari needs the location.href
-          fillColor = "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
+          fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
         }
-        node.append("path")
-          .attr("class", "hexagon")
-          .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-          .attr("d", customShape)
-          .attr("stroke", this.opt.polystat.polygonBorderColor)
-          .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
-          .style("fill", fillColor)
-          .on("mousemove", () => {
+        node
+          .append('path')
+          .attr('class', 'hexagon')
+          .attr('transform', function(d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+          })
+          .attr('d', customShape)
+          .attr('stroke', this.opt.polystat.polygonBorderColor)
+          .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+          .style('fill', fillColor)
+          .on('mousemove', () => {
             // use the viewportwidth to prevent the tooltip from going too far right
             let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             // use the mouse position for the entire page
-            var mouse = d3.mouse(d3.select("body").node());
+            var mouse = d3.mouse(d3.select('body').node());
             var xpos = mouse[0] - 50;
             // don't allow offscreen tooltip
             if (xpos < 0) {
               xpos = 0;
             }
             // prevent tooltip from rendering outside of viewport
-            if ((xpos + 200) > viewPortWidth) {
+            if (xpos + 200 > viewPortWidth) {
               xpos = viewPortWidth - 200;
             }
             var ypos = mouse[1] + 5;
-            tooltip
-              .style("left", xpos + "px")
-              .style("top", ypos + "px");
+            tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
           })
-          .on("mouseover", (d) => {
-            tooltip.transition().duration(200).style("opacity", 0.9);
-            tooltip.html(this.opt.tooltipContent[i])
-              .style("font-size", this.opt.tooltipFontSize)
-              .style("font-family", this.opt.tooltipFontType)
-              .style("left", (d.x - 5) + "px")
-              .style("top", (d.y - 5) + "px");
-            })
-          .on("mouseout", () => {
-                tooltip
-                  .transition()
-                  .duration(500)
-                  .style("opacity", 0);
+          .on('mouseover', d => {
+            tooltip
+              .transition()
+              .duration(200)
+              .style('opacity', 0.9);
+            tooltip
+              .html(this.opt.tooltipContent[i])
+              .style('font-size', this.opt.tooltipFontSize)
+              .style('font-family', this.opt.tooltipFontType)
+              .style('left', d.x - 5 + 'px')
+              .style('top', d.y - 5 + 'px');
+          })
+          .on('mouseout', () => {
+            tooltip
+              .transition()
+              .duration(500)
+              .style('opacity', 0);
           });
       });
 
     // now labels
-    var textspot = svg.selectAll("text.toplabel")
-      .data(ahexbin(this.calculatedPoints));
+    var textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
 
-    textspot.enter()
-      .append("text")
-      .attr("class", "toplabel")
-      .attr("x", function (d) { return d.x; })
-      .attr("y", function (d, i) {
+    textspot
+      .enter()
+      .append('text')
+      .attr('class', 'toplabel')
+      .attr('x', function(d) {
+        return d.x;
+      })
+      .attr('y', function(d, i) {
         let item = data[i];
         let alignment = labelOnlyTextAlignment;
         if (showValue(item)) {
@@ -489,28 +501,31 @@ export class D3Wrapper {
         }
         return d.y + alignment;
       })
-      .attr("text-anchor", "middle")
-      .attr("font-family", this.opt.polystat.fontType)
-      .attr("font-size", activeLabelFontSize + "px")
-      .attr("fill", "black")
-      .style("pointer-events", "none")
-      .text(function (_, i) {
+      .attr('text-anchor', 'middle')
+      .attr('font-family', this.opt.polystat.fontType)
+      .attr('font-size', activeLabelFontSize + 'px')
+      .attr('fill', 'black')
+      .style('pointer-events', 'none')
+      .text(function(_, i) {
         let item = data[i];
         if (showName(item)) {
           return item.name;
         }
-        return "";
+        return '';
       });
 
     var frames = 0;
 
-    textspot.enter()
-      .append("text")
-      .attr("class", function(_, i) {
-        return "valueLabel" + i;
+    textspot
+      .enter()
+      .append('text')
+      .attr('class', function(_, i) {
+        return 'valueLabel' + i;
       })
-      .attr("x", function (d) { return d.x; })
-      .attr("y", function (d, i) {
+      .attr('x', function(d) {
+        return d.x;
+      })
+      .attr('y', function(d, i) {
         let item = data[i];
         let alignment = valueOnlyTextAlignment;
         if (showName(item)) {
@@ -518,44 +533,44 @@ export class D3Wrapper {
         }
         return d.y + alignment;
       })
-      .attr("text-anchor", "middle")
-      .attr("font-family", this.opt.polystat.fontType)
-      .attr("fill", "black")
-      .attr("font-size", activeValueFontSize + "px")
-      .style("pointer-events", "none")
-      .text( (_, i) => {
+      .attr('text-anchor', 'middle')
+      .attr('font-family', this.opt.polystat.fontType)
+      .attr('fill', 'black')
+      .attr('font-size', activeValueFontSize + 'px')
+      .style('pointer-events', 'none')
+      .text((_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
         let dataLen = this.data.length;
         let content = null;
-        while ((content === null) && (counter < dataLen)) {
-          content = this.formatValueContent(i, (frames + counter), this);
+        while (content === null && counter < dataLen) {
+          content = this.formatValueContent(i, frames + counter, this);
           counter++;
         }
-        var valueTextLocation = svg.select("text.valueLabel" + i);
+        var valueTextLocation = svg.select('text.valueLabel' + i);
         // use the dynamic size for the value
-        valueTextLocation.attr("font-size", activeValueFontSize + "px");
-        d3.interval( () => {
-          var valueTextLocation = svg.select("text.valueLabel" + i);
+        valueTextLocation.attr('font-size', activeValueFontSize + 'px');
+        d3.interval(() => {
+          var valueTextLocation = svg.select('text.valueLabel' + i);
           var compositeIndex = i;
-          valueTextLocation.text( () => {
+          valueTextLocation.text(() => {
             // animation/displaymode can modify what is being displayed
-            valueTextLocation.attr("font-size", activeValueFontSize + "px");
+            valueTextLocation.attr('font-size', activeValueFontSize + 'px');
 
             let content = null;
             let counter = 0;
             let dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
-            while ((content === null) && (counter < dataLen)) {
-              content = this.formatValueContent(compositeIndex, (frames + counter), this);
+            while (content === null && counter < dataLen) {
+              content = this.formatValueContent(compositeIndex, frames + counter, this);
               counter++;
             }
             if (content === null) {
-              return "";
+              return '';
             }
-            if (content === "") {
+            if (content === '') {
               // TODO: add custom content for composite ok state
-              content = "";
+              content = '';
               // set the font size to be the same as the label above
               //valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
             }
@@ -570,26 +585,26 @@ export class D3Wrapper {
   formatValueContent(i, frames, thisRef): string {
     let data = thisRef.data[i];
     // options can specify to not show the value
-    if (typeof(data) !== "undefined") {
-      if (data.hasOwnProperty("showValue")) {
+    if (typeof data !== 'undefined') {
+      if (data.hasOwnProperty('showValue')) {
         if (!data.showValue) {
-          return "";
+          return '';
         }
       }
-      if (!data.hasOwnProperty("valueFormatted")) {
-        return "";
+      if (!data.hasOwnProperty('valueFormatted')) {
+        return '';
       }
     } else {
       // no data, return nothing
-      return "";
+      return '';
     }
     switch (data.animateMode) {
-      case "all":
+      case 'all':
         break;
-      case "triggered":
+      case 'triggered':
         // return nothing if mode is triggered and the state is 0
         if (data.thresholdLevel < 1) {
-          return "";
+          return '';
         }
     }
     let content = data.valueFormatted;
@@ -597,11 +612,11 @@ export class D3Wrapper {
     if (!content) {
       return null;
     }
-    if ((data.prefix) && (data.prefix.length > 0)) {
-      content = data.prefix + " " + content;
+    if (data.prefix && data.prefix.length > 0) {
+      content = data.prefix + ' ' + content;
     }
-    if ((data.suffix) && (data.suffix.length > 0)) {
-      content = content + " " + data.suffix;
+    if (data.suffix && data.suffix.length > 0) {
+      content = content + ' ' + data.suffix;
     }
     // a composite will contain the "worst" case as the valueFormatted,
     // and will have all of the members of the composite included.
@@ -609,11 +624,11 @@ export class D3Wrapper {
     let len = data.members.length;
     if (len > 0) {
       let triggeredIndex = -1;
-      if (data.animateMode === "all") {
+      if (data.animateMode === 'all') {
         triggeredIndex = frames % len;
         //console.log("triggeredIndex from all mode: " + triggeredIndex);
       } else {
-        if (typeof(data.triggerCache) === "undefined") {
+        if (typeof data.triggerCache === 'undefined') {
           data.triggerCache = this.buildTriggerCache(data);
         }
         let z = frames % data.triggerCache.length;
@@ -622,22 +637,22 @@ export class D3Wrapper {
       }
       let aMember = data.members[triggeredIndex];
 
-      content = aMember.name + ": " + aMember.valueFormatted;
-      if ((aMember.prefix) && (aMember.prefix.length > 0)) {
-        content = aMember.prefix + " " + content;
+      content = aMember.name + ': ' + aMember.valueFormatted;
+      if (aMember.prefix && aMember.prefix.length > 0) {
+        content = aMember.prefix + ' ' + content;
       }
-      if ((aMember.suffix) && (aMember.suffix.length > 0)) {
-        content = content + " " + aMember.suffix;
+      if (aMember.suffix && aMember.suffix.length > 0) {
+        content = content + ' ' + aMember.suffix;
       }
     }
     // allow templating
     //
-    if ((content) && (content.length > 0)) {
+    if (content && content.length > 0) {
       try {
         let replacedContent = thisRef.templateSrv.replaceWithText(content);
         content = replacedContent;
       } catch (err) {
-        console.log("ERROR: template server threw error: " + err);
+        console.log('ERROR: template server threw error: ' + err);
       }
     }
     return content;
@@ -655,7 +670,7 @@ export class D3Wrapper {
       }
     }
     // sort it
-    triggerCache = _.orderBy(triggerCache, ["thresholdLevel", "value", "name"], ["desc", "desc", "asc"]);
+    triggerCache = _.orderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
     return triggerCache;
   }
 
@@ -664,21 +679,16 @@ export class D3Wrapper {
     // With (long) radius being R:
     // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
     // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    let radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * ( 1 + 2 * this.numColumns));
+    let radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * (1 + 2 * this.numColumns));
     let radiusFromHeight = (2 * this.opt.height) / (3 * this.numRows + 1);
-    var hexRadius = d3.min(
-      [
-        radiusFromWidth,
-        radiusFromHeight
-      ]
-    );
+    var hexRadius = d3.min([radiusFromWidth, radiusFromHeight]);
     return hexRadius;
   }
 
   // Builds the placeholder polygons needed to represent each metric
-  generatePoints() : any {
+  generatePoints(): any {
     let points = [];
-    if (typeof(this.data) === "undefined") {
+    if (typeof this.data === 'undefined') {
       return points;
     }
     let maxRowsUsed = 0;
@@ -694,11 +704,11 @@ export class D3Wrapper {
       return points;
     }
     for (var i = 0; i < this.numRows; i++) {
-      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
         maxRowsUsed += 1;
         columnsUsed = 0;
         for (var j = 0; j < this.numColumns; j++) {
-          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
             columnsUsed += 1;
             // track the most number of columns
             if (columnsUsed > maxColumnsUsed) {
@@ -715,5 +725,4 @@ export class D3Wrapper {
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
-
 }
