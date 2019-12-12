@@ -20,15 +20,15 @@ class ClickThroughTransformer {
     }
     let item = data[index];
     // check if url contains any dereferencing
-    if (url.match(this.cellName)) {
+    while (url.match(this.cellName)) {
       // replace with series name
       url = url.replace(this.cellName, item.name);
     }
-    if (url.match(this.cellValue)) {
+    while (url.match(this.cellValue)) {
       // replace with formatted value, and encoded
       url = url.replace(this.cellValue, encodeURIComponent(item.valueFormatted));
     }
-    if (url.match(this.cellRawValue)) {
+    while (url.match(this.cellRawValue)) {
       // replace with value
       url = url.replace(this.cellRawValue, item.value.toString());
     }
@@ -72,7 +72,7 @@ class ClickThroughTransformer {
 
   static tranformComposite(name: string, url: string) {
     // check if url contains any dereferencing
-    if (url.match(this.compositeName)) {
+    while (url.match(this.compositeName)) {
       // replace with series name
       url = url.replace(this.compositeName, name);
     }

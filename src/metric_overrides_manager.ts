@@ -19,6 +19,7 @@ export class MetricOverride {
   prefix: string;
   suffix: string;
   clickThrough: string;
+  newTabEnabled: boolean;
   sanitizeURLEnabled: boolean;
   sanitizedURL: string;
 }
@@ -70,6 +71,7 @@ export class MetricOverridesManager {
         override.scaledDecimals = null;
         override.prefix = "";
         override.suffix = "";
+        override.newTabEnabled = true;
         override.sanitizeURLEnabled = true;
         this.metricOverrides.push(override);
     }
@@ -83,6 +85,12 @@ export class MetricOverridesManager {
       }
       // reassign reference in panel
       this.$scope.ctrl.panel.savedOverrides = this.metricOverrides;
+      this.$scope.ctrl.refresh();
+    }
+
+    metricNameChanged(override) {
+      // TODO: validate item is a valid regex
+      console.log("metricNameChanged: '" + override.metricName + "'");
       this.$scope.ctrl.refresh();
     }
 
@@ -143,6 +151,8 @@ export class MetricOverridesManager {
             url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
             url = ClickThroughTransformer.tranformNthMetric(url, data);
             data[index].clickThrough = url;
+            data[index].newTabEnabled = anOverride.newTabEnabled;
+            data[index].sanitizeURLEnabled = anOverride.sanitizeURLEnabled;
             if (anOverride.sanitizeURLEnabled) {
               data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
             }

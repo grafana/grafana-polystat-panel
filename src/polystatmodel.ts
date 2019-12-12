@@ -19,6 +19,7 @@ export class PolystatModel {
   color: string;
   clickThrough: string;
   operatorName: string;
+  newTabEnabled: boolean;
   sanitizedURL: string;
   sanitizeURLEnabled: boolean;
   showName: boolean;
@@ -45,6 +46,7 @@ export class PolystatModel {
     this.color = "green";
     this.clickThrough = "";
     this.sanitizedURL = "";
+    this.newTabEnabled = true;
     this.sanitizeURLEnabled = true;
     this.isComposite = false;
     this.members = [];
@@ -118,6 +120,7 @@ export class PolystatModel {
     clone.seriesRaw = null; // for a shallow clone drop the series
     clone.color = this.color;
     clone.clickThrough = this.clickThrough;
+    clone.newTabEnabled = this.newTabEnabled;
     clone.sanitizedURL = this.sanitizedURL;
     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
     clone.isComposite = this.isComposite;
@@ -138,6 +141,7 @@ export class PolystatModel {
     clone.color = this.color;
     clone.clickThrough = this.clickThrough;
     clone.sanitizedURL = this.sanitizedURL;
+    clone.newTabEnabled = this.newTabEnabled;
     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
     clone.isComposite = this.isComposite;
     clone.members = []; // this.members;

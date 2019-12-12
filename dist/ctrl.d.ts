@@ -65,6 +65,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
             columnAutoSize: boolean;
             displayLimit: number;
             defaultClickThrough: string;
+            defaultClickThroughNewTab: boolean;
             defaultClickThroughSanitize: boolean;
             fontAutoScale: boolean;
             fontSize: number;
@@ -117,6 +118,7 @@ declare class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     seriesHandler(seriesData: any): any;
     invertColorOrder(): void;
     validateAnimationSpeed(): void;
+    validateDisplayLimit(): void;
     validateColumnValue(): void;
     validateRowValue(): void;
     validateRadiusValue(): void;
