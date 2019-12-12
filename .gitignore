@@ -1,6 +1,6 @@
 .tscache
 bower_components
 node_modules
-dist/src
+dist
 .DS_Store
 package-lock.json
