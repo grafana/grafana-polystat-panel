@@ -1,0 +1,57 @@
+.polystat-panel-tooltip {
+  position: absolute;
+  width: 200px;
+  color: white;
+  height: auto;
+  padding: 10px;
+  background-color: black;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.polystat-panel-tooltip.hidden {
+  display: none;
+}
+
+.polystat-panel-tooltip p {
+  margin: 0;
+}
+
+.polystat-panel-tooltiptable th {
+  text-align: left;
+}
+
+.polystat-panel-quadrant {
+  position: absolute;
+  color: white;
+  height: auto;
+  padding: 10px;
+  background-color: black;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.polystat-panel-tooltip-displaytext-empty {
+  text-align: center;
+  color: #3aa655;
+}
+
+.polystat-panel-tooltip-displaytext-empty-compositename {
+  text-align: center;
+  color: white;
+}
+
+.polystat-panel-tooltip-time {
+  text-align: center;
+  color: white;
+}
