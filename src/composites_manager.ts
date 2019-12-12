@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import kbn from 'grafana/app/core/utils/kbn';
 import { PolystatModel } from './polystatmodel';
 import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
