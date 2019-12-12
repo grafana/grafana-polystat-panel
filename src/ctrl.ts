@@ -8,7 +8,7 @@ import './css/polystat.css!';
 import { D3Wrapper } from './d3wrapper';
 import { Transformers } from './transformers';
 import { PolystatModel } from './polystatmodel';
-import { MetricOverridesManager, MetricOverride } from './metric_overrides_manager';
+import { MetricOverridesManager } from './metric_overrides_manager';
 import { CompositesManager } from './composites_manager';
 import { Tooltip } from './tooltip';
 import { GetDecimalsForValue, RGBToHex } from './utils';

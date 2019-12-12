@@ -65,7 +65,7 @@ export class Tooltip {
           [scope.ctrl.panel.polystat.tooltipPrimarySortDirection, scope.ctrl.panel.polystat.tooltipSecondarySortDirection]
         );
         for (let j = 0; j < sortedMembers.length; j++) {
-          const aMember = sortedMembers[j];
+          const aMember: any = sortedMembers[j];
           const aRow = `
             <tr>
               <td style="text-align: left; color: ${aMember.color}">${aMember.name}</td>
