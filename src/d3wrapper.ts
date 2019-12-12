@@ -6,6 +6,32 @@ import { getTextSizeForWidthAndHeight } from "./utils";
 import _ from "lodash";
 import { Color } from "./color";
 
+function resolveClickThroughURL(d : any) : string {
+  let clickThroughURL = d.clickThrough;
+  if (d.sanitizeURLEnabled === true && d.sanitizedURL.length > 0) {
+    clickThroughURL = d.sanitizedURL;
+  }
+  return clickThroughURL;
+}
+
+function resolveClickThroughTarget(d : any) : string {
+  let clickThroughTarget = "_self";
+  if (d.newTabEnabled === true) {
+    clickThroughTarget = "_blank";
+  }
+  return clickThroughTarget;
+}
+
+function showName(item: any): boolean {
+  // check if property exist and check its value
+  return (!("showName" in item) || item.showName);
+}
+
+function showValue(item: any): boolean {
+  // check if property exist and check its value
+  return (!("showValue" in item) || item.showValue);
+}
+
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
@@ -17,8 +43,6 @@ export class D3Wrapper {
   calculatedPoints: any;
   hexRadius: number;
   autoHexRadius : number;
-  autoWidth : number;
-  autoHeight: number;
   numColumns: number;
   numRows: number;
   margin: {
@@ -27,6 +51,7 @@ export class D3Wrapper {
     bottom : number,
     left : number,
   };
+  minFont = 8;
   maxFont = 240;
   purelight: any;
 
@@ -66,9 +91,18 @@ export class D3Wrapper {
       this.hexRadius = this.getAutoHexRadius(); // || 50;
       this.autoHexRadius = this.getAutoHexRadius(); //|| 50;
     }
-    this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
-}
+  }
+
+  computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
+    return getTextSizeForWidthAndHeight(
+      text,
+      "?px sans-serif", // use sans-serif for sizing
+      textAreaWidth,
+      textAreaHeight / linesToDisplay, // multiple lines of text
+      this.minFont,
+      this.maxFont);
+  }
 
   update(data: any) {
     if (data) {
@@ -83,45 +117,49 @@ export class D3Wrapper {
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.opt.width > this.opt.height) {
-        // ratio of width to height
-        let ratio = this.opt.width / this.opt.height * .66;
-        this.numColumns = Math.ceil(squared * ratio);
+        this.numColumns = Math.ceil((this.opt.width / this.opt.height) * squared);
+        // always at least 1 column and max. data.length columns
+        if (this.numColumns < 1) {
+          this.numColumns = 1;
+        } else if (this.numColumns > this.data.length) {
+          this.numColumns = this.data.length;
+        }
+
+        // Align rows count to computed columns count
+        this.numRows = Math.ceil(this.data.length / this.numColumns);
+        // always at least 1 row
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
+      } else {
+        this.numRows = Math.ceil((this.opt.height / this.opt.width) * squared);
+        // always at least 1 row and max. data.length rows
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        } else if (this.numRows > this.data.length) {
+          this.numRows = this.data.length;
+        }
+        // Align colunns count to computed rows count
+        this.numColumns = Math.ceil(this.data.length / this.numRows);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
-        // prefer evens and smaller
-        if ((this.numColumns % 2) && (this.numColumns > 2)) {
-          this.numColumns -= 1;
-        }
-        this.numRows = Math.floor(this.data.length / this.numColumns * ratio);
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        }
-        this.numColumns = Math.ceil(this.data.length / this.numRows * ratio);
-      } else {
-        let ratio = this.opt.height / this.opt.width * .66;
-        this.numRows = Math.ceil(squared * ratio);
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        }
-        // prefer evens and smaller
-        if ((this.numRows % 2) && (this.numRows > 2)) {
-          this.numRows -= 1;
-        }
-        this.numColumns = Math.floor(this.data.length / this.numRows * ratio);
+      }
+    } else if (this.opt.rowAutoSize) {
+      // Align rows count to fixed columns count
+      this.numRows = Math.ceil(this.data.length / this.numColumns);
+      // always at least 1 row
+      if (this.numRows < 1) {
+        this.numRows = 1;
+      }
+    } else if (this.opt.columnAutoSize) {
+        // Align colunns count to fixed rows count
+        this.numColumns = Math.ceil(this.data.length / this.numRows);
+        // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
         }
-      }
-      if (this.data.length === 1) {
-        this.numColumns = 1;
-        this.numRows = 1;
-      }
-      // prefer more columns
-      if (this.data.length === this.numColumns) {
-        this.numRows = 1;
-      }
     }
     //console.log("Calculated columns = " + this.numColumns);
     //console.log("Calculated rows = " + this.numRows);
@@ -132,7 +170,6 @@ export class D3Wrapper {
       this.autoHexRadius = this.getAutoHexRadius();
       //console.log("autoHexRadius:" + this.autoHexRadius);
     }
-    this.calculateSVGSize();
     this.calculatedPoints = this.generatePoints();
 
     var width = this.opt.width;
@@ -145,25 +182,24 @@ export class D3Wrapper {
       .extent([[0, 0], [width, height]]);
 
     // d3 calculates the radius for x and y separately based on the value passed in
-    var thirdPi = Math.PI / 3;
-    let diameterX = this.autoHexRadius * 2 * Math.sin(thirdPi);
-    let diameterY = this.autoHexRadius * 1.5;
-    let radiusX = diameterX / 2;
+    let diameterX = this.autoHexRadius * Math.sqrt(3);
+    let diameterY = this.autoHexRadius * 2;
     let renderWidth = this.maxColumnsUsed * diameterX;
-    // renderHeight is calculated based on the #rows used, and
-    // the "space" taken by the hexagons interleaved
-    // space taken is 2/3 of diameterY * # rows
-    let renderHeight = (this.maxRowsUsed * diameterY) + (diameterY * .33);
-    // difference of width and renderwidth is our play room, split that in half
-    // offset is from center of hexagon, not from the edge
-    let xoffset = (width - renderWidth + radiusX) / 2;
-    // if there is just one column and one row, center it
-    if (this.numRows === 1) {
-      renderHeight = diameterY + (diameterY * .33);
-      xoffset = ((width - renderWidth) / 2) + radiusX;
+    // Even rows are shifted by an x-radius (half x-diameter) on the right
+    // Check if at least one even row is full (first one is row 2)
+    if (this.maxRowsUsed >= 2 && this.data.length >= (2 * this.maxColumnsUsed)) {
+      renderWidth += (diameterX / 2);
     }
-    // y diameter of hexagon is larger than x diameter
-    let yoffset = ((height - renderHeight) / 2) + (diameterY * .66);
+    // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
+    // At then end we need to add the pointy bottom of the last row (1/4 of the height)
+    let renderHeight = ((this.maxRowsUsed * 0.75) + 0.25) * diameterY;
+    // Translate the whole hexagons graph to have it cenetered in the drawing area
+    // - center the rendered area with the drawing area, translate by:
+    //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
+    // - go to the center of the first hexagon, translate by:
+    //     (diameterX / 2, diameterY / 2)
+    let xoffset = ((width - renderWidth + diameterX) / 2);
+    let yoffset = ((height - renderHeight + diameterY) / 2);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
@@ -177,6 +213,7 @@ export class D3Wrapper {
       .attr("width", width + "px")
       .attr("height", height + "px")
       .append("svg")
+      .attr("xmlns:xlink", "http://www.w3.org/1999/xlink")
       .attr("width", width + "px")
       .attr("height", height + "px")
       .style("border", "0px solid white")
@@ -277,9 +314,9 @@ export class D3Wrapper {
         .attr("stop-color", "#757F9A"); // dark grey
 
     let customShape = null;
-    // this is used to calculate the fontsize
-    let shapeWidth = diameterX;
-    let shapeHeight = diameterY;
+    // compute text area size (used to calculate the fontsize)
+    let textAreaWidth = diameterX;
+    let textAreaHeight = (diameterY / 2); // Top and bottom of hexagon are not used
     // symbols use the area for their size
     let innerArea = diameterX * diameterY;
     // use the smaller of diameterX or Y
@@ -293,12 +330,10 @@ export class D3Wrapper {
     switch (this.opt.polystat.shape) {
       case "hexagon_pointed_top":
         customShape = ahexbin.hexagon(this.autoHexRadius);
-        shapeWidth = this.autoHexRadius * 2;
         break;
       case "hexagon_flat_top":
         // TODO: use pointed for now
         customShape = ahexbin.hexagon(this.autoHexRadius);
-        shapeWidth = this.autoHexRadius * 2;
         break;
       case "circle":
         customShape = symbol.type(d3.symbolCircle);
@@ -330,8 +365,8 @@ export class D3Wrapper {
     let activeLabelFontSize = this.opt.polystat.fontSize;
     // font sizes are independent for label and values
     let activeValueFontSize = this.opt.polystat.fontSize;
-    let longestDisplayedValueContent = "";
 
+    // compute font size if autoscale is activated
     if (this.opt.polystat.fontAutoScale) {
       // find the most text that will be displayed over all items
       let maxLabel = "";
@@ -340,213 +375,172 @@ export class D3Wrapper {
           maxLabel = this.data[i].name;
         }
       }
-      // estimate how big of a font can be used
-      // Two lines of text must fit with vertical spacing included
-      // if it is too small, hide everything
-      let estimateLabelFontSize = getTextSizeForWidthAndHeight(
-        maxLabel,
-        "?px sans-serif", // use sans-serif for sizing
-        shapeWidth,
-        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        10,
-        this.maxFont);
-
-      //console.log("Calc: Estimated Label Font Size: " + estimateLabelFontSize);
-      activeLabelFontSize = estimateLabelFontSize;
-      // same for the value
+      // same for the value, also check for submetrics size in case of composite
       let maxValue = "";
       for (let i = 0; i < this.data.length; i++) {
         //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
           maxValue = this.data[i].valueFormatted;
         }
+        let submetricCount = this.data[i].members.length;
+        if (submetricCount > 0) {
+          let counter = 0;
+          while (counter < submetricCount) {
+            let checkContent = this.formatValueContent(i, counter, this);
+            //console.log("Checking len: \"" + checkContent + "\" vs: \"" + maxValue + "\"");
+            if (checkContent && checkContent.length > maxValue.length) {
+              maxValue = checkContent;
+            }
+            counter++;
+          }
+        }
       }
-      //console.log("Max Value: " + maxValue);
-      let estimateValueFontSize = getTextSizeForWidthAndHeight(
-        maxValue,
-        "?px sans-serif", // use sans-serif for sizing
-        shapeWidth,
-        shapeHeight / 3, // top and bottom of hexagon not used, and two lines of text
-        10,
-        this.maxFont);
-      activeValueFontSize = estimateValueFontSize;
-      longestDisplayedValueContent = maxValue;
+      // estimate how big of a font can be used
+      // Two lines of text must fit with vertical spacing included
+      // if it is too small, hide everything
+      activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
+      activeValueFontSize = this.computeTextFontSize(maxValue, 2, textAreaWidth, textAreaHeight);
+
+      // value should never be larger than the label
+      if (activeValueFontSize > activeLabelFontSize) {
+        activeValueFontSize = activeLabelFontSize;
+      }
     }
 
-    // flat top is rotated 90 degrees, but the coordinate system/layout needs to be adjusted
-    //.attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")rotate(90)"; })
-    // see http://bl.ocks.org/jasondavies/f5922ed4d0ac1ac2161f
-
-    //.attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-
+    // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
+    // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
+    // - Label text (top text) will be aligned (negatively, i.e. higher) in the middle of the top half of the text area
+    let valueWithLabelTextAlignment = ((textAreaHeight / 2) / 2) + (activeValueFontSize / 2);
+    let valueOnlyTextAlignment = (activeValueFontSize / 2);
+    let labelWithValueTextAlignment = -((textAreaHeight / 2) / 2) + (activeLabelFontSize / 2);
+    let labelOnlyTextAlignment = (activeLabelFontSize / 2);
 
     svg.selectAll(".hexagon")
-        .data(ahexbin(this.calculatedPoints))
-        .enter().append("path")
-        .attr("class", "hexagon")
-        .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
-        .attr("d", customShape)
-        .attr("stroke", this.opt.polystat.polygonBorderColor)
-        .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
-        .style("fill", (_, i) => {
-          if (this.opt.polystat.gradientEnabled) {
-            // safari needs the location.href
-            return "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
-          } else {
-            return data[i].color;
-          }
-        })
-        .on("click", (_, i) => {
-          if (data[i].sanitizeURLEnabled === true) {
-            console.log("click detected sanitized enabled" + data[i].sanitizedURL);
-            if (data[i].sanitizedURL.length > 0) {
-              window.location.replace(data[i].sanitizedURL);
+      .data(ahexbin(this.calculatedPoints))
+      .enter()
+      .each((_, i, nodes) => {
+        let node = d3.select(nodes[i]);
+        let clickThroughURL = resolveClickThroughURL(data[i]);
+        if (clickThroughURL.length > 0) {
+          node = node.append("a")
+            .attr("target", resolveClickThroughTarget(data[i]))
+            .attr("xlink:href", clickThroughURL);
+        }
+        let fillColor = data[i].color;
+        if (this.opt.polystat.gradientEnabled) {
+          // safari needs the location.href
+          fillColor = "url(" + location.href + "#" + this.d3DivId + "linear-gradient-state-data-" + i + ")";
+        }
+        node.append("path")
+          .attr("class", "hexagon")
+          .attr("transform", function (d) { return "translate(" + d.x + "," + d.y + ")"; })
+          .attr("d", customShape)
+          .attr("stroke", this.opt.polystat.polygonBorderColor)
+          .attr("stroke-width", this.opt.polystat.polygonBorderSize + "px")
+          .style("fill", fillColor)
+          .on("mousemove", () => {
+            // use the viewportwidth to prevent the tooltip from going too far right
+            let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            // use the mouse position for the entire page
+            var mouse = d3.mouse(d3.select("body").node());
+            var xpos = mouse[0] - 50;
+            // don't allow offscreen tooltip
+            if (xpos < 0) {
+              xpos = 0;
             }
-          } else {
-            console.log("click detected sanitized disabled" + data[i].clickThrough);
-            if (data[i].clickThrough.length > 0) {
-              window.location.replace(data[i].clickThrough);
+            // prevent tooltip from rendering outside of viewport
+            if ((xpos + 200) > viewPortWidth) {
+              xpos = viewPortWidth - 200;
             }
-          }
-        })
-        .on("mousemove", () => {
-          // use the viewportwidth to prevent the tooltip from going too far right
-          let viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-          // use the mouse position for the entire page
-          var mouse = d3.mouse(d3.select("body").node());
-          var xpos = mouse[0] - 50;
-          // don't allow offscreen tooltip
-          if (xpos < 0) {
-            xpos = 0;
-          }
-          // prevent tooltip from rendering outside of viewport
-          if ((xpos + 200) > viewPortWidth) {
-            xpos = viewPortWidth - 200;
-          }
-          var ypos = mouse[1] + 5;
-          tooltip
-            .style("left", xpos + "px")
-            .style("top", ypos + "px");
-        })
-        .on("mouseover", (d, i) => {
-          tooltip.transition().duration(200).style("opacity", 0.9);
-          tooltip.html(this.opt.tooltipContent[i])
-            .style("font-size", this.opt.tooltipFontSize)
-            .style("font-family", this.opt.tooltipFontType)
-            .style("left", (d.x - 5) + "px")
-            .style("top", (d.y - 5) + "px");
+            var ypos = mouse[1] + 5;
+            tooltip
+              .style("left", xpos + "px")
+              .style("top", ypos + "px");
           })
-        .on("mouseout", () => {
-              tooltip
-                .transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+          .on("mouseover", (d) => {
+            tooltip.transition().duration(200).style("opacity", 0.9);
+            tooltip.html(this.opt.tooltipContent[i])
+              .style("font-size", this.opt.tooltipFontSize)
+              .style("font-family", this.opt.tooltipFontType)
+              .style("left", (d.x - 5) + "px")
+              .style("top", (d.y - 5) + "px");
+            })
+          .on("mouseout", () => {
+                tooltip
+                  .transition()
+                  .duration(500)
+                  .style("opacity", 0);
+          });
+      });
+
     // now labels
     var textspot = svg.selectAll("text.toplabel")
       .data(ahexbin(this.calculatedPoints));
 
-    let dynamicLabelFontSize = activeLabelFontSize;
-    let dynamicValueFontSize = activeValueFontSize;
-    //console.log("DynamicLabelFontSize: " + dynamicLabelFontSize);
-    //console.log("DynamicValueFontSize: " + dynamicValueFontSize);
-    textspot
-      .enter()
+    textspot.enter()
       .append("text")
       .attr("class", "toplabel")
       .attr("x", function (d) { return d.x; })
-      .attr("y", function (d) { return d.y; })
+      .attr("y", function (d, i) {
+        let item = data[i];
+        let alignment = labelOnlyTextAlignment;
+        if (showValue(item)) {
+          alignment = labelWithValueTextAlignment;
+        }
+        return d.y + alignment;
+      })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
-      .attr("font-size", dynamicLabelFontSize + "px")
+      .attr("font-size", activeLabelFontSize + "px")
       .attr("fill", "black")
+      .style("pointer-events", "none")
       .text(function (_, i) {
         let item = data[i];
-        // check if property exist
-        if (!("showName" in item)) {
+        if (showName(item)) {
           return item.name;
         }
-        if (item.showName) {
-          return item.name;
-        } else {
-          return "";
-        }
+        return "";
       });
 
     var frames = 0;
-
 
     textspot.enter()
       .append("text")
       .attr("class", function(_, i) {
         return "valueLabel" + i;
       })
-      .attr("x", function (d) {
-        return d.x;
-      })
-      .attr("y", function (d) {
-        return d.y + (activeLabelFontSize / 2 ) + 20; // offset by fontsize and 10px vertical padding
+      .attr("x", function (d) { return d.x; })
+      .attr("y", function (d, i) {
+        let item = data[i];
+        let alignment = valueOnlyTextAlignment;
+        if (showName(item)) {
+          alignment = valueWithLabelTextAlignment;
+        }
+        return d.y + alignment;
       })
       .attr("text-anchor", "middle")
       .attr("font-family", this.opt.polystat.fontType)
       .attr("fill", "black")
-      .attr("font-size", dynamicLabelFontSize + "px")
+      .attr("font-size", activeValueFontSize + "px")
+      .style("pointer-events", "none")
       .text( (_, i) => {
         // animation/displaymode can modify what is being displayed
         let counter = 0;
         let dataLen = this.data.length;
-        // search for a value but not more than number of data items
-        // need to find the longest content string generated to determine the
-        // dynamic font size
-        // this always starts from frame 0, look through every metric including composite members for the longest text possible
-        // get the total count of metrics (with composite members), and loop through
-        let submetricCount = this.data[i].members.length;
-        //let longestDisplayedValueContent = "";
-        if (submetricCount > 0) {
-          while (counter < submetricCount) {
-            let checkContent = this.formatValueContent(i, counter, this);
-            if (checkContent) {
-              if (checkContent.length > longestDisplayedValueContent.length) {
-                longestDisplayedValueContent = checkContent;
-              }
-            }
-            counter++;
-          }
-        }// else {
-          // non-composites use the formatted size of the metric value
-        //  longestDisplayedValueContent = this.formatValueContent(i, counter, this);
-        //}
-        //console.log("animated: longestDisplayedValueContent: " + longestDisplayedValueContent);
         let content = null;
-        counter = 0;
         while ((content === null) && (counter < dataLen)) {
           content = this.formatValueContent(i, (frames + counter), this);
           counter++;
         }
-        dynamicValueFontSize = getTextSizeForWidthAndHeight(
-          longestDisplayedValueContent,
-          "?px sans-serif",  // use sans-serif for sizing
-          shapeWidth,   // pad
-          shapeHeight / 3,
-          6,
-          this.maxFont);
-        //console.log("Calc: Dynamic Value Font Size: " + dynamicValueFontSize);
-
-        // value should never be larger than the label
-        if (dynamicValueFontSize > dynamicLabelFontSize) {
-          dynamicValueFontSize = dynamicLabelFontSize;
-        }
-        //console.log("animated: dynamicLabelFontSize: " + dynamicLabelFontSize);
-        //console.log("animated: dynamicValueFontSize: " + dynamicValueFontSize);
         var valueTextLocation = svg.select("text.valueLabel" + i);
         // use the dynamic size for the value
-        valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+        valueTextLocation.attr("font-size", activeValueFontSize + "px");
         d3.interval( () => {
           var valueTextLocation = svg.select("text.valueLabel" + i);
           var compositeIndex = i;
           valueTextLocation.text( () => {
             // animation/displaymode can modify what is being displayed
-            valueTextLocation.attr("font-size", dynamicValueFontSize + "px");
+            valueTextLocation.attr("font-size", activeValueFontSize + "px");
 
             let content = null;
             let counter = 0;
@@ -667,28 +661,18 @@ export class D3Wrapper {
 
   getAutoHexRadius(): number {
     //The maximum radius the hexagons can have to still fit the screen
+    // With (long) radius being R:
+    // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
+    // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
+    let radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * ( 1 + 2 * this.numColumns));
+    let radiusFromHeight = (2 * this.opt.height) / (3 * this.numRows + 1);
     var hexRadius = d3.min(
       [
-        this.opt.width / ((this.numColumns + 0.5) * Math.sqrt(3)),
-        this.opt.height / ((this.numRows + 1 / 3) * 1.5)
+        radiusFromWidth,
+        radiusFromHeight
       ]
     );
     return hexRadius;
-  }
-
-  calculateSVGSize() {
-    // The height of the total display will be
-    // this.autoHeight = this.numRows * 3 / 2 * this.hexRadius + 1 / 2 * this.hexRadius;
-    // which is the same as
-    this.autoHeight = (this.numRows + 1 / 3) * 3 / 2 * this.hexRadius;
-    this.autoHeight -= this.margin.top - this.margin.bottom;
-    //console.log("autoheight = " + this.autoHeight);
-    // The width of the total display will be
-    // this.autoWidth = this.numColumns * Math.sqrt(3) * this.hexRadius + Math.sqrt(3) / 2 * this.hexRadius;
-    // which is the same as
-    this.autoWidth = (this.numColumns + 1 / 2) * Math.sqrt(3) * this.hexRadius;
-    this.autoWidth -= this.margin.left - this.margin.right;
-    //console.log("autowidth = " + this.autoWidth + " autoheight = " + this.autoHeight);
   }
 
   // Builds the placeholder polygons needed to represent each metric
@@ -710,11 +694,11 @@ export class D3Wrapper {
       return points;
     }
     for (var i = 0; i < this.numRows; i++) {
-      if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
         maxRowsUsed += 1;
         columnsUsed = 0;
         for (var j = 0; j < this.numColumns; j++) {
-          if ((points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
+          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && (points.length < this.data.length)) {
             columnsUsed += 1;
             // track the most number of columns
             if (columnsUsed > maxColumnsUsed) {

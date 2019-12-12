@@ -16,6 +16,7 @@ export class MetricComposite {
     animateMode: string;
     thresholdLevel: number;
     clickThrough: string;
+    newTabEnabled: boolean;
     sanitizeURLEnabled: boolean;
     sanitizedURL: string;
     label: string;
@@ -61,6 +62,7 @@ export class CompositesManager {
       aComposite.showValue = true;
       aComposite.animateMode = "all";
       aComposite.thresholdLevel = 0;
+      aComposite.newTabEnabled = true;
       aComposite.sanitizeURLEnabled = true;
       aComposite.sanitizedURL = "";
       this.metricComposites.push(aComposite);
@@ -179,6 +181,8 @@ export class CompositesManager {
           clone.showName = aComposite.showName;
           clone.showValue = aComposite.showValue;
           clone.animateMode = aComposite.animateMode;
+          clone.newTabEnabled = aComposite.newTabEnabled;
+          clone.sanitizeURLEnabled = aComposite.sanitizeURLEnabled;
           // mark this series as a compsite
           clone.isComposite = true;
           clonedComposites.push(clone);
@@ -198,10 +202,10 @@ export class CompositesManager {
       return data;
     }
 
-    metricNameChanged(item) {
-        // TODO: validate item is a valid regex
-        console.log(item);
-        this.$scope.ctrl.refresh();
+    metricNameChanged(metric) {
+      // TODO: validate item is a valid regex
+      console.log("metric name changed: '" + metric.seriesName + "'");
+      this.$scope.ctrl.refresh();
     }
 
     toggleHide(composite) {

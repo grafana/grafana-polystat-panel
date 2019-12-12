@@ -93,8 +93,8 @@ function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontP
 function getTextSizeForWidthAndHeight(text: string, font: any, width: number, height: number, minFontPx: number, maxFontPx: number) {
   var s = font.replace("?", maxFontPx);
   var w = getTextWidth(text, s);
-  // need to pad the width to allow space on each side
-  width = width - 72;
+  // need to pad the width: use 80% of the space (leave 10% padding on each side)
+  width = width * 0.8;
   //console.log("Estimating size for text: " + text + " inside width: " + width + " using font: " + font);
   if ((w <= width) && (maxFontPx <= height)) {
     return maxFontPx;
