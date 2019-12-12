@@ -4,7 +4,6 @@ import $ from 'jquery';
 import kbn from 'grafana/app/core/utils/kbn';
 import TimeSeries from 'grafana/app/core/time_series2';
 
-import './css/polystat.css!';
 import { D3Wrapper } from './d3wrapper';
 import { Transformers } from './transformers';
 import { PolystatModel } from './polystatmodel';
