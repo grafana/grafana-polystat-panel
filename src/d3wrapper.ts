@@ -699,7 +699,7 @@ export class D3Wrapper {
       //console.log("numRows infinity...");
       return points;
     }
-    if (this.numColumns === NaN) {
+    if (isNaN(this.numColumns)) {
       //console.log("numColumns NaN");
       return points;
     }
