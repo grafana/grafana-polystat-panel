@@ -30,7 +30,7 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "grafana/app/core/utils/kbn": "<rootDir>/src/__mocks__/app/core/utils/kbn.ts"
+      "grafana/app/core/utils/kbn": "<rootDir>/tests/__mocks__/app/core/utils/kbn.ts"
     }
   }
 }

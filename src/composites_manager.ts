@@ -150,6 +150,10 @@ export class CompositesManager {
         continue;
       }
       // now determine the most triggered threshold
+      const worstColor = this.$scope // required for testing
+        ? this.$scope.ctrl.panel.polystat.polygonGlobalFillColor
+        : '#F00';
+
       for (let k = 0; k < matchedMetrics.length; k++) {
         const itemIndex = matchedMetrics[k];
         const seriesItem = data[itemIndex];
@@ -157,7 +161,7 @@ export class CompositesManager {
         if (currentWorstSeries === null) {
           currentWorstSeries = seriesItem;
         } else {
-          currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem, this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
+          currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem, worstColor);
         }
       }
       // Prefix the valueFormatted with the actual metric name

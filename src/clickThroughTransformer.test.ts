@@ -2,11 +2,11 @@
  * Unit Test for clickParams
  */
 
-import { ClickThroughTransformer } from '../clickThroughTransformer';
+import { ClickThroughTransformer } from './clickThroughTransformer';
 
-import { PolystatModel } from '../polystatmodel';
+import { PolystatModel } from './polystatmodel';
 
-import { TimeSeries } from './timeseries';
+import { TimeSeries } from './specs/timeseries';
 
 jest.mock('app/core/utils/kbn');
 
