@@ -1,48 +1,11 @@
 {
-    "compilerOptions": {
-      "alwaysStrict": true,
-      "allowSyntheticDefaultImports": true,
-      "allowJs": false,
-      "declaration": true,
-      "emitDecoratorMetadata": true,
-      "esModuleInterop": true,
-      "experimentalDecorators": true,
-      "jsx": "react",
-      "inlineSourceMap": true,
-      "inlineSources": true,
-      "module": "system",
-      "moduleResolution": "node",
-      "noEmitOnError": false,
-      "noFallthroughCasesInSwitch": true,
-      "noImplicitReturns": true,
-      "noImplicitThis": true,
-      "noImplicitUseStrict":false,
-      "noImplicitAny": false,
-      "noUnusedParameters": true,
-      "noUnusedLocals": true,
-      "outDir": "dist",
-      "skipLibCheck": true,
-      "sourceMap": true,
-      "strictFunctionTypes": false,
-      "strictNullChecks": false,
-      "strictPropertyInitialization": false,
-      "rootDir": "src/",
-      "target": "es5",
-      "typeRoots": [ "node_modules/@types/" ]
-    },
-    "paths": {
-      "app/core/time_series2": ["node_modules/typed-some-module"]
-    },
-    "include": [
-      "src/**/*.ts",
-      "src/**/*.tsx",
-      "node_modules/grafana-sdk-mocks/app/headers/common.d.ts",
-      "node_modules/@types/grafana/index.d.ts",
-      "node_modules/@types/d3-hexbin/index.d.ts",
-      "node_modules/@types/d3/index.d.ts",
-      "node_modules/@types/lodash/index.d.ts"
-    ],
-    "exclude": [
-      "node_modules"
-    ]
+  "extends": "./node_modules/@grafana/toolkit/src/config/tsconfig.plugin.json",
+  "include": ["src", "types"],
+  "compilerOptions": {
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "typeRoots": ["./node_modules/@types"],
+    "noImplicitAny": false,
+    "strictNullChecks": false
+  }
 }
