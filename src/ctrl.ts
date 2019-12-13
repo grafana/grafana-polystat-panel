@@ -12,6 +12,7 @@ import { CompositesManager } from './composites_manager';
 import { Tooltip } from './tooltip';
 import { GetDecimalsForValue, RGBToHex } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
+import { PolystatConfigs } from 'types';
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   static templateUrl = 'partials/template.html';
@@ -319,32 +320,34 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     margin.bottom = 0;
 
+    const config: PolystatConfigs = this.panel.polystat;
+
     // new attributes may not be defined in older panel definitions
-    if (typeof this.panel.polystat.polygonBorderSize === 'undefined') {
-      this.panel.polystat.polygonBorderSize = 2;
+    if (typeof config.polygonBorderSize === 'undefined') {
+      config.polygonBorderSize = 2;
     }
-    if (typeof this.panel.polystat.polygonBorderColor === 'undefined') {
-      this.panel.polystat.polygonBorderColor = 'black';
+    if (typeof config.polygonBorderColor === 'undefined') {
+      config.polygonBorderColor = 'black';
     }
 
     const opt = {
       width: width,
       height: height,
-      radius: this.panel.polystat.radius,
-      radiusAutoSize: this.panel.polystat.radiusAutoSize,
-      tooltipFontSize: this.panel.polystat.tooltipFontSize,
-      tooltipFontType: this.panel.polystat.tooltipFontType,
+      radius: config.radius,
+      radiusAutoSize: config.radiusAutoSize,
+      tooltipFontSize: config.tooltipFontSize,
+      tooltipFontType: config.tooltipFontType,
       data: this.polystatData,
-      displayLimit: this.panel.polystat.displayLimit,
-      globalDisplayMode: this.panel.polystat.globalDisplayMode,
-      columns: this.panel.polystat.columns,
-      columnAutoSize: this.panel.polystat.columnAutoSize,
-      rows: this.panel.polystat.rows,
-      rowAutoSize: this.panel.polystat.rowAutoSize,
+      displayLimit: config.displayLimit,
+      globalDisplayMode: config.globalDisplayMode,
+      columns: config.columns,
+      columnAutoSize: config.columnAutoSize,
+      rows: config.rows,
+      rowAutoSize: config.rowAutoSize,
       tooltipContent: this.tooltipContent,
-      animationSpeed: this.panel.polystat.animationSpeed,
+      animationSpeed: config.animationSpeed,
       defaultClickThrough: this.getDefaultClickThrough(NaN),
-      polystat: this.panel.polystat,
+      polystat: config,
     };
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
     this.d3Object.draw();
