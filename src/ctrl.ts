@@ -423,8 +423,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
-    // filter out by globalDisplayMode
-    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
     this.polystatData = _.orderBy(this.polystatData, [this.panel.polystat.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
     // this needs to be performed after sorting rules are applied
@@ -442,6 +440,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }
     }
+    // filter out by globalDisplayMode
+    this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
   }
