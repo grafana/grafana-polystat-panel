@@ -193,13 +193,8 @@ Then browse to http://localhost:3000
 
 ## External Dependencies
 
-* Grafana 3.x/4.x/5.x
+* Grafana 4.x/5.x/6.x
 
-## Build Dependencies
-
-* npm
-* bower
-* grunt
 
 ## Enable Grafana TestData
 
@@ -210,9 +205,5 @@ Then browse to http://localhost:3000
 
 This panel is based on this D3 example:
 * https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
-
-
-#### Changelog
-
 
 
