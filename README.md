@@ -167,17 +167,16 @@ The names and values of a composite polygon can be referenced using the followin
 
 ## Building
 
-This plugin relies on Grunt/NPM/Bower, typical build sequence:
+This plugin relies on `@grafana/toolkit`, typical build sequence:
 
 ```
-npm install
-bower install
-grunt
+yarn install
+yarn build
 ```
 
 For development, you can run:
 ```
-grunt watch
+yarn watch
 ```
 The code will be parsed then copied into "dist" if "jslint" passes without errors.
 

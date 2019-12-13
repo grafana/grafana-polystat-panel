@@ -1,20 +1,17 @@
 /**
  * Tooltip generation
  */
-import _ from "lodash";
+import _ from 'lodash';
 
 export class Tooltip {
-  static generate(scope, data, polystat) : string[] {
-    let items = [];
+  static generate(scope, data, polystat): string[] {
+    const items = [];
     for (let index = 0; index < data.length; index++) {
-      let tooltipTimeFormat = "YYYY-MM-DD HH:mm:ss";
-      let time = scope
-        .ctrl
-        .dashboard
-        .formatDate(data[index].timestamp, tooltipTimeFormat);
-      let timestampContent = "";
-      if (polystat.tooltipDisplayMode === "triggered") {
-        let triggeredCount = Tooltip.getTriggeredCount(data[index]);
+      const tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';
+      const time = scope.ctrl.dashboard.formatDate(data[index].timestamp, tooltipTimeFormat);
+      let timestampContent = '';
+      if (polystat.tooltipDisplayMode === 'triggered') {
+        const triggeredCount = Tooltip.getTriggeredCount(data[index]);
         if (triggeredCount === 0) {
           // use the displaytext instead
           if (polystat.tooltipTimestampEnabled) {
@@ -22,7 +19,7 @@ export class Tooltip {
               <div class="polystat-panel-tooltip-time">${time}</div>
             `;
           }
-          let content = `
+          const content = `
           <div class="polystat-panel-tooltip-displaytext-empty-compositename">${data[index].name}</div>
           <div class="polystat-panel-tooltip-displaytext-empty">${polystat.tooltipDisplayTextTriggeredEmpty}</div>
           ${timestampContent}
@@ -31,7 +28,7 @@ export class Tooltip {
           continue;
         }
       }
-      let content = [];
+      const content = [];
       if (polystat.tooltipTimestampEnabled) {
         timestampContent = `
           <tr>
@@ -62,21 +59,21 @@ export class Tooltip {
       */
       if (data[index].members.length > 0) {
         // sort members
-        let sortedMembers = _.orderBy(
+        const sortedMembers = _.orderBy(
           data[index].members,
           [scope.ctrl.panel.polystat.tooltipPrimarySortField, scope.ctrl.panel.polystat.tooltipSecondarySortField],
           [scope.ctrl.panel.polystat.tooltipPrimarySortDirection, scope.ctrl.panel.polystat.tooltipSecondarySortDirection]
         );
         for (let j = 0; j < sortedMembers.length; j++) {
-          let aMember = sortedMembers[j];
-          let aRow = `
+          const aMember: any = sortedMembers[j];
+          const aRow = `
             <tr>
               <td style="text-align: left; color: ${aMember.color}">${aMember.name}</td>
               <td style="text-align: right; color: ${aMember.color}">${aMember.valueFormatted}</td>
             </tr>
           `;
           switch (polystat.tooltipDisplayMode) {
-            case "triggered":
+            case 'triggered':
               if (aMember.thresholdLevel !== 0) {
                 content.push(aRow);
               }
@@ -87,14 +84,14 @@ export class Tooltip {
           }
         }
       } else {
-        let aRow = `
+        const aRow = `
         <tr>
           <td style="text-align: left; color: ${data[index].color}">${data[index].name}</td>
           <td style="text-align: right; color: ${data[index].color}">${data[index].valueFormatted}</td>
         </tr>
         `;
         switch (polystat.tooltipDisplayMode) {
-          case "triggered":
+          case 'triggered':
             if (data[index].thresholdLevel !== 0) {
               content.push(aRow);
             }
@@ -104,8 +101,8 @@ export class Tooltip {
             break;
         }
       }
-      content.push("</tbody></table>");
-      items.push(content.join("\n"));
+      content.push('</tbody></table>');
+      items.push(content.join('\n'));
     }
     return items;
   }
