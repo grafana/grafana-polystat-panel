@@ -108,7 +108,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   dataRaw: any;
   polystatData: PolystatModel[];
   scoperef: any;
-  alertSrvRef: any;
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
@@ -169,14 +168,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   };
 
   /** @ngInject */
-  constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
+  constructor($scope, $injector, templateSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaultsDeep(this.panel, this.panelDefaults);
 
     this.d3DivId = 'd3_svg_' + this.panel.id;
     this.containerDivId = 'container_' + this.d3DivId;
-    this.alertSrvRef = alertSrv;
     this.initialized = false;
     this.panelContainer = null;
     this.templateSrv = templateSrv;
@@ -416,19 +414,20 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
+    const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         const aSeries = this.series[index];
-        const converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
+        const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
         this.polystatData.push(converted);
       }
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
     // now sort
-    this.polystatData = _.orderBy(this.polystatData, [this.panel.polystat.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
+    this.polystatData = _.orderBy(this.polystatData, [config.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
     // this needs to be performed after sorting rules are applied
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
@@ -439,15 +438,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       if (this.polystatData[index].clickThrough.length === 0) {
         // add the series alias as a var to the clickthroughurl
         this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
-        this.polystatData[index].newTabEnabled = this.panel.polystat.defaultClickThroughNewTab;
-        this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
+        this.polystatData[index].newTabEnabled = config.defaultClickThroughNewTab;
+        this.polystatData[index].sanitizeURLEnabled = config.defaultClickThroughSanitize;
         this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }
     }
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
-    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
+    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, config);
   }
 
   applyGlobalFormatting(data: any) {

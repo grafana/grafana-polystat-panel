@@ -3,7 +3,7 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
-import { MetricOverride, PolystatThreshold } from 'types';
+import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
 
 export class MetricOverridesManager {
   metricOverrides: MetricOverride[];
@@ -57,7 +57,7 @@ export class MetricOverridesManager {
     this.metricOverrides.push(override);
   }
 
-  removeMetricOverride(override) {
+  removeMetricOverride(override: MetricOverride) {
     // lodash _.without creates a new array, need to reassign to the panel where it will be saved
     this.metricOverrides = _.without(this.metricOverrides, override);
     // fix the labels
@@ -69,19 +69,19 @@ export class MetricOverridesManager {
     this.$scope.ctrl.refresh();
   }
 
-  metricNameChanged(override) {
+  metricNameChanged(override: MetricOverride) {
     // TODO: validate item is a valid regex
     console.log("metricNameChanged: '" + override.metricName + "'");
     this.$scope.ctrl.refresh();
   }
 
-  toggleHide(override) {
+  toggleHide(override: MetricOverride) {
     //console.log("override enabled =  " + override.enabled);
     override.enabled = !override.enabled;
     this.$scope.ctrl.refresh();
   }
 
-  matchOverride(pattern): number {
+  matchOverride(pattern: string): number {
     for (let index = 0; index < this.metricOverrides.length; index++) {
       const anOverride = this.metricOverrides[index];
       const regex = stringToJsRegex(anOverride.metricName);
@@ -94,6 +94,7 @@ export class MetricOverridesManager {
   }
 
   applyOverrides(data) {
+    const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
       const matchIndex = this.matchOverride(data[index].name);
       if (matchIndex >= 0) {
@@ -104,7 +105,11 @@ export class MetricOverridesManager {
         const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
         //console.log("series2 operator: " + series2.operatorName);
         //console.log("series2 value: " + series2Value);
-        const result = getThresholdLevelForValue(anOverride.thresholds, dataValue, this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
+
+        // Use defaults or the specific threshold
+        const thresholds = anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;
+
+        const result = getThresholdLevelForValue(thresholds, dataValue, config.polygonGlobalFillColor);
         // set value to what was returned
         data[index].value = dataValue;
         data[index].color = result.color;
@@ -134,6 +139,11 @@ export class MetricOverridesManager {
             data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
           }
         }
+      } else if (config.globalThresholds && config.globalThresholds.length) {
+        const result = getThresholdLevelForValue(config.globalThresholds, data[index].value, config.polygonGlobalFillColor);
+        // set value to what was returned
+        data[index].color = result.color;
+        data[index].thresholdLevel = result.thresholdLevel;
       }
     }
   }
