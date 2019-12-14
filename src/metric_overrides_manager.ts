@@ -1,27 +1,9 @@
 import _ from 'lodash';
 import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
-import { RGBToHex } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
-
-export class MetricOverride {
-  label: string;
-  metricName: string;
-  thresholds: any[];
-  colors: string[];
-  unitFormat: string;
-  decimals: string;
-  scaledDecimals: number;
-  enabled: boolean;
-  operatorName: string; // avg/min/max etc
-  prefix: string;
-  suffix: string;
-  clickThrough: string;
-  newTabEnabled: boolean;
-  sanitizeURLEnabled: boolean;
-  sanitizedURL: string;
-}
+import { MetricOverride, PolystatThreshold } from 'types';
 
 export class MetricOverridesManager {
   metricOverrides: MetricOverride[];
@@ -156,47 +138,9 @@ export class MetricOverridesManager {
     }
   }
 
-  addThreshold(override) {
-    override.thresholds.push({
-      value: 0,
-      state: 0,
-      color: '#299c46',
-    });
-    this.sortThresholds(override);
-  }
-
-  // store user selection of color to be used for all items with the corresponding state
-  setThresholdColor(threshold) {
-    //console.log("setThresholdColor: color set to " + threshold.color);
-    threshold.color = RGBToHex(threshold.color);
-    //console.log("setThresholdColor: parsed color set to " + threshold.color);
-    this.$scope.ctrl.refresh();
-  }
-
-  validateThresholdColor(threshold) {
-    console.log('Validate color ' + threshold.color);
-    this.$scope.ctrl.refresh();
-  }
-
-  updateThresholdColor(override, threshold) {
-    // threshold.state determines the color used
-    //console.log("threshold state = " + threshold.state);
-    //console.log("override color[0]: " + override.colors[0]);
-    //console.log("override color[1]: " + override.colors[1]);
-    //console.log("override color[2]: " + override.colors[2]);
-    threshold.color = override.colors[threshold.state];
-    this.$scope.ctrl.refresh();
-  }
-
-  sortThresholds(override) {
-    override.thresholds = _.orderBy(override.thresholds, ['value'], ['asc']);
-    this.$scope.ctrl.refresh();
-  }
-
-  removeThreshold(override, threshold) {
-    override.thresholds = _.without(override.thresholds, threshold);
-    this.sortThresholds(override);
-  }
+  onSetThresholds = (thresholds: PolystatThreshold[]) => {
+    console.log('OVERRIDE (threshold)', thresholds);
+  };
 
   setUnitFormat(override, subItem) {
     override.unitFormat = subItem.value;

@@ -24,12 +24,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     { value: 'all', text: 'Show All' },
     { value: 'triggered', text: 'Show Triggered' },
   ];
-  thresholdStates = [
-    { value: 0, text: 'ok' },
-    { value: 1, text: 'warning' },
-    { value: 2, text: 'critical' },
-    { value: 3, text: 'custom' },
-  ];
   shapes = [
     { value: 'hexagon_pointed_top', text: 'Hexagon Pointed Top' },
     //{ value: 'hexagon_flat_top', text: 'Hexagon Flat Top' },
@@ -371,6 +365,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   addRangeMap() {
     this.panel.rangeMaps.push({ from: '', to: '', text: '' });
+  }
+
+  // Called for global or override
+  onThresholdsChanged = () => {
+    console.log('XXXXXX', this.panel );
   }
 
   link(scope, elem, attrs, ctrl) {

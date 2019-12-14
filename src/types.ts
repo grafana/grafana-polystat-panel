@@ -1,3 +1,27 @@
+export interface PolystatThreshold {
+  color: string;
+  state: number;
+  value: number;
+}
+
+export class MetricOverride {
+  label: string;
+  metricName: string;
+  thresholds: PolystatThreshold[];
+  colors: string[];
+  unitFormat: string;
+  decimals: string;
+  scaledDecimals: number;
+  enabled: boolean;
+  operatorName: string; // avg/min/max etc
+  prefix: string;
+  suffix: string;
+  clickThrough: string;
+  newTabEnabled: boolean;
+  sanitizeURLEnabled: boolean;
+  sanitizedURL: string;
+}
+
 export interface PolystatConfigs {
   animationSpeed: number;
   columns: any;
@@ -14,6 +38,7 @@ export interface PolystatConfigs {
   globalDisplayMode: string;
   globalOperatorName: string;
   globalDisplayTextTriggeredEmpty: string;
+  globalThresholds?: PolystatThreshold[];
   gradientEnabled: boolean;
   hexagonSortByDirection: string;
   hexagonSortByField: string;
