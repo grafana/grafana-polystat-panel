@@ -249,6 +249,9 @@
     </div>
   </div>
 
-  <poly-thresholds thresholds="ctrl.panel.polystat.globalThresholds" onChange="ctrl.onThresholdsChanged()" />
+  <poly-thresholds 
+    thresholds="ctrl.panel.polystat.globalThresholds" 
+    colors="ctrl.panel.colors"
+    callback="ctrl.onThresholdsChanged()"/>
 
 </div>

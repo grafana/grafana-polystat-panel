@@ -368,8 +368,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   // Called for global or override
-  onThresholdsChanged = () => {
-    console.log('XXXXXX', this.panel );
+  onThresholdsChanged(override?: any) {
+    // Query and reprocess
+    this.panel.refresh();
   }
 
   link(scope, elem, attrs, ctrl) {

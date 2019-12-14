@@ -93,7 +93,11 @@
           </div>
         </div>
 
-        <poly-thresholds thresholds="override.thresholds" override="override" onChange="ctrl.onThresholdsChanged(override)"/>
+        <poly-thresholds 
+          thresholds="override.thresholds" 
+          override="override" 
+          colors="override.colors"
+          callback="ctrl.onThresholdsChanged(override)"/>
 
       </div> <!-- end section group-->
     <div class="clearfix"></div>
