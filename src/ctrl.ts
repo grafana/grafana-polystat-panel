@@ -107,7 +107,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   dataRaw: any;
   polystatData: PolystatModel[];
-  scoperef: any;
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
