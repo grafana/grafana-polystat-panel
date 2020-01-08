@@ -1,5 +1,8 @@
 # Grafana Polystat Panel
 [![CircleCI](https://circleci.com/gh/grafana/grafana-polystat-panel.svg?style=svg&circle-token=b78cf4ee3d98c447a7473f542a8dee69f9901f4d)](https://circleci.com/gh/grafana/grafana-polystat-panel)
+[![David Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel.svg)](https://david-dm.org/grafana/grafana-polystat-panel)
+[![David Dev Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel/dev-status.svg)](https://david-dm.org/grafana/grafana-polystat-panel/?type=dev)
+[![Known Vulnerabilities](https://snyk.io/test/github/grafana/grafana-polystat-panel/badge.svg)](https://snyk.io/test/github/grafana/grafana-polystat-panel)
 
 This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](https://grafana.com/) 3.x/4.x/5.x.
 
@@ -205,5 +208,3 @@ Then browse to http://localhost:3000
 
 This panel is based on this D3 example:
 * https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
-
-
