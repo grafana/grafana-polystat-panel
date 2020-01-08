@@ -180,12 +180,4 @@ function SortVariableValuesByField(options, field: any, sortOrder: number) {
   return options;
 }
 
-export {
-GetDecimalsForValue,
-getTextSizeForWidth,
-getTextSizeForWidthAndHeight,
-getTextWidth,
-RGBToHex,
-SortVariableValuesByField
-};
-
+export { GetDecimalsForValue, getTextSizeForWidth, getTextSizeForWidthAndHeight, getTextWidth, RGBToHex, SortVariableValuesByField };

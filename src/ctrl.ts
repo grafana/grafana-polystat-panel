@@ -106,13 +106,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   ];
   // new method for sorting same as template vars
   sortOptions = [
-    { value: 0, text: "Disabled" },
-    { value: 1, text: "Alphabetical (asc)" },
-    { value: 2, text: "Alphabetical (desc)" },
-    { value: 3, text: "Numerical (asc)" },
-    { value: 4, text: "Numerical (desc)" },
-    { value: 5, text: "Alphabetical (case-insensitive, asc)" },
-    { value: 6, text: "Alphabetical (case-insensitive, desc)" },
+    { value: 0, text: 'Disabled' },
+    { value: 1, text: 'Alphabetical (asc)' },
+    { value: 2, text: 'Alphabetical (desc)' },
+    { value: 3, text: 'Numerical (asc)' },
+    { value: 4, text: 'Numerical (desc)' },
+    { value: 5, text: 'Alphabetical (case-insensitive, asc)' },
+    { value: 6, text: 'Alphabetical (case-insensitive, desc)' },
   ];
 
   dataRaw: any;
@@ -207,22 +207,22 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   migrateSortDirections() {
-    if (this.panel.polystat.hexagonSortByDirection === "asc") {
+    if (this.panel.polystat.hexagonSortByDirection === 'asc') {
       this.panel.polystat.hexagonSortByDirection = 1;
     }
-    if (this.panel.polystat.hexagonSortByDirection === "desc") {
+    if (this.panel.polystat.hexagonSortByDirection === 'desc') {
       this.panel.polystat.hexagonSortByDirection = 2;
     }
-    if (this.panel.polystat.tooltipPrimarySortDirection === "asc") {
+    if (this.panel.polystat.tooltipPrimarySortDirection === 'asc') {
       this.panel.polystat.tooltipPrimarySortDirection = 1;
     }
-    if (this.panel.polystat.tooltipPrimarySortDirection === "desc") {
+    if (this.panel.polystat.tooltipPrimarySortDirection === 'desc') {
       this.panel.polystat.tooltipPrimarySortDirection = 2;
     }
-    if (this.panel.polystat.tooltipSecondarySortDirection === "asc") {
+    if (this.panel.polystat.tooltipSecondarySortDirection === 'asc') {
       this.panel.polystat.tooltipSecondarySortDirection = 1;
     }
-    if (this.panel.polystat.tooltipSecondarySortDirection === "desc") {
+    if (this.panel.polystat.tooltipSecondarySortDirection === 'desc') {
       this.panel.polystat.tooltipSecondarySortDirection = 2;
     }
   }
@@ -478,14 +478,18 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
-    this.polystatData = SortVariableValuesByField(this.polystatData, "name", this.panel.polystat.hexagonSortByDirection);
+    this.polystatData = SortVariableValuesByField(this.polystatData, 'name', this.panel.polystat.hexagonSortByDirection);
     this.polystatData = _.orderBy(
       this.polystatData,
-      function (o) {
-        if (isNaN(o.name)) { return o.name; } else { return Number(o.name); }
-      }
-      [this.panel.polystat.hexagonSortByField],
-      [this.panel.polystat.hexagonSortByDirection]);
+      function(o) {
+        if (isNaN(o.name)) {
+          return o.name;
+        } else {
+          return Number(o.name);
+        }
+      }[this.panel.polystat.hexagonSortByField],
+      [this.panel.polystat.hexagonSortByDirection]
+    );
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, config);
   }
