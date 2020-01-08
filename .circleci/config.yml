@@ -2,18 +2,13 @@ version: 2
 jobs:
   build_plugin:
     docker:
-    - image: circleci/node:10
+    - image: circleci/node:12
     working_directory: ~/plugin
     steps:
     - checkout
     - restore_cache:
         keys:
         - yarn-packages-{{ checksum "yarn.lock" }}
-    - run:
-        name: Install yarn
-        command: |
-          sudo npm install -g yarn --quiet
-          yarn install --pure-lockfile
     - run:
         name: Run Toolkit Build
         command: npx grafana-toolkit plugin:ci-build
@@ -27,7 +22,7 @@ jobs:
         - ci
   build_docs:
     docker:
-    - image: circleci/node:10
+    - image: circleci/node:12
     working_directory: ~/plugin
     steps:
     - checkout
@@ -53,7 +48,7 @@ jobs:
         - ci
   package:
     docker:
-    - image: circleci/node:10
+    - image: circleci/node:12
     working_directory: ~/plugin
     steps:
     - checkout
@@ -74,7 +69,7 @@ jobs:
         - ci/grafana-test-env
   test_6_4_0:
     docker:
-    - image: circleci/node:10-browsers
+    - image: circleci/node:12-browsers
     working_directory: ~/plugin
     steps:
     - checkout
