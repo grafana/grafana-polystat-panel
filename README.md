@@ -1,7 +1,7 @@
 # Grafana Polystat Panel
 [![CircleCI](https://circleci.com/gh/grafana/grafana-polystat-panel.svg?style=svg&circle-token=b78cf4ee3d98c447a7473f542a8dee69f9901f4d)](https://circleci.com/gh/grafana/grafana-polystat-panel)
 
-This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](http://www.grafana.org) 3.x/4.x/5.x.
+This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](https://grafana.com/) 3.x/4.x/5.x.
 
 A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
@@ -167,17 +167,16 @@ The names and values of a composite polygon can be referenced using the followin
 
 ## Building
 
-This plugin relies on Grunt/NPM/Bower, typical build sequence:
+This plugin relies on `@grafana/toolkit`, typical build sequence:
 
 ```
-npm install
-bower install
-grunt
+yarn install
+yarn build
 ```
 
 For development, you can run:
 ```
-grunt watch
+yarn watch
 ```
 The code will be parsed then copied into "dist" if "jslint" passes without errors.
 
@@ -194,13 +193,8 @@ Then browse to http://localhost:3000
 
 ## External Dependencies
 
-* Grafana 3.x/4.x/5.x
+* Grafana 4.x/5.x/6.x
 
-## Build Dependencies
-
-* npm
-* bower
-* grunt
 
 ## Enable Grafana TestData
 
@@ -211,9 +205,5 @@ Then browse to http://localhost:3000
 
 This panel is based on this D3 example:
 * https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html
-
-
-#### Changelog
-
 
 

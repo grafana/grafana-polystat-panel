@@ -12,23 +12,22 @@
   array[][x,y]
 */
 
-import {flatten} from "./flatten";
-import _ from "lodash";
-import {PolystatModel} from "./polystatmodel";
+import { flatten } from './flatten';
+import _ from 'lodash';
+import { PolystatModel } from './polystatmodel';
 
 export class Transformers {
-
   static TimeSeriesToPolystat(operatorName: string, series: any): any {
     //console.log("Converting time series to hexbin");
     // only use min length, and start from the "end"
     // use timestamp of X
     //let tsLength = series.datapoints.length;
     //let bins = [];
-    let aPolystat = new PolystatModel(operatorName, series);
+    const aPolystat = new PolystatModel(operatorName, series);
     //console.log("Number of time series in X: " + tsLength);
     //for (let index = tsLength - 1; index >= 0; index--) {
     //for (let index = 0; index < tsLength; index++) {
-      // get the number of metrics
+    // get the number of metrics
     //  let aPolystat = new PolystatModel(series);
     //  bins.push(aPolystat);
     //}
@@ -61,8 +60,7 @@ export class Transformers {
   }
   */
 
-
-/*
+  /*
   static TableDataToHexbin(tableData : any, xColumn : number, yColumn : number) : PolystatModel {
     let bins = new PolystatModel([]);
     console.log(tableData[0].type);
@@ -86,19 +84,19 @@ export class Transformers {
     if (!data || data.length === 0) {
       return [];
     }
-    var names: any = {};
-    for (var i = 0; i < data.length; i++) {
-      var series = data[i];
-      if (series.type !== "docs") {
+    const names: any = {};
+    for (let i = 0; i < data.length; i++) {
+      const series = data[i];
+      if (series.type !== 'docs') {
         continue;
       }
 
       // only look at 100 docs
-      var maxDocs = Math.min(series.datapoints.length, 100);
-      for (var y = 0; y < maxDocs; y++) {
-        var doc = series.datapoints[y];
-        var flattened = flatten(doc, null);
-        for (var propName in flattened) {
+      const maxDocs = Math.min(series.datapoints.length, 100);
+      for (let y = 0; y < maxDocs; y++) {
+        const doc = series.datapoints[y];
+        const flattened = flatten(doc, null);
+        for (const propName in flattened) {
           if (flattened.hasOwnProperty(propName)) {
             names[propName] = true;
           }
@@ -107,9 +105,8 @@ export class Transformers {
     }
 
     // TODO: this was value: key in original code
-    return _.map(names, function (value, key) {
+    return _.map(names, (value, key) => {
       return { text: key, value: value };
     });
   }
 }
-

@@ -1,82 +1,105 @@
 <div class="editor-row">
-	<div class="section gf-form-group">
-		<h5 class="section-heading">Layout</h5>
-		<div class="gf-form-inline">
-			<div class="gf-form">
-        		<label class="gf-form-label width-8">Columns
-					<tip>Number of columns</tip>
-				</label>
-				<input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.columns" ng-blur="ctrl.validateColumnValue()"
-					placeholder="auto">
-			</div>
-			<gf-form-switch 
-				class="gf-form" label-class="width-6" label="Auto Size"
-				checked="ctrl.panel.polystat.columnAutoSize"
-				on-change="ctrl.render()">
-			</gf-form-switch>
-		</div>
-		<div class="gf-form-inline">
-			<div class="gf-form">
-				<label class="gf-form-label width-8">Rows
-					<tip>Number of rows</tip>
-				</label>
-				<input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.rows" ng-blur="ctrl.validateRowValue()" placeholder="auto">
-			</div>
-			<gf-form-switch
-			  class="gf-form" label-class="width-6" label="Auto Size"
-			  checked="ctrl.panel.polystat.rowAutoSize" on-change="ctrl.refresh()">
-			</gf-form-switch>
-		</div>
-		<div class="gf-form-inline">
-			<div class="gf-form">
-				<label class="gf-form-label width-8">Display Limit
-					<tip>Max number of metrics to display, 0 for no limit</tip>
-				</label>
-				<input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.displayLimit" ng-blur="ctrl.refresh()" placeholder="0">
-			</div>
-		</div>
-	</div>
-
-	<div class="section gf-form-group">
-		<h5 class="section-heading">Sizing</h5>
-		<div class="gf-form-inline">
-			<div class="gf-form">
-				<label class="gf-form-label width-11">Polygon Size
-					<tip>Radius of Polygon</tip>
-				</label>
-				<input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.radius" ng-blur="ctrl.validateRadiusValue()" placeholder="20">
-				<gf-form-switch class="gf-form" label-class="width-4" label="Auto"
-					checked="ctrl.panel.polystat.radiusAutoSize" on-change="ctrl.refresh()">
-				</gf-form-switch>
-			</div>
-		</div>
-		<div class="gf-form-inline">
-			<div class="gf-form">
-				<label class="gf-form-label width-11">Polygon Border Size
-					<tip>Border size of Polygon</tip>
-				</label>
-				<input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.polygonBorderSize" ng-blur="ctrl.validateBorderSizeValue()" placeholder="2">
-			</div>
+  <div class="section gf-form-group">
+    <h5 class="section-heading">Layout</h5>
+    <div class="gf-form-inline">
+      <div class="gf-form">
+            <label class="gf-form-label width-8">Columns
+          <tip>Number of columns</tip>
+        </label>
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.columns" ng-blur="ctrl.validateColumnValue()" ng-disabled="ctrl.panel.polystat.columnAutoSize"
+          placeholder="auto">
+      </div>
+      <gf-form-switch 
+        class="gf-form" label-class="width-6" label="Auto Size"
+        checked="ctrl.panel.polystat.columnAutoSize"
+        on-change="ctrl.validateColumnValue()">
+      </gf-form-switch>
     </div>
-		<div class="gf-form-inline">
+    <div class="gf-form-inline">
+      <div class="gf-form">
+        <label class="gf-form-label width-8">Rows
+          <tip>Number of rows</tip>
+        </label>
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.rows" ng-blur="ctrl.validateRowValue()" ng-disabled="ctrl.panel.polystat.rowAutoSize" placeholder="auto">
+      </div>
+      <gf-form-switch
+        class="gf-form" label-class="width-6" label="Auto Size"
+        checked="ctrl.panel.polystat.rowAutoSize" on-change="ctrl.validateRowValue()">
+      </gf-form-switch>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form">
+        <label class="gf-form-label width-8">Display Limit
+          <tip>Max number of metrics to display (0 for no limit, 100 default)</tip>
+        </label>
+        <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.displayLimit" ng-blur="ctrl.validateDisplayLimit()" placeholder="unlimited">
+      </div>
+    </div>
+  </div>
+
+  <div class="section gf-form-group">
+    <h5 class="section-heading">Sizing</h5>
+    <div class="gf-form-inline">
+      <div class="gf-form">
+        <label class="gf-form-label width-11">Polygon Size
+          <tip>Radius of Polygon</tip>
+        </label>
+        <input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.radius" ng-blur="ctrl.validateRadiusValue()" ng-disabled="ctrl.panel.polystat.radiusAutoSize" placeholder="auto">
+        <gf-form-switch class="gf-form" label-class="width-4" label="Auto"
+          checked="ctrl.panel.polystat.radiusAutoSize" on-change="ctrl.validateRadiusValue()">
+        </gf-form-switch>
+      </div>
+    </div>
+    <div class="gf-form-inline">
+      <div class="gf-form">
+        <label class="gf-form-label width-11">Polygon Border Size
+          <tip>Border size of Polygon</tip>
+        </label>
+        <input type="number" class="gf-form-input width-6" ng-model="ctrl.panel.polystat.polygonBorderSize" ng-blur="ctrl.validateBorderSizeValue()" placeholder="2">
+      </div>
+    </div>
+    <div class="gf-form-inline">
         <div class="gf-form">
-				<label class="gf-form-label width-11">Font Size
-					<tip>Font Size</tip>
-				</label>
-				<div class="gf-form-select-wrapper width-6">
-					<select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.fontSizes"
-			    		ng-change="ctrl.refresh()">
-					</select>
-				</div>
+        <label class="gf-form-label width-11">Font Size
+          <tip>Font Size</tip>
+        </label>
+        <div class="gf-form-select-wrapper width-6">
+          <select class="gf-form-input" ng-model="ctrl.panel.polystat.fontSize" ng-options="f for f in ctrl.fontSizes" ng-disabled="ctrl.panel.polystat.fontAutoScale"
+              ng-change="ctrl.refresh()">
+          </select>
+        </div>
       </div>
       </div>
   <div class="gf-form-inline">
-			<div class="gf-form">
-				<gf-form-switch class="gf-form" label-class="width-11" label="Auto Scale Font" checked="ctrl.panel.polystat.fontAutoScale"
-	    			on-change="ctrl.refresh()">
-				</gf-form-switch>
-			</div>
-	</div>
+      <div class="gf-form">
+        <gf-form-switch class="gf-form" label-class="width-11" label="Auto Scale Font" checked="ctrl.panel.polystat.fontAutoScale"
+            on-change="ctrl.refresh()">
+        </gf-form-switch>
+      </div>
+  </div>
+  </div>
+  <div class="section gf-form-group">
+    <h5 class="section-heading">Sorting</h5>
+      <div class="gf-form">
+      <label class="gf-form-label width-10">Sort Direction
+        <tip>Sort direction</tip>
+      </label>
+      <div class="gf-form-select-wrapper width-12">
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+          ng-change="ctrl.refresh()">
+        </select>
+      </div>
+      </div>
+      <div class="gf-form">
+      <label class="gf-form-label width-10">Sort Field
+        <tip>Field to sort by</tip>
+      </label>
+      <div class="gf-form-select-wrapper width-12">
+        <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
+          ng-change="ctrl.refresh()">
+        </select>
+      </div>
+      </div>
   </div>
 	<div class="section gf-form-group">
 		<h5 class="section-heading">Sorting</h5>
@@ -86,7 +109,7 @@
 			</label>
 			<div class="gf-form-select-wrapper width-12">
 				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
-				 ng-change="ctrl.refresh()">
+				  ng-change="ctrl.refresh()">
 				</select>
 			</div>
 			</div>
@@ -96,20 +119,20 @@
 			</label>
 			<div class="gf-form-select-wrapper width-12">
 				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-				 ng-change="ctrl.refresh()">
+				  ng-change="ctrl.refresh()">
 				</select>
 			</div>
 			</div>
 	</div>
 
 
-	<div class="section gf-form-group">
-	<h5 class="section-heading">Tooltips</h5>
-	<div class="gf-form-inline">
-		<gf-form-switch class="gf-form" label-class="width-13" label="Show Timestamp" checked="ctrl.panel.polystat.tooltipTimestampEnabled"
-			on-change="ctrl.refresh()">
-		</gf-form-switch>
-	</div>
+  <div class="section gf-form-group">
+  <h5 class="section-heading">Tooltips</h5>
+  <div class="gf-form-inline">
+    <gf-form-switch class="gf-form" label-class="width-13" label="Show Timestamp" checked="ctrl.panel.polystat.tooltipTimestampEnabled"
+      on-change="ctrl.refresh()">
+    </gf-form-switch>
+  </div>
 
   <div class="gf-form-inline">
     <div class="gf-form">
@@ -127,44 +150,44 @@
     </div>
   </div>
 
-	<div class="gf-form">
-		<label class="gf-form-label width-13">Primary Sort Direction
-			<tip>Primary sort direction</tip>
-		</label>
-		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
-			 ng-change="ctrl.refresh()">
-			</select>
-		</div>
-		<label class="gf-form-label width-13">Primary Sort Field
-			<tip>Primary Field to sort by</tip>
-		</label>
-		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-			 ng-change="ctrl.refresh()">
-			</select>
-		</div>
-	</div>
-	<div class="gf-form">
-		<label class="gf-form-label width-13">Secondary Sort Direction
-			<tip>Secondary sort direction</tip>
-		</label>
-		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
-			 ng-change="ctrl.refresh()">
-			</select>
-		</div>
-		<label class="gf-form-label width-13">Secondary Sort Field
-			<tip>Secondary Field to sort by</tip>
-		</label>
-		<div class="gf-form-select-wrapper width-12">
-			<select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-			 ng-change="ctrl.refresh()">
-			</select>
-		</div>
-	</div>
+  <div class="gf-form">
+    <label class="gf-form-label width-13">Primary Sort Direction
+      <tip>Primary sort direction</tip>
+    </label>
+    <div class="gf-form-select-wrapper width-12">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+       ng-change="ctrl.refresh()">
+      </select>
+    </div>
+    <label class="gf-form-label width-13">Primary Sort Field
+      <tip>Primary Field to sort by</tip>
+    </label>
+    <div class="gf-form-select-wrapper width-12">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
+       ng-change="ctrl.refresh()">
+      </select>
+    </div>
   </div>
-	<div class="section gf-form-group">
+  <div class="gf-form">
+    <label class="gf-form-label width-13">Secondary Sort Direction
+      <tip>Secondary sort direction</tip>
+    </label>
+    <div class="gf-form-select-wrapper width-12">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
+       ng-change="ctrl.refresh()">
+      </select>
+    </div>
+    <label class="gf-form-label width-13">Secondary Sort Field
+      <tip>Secondary Field to sort by</tip>
+    </label>
+    <div class="gf-form-select-wrapper width-12">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
+       ng-change="ctrl.refresh()">
+      </select>
+    </div>
+  </div>
+  </div>
+  <div class="section gf-form-group">
     <h5 class="section-heading">Global</h5>
     <div class="gf-form-inline">
         <div class="gf-form">
@@ -233,19 +256,25 @@
       </div> 
     </div>
     <div class="gf-form">
-        <label class="gf-form-label width-11">Decimals</label>
-        <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.polystat.globalDecimals" ng-change="ctrl.refresh()"
-          ng-model-onblur>
-      </div>
+      <label class="gf-form-label width-11">Decimals</label>
+      <input type="number" class="gf-form-input width-4" placeholder="auto" data-placement="right" ng-model="ctrl.panel.polystat.globalDecimals" ng-change="ctrl.refresh()" ng-model-onblur>
+    </div>
 
     <div class="gf-form-inline">
-			<label class="gf-form-label width-11">Default Clickthrough
-				<tip>URL to use when none defined by overrides</tip>
-			</label>
-				<input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="ctrl.panel.polystat.defaultClickThrough"
-				  ng-change="ctrl.render()" ng-model-onblur>				
-      <gf-form-switch class="gf-form" label="Sanitize" label-class="width-5" checked="ctrl.panel.polystat.defaultClickThroughSanitize" on-change="ctrl.refresh()">
+      <label class="gf-form-label width-11">Default Clickthrough
+        <tip>URL to use when none defined by overrides</tip>
+      </label>
+      <input type="string" class="gf-form-input width-30" placeholder="url" data-placement="right" ng-model="ctrl.panel.polystat.defaultClickThrough" ng-change="ctrl.render()" ng-model-onblur>
+      <gf-form-switch class="gf-form" label="Sanitize" label-class="width-5" checked="ctrl.panel.polystat.defaultClickThroughSanitize" on-change="ctrl.render()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label-class="width-9" label="Open in new tab" checked="ctrl.panel.polystat.defaultClickThroughNewTab" on-change="ctrl.render()">
       </gf-form-switch>
     </div>
-	</div>
+  </div>
+
+  <poly-thresholds 
+    thresholds="ctrl.panel.polystat.globalThresholds" 
+    colors="ctrl.panel.colors"
+    callback="ctrl.onThresholdsChanged()"/>
+
 </div>

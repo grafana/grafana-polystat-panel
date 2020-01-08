@@ -40,12 +40,12 @@
             "name": "Composites",
             "path": "screenshots/polystat-composites-all.png"
         }],
-        "version": "1.0.17",
-        "updated": "2019-04-03"
+        "version": "%VERSION%",
+        "updated": "%TODAY%"
     },
 
     "dependencies": {
-        "grafanaVersion": "4.x.x",
+        "grafanaVersion": "6.x.x",
         "plugins": []
     }
 }

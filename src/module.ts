@@ -1,13 +1,12 @@
-///<reference path="../node_modules/grafana-sdk-mocks/app/headers/common.d.ts" />
+import { D3PolystatPanelCtrl } from './ctrl';
+import { loadPluginCss } from 'grafana/app/plugins/sdk';
 
-import {D3PolystatPanelCtrl} from  "./ctrl";
-import {loadPluginCss} from "app/plugins/sdk";
+// Registers an angular directive
+import 'thresholdsCtrl';
 
 loadPluginCss({
-  dark: "plugins/grafana-polystat-panel/css/polystat.dark.css",
-  light: "plugins/grafana-polystat-panel/css/polystat.light.css"
+  dark: 'plugins/grafana-polystat-panel/styles/dark.css',
+  light: 'plugins/grafana-polystat-panel/styles/light.css',
 });
 
-export {
-  D3PolystatPanelCtrl as PanelCtrl
-};
+export { D3PolystatPanelCtrl as PanelCtrl };

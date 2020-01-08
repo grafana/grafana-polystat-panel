@@ -19,32 +19,34 @@ export class PolystatModel {
   color: string;
   clickThrough: string;
   operatorName: string;
+  newTabEnabled: boolean;
   sanitizedURL: string;
   sanitizeURLEnabled: boolean;
   showName: boolean;
   showValue: boolean;
   isComposite: boolean;
-  members: Array<PolystatModel>;
+  members: PolystatModel[];
 
   constructor(operatorName: string, aSeries: any) {
     if (aSeries === null) {
       return;
     }
-    this.animateMode = "all";
-    this.displayMode = "all";
+    this.animateMode = 'all';
+    this.displayMode = 'all';
     this.operatorName = operatorName;
     this.name = aSeries.alias;
-    let operatorValue = this.getValueByOperator(operatorName, aSeries);
+    const operatorValue = this.getValueByOperator(operatorName, aSeries);
     this.value = operatorValue;
     this.valueFormatted = operatorValue;
     this.stats = aSeries.stats;
     this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
-    this.prefix = "";
-    this.suffix = "";
+    this.prefix = '';
+    this.suffix = '';
     this.seriesRaw = null;
-    this.color = "green";
-    this.clickThrough = "";
-    this.sanitizedURL = "";
+    this.color = 'green';
+    this.clickThrough = '';
+    this.sanitizedURL = '';
+    this.newTabEnabled = true;
     this.sanitizeURLEnabled = true;
     this.isComposite = false;
     this.members = [];
@@ -56,48 +58,48 @@ export class PolystatModel {
   getValueByOperator(operatorName, data) {
     let value = data.stats.avg;
     switch (operatorName) {
-        case "avg":
-            value = data.stats.avg;
-            break;
-        case "count":
-            value = data.stats.count;
-            break;
-        case "current":
-            value = data.stats.current;
-            break;
-        case "delta":
-            value = data.stats.delta;
-            break;
-        case "diff":
-            value = data.stats.diff;
-            break;
-        case "first":
-            value = data.stats.first;
-            break;
-        case "logmin":
-            value = data.stats.logmin;
-            break;
-        case "max":
-            value = data.stats.max;
-            break;
-        case "min":
-            value = data.stats.min;
-            break;
-        case "name":
-            value = data.metricName;
-            break;
-        case "time_step":
-            value = data.stats.timeStep;
-            break;
-        case "last_time":
-            value = data.timestamp;
-            break;
-        case "total":
-            value = data.stats.total;
-            break;
-        default:
-            value = data.stats.avg;
-            break;
+      case 'avg':
+        value = data.stats.avg;
+        break;
+      case 'count':
+        value = data.stats.count;
+        break;
+      case 'current':
+        value = data.stats.current;
+        break;
+      case 'delta':
+        value = data.stats.delta;
+        break;
+      case 'diff':
+        value = data.stats.diff;
+        break;
+      case 'first':
+        value = data.stats.first;
+        break;
+      case 'logmin':
+        value = data.stats.logmin;
+        break;
+      case 'max':
+        value = data.stats.max;
+        break;
+      case 'min':
+        value = data.stats.min;
+        break;
+      case 'name':
+        value = data.metricName;
+        break;
+      case 'time_step':
+        value = data.stats.timeStep;
+        break;
+      case 'last_time':
+        value = data.timestamp;
+        break;
+      case 'total':
+        value = data.stats.total;
+        break;
+      default:
+        value = data.stats.avg;
+        break;
     }
     return value;
   }
@@ -106,7 +108,7 @@ export class PolystatModel {
    * Copies values, leaves members empty
    */
   shallowClone(): PolystatModel {
-    let clone = new PolystatModel(this.operatorName, null);
+    const clone = new PolystatModel(this.operatorName, null);
     clone.operatorName = this.operatorName;
     clone.thresholdLevel = this.thresholdLevel;
     clone.value = this.value;
@@ -118,6 +120,7 @@ export class PolystatModel {
     clone.seriesRaw = null; // for a shallow clone drop the series
     clone.color = this.color;
     clone.clickThrough = this.clickThrough;
+    clone.newTabEnabled = this.newTabEnabled;
     clone.sanitizedURL = this.sanitizedURL;
     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
     clone.isComposite = this.isComposite;
@@ -125,7 +128,7 @@ export class PolystatModel {
     return clone;
   }
   deepClone(): PolystatModel {
-    let clone = new PolystatModel(this.operatorName, null);
+    const clone = new PolystatModel(this.operatorName, null);
     clone.operatorName = this.operatorName;
     clone.thresholdLevel = this.thresholdLevel;
     clone.value = this.value;
@@ -138,6 +141,7 @@ export class PolystatModel {
     clone.color = this.color;
     clone.clickThrough = this.clickThrough;
     clone.sanitizedURL = this.sanitizedURL;
+    clone.newTabEnabled = this.newTabEnabled;
     clone.sanitizeURLEnabled = this.sanitizeURLEnabled;
     clone.isComposite = this.isComposite;
     clone.members = []; // this.members;
