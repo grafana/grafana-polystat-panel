@@ -86,7 +86,7 @@
       </label>
       <div class="gf-form-select-wrapper width-12">
         <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
-         ng-change="ctrl.refresh()">
+          ng-change="ctrl.refresh()">
         </select>
       </div>
       </div>
@@ -96,11 +96,34 @@
       </label>
       <div class="gf-form-select-wrapper width-12">
         <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-         ng-change="ctrl.refresh()">
+          ng-change="ctrl.refresh()">
         </select>
       </div>
       </div>
   </div>
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Sorting</h5>
+			<div class="gf-form">
+			<label class="gf-form-label width-10">Sort Direction
+				<tip>Sort direction</tip>
+			</label>
+			<div class="gf-form-select-wrapper width-12">
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
+				  ng-change="ctrl.refresh()">
+				</select>
+			</div>
+			</div>
+			<div class="gf-form">
+			<label class="gf-form-label width-10">Sort Field
+				<tip>Field to sort by</tip>
+			</label>
+			<div class="gf-form-select-wrapper width-12">
+				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
+				  ng-change="ctrl.refresh()">
+				</select>
+			</div>
+			</div>
+	</div>
 
 
   <div class="section gf-form-group">

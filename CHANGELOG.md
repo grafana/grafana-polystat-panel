@@ -36,3 +36,5 @@
 - fixed bug with default clickthrough and sanitize url
 ## v1.0.16
 - fixes variable encoding in clickthrough urls
+## v1.0.17
+- New sort options for polygons and tooltips (issue #37)
