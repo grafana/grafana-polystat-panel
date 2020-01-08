@@ -155,11 +155,11 @@ function SortVariableValuesByField(options, field: any, sortOrder: number) {
   const reverseSort = sortOrder % 2 === 0;
 
   if (sortType === 1) {
-    let sortField = options[field];
+    const sortField = options[field];
     options = _.sortBy(options, sortField);
   } else if (sortType === 2) {
     options = _.sortBy(options, opt => {
-      let matchField = opt[field];
+      const matchField = opt[field];
       const matches = matchField.match(/.*?(\d+).*/);
       if (!matches || matches.length < 2) {
         return -1;
