@@ -1,27 +1,9 @@
 import _ from 'lodash';
 import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
-import { RGBToHex } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
-
-export class MetricOverride {
-  label: string;
-  metricName: string;
-  thresholds: any[];
-  colors: string[];
-  unitFormat: string;
-  decimals: string;
-  scaledDecimals: number;
-  enabled: boolean;
-  operatorName: string; // avg/min/max etc
-  prefix: string;
-  suffix: string;
-  clickThrough: string;
-  newTabEnabled: boolean;
-  sanitizeURLEnabled: boolean;
-  sanitizedURL: string;
-}
+import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
 
 export class MetricOverridesManager {
   metricOverrides: MetricOverride[];
@@ -75,7 +57,7 @@ export class MetricOverridesManager {
     this.metricOverrides.push(override);
   }
 
-  removeMetricOverride(override) {
+  removeMetricOverride(override: MetricOverride) {
     // lodash _.without creates a new array, need to reassign to the panel where it will be saved
     this.metricOverrides = _.without(this.metricOverrides, override);
     // fix the labels
@@ -87,19 +69,19 @@ export class MetricOverridesManager {
     this.$scope.ctrl.refresh();
   }
 
-  metricNameChanged(override) {
+  metricNameChanged(override: MetricOverride) {
     // TODO: validate item is a valid regex
     console.log("metricNameChanged: '" + override.metricName + "'");
     this.$scope.ctrl.refresh();
   }
 
-  toggleHide(override) {
+  toggleHide(override: MetricOverride) {
     //console.log("override enabled =  " + override.enabled);
     override.enabled = !override.enabled;
     this.$scope.ctrl.refresh();
   }
 
-  matchOverride(pattern): number {
+  matchOverride(pattern: string): number {
     for (let index = 0; index < this.metricOverrides.length; index++) {
       const anOverride = this.metricOverrides[index];
       const regex = stringToJsRegex(anOverride.metricName);
@@ -112,6 +94,7 @@ export class MetricOverridesManager {
   }
 
   applyOverrides(data) {
+    const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
       const matchIndex = this.matchOverride(data[index].name);
       if (matchIndex >= 0) {
@@ -122,7 +105,11 @@ export class MetricOverridesManager {
         const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
         //console.log("series2 operator: " + series2.operatorName);
         //console.log("series2 value: " + series2Value);
-        const result = getThresholdLevelForValue(anOverride.thresholds, dataValue, this.$scope.ctrl.panel.polystat.polygonGlobalFillColor);
+
+        // Use defaults or the specific threshold
+        const thresholds = anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;
+
+        const result = getThresholdLevelForValue(thresholds, dataValue, config.polygonGlobalFillColor);
         // set value to what was returned
         data[index].value = dataValue;
         data[index].color = result.color;
@@ -152,51 +139,18 @@ export class MetricOverridesManager {
             data[index].sanitizedURL = this.$sanitize(data[index].clickThrough);
           }
         }
+      } else if (config.globalThresholds && config.globalThresholds.length) {
+        const result = getThresholdLevelForValue(config.globalThresholds, data[index].value, config.polygonGlobalFillColor);
+        // set value to what was returned
+        data[index].color = result.color;
+        data[index].thresholdLevel = result.thresholdLevel;
       }
     }
   }
 
-  addThreshold(override) {
-    override.thresholds.push({
-      value: 0,
-      state: 0,
-      color: '#299c46',
-    });
-    this.sortThresholds(override);
-  }
-
-  // store user selection of color to be used for all items with the corresponding state
-  setThresholdColor(threshold) {
-    //console.log("setThresholdColor: color set to " + threshold.color);
-    threshold.color = RGBToHex(threshold.color);
-    //console.log("setThresholdColor: parsed color set to " + threshold.color);
-    this.$scope.ctrl.refresh();
-  }
-
-  validateThresholdColor(threshold) {
-    console.log('Validate color ' + threshold.color);
-    this.$scope.ctrl.refresh();
-  }
-
-  updateThresholdColor(override, threshold) {
-    // threshold.state determines the color used
-    //console.log("threshold state = " + threshold.state);
-    //console.log("override color[0]: " + override.colors[0]);
-    //console.log("override color[1]: " + override.colors[1]);
-    //console.log("override color[2]: " + override.colors[2]);
-    threshold.color = override.colors[threshold.state];
-    this.$scope.ctrl.refresh();
-  }
-
-  sortThresholds(override) {
-    override.thresholds = _.orderBy(override.thresholds, ['value'], ['asc']);
-    this.$scope.ctrl.refresh();
-  }
-
-  removeThreshold(override, threshold) {
-    override.thresholds = _.without(override.thresholds, threshold);
-    this.sortThresholds(override);
-  }
+  onSetThresholds = (thresholds: PolystatThreshold[]) => {
+    console.log('OVERRIDE (threshold)', thresholds);
+  };
 
   setUnitFormat(override, subItem) {
     override.unitFormat = subItem.value;

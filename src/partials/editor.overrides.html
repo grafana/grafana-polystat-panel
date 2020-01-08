@@ -93,39 +93,12 @@
           </div>
         </div>
 
-        <div class="gf-form">
-          <h5 class="section-heading width-10">Thresholds
-            <tip>Evaluates to state if value is greater than or equal to specified threshold. Values below and equal to T1 use state of T1.</tip>
-          </h5>
-          <button class="btn btn-inverse width-10" ng-click="ctrl.overridesCtrl.addThreshold(override)">
-            <i class="fa fa-plus"></i>&nbsp;Add Threshold
-          </button>
-        </div>
-        <div class="gf-form" ng-repeat="threshold in override.thresholds">
-          <div class="gf-form">
-            <label class="gf-form-label width-3">T{{$index+1}}</label>
-            <input type="number" class="gf-form-input width-5" ng-model="threshold.value" ng-blur="ctrl.overridesCtrl.sortThresholds(override)">
-          </div>
-          <div class="gf-form">
-            <label class="gf-form-label width-7">Color Mode</label>
-            <span class="gf-form-select-wrapper width-8">
-              <select class="gf-form-input"
-                ng-model="threshold.state"
-                ng-options="f.value as f.text for f in ctrl.thresholdStates"
-                ng-change="ctrl.overridesCtrl.updateThresholdColor(override, threshold)">
-              </select>
-            </span>
-          </div>
-          <div class="gf-form">
-            <label class="gf-form-label">Color</label>
-            <span class="gf-form-label">
-              <spectrum-picker ng-model="threshold.color" ng-change="ctrl.overridesCtrl.setThresholdColor(threshold)"></spectrum-picker>
-            </span>
-            <label class="gf-form-label">
-              <i class="fa fa-trash pointer" ng-click="ctrl.overridesCtrl.removeThreshold(override, threshold)"></i>
-            </label>  
-          </div>
-        </div>
+        <poly-thresholds 
+          thresholds="override.thresholds" 
+          override="override" 
+          colors="override.colors"
+          callback="ctrl.onThresholdsChanged(override)"/>
+
       </div> <!-- end section group-->
     <div class="clearfix"></div>
     <button class="btn btn-danger btn-small" ng-click="ctrl.overridesCtrl.removeMetricOverride(override)">

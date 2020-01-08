@@ -2,9 +2,10 @@
  * Tooltip generation
  */
 import _ from 'lodash';
+import { PolystatConfigs } from 'types';
 
 export class Tooltip {
-  static generate(scope, data, polystat): string[] {
+  static generate(scope, data, polystat: PolystatConfigs): string[] {
     const items = [];
     for (let index = 0; index < data.length; index++) {
       const tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';

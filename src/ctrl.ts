@@ -12,6 +12,7 @@ import { CompositesManager } from './composites_manager';
 import { Tooltip } from './tooltip';
 import { GetDecimalsForValue, RGBToHex } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
+import { PolystatConfigs } from 'types';
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   static templateUrl = 'partials/template.html';
@@ -22,12 +23,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   displayModes = [
     { value: 'all', text: 'Show All' },
     { value: 'triggered', text: 'Show Triggered' },
-  ];
-  thresholdStates = [
-    { value: 0, text: 'ok' },
-    { value: 1, text: 'warning' },
-    { value: 2, text: 'critical' },
-    { value: 3, text: 'custom' },
   ];
   shapes = [
     { value: 'hexagon_pointed_top', text: 'Hexagon Pointed Top' },
@@ -112,8 +107,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   dataRaw: any;
   polystatData: PolystatModel[];
-  scoperef: any;
-  alertSrvRef: any;
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
@@ -174,14 +167,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   };
 
   /** @ngInject */
-  constructor($scope, $injector, templateSrv, alertSrv, private $sanitize) {
+  constructor($scope, $injector, templateSrv, private $sanitize) {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaultsDeep(this.panel, this.panelDefaults);
 
     this.d3DivId = 'd3_svg_' + this.panel.id;
     this.containerDivId = 'container_' + this.d3DivId;
-    this.alertSrvRef = alertSrv;
     this.initialized = false;
     this.panelContainer = null;
     this.templateSrv = templateSrv;
@@ -319,32 +311,34 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     margin.bottom = 0;
 
+    const config: PolystatConfigs = this.panel.polystat;
+
     // new attributes may not be defined in older panel definitions
-    if (typeof this.panel.polystat.polygonBorderSize === 'undefined') {
-      this.panel.polystat.polygonBorderSize = 2;
+    if (typeof config.polygonBorderSize === 'undefined') {
+      config.polygonBorderSize = 2;
     }
-    if (typeof this.panel.polystat.polygonBorderColor === 'undefined') {
-      this.panel.polystat.polygonBorderColor = 'black';
+    if (typeof config.polygonBorderColor === 'undefined') {
+      config.polygonBorderColor = 'black';
     }
 
     const opt = {
       width: width,
       height: height,
-      radius: this.panel.polystat.radius,
-      radiusAutoSize: this.panel.polystat.radiusAutoSize,
-      tooltipFontSize: this.panel.polystat.tooltipFontSize,
-      tooltipFontType: this.panel.polystat.tooltipFontType,
+      radius: config.radius,
+      radiusAutoSize: config.radiusAutoSize,
+      tooltipFontSize: config.tooltipFontSize,
+      tooltipFontType: config.tooltipFontType,
       data: this.polystatData,
-      displayLimit: this.panel.polystat.displayLimit,
-      globalDisplayMode: this.panel.polystat.globalDisplayMode,
-      columns: this.panel.polystat.columns,
-      columnAutoSize: this.panel.polystat.columnAutoSize,
-      rows: this.panel.polystat.rows,
-      rowAutoSize: this.panel.polystat.rowAutoSize,
+      displayLimit: config.displayLimit,
+      globalDisplayMode: config.globalDisplayMode,
+      columns: config.columns,
+      columnAutoSize: config.columnAutoSize,
+      rows: config.rows,
+      rowAutoSize: config.rowAutoSize,
       tooltipContent: this.tooltipContent,
-      animationSpeed: this.panel.polystat.animationSpeed,
+      animationSpeed: config.animationSpeed,
       defaultClickThrough: this.getDefaultClickThrough(NaN),
-      polystat: this.panel.polystat,
+      polystat: config,
     };
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
     this.d3Object.draw();
@@ -368,6 +362,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   addRangeMap() {
     this.panel.rangeMaps.push({ from: '', to: '', text: '' });
+  }
+
+  // Called for global or override
+  onThresholdsChanged(override?: any) {
+    // Query and reprocess
+    this.panel.refresh();
   }
 
   link(scope, elem, attrs, ctrl) {
@@ -413,19 +413,20 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
+    const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         const aSeries = this.series[index];
-        const converted = Transformers.TimeSeriesToPolystat(this.panel.polystat.globalOperatorName, aSeries);
+        const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
         this.polystatData.push(converted);
       }
     }
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
     // now sort
-    this.polystatData = _.orderBy(this.polystatData, [this.panel.polystat.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
+    this.polystatData = _.orderBy(this.polystatData, [config.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
     // this needs to be performed after sorting rules are applied
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
@@ -436,15 +437,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       if (this.polystatData[index].clickThrough.length === 0) {
         // add the series alias as a var to the clickthroughurl
         this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
-        this.polystatData[index].newTabEnabled = this.panel.polystat.defaultClickThroughNewTab;
-        this.polystatData[index].sanitizeURLEnabled = this.panel.polystat.defaultClickThroughSanitize;
+        this.polystatData[index].newTabEnabled = config.defaultClickThroughNewTab;
+        this.polystatData[index].sanitizeURLEnabled = config.defaultClickThroughSanitize;
         this.polystatData[index].sanitizedURL = this.$sanitize(this.polystatData[index].clickThrough);
       }
     }
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // generate tooltips
-    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, this.panel.polystat);
+    this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, config);
   }
 
   applyGlobalFormatting(data: any) {
