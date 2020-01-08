@@ -10,6 +10,10 @@ jobs:
         keys:
         - yarn-packages-{{ checksum "yarn.lock" }}
     - run:
+        name: Install modules
+        command: |
+          yarn install --pure-lockfile
+    - run:
         name: Run Toolkit Build
         command: npx grafana-toolkit plugin:ci-build
     - save_cache:
@@ -30,14 +34,14 @@ jobs:
         keys:
         - yarn-packages-{{ checksum "yarn.lock" }}
     - run:
-        name: Install yarn
+        name: Install modules
         command: |
-          sudo npm install -g yarn --quiet
           yarn install --pure-lockfile
-          mkdir ci # Avoid error if not exists
     - run:
         name: Build Docs
-        command: npx grafana-toolkit plugin:ci-docs
+        command: |
+          mkdir ci # Avoid error if not exists
+          npx grafana-toolkit plugin:ci-docs
     - save_cache:
         paths:
         - node_modules
