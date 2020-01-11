@@ -5,6 +5,7 @@ import * as d3hexbin from './external/d3-hexbin.js';
 import { getTextSizeForWidthAndHeight } from './utils';
 import _ from 'lodash';
 import { Color } from './color';
+import { LayoutManager } from './layoutManager';
 
 function resolveClickThroughURL(d: any): string {
   let clickThroughURL = d.clickThrough;
@@ -35,26 +36,16 @@ function showValue(item: any): boolean {
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
-  maxColumnsUsed: number;
-  maxRowsUsed: number;
   opt: any;
   data: any;
   templateSrv: any;
   calculatedPoints: any;
-  hexRadius: number;
-  autoHexRadius: number;
-  numColumns: number;
-  numRows: number;
-  margin: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-  };
   minFont = 8;
   maxFont = 240;
   purelight: any;
 
+  // layout
+  lm: LayoutManager;
   constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any) {
     this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
@@ -63,35 +54,25 @@ export class D3Wrapper {
     this.opt = opt;
 
     this.purelight = new Color(255, 255, 255);
-    // title is 26px
-    this.margin = {
-      top: 30 + 26,
-      right: 0,
-      bottom: 20,
-      left: 50,
-    };
     // take 10 off the height
-    this.opt.height -= 10;
-    this.opt.width -= 20;
+    //this.opt.height -= 10;
+    //this.opt.width -= 20;
     this.data = this.opt.data;
-    this.numColumns = 5;
-    this.numRows = 5;
-    this.maxColumnsUsed = 0;
-    this.maxRowsUsed = 0;
-    if (opt.rowAutoSize && opt.columnAutoSize) {
-      // sqrt of # data items
-    } else {
-      this.numColumns = opt.columns || 6;
-      this.numRows = opt.rows || 6;
-    }
+    this.lm = new LayoutManager(this.opt.width, this.opt.height, opt.columns || 6, opt.rows || 6, this.opt.displayLimit, this.opt.polystat.shape);
+
+    // determine how many rows and columns are going to be generated
+    this.lm.generatePossibleColumnAndRowsSizes(this.opt.columnAutoSize, this.opt.rowAutoSize, this.data.length);
+    // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
+    this.lm.generateActualColumnAndRowUsage(this.data, opt.displayLimit);
+    // next the radius can be determined from actual rows and columns being used
     if (!opt.radiusAutoSize && opt.radius) {
-      this.hexRadius = opt.radius;
-      this.autoHexRadius = opt.radius;
+      this.lm.setRadius(opt.radius);
     } else {
-      this.hexRadius = this.getAutoHexRadius(); // || 50;
-      this.autoHexRadius = this.getAutoHexRadius(); //|| 50;
+      this.lm.generateRadius(this.opt.polystat.shape);
     }
-    this.calculatedPoints = this.generatePoints();
+    // using the known number of columns and rows that can be used in addition to the radius,
+    // generate the points to be filled
+    this.calculatedPoints = this.lm.generatePoints(this.data, opt.displayLimit);
   }
 
   computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
@@ -112,98 +93,20 @@ export class D3Wrapper {
   }
 
   draw() {
-    if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
-      // sqrt of # data items
-      const squared = Math.sqrt(this.data.length);
-      // favor columns when width is greater than height
-      // favor rows when width is less than height
-      if (this.opt.width > this.opt.height) {
-        this.numColumns = Math.ceil((this.opt.width / this.opt.height) * squared);
-        // always at least 1 column and max. data.length columns
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        } else if (this.numColumns > this.data.length) {
-          this.numColumns = this.data.length;
-        }
-
-        // Align rows count to computed columns count
-        this.numRows = Math.ceil(this.data.length / this.numColumns);
-        // always at least 1 row
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        }
-      } else {
-        this.numRows = Math.ceil((this.opt.height / this.opt.width) * squared);
-        // always at least 1 row and max. data.length rows
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        } else if (this.numRows > this.data.length) {
-          this.numRows = this.data.length;
-        }
-        // Align colunns count to computed rows count
-        this.numColumns = Math.ceil(this.data.length / this.numRows);
-        // always at least 1 column
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        }
-      }
-    } else if (this.opt.rowAutoSize) {
-      // Align rows count to fixed columns count
-      this.numRows = Math.ceil(this.data.length / this.numColumns);
-      // always at least 1 row
-      if (this.numRows < 1) {
-        this.numRows = 1;
-      }
-    } else if (this.opt.columnAutoSize) {
-      // Align colunns count to fixed rows count
-      this.numColumns = Math.ceil(this.data.length / this.numRows);
-      // always at least 1 column
-      if (this.numColumns < 1) {
-        this.numColumns = 1;
-      }
-    }
-    //console.log("Calculated columns = " + this.numColumns);
-    //console.log("Calculated rows = " + this.numRows);
-    //console.log("Number of data items to render = " + this.data.length);
-
-    if (this.opt.radiusAutoSize) {
-      this.hexRadius = this.getAutoHexRadius();
-      this.autoHexRadius = this.getAutoHexRadius();
-      //console.log("autoHexRadius:" + this.autoHexRadius);
-    }
-    this.calculatedPoints = this.generatePoints();
-
     const width = this.opt.width;
     const height = this.opt.height;
-    //console.log("Detected Width: " + width + " Height: " + height);
-    //console.log("autorad:" + this.autoHexRadius);
+
+    //this.calculatedPoints = this.lm.generatePoints(this.data, this.opt.displayLimit);
     const ahexbin = d3hexbin
       .hexbin()
-      .radius(this.autoHexRadius)
+      .radius(this.lm.generateRadius(this.opt.polystat.shape))
       .extent([
         [0, 0],
         [width, height],
       ]);
 
-    // d3 calculates the radius for x and y separately based on the value passed in
-    const diameterX = this.autoHexRadius * Math.sqrt(3);
-    const diameterY = this.autoHexRadius * 2;
-    let renderWidth = this.maxColumnsUsed * diameterX;
-    // Even rows are shifted by an x-radius (half x-diameter) on the right
-    // Check if at least one even row is full (first one is row 2)
-    if (this.maxRowsUsed >= 2 && this.data.length >= 2 * this.maxColumnsUsed) {
-      renderWidth += diameterX / 2;
-    }
-    // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
-    // At then end we need to add the pointy bottom of the last row (1/4 of the height)
-    const renderHeight = (this.maxRowsUsed * 0.75 + 0.25) * diameterY;
-    // Translate the whole hexagons graph to have it cenetered in the drawing area
-    // - center the rendered area with the drawing area, translate by:
-    //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
-    // - go to the center of the first hexagon, translate by:
-    //     (diameterX / 2, diameterY / 2)
-    const xoffset = (width - renderWidth + diameterX) / 2;
-    const yoffset = (height - renderHeight + diameterY) / 2;
+    const { diameterX, diameterY } = this.lm.getDiameters();
+    const { xoffset, yoffset } = this.lm.getOffsets(this.data);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
@@ -221,7 +124,7 @@ export class D3Wrapper {
       .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
       .attr('width', width + 'px')
       .attr('height', height + 'px')
-      .style('border', '0px solid white')
+      .style('border', '0px solid white') // TODO: make this light/dark friendly
       .attr('id', this.d3DivId)
       .append('g')
       .attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
@@ -332,35 +235,19 @@ export class D3Wrapper {
     const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
       case 'hexagon_pointed_top':
-        customShape = ahexbin.hexagon(this.autoHexRadius);
+        customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
       case 'hexagon_flat_top':
-        // TODO: use pointed for now
-        customShape = ahexbin.hexagon(this.autoHexRadius);
+        customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
       case 'circle':
         customShape = symbol.type(d3.symbolCircle);
         break;
-      case 'cross':
-        customShape = symbol.type(d3.symbolCross);
-        break;
-      case 'diamond':
-        customShape = symbol.type(d3.symbolDiamond);
-        break;
       case 'square':
         customShape = symbol.type(d3.symbolSquare);
         break;
-      case 'star':
-        customShape = symbol.type(d3.symbolStar);
-        break;
-      case 'triangle':
-        customShape = symbol.type(d3.symbolTriangle);
-        break;
-      case 'wye':
-        customShape = symbol.type(d3.symbolWye);
-        break;
       default:
-        customShape = ahexbin.hexagon(this.autoHexRadius);
+        customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
     }
 
@@ -672,57 +559,5 @@ export class D3Wrapper {
     // sort it
     triggerCache = _.orderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
     return triggerCache;
-  }
-
-  getAutoHexRadius(): number {
-    //The maximum radius the hexagons can have to still fit the screen
-    // With (long) radius being R:
-    // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
-    // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    const radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * (1 + 2 * this.numColumns));
-    const radiusFromHeight = (2 * this.opt.height) / (3 * this.numRows + 1);
-    const hexRadius = d3.min([radiusFromWidth, radiusFromHeight]);
-    return hexRadius;
-  }
-
-  // Builds the placeholder polygons needed to represent each metric
-  generatePoints(): any {
-    const points = [];
-    if (typeof this.data === 'undefined') {
-      return points;
-    }
-    let maxRowsUsed = 0;
-    let columnsUsed = 0;
-    let maxColumnsUsed = 0;
-    // when duplicating panels, this gets odd
-    if (this.numRows === Infinity) {
-      //console.log("numRows infinity...");
-      return points;
-    }
-    if (isNaN(this.numColumns)) {
-      //console.log("numColumns NaN");
-      return points;
-    }
-    for (let i = 0; i < this.numRows; i++) {
-      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
-        maxRowsUsed += 1;
-        columnsUsed = 0;
-        for (let j = 0; j < this.numColumns; j++) {
-          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
-            columnsUsed += 1;
-            // track the most number of columns
-            if (columnsUsed > maxColumnsUsed) {
-              maxColumnsUsed = columnsUsed;
-            }
-            points.push([this.hexRadius * j * 1.75, this.hexRadius * i * 1.5]);
-          }
-        }
-      }
-    }
-    //console.log("Max rows used:" + maxRowsUsed);
-    //console.log("Actual columns used:" + maxColumnsUsed);
-    this.maxRowsUsed = maxRowsUsed;
-    this.maxColumnsUsed = maxColumnsUsed;
-    return points;
   }
 }
