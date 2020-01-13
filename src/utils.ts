@@ -88,8 +88,8 @@ function getTextSizeForWidthAndHeight(text: string, font: any, width: number, he
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
   // need to pad the width: use 80% of the space (leave 10% padding on each side)
-  width = width * 0.8;
-  //console.log("Estimating size for text: " + text + " inside width: " + width + " using font: " + font);
+  width = width * 0.95;
+  //console.log("Estimating size for text: " + text + " inside adjusted width: " + width + " using font: " + font);
   if (w <= width && maxFontPx <= height) {
     return maxFontPx;
   }
