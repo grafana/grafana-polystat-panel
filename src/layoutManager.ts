@@ -66,12 +66,12 @@ export class LayoutManager {
    */
   getHexFlatTopRadius(): number {
     const polygonBorderSize = 2;
-    console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
-    console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
+    //console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
+    //console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
 
     let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
-    console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
+    //console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
 
     return this.truncateFloat(hexRadius);
   }
@@ -174,9 +174,9 @@ export class LayoutManager {
         this.numColumns = 1;
       }
     }
-    console.log(`Calculated columns = ${this.numColumns}`);
-    console.log(`Calculated rows = ${this.numRows}`);
-    console.log(`Number of data items to render = ${dataSize}`);
+    //console.log(`Calculated columns = ${this.numColumns}`);
+    //console.log(`Calculated rows = ${this.numRows}`);
+    //console.log(`Number of data items to render = ${dataSize}`);
   }
 
   /**
@@ -206,8 +206,8 @@ export class LayoutManager {
         }
       }
     }
-    console.log(`generateActualColumnAndRowUsage: Actual rows used: ${maxRowsUsed}`);
-    console.log(`generateActualColumnAndRowUsage: Actual columns used: ${maxColumnsUsed}`);
+    //console.log(`generateActualColumnAndRowUsage: Actual rows used: ${maxRowsUsed}`);
+    //console.log(`generateActualColumnAndRowUsage: Actual columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
   }
@@ -270,8 +270,8 @@ export class LayoutManager {
         }
       }
     }
-    console.log(`Max rows used: ${maxRowsUsed}`);
-    console.log(`Actual columns used: ${maxColumnsUsed}`);
+    //console.log(`Max rows used: ${maxRowsUsed}`);
+    //console.log(`Actual columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
@@ -307,37 +307,37 @@ export class LayoutManager {
   }
 
   getOffsets(dataSize: number): any {
-    console.log(`getOffsets dataSize:${dataSize}`);
-    console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
-    console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
+    //console.log(`getOffsets dataSize:${dataSize}`);
+    //console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
+    //console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
 
     let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = this.truncateFloat(hexRadius);
-    console.log(`getOffsets hexRadius:${hexRadius}`);
+    //console.log(`getOffsets hexRadius:${hexRadius}`);
 
-    const usedWidth = Math.ceil(this.numColumns * hexRadius * this.SQRT3 + hexRadius);
-    console.log(`getOffsets usedWidth:${usedWidth}`);
+    //const usedWidth = Math.ceil(this.numColumns * hexRadius * this.SQRT3 + hexRadius);
+    //console.log(`getOffsets usedWidth:${usedWidth}`);
 
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
-    console.log(`getOffsets shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+    //console.log(`getOffsets shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
 
     const offsetToViewY = shapeHeight * 0.5;
     //const offsetToViewY = 0;
-    console.log(`getOffsets offsetToViewY:${offsetToViewY}`);
+    //console.log(`getOffsets offsetToViewY:${offsetToViewY}`);
     // even rows are half-sized
     const { oddCount, evenCount } = this.getOddEvenCountForRange(1, this.maxRowsUsed);
-    console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
+    //console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
 
     // odd-numbered hexagons are full height, evens are half height
     const actualHeightUsed = oddCount * shapeHeight + evenCount * shapeHeight * 0.5;
-    console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    //console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    console.log(`getOffsets yoffset:${yoffset}`);
+    //console.log(`getOffsets yoffset:${yoffset}`);
 
     const offsetToViewX = shapeWidth * 0.5;
-    console.log(`getOffsets offsetToViewX:${offsetToViewX}`);
+    //console.log(`getOffsets offsetToViewX:${offsetToViewX}`);
     // columns have a half-width offset if there are more than 1 rows
     let widthOffset = 0;
     if (this.numRows > 1) {
@@ -347,10 +347,10 @@ export class LayoutManager {
       }
     }
     const actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
-    console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
+    //console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    console.log(`getOffsets xoffset:${xoffset}`);
+    //console.log(`getOffsets xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
