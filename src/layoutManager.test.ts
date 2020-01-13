@@ -3,17 +3,18 @@
  */
 
 import { LayoutManager } from './layoutManager';
+import { PolygonShapes } from './types';
 
 describe('Layout Manager', () => {
   describe('With hexagon layout', () => {
-    const lm = new LayoutManager(100, 100, 1, 1, 100, 'hexagon_pointed_top');
+    const lm = new LayoutManager(100, 100, 1, 1, 100, PolygonShapes.HEXAGON_POINTED_TOP);
     const generated = lm.generateHexagonPointedTopLayout();
     it('returns one packed hexagon', () => {
       expect(generated).toEqual({});
     });
   });
   describe('With square layout', () => {
-    const lm = new LayoutManager(100, 100, 1, 1, 100, 'square');
+    const lm = new LayoutManager(100, 100, 1, 1, 100, PolygonShapes.SQUARE);
     const generated = lm.generateSquareLayout();
     it('returns one packed square', () => {
       expect(generated).toEqual({});
