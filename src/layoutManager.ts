@@ -212,7 +212,6 @@ export class LayoutManager {
     this.maxColumnsUsed = maxColumnsUsed;
   }
 
-
   shapeToCoordinates(shape: string, radius: number, column: number, row: number) {
     switch (shape) {
       case 'hexagon_pointed_top':
