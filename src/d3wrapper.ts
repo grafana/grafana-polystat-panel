@@ -337,9 +337,9 @@ export class D3Wrapper {
           .on('mousemove', () => {
             // use the viewportwidth to prevent the tooltip from going too far right
             const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            // use the mouse position for the entire page
-            const mouse = d3.mouse(d3.select('body').node()[0]);
-            let xpos = mouse[0] - 50;
+            // use the mouse position for the entire page, received by
+            // d3.event.pageX, d3.event.pageY
+            let xpos = d3.event.pageX - 50;
             // don't allow offscreen tooltip
             if (xpos < 0) {
               xpos = 0;
@@ -348,7 +348,7 @@ export class D3Wrapper {
             if (xpos + 200 > viewPortWidth) {
               xpos = viewPortWidth - 200;
             }
-            const ypos = mouse[1] + 5;
+            const ypos = d3.event.pageY + 5;
             tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
           })
           .on('mouseover', (d: any) => {
