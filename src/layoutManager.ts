@@ -12,6 +12,7 @@ export class LayoutManager {
   maxColumnsUsed: number;
   displayLimit: number;
   shape: string;
+  readonly SQRT3 = 1.7320508075688772;
 
   constructor(width: number, height: number, numColumns: number, numRows: number, displayLimit: number, shape: string) {
     this.width = width;
@@ -64,46 +65,28 @@ export class LayoutManager {
    *  - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
    */
   getHexFlatTopRadius(): number {
-    const SQRT3 = 1.7320508075688772;
     const polygonBorderSize = 2;
     console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
     console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
 
     return this.truncateFloat(hexRadius);
   }
 
-  /*
-  getRenderedDimensions(): any {
-    switch (this.shape) {
-      case 'hexagon_pointed_top':
-        const { verticalHeight, horizontalHeight } = this.getHexFlatTopRadiusBoth();
-        //verticalHeight *= this.maxRowsUsed;
-        //horizontalHeight *= this.maxColumnsUsed;
-        return { verticalHeight, horizontalHeight };
-        break;
-      case 'circle':
-        return this.getUniformRadiusBoth();
-        break;
-      case 'square':
-        return this.getUniformRadiusBoth();
-        break;
-      default:
-        return this.getHexFlatTopRadiusBoth();
-        break;
-    }
-  }
-  */
   getHexFlatTopRadiusBoth(): any {
+    let hexRadius = this.getHexFlatTopRadius();
     //The maximum radius the hexagons can have to still fit the screen
     // With (long) radius being R:
     // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
     // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    const verticalHeight = (2 * this.width) / (Math.sqrt(3) * (1 + 2 * this.maxColumnsUsed));
-    const horizontalHeight = (2 * this.height) / (3 * this.maxRowsUsed + 1);
+    //const verticalHeight = (2 * this.width) / (Math.sqrt(3) * (1 + 2 * this.maxColumnsUsed));
+    //const horizontalHeight = (2 * this.height) / (3 * this.maxRowsUsed + 1);
+    const horizontalHeight = this.truncateFloat(hexRadius * this.SQRT3);
+    const verticalHeight = this.truncateFloat(hexRadius * 2);
+
     return { verticalHeight, horizontalHeight };
   }
 
@@ -228,13 +211,15 @@ export class LayoutManager {
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
   }
+
+
   shapeToCoordinates(shape: string, radius: number, column: number, row: number) {
     switch (shape) {
       case 'hexagon_pointed_top':
-        let x = radius * column * Math.sqrt(3);
+        let x = radius * column * this.SQRT3;
         //Offset each uneven row by half of a "hex-width" to the right
         if (row % 2 === 1) {
-          x += (radius * Math.sqrt(3)) / 2;
+          x += (radius * this.SQRT3) / 2;
         }
         const y = radius * row * 1.5;
         return [x, y];
@@ -322,19 +307,18 @@ export class LayoutManager {
   }
 
   getOffsets(dataSize: number): any {
-    const SQRT3 = 1.7320508075688772;
     console.log(`getOffsets dataSize:${dataSize}`);
     console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * Math.sqrt(3)), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = this.truncateFloat(hexRadius);
     console.log(`getOffsets hexRadius:${hexRadius}`);
 
-    const usedWidth = Math.ceil(this.numColumns * hexRadius * SQRT3 + hexRadius);
+    const usedWidth = Math.ceil(this.numColumns * hexRadius * this.SQRT3 + hexRadius);
     console.log(`getOffsets usedWidth:${usedWidth}`);
 
-    const shapeWidth = this.truncateFloat(hexRadius * SQRT3);
+    const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
     console.log(`getOffsets shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
 
@@ -383,8 +367,8 @@ export class LayoutManager {
   getDiameters(): any {
     // d3 calculates the radius for x and y separately based on the value passed in
     const { verticalHeight, horizontalHeight } = this.getHexFlatTopRadiusBoth();
-    const diameterX = horizontalHeight * 2;
-    const diameterY = verticalHeight * 2;
+    const diameterX = horizontalHeight;
+    const diameterY = verticalHeight;
     return { diameterX, diameterY };
   }
 }
