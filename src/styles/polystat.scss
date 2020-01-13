@@ -1,3 +1,19 @@
+*[id^='chart-container'] div {
+  fill: transparent;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+}
+
+*[id^='chart-container'] svg,
+polygon {
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  fill: transparent;
+}
+
 .polystat-panel-tooltip {
   position: absolute;
   width: 200px;
