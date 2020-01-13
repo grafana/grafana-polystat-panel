@@ -4,6 +4,7 @@ import { getTextSizeForWidthAndHeight } from './utils';
 import _ from 'lodash';
 import { Color } from './color';
 import { LayoutManager } from './layoutManager';
+import { PolygonShapes } from 'types';
 
 function resolveClickThroughURL(d: any): string {
   let clickThroughURL = d.clickThrough;
@@ -106,7 +107,7 @@ export class D3Wrapper {
       ]);
 
     const { diameterX, diameterY } = this.lm.getDiameters();
-    const { xoffset, yoffset } = this.lm.getOffsets(this.data);
+    const { xoffset, yoffset } = this.lm.getOffsets(this.data.length);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
@@ -235,16 +236,13 @@ export class D3Wrapper {
     }
     const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
-      case 'hexagon_pointed_top':
+      case PolygonShapes.HEXAGON_POINTED_TOP:
         customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
-      case 'hexagon_flat_top':
-        customShape = ahexbin.hexagon(this.lm.getRadius());
-        break;
-      case 'circle':
+      case PolygonShapes.CIRCLE:
         customShape = symbol.type(d3.symbolCircle);
         break;
-      case 'square':
+      case PolygonShapes.SQUARE:
         customShape = symbol.type(d3.symbolSquare);
         break;
       default:
