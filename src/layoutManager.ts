@@ -346,7 +346,7 @@ export class LayoutManager {
     console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
 
     // odd-numbered hexagons are full height, evens are half height
-    const actualHeightUsed = (oddCount * shapeHeight) + (evenCount * shapeHeight * 0.5);
+    const actualHeightUsed = oddCount * shapeHeight + evenCount * shapeHeight * 0.5;
     console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
