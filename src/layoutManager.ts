@@ -77,7 +77,7 @@ export class LayoutManager {
   }
 
   getHexFlatTopRadiusBoth(): any {
-    let hexRadius = this.getHexFlatTopRadius();
+    const hexRadius = this.getHexFlatTopRadius();
     //The maximum radius the hexagons can have to still fit the screen
     // With (long) radius being R:
     // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
