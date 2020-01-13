@@ -69,7 +69,7 @@ export class LayoutManager {
     console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    var hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
     console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
 
@@ -327,7 +327,7 @@ export class LayoutManager {
     console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    var hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * Math.sqrt(3)), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * Math.sqrt(3)), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = this.truncateFloat(hexRadius);
     console.log(`getOffsets hexRadius:${hexRadius}`);
 
@@ -362,7 +362,7 @@ export class LayoutManager {
         widthOffset = 0.5;
       }
     }
-    let actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
+    const actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
     console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
@@ -373,7 +373,7 @@ export class LayoutManager {
   getOddEvenCountForRange(L: number, R: number): any {
     let oddCount = (R - L) / 2;
     // if either R or L is odd
-    if (R % 2 != 0 || L % 2 != 0) {
+    if (R % 2 !== 0 || L % 2 !== 0) {
       oddCount++;
     }
     const evenCount = R - L + 1 - oddCount;
