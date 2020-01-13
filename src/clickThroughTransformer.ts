@@ -14,7 +14,7 @@ class ClickThroughTransformer {
 
   static compositeName: RegExp = /\${__composite_name}/;
 
-  static tranformSingleMetric(index: number, url: string, data: PolystatModel[]) {
+  static tranformSingleMetric(index: number, url: string, data: PolystatModel[]) :string {
     if (isNaN(index)) {
       return url;
     }
