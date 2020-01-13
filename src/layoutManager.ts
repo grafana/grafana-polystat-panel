@@ -1,3 +1,4 @@
+import * as d3 from 'd3';
 /**
  * LayoutManager creates layouts for supported polygon shapes
  */
@@ -22,7 +23,6 @@ export class LayoutManager {
     this.displayLimit = displayLimit;
     this.shape = shape;
     this.radius = 0;
-    //this.radius = this.getRadius(shape);
   }
 
   /**
@@ -32,6 +32,12 @@ export class LayoutManager {
    */
   setRadius(radius: number) {
     this.radius = radius;
+  }
+  setHeight(height: number) {
+    this.height = height;
+  }
+  setWidth(width: number) {
+    this.width = width;
   }
   /**
    * returns a layout for hexagons with pointed tops
@@ -58,18 +64,61 @@ export class LayoutManager {
    *  - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
    */
   getHexFlatTopRadius(): number {
+    const SQRT3 = 1.7320508075688772;
+    const polygonBorderSize = 2;
+    console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
+    console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
+
+    var hexRadius = d3.min([this.width/((this.numColumns + 0.5) * SQRT3),
+      this.height/((this.numRows + 1/3) * 1.5)]);
+    hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
+    console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
+
+    return this.truncateFloat(hexRadius);
+  }
+
+  /*
+  getRenderedDimensions(): any {
+    switch (this.shape) {
+      case 'hexagon_pointed_top':
+        const { verticalHeight, horizontalHeight } = this.getHexFlatTopRadiusBoth();
+        //verticalHeight *= this.maxRowsUsed;
+        //horizontalHeight *= this.maxColumnsUsed;
+        return { verticalHeight, horizontalHeight };
+        break;
+      case 'circle':
+        return this.getUniformRadiusBoth();
+        break;
+      case 'square':
+        return this.getUniformRadiusBoth();
+        break;
+      default:
+        return this.getHexFlatTopRadiusBoth();
+        break;
+    }
+  }
+  */
+  getHexFlatTopRadiusBoth(): any {
     //The maximum radius the hexagons can have to still fit the screen
     // With (long) radius being R:
     // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
     // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    const radiusFromWidth = (2 * this.width) / (Math.sqrt(3) * (1 + 2 * this.maxColumnsUsed));
-    const radiusFromHeight = (2 * this.height) / (3 * this.maxRowsUsed + 1);
-    if (radiusFromWidth < radiusFromHeight) {
-      return radiusFromWidth;
-    }
-    return radiusFromHeight;
+    const verticalHeight = (2 * this.width) / (Math.sqrt(3) * (1 + 2 * this.maxColumnsUsed));
+    const horizontalHeight = (2 * this.height) / (3 * this.maxRowsUsed + 1);
+    return { verticalHeight, horizontalHeight };
   }
 
+  getUniformRadiusBoth(): any {
+    const verticalHeight = this.width / this.maxColumnsUsed;
+    let horizontalHeight = this.height / this.maxRowsUsed;
+    // default to use the horizontal maximum size
+    if (horizontalHeight > verticalHeight) {
+      // vertically limited
+      horizontalHeight = verticalHeight;
+    }
+
+    return { verticalHeight, horizontalHeight };
+  }
   /**
    * Given the number of columns and rows, calculate the maximum size of a uniform shaped polygon that can be used
    *   uniformed shapes are: square/circle
@@ -183,7 +232,13 @@ export class LayoutManager {
   shapeToCoordinates(shape: string, radius: number, column: number, row: number) {
     switch (shape) {
       case 'hexagon_pointed_top':
-        return [radius * column * 1.75, radius * row * 1.5];
+        let x = radius * column * Math.sqrt(3);
+        //Offset each uneven row by half of a "hex-width" to the right
+        if (row % 2 === 1) {
+          x += (radius * Math.sqrt(3)) / 2;
+        }
+        const y = radius * row * 1.5;
+        return [x, y];
         break;
       case 'circle':
         return [radius * column * 2, radius * row * 2];
@@ -262,34 +317,77 @@ export class LayoutManager {
     return radius;
   }
 
+  truncateFloat(value: number) :number {
+    const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+    return Number(with2Decimals);
+  }
+
   getOffsets(dataSize: number): any {
-    // d3 calculates the radius for x and y separately based on the value passed in
-    const diameterX = this.radius * Math.sqrt(3);
-    const diameterY = this.radius * 2;
-    let renderWidth = this.maxColumnsUsed * diameterX;
-    // Even rows are shifted by an x-radius (half x-diameter) on the right
-    // Check if at least one even row is full (first one is row 2)
-    if (this.maxRowsUsed >= 2 && dataSize >= 2 * this.maxColumnsUsed) {
-      renderWidth += diameterX / 2;
+    const SQRT3 = 1.7320508075688772;
+    console.log(`getOffsets dataSize:${dataSize}`);
+    console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
+    console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
+
+    var hexRadius = d3.min([this.width/((this.numColumns + 0.5) * Math.sqrt(3)),
+      this.height/((this.numRows + 1/3) * 1.5)]);
+    hexRadius = this.truncateFloat(hexRadius);
+    console.log(`getOffsets hexRadius:${hexRadius}`);
+
+    const usedWidth = Math.ceil(this.numColumns * hexRadius * SQRT3 + hexRadius);
+    console.log(`getOffsets usedWidth:${usedWidth}`)
+
+    const shapeWidth = this.truncateFloat(hexRadius * SQRT3);
+    const shapeHeight = this.truncateFloat(hexRadius * 2);
+    console.log(`getOffsets shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+
+    const offsetToViewY = shapeHeight * 0.5;
+    //const offsetToViewY = 0;
+    console.log(`getOffsets offsetToViewY:${offsetToViewY}`);
+    // even rows are half-sized
+    const {oddCount, evenCount} = this.getOddEvenCountForRange(1, this.maxRowsUsed);
+    console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
+
+    // odd-numbered hexagons are full height, evens are half height
+    const actualHeightUsed = (oddCount * shapeHeight) + (evenCount * shapeHeight * 1/2);
+    console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    let yoffset = (this.height - actualHeightUsed)/2;
+    yoffset = -(yoffset + offsetToViewY);
+    console.log(`getOffsets yoffset:${yoffset}`);
+
+    const offsetToViewX = (shapeWidth * 1/2);
+    console.log(`getOffsets offsetToViewX:${offsetToViewX}`);
+    // columns have a half-width offset if there are more than 1 rows
+    let widthOffset = 0;
+    if (this.numRows > 1) {
+      // if the datasize is equal to or larger than the 2*Columns, there is an additional offset needed
+      if (dataSize >= (this.maxColumnsUsed * 2)) {
+        widthOffset = 0.5;
+      }
     }
-    // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
-    // At then end we need to add the pointy bottom of the last row (1/4 of the height)
-    const renderHeight = (this.maxRowsUsed * 0.75 + 0.25) * diameterY;
-    // Translate the whole hexagons graph to have it cenetered in the drawing area
-    // - center the rendered area with the drawing area, translate by:
-    //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
-    // - go to the center of the first hexagon, translate by:
-    //     (diameterX / 2, diameterY / 2)
-    //const xoffset = (this.width - renderWidth + diameterX) / 2;
-    const xoffset = (this.width - renderWidth + diameterX) / 2;
-    const yoffset = (this.height - renderHeight + diameterY) / 2;
+    let actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
+    console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
+    let xoffset = (this.width - actualWidthUsed)/2;
+    xoffset = -(xoffset + offsetToViewX);
+    console.log(`getOffsets xoffset:${xoffset}`);
     return { xoffset, yoffset };
+
+  }
+
+  getOddEvenCountForRange( L: number, R: number) :any {
+    let oddCount = (R - L) / 2;
+    // if either R or L is odd
+    if (R % 2 != 0 || L % 2 != 0) {
+      oddCount++;
+    }
+    const evenCount = (R - L + 1) - oddCount;
+    return {oddCount,evenCount};
   }
 
   getDiameters(): any {
     // d3 calculates the radius for x and y separately based on the value passed in
-    const diameterX = this.radius * Math.sqrt(3);
-    const diameterY = this.radius * 2;
+    const { verticalHeight, horizontalHeight } = this.getHexFlatTopRadiusBoth();
+    const diameterX = horizontalHeight * 2;
+    const diameterY = verticalHeight * 2;
     return { diameterX, diameterY };
   }
 }
