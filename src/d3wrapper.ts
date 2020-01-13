@@ -91,6 +91,8 @@ export class D3Wrapper {
   }
 
   draw() {
+    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+
     const width = this.opt.width;
     const height = this.opt.height;
 
@@ -120,12 +122,13 @@ export class D3Wrapper {
       .attr('height', height + 'px')
       .append('svg')
       .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
-      .attr('width', width + 'px')
-      .attr('height', height + 'px')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', xoffset + ',' + yoffset + ', ' + width + ', ' + height)
       .style('border', '0px solid white') // TODO: make this light/dark friendly
       .attr('id', this.d3DivId)
       .append('g')
-      .attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     const data = this.data;
     const defs = svg.append('defs');
