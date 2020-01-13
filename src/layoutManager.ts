@@ -69,8 +69,7 @@ export class LayoutManager {
     console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    var hexRadius = d3.min([this.width/((this.numColumns + 0.5) * SQRT3),
-      this.height/((this.numRows + 1/3) * 1.5)]);
+    var hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
     console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
 
@@ -317,8 +316,8 @@ export class LayoutManager {
     return radius;
   }
 
-  truncateFloat(value: number) :number {
-    const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0]
+  truncateFloat(value: number): number {
+    const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
     return Number(with2Decimals);
   }
 
@@ -328,13 +327,12 @@ export class LayoutManager {
     console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
     console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
 
-    var hexRadius = d3.min([this.width/((this.numColumns + 0.5) * Math.sqrt(3)),
-      this.height/((this.numRows + 1/3) * 1.5)]);
+    var hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * Math.sqrt(3)), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = this.truncateFloat(hexRadius);
     console.log(`getOffsets hexRadius:${hexRadius}`);
 
     const usedWidth = Math.ceil(this.numColumns * hexRadius * SQRT3 + hexRadius);
-    console.log(`getOffsets usedWidth:${usedWidth}`)
+    console.log(`getOffsets usedWidth:${usedWidth}`);
 
     const shapeWidth = this.truncateFloat(hexRadius * SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
@@ -344,43 +342,42 @@ export class LayoutManager {
     //const offsetToViewY = 0;
     console.log(`getOffsets offsetToViewY:${offsetToViewY}`);
     // even rows are half-sized
-    const {oddCount, evenCount} = this.getOddEvenCountForRange(1, this.maxRowsUsed);
+    const { oddCount, evenCount } = this.getOddEvenCountForRange(1, this.maxRowsUsed);
     console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
 
     // odd-numbered hexagons are full height, evens are half height
-    const actualHeightUsed = (oddCount * shapeHeight) + (evenCount * shapeHeight * 1/2);
+    const actualHeightUsed = (oddCount * shapeHeight) + (evenCount * shapeHeight * 0.5);
     console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
-    let yoffset = (this.height - actualHeightUsed)/2;
+    let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
     console.log(`getOffsets yoffset:${yoffset}`);
 
-    const offsetToViewX = (shapeWidth * 1/2);
+    const offsetToViewX = shapeWidth * 0.5;
     console.log(`getOffsets offsetToViewX:${offsetToViewX}`);
     // columns have a half-width offset if there are more than 1 rows
     let widthOffset = 0;
     if (this.numRows > 1) {
       // if the datasize is equal to or larger than the 2*Columns, there is an additional offset needed
-      if (dataSize >= (this.maxColumnsUsed * 2)) {
+      if (dataSize >= this.maxColumnsUsed * 2) {
         widthOffset = 0.5;
       }
     }
     let actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
     console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
-    let xoffset = (this.width - actualWidthUsed)/2;
+    let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
     console.log(`getOffsets xoffset:${xoffset}`);
     return { xoffset, yoffset };
-
   }
 
-  getOddEvenCountForRange( L: number, R: number) :any {
+  getOddEvenCountForRange(L: number, R: number): any {
     let oddCount = (R - L) / 2;
     // if either R or L is odd
     if (R % 2 != 0 || L % 2 != 0) {
       oddCount++;
     }
-    const evenCount = (R - L + 1) - oddCount;
-    return {oddCount,evenCount};
+    const evenCount = R - L + 1 - oddCount;
+    return { oddCount, evenCount };
   }
 
   getDiameters(): any {
