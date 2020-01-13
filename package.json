@@ -24,13 +24,15 @@
     "@grafana/ui": "6.5.2",
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
-    "@types/lodash": "^4.14.149",
-    "csstype": "^2.6.8",
-    "@types/grafana": "github:CorpGlory/types-grafana.git"
+    "@types/grafana": "github:CorpGlory/types-grafana.git",
+    "@types/lodash": "^4.14.149"
   },
   "jest": {
     "moduleNameMapper": {
       "grafana/app/core/utils/kbn": "<rootDir>/tests/__mocks__/app/core/utils/kbn.ts"
     }
+  },
+  "dependencies": {
+    "d3-hexbin": "^0.2.2"
   }
 }
