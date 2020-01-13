@@ -1,4 +1,5 @@
 import * as d3 from 'd3';
+import { PolygonShapes } from './types';
 /**
  * LayoutManager creates layouts for supported polygon shapes
  */
@@ -11,10 +12,10 @@ export class LayoutManager {
   maxRowsUsed: number;
   maxColumnsUsed: number;
   displayLimit: number;
-  shape: string;
+  shape: PolygonShapes;
   readonly SQRT3 = 1.7320508075688772;
 
-  constructor(width: number, height: number, numColumns: number, numRows: number, displayLimit: number, shape: string) {
+  constructor(width: number, height: number, numColumns: number, numRows: number, displayLimit: number, shape: PolygonShapes) {
     this.width = width;
     this.height = height;
     this.numColumns = numColumns;
@@ -65,31 +66,27 @@ export class LayoutManager {
    *  - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
    */
   getHexFlatTopRadius(): number {
-    const polygonBorderSize = 2;
+    const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     //console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
     //console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
-
     let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
-    hexRadius = hexRadius - polygonBorderSize; // TODO: borderRadius should be configurable and part of the config
-    //console.log(`getHexFlatTopRadius hexRadius:${hexRadius}`);
-
+    hexRadius = hexRadius - polygonBorderSize;
     return this.truncateFloat(hexRadius);
   }
 
+  /**
+   * Helper method to return rendered width and height of hexagon shape
+   */
   getHexFlatTopRadiusBoth(): any {
     const hexRadius = this.getHexFlatTopRadius();
-    //The maximum radius the hexagons can have to still fit the screen
-    // With (long) radius being R:
-    // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
-    // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    //const verticalHeight = (2 * this.width) / (Math.sqrt(3) * (1 + 2 * this.maxColumnsUsed));
-    //const horizontalHeight = (2 * this.height) / (3 * this.maxRowsUsed + 1);
     const horizontalHeight = this.truncateFloat(hexRadius * this.SQRT3);
     const verticalHeight = this.truncateFloat(hexRadius * 2);
-
     return { verticalHeight, horizontalHeight };
   }
 
+  /**
+   * Helper method to return rendered width and height of a circle/square shapes
+   */
   getUniformRadiusBoth(): any {
     const verticalHeight = this.width / this.maxColumnsUsed;
     let horizontalHeight = this.height / this.maxRowsUsed;
@@ -212,9 +209,9 @@ export class LayoutManager {
     this.maxColumnsUsed = maxColumnsUsed;
   }
 
-  shapeToCoordinates(shape: string, radius: number, column: number, row: number) {
+  shapeToCoordinates(shape: PolygonShapes, radius: number, column: number, row: number) {
     switch (shape) {
-      case 'hexagon_pointed_top':
+      case PolygonShapes.HEXAGON_POINTED_TOP:
         let x = radius * column * this.SQRT3;
         //Offset each uneven row by half of a "hex-width" to the right
         if (row % 2 === 1) {
@@ -223,10 +220,10 @@ export class LayoutManager {
         const y = radius * row * 1.5;
         return [x, y];
         break;
-      case 'circle':
+      case PolygonShapes.CIRCLE:
         return [radius * column * 2, radius * row * 2];
         break;
-      case 'square':
+      case PolygonShapes.SQUARE:
         return [radius * column * 2, radius * row * 2];
         break;
       default:
@@ -342,6 +339,7 @@ export class LayoutManager {
     if (this.numRows > 1) {
       // if the datasize is equal to or larger than the 2*Columns, there is an additional offset needed
       if (dataSize >= this.maxColumnsUsed * 2) {
+        console.log(`getOffsets: full columns and rows, need to compute additional width`);
         widthOffset = 0.5;
       }
     }
