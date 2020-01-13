@@ -1,5 +1,3 @@
-/////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
-/////<reference path="../node_modules/@types/d3/index.d.ts" />
 import * as d3 from 'd3';
 import * as d3hexbin from 'd3-hexbin';
 import { getTextSizeForWidthAndHeight } from './utils';
@@ -326,7 +324,7 @@ export class D3Wrapper {
         node
           .append('path')
           .attr('class', 'hexagon')
-          .attr('transform', d => {
+          .attr('transform', (d: any) => {
             return 'translate(' + d.x + ',' + d.y + ')';
           })
           .attr('d', customShape)
@@ -337,7 +335,7 @@ export class D3Wrapper {
             // use the viewportwidth to prevent the tooltip from going too far right
             const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
             // use the mouse position for the entire page
-            const mouse = d3.mouse(d3.select('body').node());
+            const mouse = d3.mouse(d3.select('body').node()[0]);
             let xpos = mouse[0] - 50;
             // don't allow offscreen tooltip
             if (xpos < 0) {
@@ -350,7 +348,7 @@ export class D3Wrapper {
             const ypos = mouse[1] + 5;
             tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
           })
-          .on('mouseover', d => {
+          .on('mouseover', (d: any) => {
             tooltip
               .transition()
               .duration(200)
