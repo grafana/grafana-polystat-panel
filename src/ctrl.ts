@@ -348,7 +348,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
     // new attributes may not be defined in older panel definitions
     if (typeof config.polygonBorderSize === 'undefined') {
-      config.polygonBorderSize = 2;
+      config.polygonBorderSize = 0;
     }
     if (typeof config.polygonBorderColor === 'undefined') {
       config.polygonBorderColor = 'black';
@@ -419,12 +419,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
     const render = () => {
       // try to get the width
-      ctrl.panelWidth = elem.width() + 20;
+      ctrl.panelWidth = elem.width();
       ctrl.renderD3();
     };
     this.events.on('render', () => {
       // try to get the width
-      ctrl.panelWidth = elem.width() + 20;
+      ctrl.panelWidth = elem.width();
       render();
       ctrl.renderingCompleted();
     });
