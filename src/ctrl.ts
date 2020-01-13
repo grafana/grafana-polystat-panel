@@ -3,6 +3,7 @@ import _ from 'lodash';
 import $ from 'jquery';
 import kbn from 'grafana/app/core/utils/kbn';
 import TimeSeries from 'grafana/app/core/time_series2';
+import { PanelEvents } from '@grafana/data';
 
 import { D3Wrapper } from './d3wrapper';
 import { Transformers } from './transformers';
@@ -200,10 +201,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-    this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    this.events.on('data-received', this.onDataReceived.bind(this));
-    this.events.on('data-error', this.onDataError.bind(this));
-    this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
+    this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
+    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+    this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
   }
 
   migrateSortDirections() {
@@ -422,7 +423,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       ctrl.panelWidth = elem.width();
       ctrl.renderD3();
     };
-    this.events.on('render', () => {
+    this.events.on(PanelEvents.render, () => {
       // try to get the width
       ctrl.panelWidth = elem.width();
       render();
