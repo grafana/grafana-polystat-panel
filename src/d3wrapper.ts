@@ -1,7 +1,7 @@
 /////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
 /////<reference path="../node_modules/@types/d3/index.d.ts" />
 import * as d3 from 'd3';
-import * as d3hexbin from './libs/d3-hexbin.js';
+import * as d3hexbin from 'd3-hexbin';
 import { getTextSizeForWidthAndHeight } from './utils';
 import _ from 'lodash';
 import { Color } from './color';
