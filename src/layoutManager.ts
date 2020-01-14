@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { PolygonShapes } from './types';
+import { PolygonShapes, PolystatDiameters } from './types';
 /**
  * LayoutManager creates layouts for supported polygon shapes
  */
@@ -77,26 +77,25 @@ export class LayoutManager {
   /**
    * Helper method to return rendered width and height of hexagon shape
    */
-  getHexFlatTopRadiusBoth(): any {
+  getHexFlatTopDiameters(): PolystatDiameters {
     const hexRadius = this.getHexFlatTopRadius();
-    const horizontalHeight = this.truncateFloat(hexRadius * this.SQRT3);
-    const verticalHeight = this.truncateFloat(hexRadius * 2);
-    return { verticalHeight, horizontalHeight };
+    const diameterX = this.truncateFloat(hexRadius * this.SQRT3);
+    const diameterY = this.truncateFloat(hexRadius * 2);
+    return { diameterX, diameterY };
   }
 
   /**
    * Helper method to return rendered width and height of a circle/square shapes
    */
-  getUniformRadiusBoth(): any {
-    const verticalHeight = this.width / this.maxColumnsUsed;
-    let horizontalHeight = this.height / this.maxRowsUsed;
+  getUniformDiameters(): PolystatDiameters {
+    const diameterY = this.width / this.maxColumnsUsed;
+    let diameterX = this.height / this.maxRowsUsed;
     // default to use the horizontal maximum size
-    if (horizontalHeight > verticalHeight) {
+    if (diameterX > diameterY) {
       // vertically limited
-      horizontalHeight = verticalHeight;
+      diameterX = diameterY;
     }
-
-    return { verticalHeight, horizontalHeight };
+    return { diameterX, diameterY };
   }
   /**
    * Given the number of columns and rows, calculate the maximum size of a uniform shaped polygon that can be used
@@ -277,16 +276,16 @@ export class LayoutManager {
     return this.radius;
   }
 
-  generateRadius(shape: string): number {
+  generateRadius(shape: PolygonShapes): number {
     let radius = 0;
     switch (shape) {
-      case 'hexagon_pointed_top':
+      case PolygonShapes.HEXAGON_POINTED_TOP:
         radius = this.getHexFlatTopRadius();
         break;
-      case 'circle':
+      case PolygonShapes.CIRCLE:
         radius = this.getUniformRadius();
         break;
-      case 'square':
+      case PolygonShapes.SQUARE:
         radius = this.getUniformRadius();
         break;
       default:
@@ -361,11 +360,17 @@ export class LayoutManager {
     return { oddCount, evenCount };
   }
 
-  getDiameters(): any {
-    // d3 calculates the radius for x and y separately based on the value passed in
-    const { verticalHeight, horizontalHeight } = this.getHexFlatTopRadiusBoth();
-    const diameterX = horizontalHeight;
-    const diameterY = verticalHeight;
-    return { diameterX, diameterY };
+  /**
+   * Returns diameterX and diameterY for given shape
+   */
+  getDiameters(): PolystatDiameters {
+    switch (this.shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        return this.getHexFlatTopDiameters();
+      case PolygonShapes.SQUARE:
+      case PolygonShapes.CIRCLE:
+      default:
+        return this.getUniformDiameters();
+    }
   }
 }

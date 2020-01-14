@@ -67,3 +67,8 @@ export enum PolygonShapes {
   CIRCLE = 'circle',
   SQUARE = 'square',
 }
+
+export interface PolystatDiameters {
+  diameterX: number;
+  diameterY: number;
+}
