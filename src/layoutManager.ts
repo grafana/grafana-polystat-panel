@@ -53,7 +53,7 @@ export class LayoutManager {
   /**
    * returns a layout for square-shapes
    */
-  generateSquareLayout(): any {
+  generateUniformLayout(): any {
     const layout = {};
     this.radius = this.getUniformRadius();
     return layout;

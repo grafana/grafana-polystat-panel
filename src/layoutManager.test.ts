@@ -15,8 +15,15 @@ describe('Layout Manager', () => {
   });
   describe('With square layout', () => {
     const lm = new LayoutManager(100, 100, 1, 1, 100, PolygonShapes.SQUARE);
-    const generated = lm.generateSquareLayout();
+    const generated = lm.generateUniformLayout();
     it('returns one packed square', () => {
+      expect(generated).toEqual({});
+    });
+  });
+  describe('With circle layout', () => {
+    const lm = new LayoutManager(100, 100, 1, 1, 100, PolygonShapes.CIRCLE);
+    const generated = lm.generateUniformLayout();
+    it('returns one packed circle', () => {
       expect(generated).toEqual({});
     });
   });
