@@ -88,13 +88,21 @@ export class LayoutManager {
    * Helper method to return rendered width and height of a circle/square shapes
    */
   getUniformDiameters(): PolystatDiameters {
-    const diameterY = this.width / this.maxColumnsUsed;
-    let diameterX = this.height / this.maxRowsUsed;
+    const radius = this.getUniformRadius();
+    console.log(`getUniformDiameters ${radius}`);
+    let diameterX = radius * 2;
+    let diameterY = radius * 2;
     // default to use the horizontal maximum size
+    /*
     if (diameterX > diameterY) {
       // vertically limited
       diameterX = diameterY;
     }
+    if (diameterY > diameterX) {
+      // horizontally limited
+      diameterY = diameterX;
+    }
+    */
     return { diameterX, diameterY };
   }
   /**
@@ -105,18 +113,20 @@ export class LayoutManager {
    * the smaller of the two is used since that is the "best fit" for a square
    */
   getUniformRadius(): number {
+    const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     // width divided by the number of columns determines the max horizontal of the square
     // height divided by the number of rows determines the max vertical size ofthe square
-    // the smaller of the two is used since that is the "best fit" for a square
-    const horizontalMax = this.width / this.maxColumnsUsed;
-    const verticalMax = this.height / this.maxRowsUsed;
-    // default to use the horizontal maximum size
-    let radius = horizontalMax / 2;
-    if (horizontalMax > verticalMax) {
+    // the smaller of the two is used since that is the "best fit"
+    const horizontalMax = this.width / this.maxColumnsUsed * 0.5;
+    const verticalMax = this.height / this.maxRowsUsed * 0.5;
+    let uniformRadius = horizontalMax;
+    if (uniformRadius > verticalMax) {
       // vertically limited
-      radius = verticalMax / 2;
+      uniformRadius = verticalMax;
     }
-    return radius;
+    // internal border
+    uniformRadius = uniformRadius - polygonBorderSize;
+    return this.truncateFloat(uniformRadius);
   }
 
   generatePossibleColumnAndRowsSizes(columnAutoSize: boolean, rowAutoSize: boolean, dataSize: number) {
@@ -223,7 +233,15 @@ export class LayoutManager {
         return [radius * column * 2, radius * row * 2];
         break;
       case PolygonShapes.SQUARE:
-        return [radius * column * 2, radius * row * 2];
+          const r = radius * 2 + 18;
+          const dx = r;
+          const dy = r;
+          const x0 = -dx * column / 2;
+          const y0 = -dy * row / 2;
+          // j = rows, and i = columns
+          const sy = y0 + dy * row;
+          const sx = x0 + dx * column;
+        return [sx, sy];
         break;
       default:
         return [radius * column * 1.75, radius * row * 1.5];
@@ -260,17 +278,19 @@ export class LayoutManager {
             }
             // TODO: this is still for pointedtop polygons!
             //points.push([this.radius * j * 1.75, this.radius * i * 1.5]);
+            console.log(`generatePoints: radius: ${this.radius}`);
             points.push(this.shapeToCoordinates(this.shape, this.radius, j, i));
           }
         }
       }
     }
-    //console.log(`Max rows used: ${maxRowsUsed}`);
-    //console.log(`Actual columns used: ${maxColumnsUsed}`);
+    console.log(`Max rows used: ${maxRowsUsed}`);
+    console.log(`Max columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
+
 
   getRadius(): number {
     return this.radius;
