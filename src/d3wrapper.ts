@@ -107,7 +107,7 @@ export class D3Wrapper {
       ]);
 
     const { diameterX, diameterY } = this.lm.getDiameters();
-    const { xoffset, yoffset } = this.lm.getOffsets(this.data.length);
+    const { xoffset, yoffset } = this.lm.getOffsets(this.opt.polystat.shape, this.data.length);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel

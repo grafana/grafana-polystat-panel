@@ -301,7 +301,18 @@ export class LayoutManager {
     return Number(with2Decimals);
   }
 
-  getOffsets(dataSize: number): any {
+  getOffsets(shape: PolygonShapes, dataSize: number): any {
+    switch (shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        return this.getOffsetsHexagonPointedTop(dataSize);
+      case PolygonShapes.SQUARE:
+      case PolygonShapes.CIRCLE:
+      default:
+        return this.getOffsetsUniform(dataSize);
+    }
+  }
+
+  getOffsetsHexagonPointedTop(dataSize: number): any {
     //console.log(`getOffsets dataSize:${dataSize}`);
     //console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
     //console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
@@ -347,6 +358,27 @@ export class LayoutManager {
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
     //console.log(`getOffsets xoffset:${xoffset}`);
+    return { xoffset, yoffset };
+  }
+
+  getOffsetsUniform(dataSize: number): any {
+    const { diameterX, diameterY } = this.getDiameters();
+    const shapeWidth = this.truncateFloat(diameterX);
+    const shapeHeight = this.truncateFloat(diameterY);
+    console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+    const offsetToViewY = shapeHeight * 0.5;
+    const actualHeightUsed = this.maxRowsUsed * shapeHeight;
+    console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    let yoffset = (this.height - actualHeightUsed) / 2;
+    yoffset = -(yoffset + offsetToViewY);
+    console.log(`getOffsetsUniform: yoffset:${yoffset}`);
+    const offsetToViewX = shapeWidth * 0.5;
+    console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
+    const actualWidthUsed = this.numColumns * shapeWidth;
+    console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
+    let xoffset = (this.width - actualWidthUsed) / 2;
+    xoffset = -(xoffset + offsetToViewX);
+    console.log(`getOffsetsUniform: xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
