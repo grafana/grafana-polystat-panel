@@ -93,6 +93,9 @@ Display the metric value
 
 ![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/screenshots/polystat-composites-with-tooltip.png)
 
+## Advanced Usage
+### Using Templates
+You can use templates to 
 
 ### Animation
 
