@@ -328,11 +328,11 @@ export class D3Wrapper {
           .append('circle')
           .attr('class', 'circle')
           .attr('cx', function(d: any) {
-            console.log(`dx = ${d}`);
+            //console.log(`dx = ${d}`);
             return d[0];
           })
           .attr('cy', function(d: any) {
-            console.log(`dy = ${d}`);
+            //console.log(`dy = ${d}`);
             return d[1];
           })
           .attr('r', circleRadius);
@@ -347,11 +347,11 @@ export class D3Wrapper {
           .append('rect')
           .attr('class', 'rect')
           .attr('x', function(d: any) {
-            console.log(`dx = ${d}`);
+            //console.log(`dx = ${d}`);
             return d[0];
           })
           .attr('y', function(d: any) {
-            console.log(`dy = ${d}`);
+            //console.log(`dy = ${d}`);
             return d[1];
           })
           .attr('height', squareRadius * 2)
@@ -361,7 +361,6 @@ export class D3Wrapper {
       default:
         break;
     }
-    console.log(customShape);
 
     filledSVG.each((_, i, nodes) => {
       let node = d3.select(nodes[i]);

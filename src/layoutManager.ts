@@ -89,20 +89,8 @@ export class LayoutManager {
    */
   getUniformDiameters(): PolystatDiameters {
     const radius = this.getUniformRadius();
-    console.log(`getUniformDiameters ${radius}`);
     let diameterX = radius * 2;
     let diameterY = radius * 2;
-    // default to use the horizontal maximum size
-    /*
-    if (diameterX > diameterY) {
-      // vertically limited
-      diameterX = diameterY;
-    }
-    if (diameterY > diameterX) {
-      // horizontally limited
-      diameterY = diameterX;
-    }
-    */
     return { diameterX, diameterY };
   }
   /**
@@ -268,16 +256,13 @@ export class LayoutManager {
             if (columnsUsed > maxColumnsUsed) {
               maxColumnsUsed = columnsUsed;
             }
-            // TODO: this is still for pointedtop polygons!
-            //points.push([this.radius * j * 1.75, this.radius * i * 1.5]);
-            console.log(`generatePoints: radius: ${this.radius}`);
             points.push(this.shapeToCoordinates(shape, this.radius, j, i));
           }
         }
       }
     }
-    console.log(`Max rows used: ${maxRowsUsed}`);
-    console.log(`Max columns used: ${maxColumnsUsed}`);
+    //console.log(`Max rows used: ${maxRowsUsed}`);
+    //console.log(`Max columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
@@ -312,10 +297,6 @@ export class LayoutManager {
             if (columnsUsed > maxColumnsUsed) {
               maxColumnsUsed = columnsUsed;
             }
-            // TODO: this is still for pointedtop polygons!
-            //points.push([this.radius * j * 1.75, this.radius * i * 1.5]);
-            console.log(`generatePoints: radius: ${this.radius}`);
-            //points.push(this.shapeToCoordinates(this.shape, this.radius, j, i));
             points.push({
               x: xpos,
               y: ypos,
@@ -329,8 +310,8 @@ export class LayoutManager {
         ypos += this.radius * 2;
       }
     }
-    console.log(`Max rows used: ${maxRowsUsed}`);
-    console.log(`Max columns used: ${maxColumnsUsed}`);
+    //console.log(`Max rows used: ${maxRowsUsed}`);
+    //console.log(`Max columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
@@ -415,7 +396,7 @@ export class LayoutManager {
     if (this.numRows > 1) {
       // if the datasize is equal to or larger than the 2*Columns, there is an additional offset needed
       if (dataSize >= this.maxColumnsUsed * 2) {
-        console.log(`getOffsets: full columns and rows, need to compute additional width`);
+        //console.log(`getOffsets: full columns and rows, need to compute additional width`);
         widthOffset = 0.5;
       }
     }
@@ -431,20 +412,20 @@ export class LayoutManager {
     const { diameterX, diameterY } = this.getDiameters();
     const shapeWidth = this.truncateFloat(diameterX);
     const shapeHeight = this.truncateFloat(diameterY);
-    console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+    //console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
     const offsetToViewY = shapeHeight * 0.5;
     const actualHeightUsed = this.maxRowsUsed * shapeHeight;
-    console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    //console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    console.log(`getOffsetsUniform: yoffset:${yoffset}`);
+    //console.log(`getOffsetsUniform: yoffset:${yoffset}`);
     const offsetToViewX = shapeWidth * 0.5;
-    console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
+    //console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
     const actualWidthUsed = this.numColumns * shapeWidth;
-    console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
+    //console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    console.log(`getOffsetsUniform: xoffset:${xoffset}`);
+    //console.log(`getOffsetsUniform: xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
@@ -452,20 +433,20 @@ export class LayoutManager {
     const { diameterX, diameterY } = this.getDiameters();
     const shapeWidth = this.truncateFloat(diameterX);
     const shapeHeight = this.truncateFloat(diameterY);
-    console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+    //console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
     const offsetToViewY = 0; // shapeHeight * 0.5;
     const actualHeightUsed = this.maxRowsUsed * shapeHeight;
-    console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    //console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    console.log(`getOffsetsUniform: yoffset:${yoffset}`);
+    //console.log(`getOffsetsUniform: yoffset:${yoffset}`);
     const offsetToViewX = 0; //shapeWidth * 0.5;
-    console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
+    //console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
     const actualWidthUsed = this.numColumns * shapeWidth;
-    console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
+    //console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    console.log(`getOffsetsUniform: xoffset:${xoffset}`);
+    //console.log(`getOffsetsUniform: xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
