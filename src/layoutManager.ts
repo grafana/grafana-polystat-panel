@@ -226,22 +226,14 @@ export class LayoutManager {
         if (row % 2 === 1) {
           x += (radius * this.SQRT3) / 2;
         }
-        const y = radius * row * 1.5;
+        let y = radius * row * 1.5;
         return [x, y];
         break;
       case PolygonShapes.CIRCLE:
         return [radius * column * 2, radius * row * 2];
         break;
       case PolygonShapes.SQUARE:
-          const r = radius * 2 + 18;
-          const dx = r;
-          const dy = r;
-          const x0 = -dx * column / 2;
-          const y0 = -dy * row / 2;
-          // j = rows, and i = columns
-          const sy = y0 + dy * row;
-          const sx = x0 + dx * column;
-        return [sx, sy];
+        return [radius * column * 2, radius * row * 2];
         break;
       default:
         return [radius * column * 1.75, radius * row * 1.5];
@@ -250,7 +242,7 @@ export class LayoutManager {
   }
 
   // Builds the placeholder polygons needed to represent each metric
-  generatePoints(data: any, displayLimit: number): any {
+  generatePoints(data: any, displayLimit: number, shape: PolygonShapes): any {
     const points = [];
     if (typeof data === 'undefined') {
       return points;
@@ -279,9 +271,62 @@ export class LayoutManager {
             // TODO: this is still for pointedtop polygons!
             //points.push([this.radius * j * 1.75, this.radius * i * 1.5]);
             console.log(`generatePoints: radius: ${this.radius}`);
-            points.push(this.shapeToCoordinates(this.shape, this.radius, j, i));
+            points.push(this.shapeToCoordinates(shape, this.radius, j, i));
           }
         }
+      }
+    }
+    console.log(`Max rows used: ${maxRowsUsed}`);
+    console.log(`Max columns used: ${maxColumnsUsed}`);
+    this.maxRowsUsed = maxRowsUsed;
+    this.maxColumnsUsed = maxColumnsUsed;
+    return points;
+  }
+
+  generateUniformPoints(data: any, displayLimit: number): any {
+    const points = [];
+    if (typeof data === 'undefined') {
+      return points;
+    }
+    let maxRowsUsed = 0;
+    let columnsUsed = 0;
+    let maxColumnsUsed = 0;
+    let xpos = 1;
+    let ypos = 1;
+
+    // when duplicating panels, this gets odd
+    if (this.numRows === Infinity) {
+      return points;
+    }
+    if (isNaN(this.numColumns)) {
+      return points;
+    }
+    for (let i = 0; i < this.numRows; i++) {
+      if ((!displayLimit || points.length < displayLimit) && points.length < data.length) {
+        maxRowsUsed += 1;
+        columnsUsed = 0;
+        for (let j = 0; j < this.numColumns; j++) {
+          if ((!displayLimit || points.length < displayLimit) && points.length < data.length) {
+            columnsUsed += 1;
+            // track the most number of columns
+            if (columnsUsed > maxColumnsUsed) {
+              maxColumnsUsed = columnsUsed;
+            }
+            // TODO: this is still for pointedtop polygons!
+            //points.push([this.radius * j * 1.75, this.radius * i * 1.5]);
+            console.log(`generatePoints: radius: ${this.radius}`);
+            //points.push(this.shapeToCoordinates(this.shape, this.radius, j, i));
+            points.push({
+              x: xpos,
+              y: ypos,
+              width: this.radius * 2,
+              height: this.radius * 2,
+            });
+            xpos += this.radius * 2;
+          }
+        }
+        xpos = 1;
+        ypos += this.radius * 2;
       }
     }
     console.log(`Max rows used: ${maxRowsUsed}`);
@@ -326,7 +371,9 @@ export class LayoutManager {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return this.getOffsetsHexagonPointedTop(dataSize);
       case PolygonShapes.SQUARE:
+        return this.getOffsetsSquare(dataSize);
       case PolygonShapes.CIRCLE:
+        return this.getOffsetsUniform(dataSize);
       default:
         return this.getOffsetsUniform(dataSize);
     }
@@ -402,6 +449,27 @@ export class LayoutManager {
     return { xoffset, yoffset };
   }
 
+  getOffsetsSquare(dataSize: number): any {
+    const { diameterX, diameterY } = this.getDiameters();
+    const shapeWidth = this.truncateFloat(diameterX);
+    const shapeHeight = this.truncateFloat(diameterY);
+    console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
+    const offsetToViewY = 0; // shapeHeight * 0.5;
+    const actualHeightUsed = this.maxRowsUsed * shapeHeight;
+    console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
+    let yoffset = (this.height - actualHeightUsed) / 2;
+    yoffset = -(yoffset + offsetToViewY);
+    console.log(`getOffsetsUniform: yoffset:${yoffset}`);
+    const offsetToViewX = 0; //shapeWidth * 0.5;
+    console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
+    const actualWidthUsed = this.numColumns * shapeWidth;
+    console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
+    let xoffset = (this.width - actualWidthUsed) / 2;
+    xoffset = -(xoffset + offsetToViewX);
+    console.log(`getOffsetsUniform: xoffset:${xoffset}`);
+    return { xoffset, yoffset };
+  }
+
   getOddEvenCountForRange(L: number, R: number): any {
     let oddCount = (R - L) / 2;
     // if either R or L is odd
@@ -420,7 +488,9 @@ export class LayoutManager {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return this.getHexFlatTopDiameters();
       case PolygonShapes.SQUARE:
+        return this.getUniformDiameters();
       case PolygonShapes.CIRCLE:
+        return this.getUniformDiameters();
       default:
         return this.getUniformDiameters();
     }
