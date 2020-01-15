@@ -374,7 +374,7 @@ export class D3Wrapper {
       let fillColor = data[i].color;
       if (this.opt.polystat.gradientEnabled) {
         // safari needs the location.href
-        fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
+        fillColor = `url("#${this.d3DivId}linear-gradient-state-data-${i}")`;
       }
       switch (this.opt.polystat.shape) {
         case PolygonShapes.HEXAGON_POINTED_TOP:
