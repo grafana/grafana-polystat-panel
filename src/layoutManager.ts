@@ -89,8 +89,8 @@ export class LayoutManager {
    */
   getUniformDiameters(): PolystatDiameters {
     const radius = this.getUniformRadius();
-    let diameterX = radius * 2;
-    let diameterY = radius * 2;
+    const diameterX = radius * 2;
+    const diameterY = radius * 2;
     return { diameterX, diameterY };
   }
   /**
@@ -214,7 +214,7 @@ export class LayoutManager {
         if (row % 2 === 1) {
           x += (radius * this.SQRT3) / 2;
         }
-        let y = radius * row * 1.5;
+        const y = radius * row * 1.5;
         return [x, y];
         break;
       case PolygonShapes.CIRCLE:
@@ -342,6 +342,9 @@ export class LayoutManager {
   }
 
   truncateFloat(value: number): number {
+    if (value === Infinity || value === NaN) {
+      return 0;
+    }
     const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
     return Number(with2Decimals);
   }
