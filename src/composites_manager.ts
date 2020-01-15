@@ -151,9 +151,11 @@ export class CompositesManager {
     matches.forEach((name: string, i: number) => {
       templateVars[i] = { text: i, value: name };
     });
-    matches.groups && Object.keys(matches.groups).forEach(key => {
-      templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
-    });
+    if (matches.groups) {
+      Object.keys(matches.groups).forEach(key => {
+        templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
+      });
+    }
     return this.templateSrv.replace(name, templateVars);
   }
 
@@ -189,8 +191,8 @@ export class CompositesManager {
             // Template out the name of the metric using the alias
             if (aMetric.alias && aMetric.alias.length > 0) {
               seriesItem.displayName = this.resolveMemberAliasTemplates(aMetric.alias, matches);
-            } 
-            
+            }
+
             // keep index of the matched metric
             matchedMetrics.push(index);
             // only hide if requested
