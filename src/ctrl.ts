@@ -543,6 +543,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   onDataError(err) {
     console.log(err);
     this.onDataReceived([]);
+    this.render();
   }
 
   onDataReceived(dataList) {
