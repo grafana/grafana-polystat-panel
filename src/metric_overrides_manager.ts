@@ -81,30 +81,51 @@ export class MetricOverridesManager {
     this.$scope.ctrl.refresh();
   }
 
-  matchOverride(pattern: string): number {
-    for (let index = 0; index < this.metricOverrides.length; index++) {
-      const anOverride = this.metricOverrides[index];
+  matchOverride(pattern: string): MetricOverride {
+    const resolvedOverrides = this.resolveOverrideTemplates();
+    for (let index = 0; index < resolvedOverrides.length; index++) {
+      const anOverride = resolvedOverrides[index];
       const regex = stringToJsRegex(anOverride.metricName);
       const matches = pattern.match(regex);
       if (matches && matches.length > 0 && anOverride.enabled) {
-        return index;
+        return resolvedOverrides[index];
       }
     }
-    return -1;
+    return undefined;
+  }
+
+  resolveOverrideTemplates(): any[] {
+    const ret: any[] = [];
+    const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
+    this.metricOverrides.forEach(override => {
+      // Resolve templates in series names
+      const matchResult = override.metricName.match(variableRegex);
+      if (matchResult && matchResult.length > 0) {
+        matchResult.forEach(template => {
+          const resolvedSeriesNames = this.templateSrv.replace(template, this.templateSrv.ScopedVars, 'csv').split(',');
+          resolvedSeriesNames.forEach(seriesName => {
+            const newName = override.metricName.replace(template, seriesName);
+            ret.push({
+              ...override,
+              metricName: newName,
+            });
+          });
+        });
+      }
+    });
+
+    return ret;
   }
 
   applyOverrides(data) {
     const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
-      const matchIndex = this.matchOverride(data[index].name);
-      if (matchIndex >= 0) {
+      const anOverride = this.matchOverride(data[index].name);
+      if (anOverride) {
         const aSeries = data[index];
-        const anOverride = this.metricOverrides[matchIndex];
         // set the operators
         aSeries.operatorName = anOverride.operatorName;
         const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
-        //console.log("series2 operator: " + series2.operatorName);
-        //console.log("series2 value: " + series2Value);
 
         // Use defaults or the specific threshold
         const thresholds = anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;

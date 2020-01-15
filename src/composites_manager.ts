@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { PolystatModel } from './polystatmodel';
 import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { stringToJsRegex } from '@grafana/data';
+import { stringToJsRegex, ScopedVars } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
@@ -104,18 +104,73 @@ export class CompositesManager {
     return -1;
   }
 
+  resolveCompositeTemplates(): MetricComposite[] {
+    const ret: MetricComposite[] = [];
+    this.metricComposites.forEach((item: MetricComposite) => {
+      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'csv').split(',');
+      resolved.forEach(newName => {
+        ret.push({
+          ...item,
+          compositeName: newName,
+        });
+      });
+    });
+
+    return ret;
+  }
+
+  resolveMemberTemplates(members: any[], vars: ScopedVars[] = this.templateSrv.ScopedVars): any[] {
+    const ret: any[] = [];
+    const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
+    members.forEach(member => {
+      // Resolve templates in series names
+      const matchResult = member.seriesName.match(variableRegex);
+      if (matchResult && matchResult.length > 0) {
+        matchResult.forEach(template => {
+          const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
+          resolvedSeriesNames.forEach(seriesName => {
+            const newName = member.seriesName.replace(matchResult, seriesName);
+            ret.push({
+              ...member,
+              seriesName: newName,
+            });
+          });
+        });
+      }
+    });
+
+    return ret;
+  }
+
+  resolveMemberAliasTemplates(name: string, matches: any): string {
+    const templateVars: ScopedVars = {};
+    matches.forEach((name: string, i: number) => {
+      templateVars[i] = { text: i, value: name };
+    });
+    Object.keys(matches.groups).forEach(key => {
+      templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
+    });
+    return this.templateSrv.replace(name, templateVars);
+  }
+
   applyComposites(data) {
     const filteredMetrics = new Array<number>();
     const clonedComposites = new Array<PolystatModel>();
-    for (let i = 0; i < this.metricComposites.length; i++) {
+    const resolvedComposites = this.resolveCompositeTemplates();
+    for (let i = 0; i < resolvedComposites.length; i++) {
       const matchedMetrics = new Array<number>();
-      const aComposite = this.metricComposites[i];
+      const aComposite = resolvedComposites[i];
       if (!aComposite.enabled) {
         continue;
       }
       let currentWorstSeries = null;
-      for (let j = 0; j < aComposite.members.length; j++) {
-        const aMetric = aComposite.members[j];
+
+      const templatedMembers = this.resolveMemberTemplates(aComposite.members, {
+        ...this.templateSrv.ScopedVars,
+        compositeName: { text: 'compositeName', value: aComposite.compositeName },
+      });
+      for (let j = 0; j < templatedMembers.length; j++) {
+        const aMetric = templatedMembers[j];
         // look for the matches to the pattern in the data
         for (let index = 0; index < data.length; index++) {
           // match regex
@@ -124,9 +179,11 @@ export class CompositesManager {
             continue;
           }
           const regex = stringToJsRegex(aMetric.seriesName);
-          const matches = data[index].name.match(regex);
+          const matches = regex.exec(data[index].name);
           if (matches && matches.length > 0) {
             const seriesItem = data[index];
+            // Template out the name of the metric using the alias
+            seriesItem.displayName = this.resolveMemberAliasTemplates(aMetric.alias, matches);
             // keep index of the matched metric
             matchedMetrics.push(index);
             // only hide if requested
@@ -171,7 +228,10 @@ export class CompositesManager {
         // tooltip/legend uses this to expand what values are inside the composite
         for (let index = 0; index < matchedMetrics.length; index++) {
           const itemIndex = matchedMetrics[index];
-          clone.members.push(data[itemIndex]);
+          clone.members.push({
+            ...data[itemIndex],
+            name: data[itemIndex].displayName,
+          });
         }
         clone.thresholdLevel = currentWorstSeries.thresholdLevel;
         // currentWorstSeries.valueFormatted = currentWorstSeriesName + ': ' + currentWorstSeries.valueFormatted;
