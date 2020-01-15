@@ -124,18 +124,22 @@ export class CompositesManager {
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
     members.forEach(member => {
       // Resolve templates in series names
-      const matchResult = member.seriesName.match(variableRegex);
-      if (matchResult && matchResult.length > 0) {
-        matchResult.forEach(template => {
-          const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
-          resolvedSeriesNames.forEach(seriesName => {
-            const newName = member.seriesName.replace(matchResult, seriesName);
-            ret.push({
-              ...member,
-              seriesName: newName,
+      if (member.seriesName) {
+        const matchResult = member.seriesName.match(variableRegex);
+        if (matchResult && matchResult.length > 0) {
+          matchResult.forEach(template => {
+            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
+            resolvedSeriesNames.forEach(seriesName => {
+              const newName = member.seriesName.replace(matchResult, seriesName);
+              ret.push({
+                ...member,
+                seriesName: newName,
+              });
             });
           });
-        });
+        } else {
+          ret.push(member);
+        }
       }
     });
 
@@ -147,7 +151,7 @@ export class CompositesManager {
     matches.forEach((name: string, i: number) => {
       templateVars[i] = { text: i, value: name };
     });
-    Object.keys(matches.groups).forEach(key => {
+    matches.groups && Object.keys(matches.groups).forEach(key => {
       templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
     });
     return this.templateSrv.replace(name, templateVars);
@@ -183,14 +187,17 @@ export class CompositesManager {
           if (matches && matches.length > 0) {
             const seriesItem = data[index];
             // Template out the name of the metric using the alias
-            seriesItem.displayName = this.resolveMemberAliasTemplates(aMetric.alias, matches);
+            if (aMetric.alias && aMetric.alias.length > 0) {
+              seriesItem.displayName = this.resolveMemberAliasTemplates(aMetric.alias, matches);
+            } 
+            
             // keep index of the matched metric
             matchedMetrics.push(index);
             // only hide if requested
             if (aComposite.hideMembers) {
               filteredMetrics.push(index);
             }
-            if (aComposite.clickThrough.length > 0) {
+            if (aComposite.clickThrough && aComposite.clickThrough.length > 0) {
               // process template variables
               let url = this.templateSrv.replaceWithText(aComposite.clickThrough);
               // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
@@ -230,7 +237,7 @@ export class CompositesManager {
           const itemIndex = matchedMetrics[index];
           clone.members.push({
             ...data[itemIndex],
-            name: data[itemIndex].displayName,
+            name: data[itemIndex].displayName || data[itemIndex].name,
           });
         }
         clone.thresholdLevel = currentWorstSeries.thresholdLevel;
@@ -265,12 +272,10 @@ export class CompositesManager {
 
   metricNameChanged(metric) {
     // TODO: validate item is a valid regex
-    console.log("metric name changed: '" + metric.seriesName + "'");
     this.$scope.ctrl.refresh();
   }
 
   toggleHide(composite) {
-    console.log('composite enabled =  ' + composite.enabled);
     composite.enabled = !composite.enabled;
     this.$scope.ctrl.refresh();
   }
