@@ -39,6 +39,7 @@ export class D3Wrapper {
   data: any;
   templateSrv: any;
   calculatedPoints: any;
+  calculatedTextPoints: any;
   minFont = 8;
   maxFont = 240;
   purelight: any;
@@ -71,7 +72,7 @@ export class D3Wrapper {
     }
     // using the known number of columns and rows that can be used in addition to the radius,
     // generate the points to be filled
-    this.calculatedPoints = this.lm.generatePoints(this.data, opt.displayLimit);
+    this.calculatedPoints = this.lm.generatePoints(this.data, opt.displayLimit, this.opt.polystat.shape);
   }
 
   computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
@@ -234,6 +235,7 @@ export class D3Wrapper {
     if (diameterY < diameterX) {
       innerArea = diameterY * diameterY;
     }
+    // square and circle do not use this
     const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
@@ -299,15 +301,70 @@ export class D3Wrapper {
     // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
     // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
     // - Label text (top text) will be aligned (negatively, i.e. higher) in the middle of the top half of the text area
-    const valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
-    const valueOnlyTextAlignment = activeValueFontSize / 2;
-    const labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
-    const labelOnlyTextAlignment = activeLabelFontSize / 2;
+    let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
+    let valueOnlyTextAlignment = activeValueFontSize / 2;
+    let labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
+    let labelOnlyTextAlignment = activeLabelFontSize / 2;
 
-    svg
-      .selectAll('.hexagon')
-      .data(ahexbin(this.calculatedPoints))
-      .enter()
+    let labelTextAlignmentX = 0;
+    let labelValueAlignmentX = 0;
+
+    // hexagons need to use hexbin for layout, the square/circle shapes require rect/circle instead
+    let filledSVG = null;
+    let activeShape = 'hexagon';
+    switch (this.opt.polystat.shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        filledSVG = svg
+          .selectAll(`.${activeShape}`)
+          .data(ahexbin(this.calculatedPoints)).enter();
+        break;
+      case PolygonShapes.CIRCLE:
+        activeShape = 'circle';
+        let circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        filledSVG = svg
+        .selectAll(".circle").data(this.calculatedPoints);
+        filledSVG
+          .enter().append("circle")
+          .attr("class", "circle")
+          .attr("cx", function(d: any) {
+            console.log(`dx = ${d}`);
+            return d[0];
+          })
+          .attr("cy", function(d: any) {
+            console.log(`dy = ${d}`);
+            return d[1];
+          })
+          .attr("r", circleRadius);
+        filledSVG = svg
+          .selectAll(".circle").data(data);
+        break;
+      case PolygonShapes.SQUARE:
+        activeShape = 'square';
+        let squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        filledSVG = svg
+        .selectAll(".rect").data(this.calculatedPoints);
+        filledSVG
+          .enter().append("rect")
+          .attr("class", "rect")
+          .attr("x", function(d: any) {
+            console.log(`dx = ${d}`);
+            return d[0];
+          })
+          .attr("y", function(d: any) {
+            console.log(`dy = ${d}`);
+            return d[1];
+          })
+          .attr("height", squareRadius * 2)
+          .attr("width", squareRadius * 2);
+        filledSVG = svg
+          .selectAll(".rect").data(data);
+        break;
+      default:
+        break;
+    }
+    console.log(customShape);
+
+    filledSVG
       .each((_, i, nodes) => {
         let node = d3.select(nodes[i]);
         const clickThroughURL = resolveClickThroughURL(data[i]);
@@ -322,16 +379,34 @@ export class D3Wrapper {
           // safari needs the location.href
           fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
         }
+        switch (this.opt.polystat.shape) {
+          case PolygonShapes.HEXAGON_POINTED_TOP:
+            node = node
+              .append('path')
+              .attr('transform', (d: any) => {
+                  return 'translate(' + d.x + ',' + d.y + ')';
+                })
+              .attr('d', customShape)
+              .attr('stroke', this.opt.polystat.polygonBorderColor)
+              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+              .style('fill', fillColor);
+            break;
+          case PolygonShapes.CIRCLE:
+            node
+              .join('circle')
+              .attr('stroke', this.opt.polystat.polygonBorderColor)
+              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+              .style('fill', fillColor);
+          break;
+          case PolygonShapes.SQUARE:
+            node
+              .join('square')
+              .attr('stroke', this.opt.polystat.polygonBorderColor)
+              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+              .style('fill', fillColor);
+          break;
+        }
         node
-          .append('path')
-          .attr('class', 'hexagon')
-          .attr('transform', (d: any) => {
-            return 'translate(' + d.x + ',' + d.y + ')';
-          })
-          .attr('d', customShape)
-          .attr('stroke', this.opt.polystat.polygonBorderColor)
-          .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-          .style('fill', fillColor)
           .on('mousemove', () => {
             // use the viewportwidth to prevent the tooltip from going too far right
             const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -370,14 +445,38 @@ export class D3Wrapper {
       });
 
     // now labels
-    const textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
+    let textspot = null;
+    switch (this.opt.polystat.shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
+        break;
+      case PolygonShapes.CIRCLE:
+        textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
+        break;
+      case PolygonShapes.SQUARE:
+        textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
+        // square is "centered" at top left, not the center
+
+        // compute alignment for each text element, base coordinate is at the top left corner (text is anchored at its bottom):
+        // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
+        // - Label text (top text) will be aligned in the middle of the top half of the text area
+        valueWithLabelTextAlignment = (diameterY / 1.5) + activeValueFontSize / 2;
+        valueOnlyTextAlignment = (diameterY / 1.5) + activeValueFontSize / 2;
+        labelWithValueTextAlignment = (diameterY / 4) + activeLabelFontSize / 2;
+        labelOnlyTextAlignment = activeLabelFontSize / 2;
+        //
+        labelTextAlignmentX = diameterX / 2;
+        labelValueAlignmentX = diameterX / 2;
+        break;
+    }
+
 
     textspot
       .enter()
       .append('text')
       .attr('class', 'toplabel')
-      .attr('x', d => {
-        return d.x;
+      .attr('x', (d: any)=> {
+        return d.x + labelTextAlignmentX;
       })
       .attr('y', (d, i) => {
         const item = data[i];
@@ -409,7 +508,7 @@ export class D3Wrapper {
         return 'valueLabel' + i;
       })
       .attr('x', d => {
-        return d.x;
+        return d.x + labelValueAlignmentX;
       })
       .attr('y', (d, i) => {
         const item = data[i];
@@ -468,6 +567,18 @@ export class D3Wrapper {
       });
   }
 
+  /**
+   * Expands coordinates from the array to explicit x and y similar to hexbin but without any offsets
+   *
+   * @param data calculate coordinates in array pairs of x,y
+   */
+  miscbin(data: any): any {
+    for (let i = 0; i < data.length; i++) {
+      data[i].x = data[i][0];
+      data[i].y = data[i][1];
+    }
+    return data;
+  }
   formatValueContent(i, frames, thisRef): string {
     const data = thisRef.data[i];
     // options can specify to not show the value
