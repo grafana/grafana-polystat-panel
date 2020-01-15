@@ -117,8 +117,8 @@ export class LayoutManager {
     // width divided by the number of columns determines the max horizontal of the square
     // height divided by the number of rows determines the max vertical size ofthe square
     // the smaller of the two is used since that is the "best fit"
-    const horizontalMax = this.width / this.maxColumnsUsed * 0.5;
-    const verticalMax = this.height / this.maxRowsUsed * 0.5;
+    const horizontalMax = (this.width / this.maxColumnsUsed) * 0.5;
+    const verticalMax = (this.height / this.maxRowsUsed) * 0.5;
     let uniformRadius = horizontalMax;
     if (uniformRadius > verticalMax) {
       // vertically limited
@@ -335,7 +335,6 @@ export class LayoutManager {
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
   }
-
 
   getRadius(): number {
     return this.radius;

@@ -316,133 +316,131 @@ export class D3Wrapper {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         filledSVG = svg
           .selectAll(`.${activeShape}`)
-          .data(ahexbin(this.calculatedPoints)).enter();
+          .data(ahexbin(this.calculatedPoints))
+          .enter();
         break;
       case PolygonShapes.CIRCLE:
         activeShape = 'circle';
         let circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
-        filledSVG = svg
-        .selectAll(".circle").data(this.calculatedPoints);
+        filledSVG = svg.selectAll('.circle').data(this.calculatedPoints);
         filledSVG
-          .enter().append("circle")
-          .attr("class", "circle")
-          .attr("cx", function(d: any) {
+          .enter()
+          .append('circle')
+          .attr('class', 'circle')
+          .attr('cx', function(d: any) {
             console.log(`dx = ${d}`);
             return d[0];
           })
-          .attr("cy", function(d: any) {
+          .attr('cy', function(d: any) {
             console.log(`dy = ${d}`);
             return d[1];
           })
-          .attr("r", circleRadius);
-        filledSVG = svg
-          .selectAll(".circle").data(data);
+          .attr('r', circleRadius);
+        filledSVG = svg.selectAll('.circle').data(data);
         break;
       case PolygonShapes.SQUARE:
         activeShape = 'square';
         let squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
-        filledSVG = svg
-        .selectAll(".rect").data(this.calculatedPoints);
+        filledSVG = svg.selectAll('.rect').data(this.calculatedPoints);
         filledSVG
-          .enter().append("rect")
-          .attr("class", "rect")
-          .attr("x", function(d: any) {
+          .enter()
+          .append('rect')
+          .attr('class', 'rect')
+          .attr('x', function(d: any) {
             console.log(`dx = ${d}`);
             return d[0];
           })
-          .attr("y", function(d: any) {
+          .attr('y', function(d: any) {
             console.log(`dy = ${d}`);
             return d[1];
           })
-          .attr("height", squareRadius * 2)
-          .attr("width", squareRadius * 2);
-        filledSVG = svg
-          .selectAll(".rect").data(data);
+          .attr('height', squareRadius * 2)
+          .attr('width', squareRadius * 2);
+        filledSVG = svg.selectAll('.rect').data(data);
         break;
       default:
         break;
     }
     console.log(customShape);
 
-    filledSVG
-      .each((_, i, nodes) => {
-        let node = d3.select(nodes[i]);
-        const clickThroughURL = resolveClickThroughURL(data[i]);
-        if (clickThroughURL.length > 0) {
+    filledSVG.each((_, i, nodes) => {
+      let node = d3.select(nodes[i]);
+      const clickThroughURL = resolveClickThroughURL(data[i]);
+      if (clickThroughURL.length > 0) {
+        node = node
+          .append('a')
+          .attr('target', resolveClickThroughTarget(data[i]))
+          .attr('xlink:href', clickThroughURL);
+      }
+      let fillColor = data[i].color;
+      if (this.opt.polystat.gradientEnabled) {
+        // safari needs the location.href
+        fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
+      }
+      switch (this.opt.polystat.shape) {
+        case PolygonShapes.HEXAGON_POINTED_TOP:
           node = node
-            .append('a')
-            .attr('target', resolveClickThroughTarget(data[i]))
-            .attr('xlink:href', clickThroughURL);
-        }
-        let fillColor = data[i].color;
-        if (this.opt.polystat.gradientEnabled) {
-          // safari needs the location.href
-          fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
-        }
-        switch (this.opt.polystat.shape) {
-          case PolygonShapes.HEXAGON_POINTED_TOP:
-            node = node
-              .append('path')
-              .attr('transform', (d: any) => {
-                  return 'translate(' + d.x + ',' + d.y + ')';
-                })
-              .attr('d', customShape)
-              .attr('stroke', this.opt.polystat.polygonBorderColor)
-              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-              .style('fill', fillColor);
-            break;
-          case PolygonShapes.CIRCLE:
-            node
-              .join('circle')
-              .attr('stroke', this.opt.polystat.polygonBorderColor)
-              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-              .style('fill', fillColor);
+            .append('path')
+            .attr('transform', (d: any) => {
+              return 'translate(' + d.x + ',' + d.y + ')';
+            })
+            .attr('d', customShape)
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
           break;
-          case PolygonShapes.SQUARE:
-            node
-              .join('square')
-              .attr('stroke', this.opt.polystat.polygonBorderColor)
-              .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-              .style('fill', fillColor);
+        case PolygonShapes.CIRCLE:
+          node
+            .join('circle')
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
           break;
-        }
-        node
-          .on('mousemove', () => {
-            // use the viewportwidth to prevent the tooltip from going too far right
-            const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            // use the mouse position for the entire page, received by
-            // d3.event.pageX, d3.event.pageY
-            let xpos = d3.event.pageX - 50;
-            // don't allow offscreen tooltip
-            if (xpos < 0) {
-              xpos = 0;
-            }
-            // prevent tooltip from rendering outside of viewport
-            if (xpos + 200 > viewPortWidth) {
-              xpos = viewPortWidth - 200;
-            }
-            const ypos = d3.event.pageY + 5;
-            tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
-          })
-          .on('mouseover', (d: any) => {
-            tooltip
-              .transition()
-              .duration(200)
-              .style('opacity', 0.9);
-            tooltip
-              .html(this.opt.tooltipContent[i])
-              .style('font-size', this.opt.tooltipFontSize)
-              .style('font-family', this.opt.tooltipFontType)
-              .style('left', d.x - 5 + 'px')
-              .style('top', d.y - 5 + 'px');
-          })
-          .on('mouseout', () => {
-            tooltip
-              .transition()
-              .duration(500)
-              .style('opacity', 0);
-          });
-      });
+        case PolygonShapes.SQUARE:
+          node
+            .join('square')
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
+          break;
+      }
+      node
+        .on('mousemove', () => {
+          // use the viewportwidth to prevent the tooltip from going too far right
+          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+          // use the mouse position for the entire page, received by
+          // d3.event.pageX, d3.event.pageY
+          let xpos = d3.event.pageX - 50;
+          // don't allow offscreen tooltip
+          if (xpos < 0) {
+            xpos = 0;
+          }
+          // prevent tooltip from rendering outside of viewport
+          if (xpos + 200 > viewPortWidth) {
+            xpos = viewPortWidth - 200;
+          }
+          const ypos = d3.event.pageY + 5;
+          tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
+        })
+        .on('mouseover', (d: any) => {
+          tooltip
+            .transition()
+            .duration(200)
+            .style('opacity', 0.9);
+          tooltip
+            .html(this.opt.tooltipContent[i])
+            .style('font-size', this.opt.tooltipFontSize)
+            .style('font-family', this.opt.tooltipFontType)
+            .style('left', d.x - 5 + 'px')
+            .style('top', d.y - 5 + 'px');
+        })
+        .on('mouseout', () => {
+          tooltip
+            .transition()
+            .duration(500)
+            .style('opacity', 0);
+        });
+    });
 
     // now labels
     let textspot = null;
@@ -460,9 +458,9 @@ export class D3Wrapper {
         // compute alignment for each text element, base coordinate is at the top left corner (text is anchored at its bottom):
         // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
         // - Label text (top text) will be aligned in the middle of the top half of the text area
-        valueWithLabelTextAlignment = (diameterY / 1.5) + activeValueFontSize / 2;
-        valueOnlyTextAlignment = (diameterY / 1.5) + activeValueFontSize / 2;
-        labelWithValueTextAlignment = (diameterY / 4) + activeLabelFontSize / 2;
+        valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
+        valueOnlyTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
+        labelWithValueTextAlignment = diameterY / 4 + activeLabelFontSize / 2;
         labelOnlyTextAlignment = activeLabelFontSize / 2;
         //
         labelTextAlignmentX = diameterX / 2;
@@ -470,12 +468,11 @@ export class D3Wrapper {
         break;
     }
 
-
     textspot
       .enter()
       .append('text')
       .attr('class', 'toplabel')
-      .attr('x', (d: any)=> {
+      .attr('x', (d: any) => {
         return d.x + labelTextAlignmentX;
       })
       .attr('y', (d, i) => {
