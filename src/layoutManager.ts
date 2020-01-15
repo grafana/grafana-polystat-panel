@@ -342,7 +342,7 @@ export class LayoutManager {
   }
 
   truncateFloat(value: number): number {
-    if (value === Infinity || value === NaN) {
+    if (value === Infinity || isNaN(value)) {
       return 0;
     }
     const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
