@@ -40,3 +40,4 @@
 - New: Sort options for polygons and tooltips (issue #37)
 - New: Square-shape polygon now available (issue #92)
 - New: Optional Global thresholds
+- New: Sorting options for values and labels of polygons
