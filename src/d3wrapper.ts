@@ -321,17 +321,17 @@ export class D3Wrapper {
         break;
       case PolygonShapes.CIRCLE:
         activeShape = 'circle';
-        let circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        const circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
         filledSVG = svg.selectAll('.circle').data(this.calculatedPoints);
         filledSVG
           .enter()
           .append('circle')
           .attr('class', 'circle')
-          .attr('cx', function(d: any) {
+          .attr('cx', (d: any) => {
             //console.log(`dx = ${d}`);
             return d[0];
           })
-          .attr('cy', function(d: any) {
+          .attr('cy', (d: any) => {
             //console.log(`dy = ${d}`);
             return d[1];
           })
@@ -340,17 +340,17 @@ export class D3Wrapper {
         break;
       case PolygonShapes.SQUARE:
         activeShape = 'square';
-        let squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        const squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
         filledSVG = svg.selectAll('.rect').data(this.calculatedPoints);
         filledSVG
           .enter()
           .append('rect')
           .attr('class', 'rect')
-          .attr('x', function(d: any) {
+          .attr('x', (d: any) => {
             //console.log(`dx = ${d}`);
             return d[0];
           })
-          .attr('y', function(d: any) {
+          .attr('y', (d: any) => {
             //console.log(`dy = ${d}`);
             return d[1];
           })
