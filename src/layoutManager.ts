@@ -67,8 +67,6 @@ export class LayoutManager {
    */
   getHexFlatTopRadius(): number {
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
-    //console.log(`getHexFlatTopRadius initialWidth:${this.width} initialHeight:${this.height}`);
-    //console.log(`getHexFlatTopRadius numColumns:${this.numColumns} numRows:${this.numRows}`);
     let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = hexRadius - polygonBorderSize;
     return this.truncateFloat(hexRadius);
@@ -168,9 +166,6 @@ export class LayoutManager {
         this.numColumns = 1;
       }
     }
-    //console.log(`Calculated columns = ${this.numColumns}`);
-    //console.log(`Calculated rows = ${this.numRows}`);
-    //console.log(`Number of data items to render = ${dataSize}`);
   }
 
   /**
@@ -200,8 +195,6 @@ export class LayoutManager {
         }
       }
     }
-    //console.log(`generateActualColumnAndRowUsage: Actual rows used: ${maxRowsUsed}`);
-    //console.log(`generateActualColumnAndRowUsage: Actual columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
   }
@@ -261,8 +254,6 @@ export class LayoutManager {
         }
       }
     }
-    //console.log(`Max rows used: ${maxRowsUsed}`);
-    //console.log(`Max columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
@@ -310,8 +301,6 @@ export class LayoutManager {
         ypos += this.radius * 2;
       }
     }
-    //console.log(`Max rows used: ${maxRowsUsed}`);
-    //console.log(`Max columns used: ${maxColumnsUsed}`);
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
@@ -363,51 +352,31 @@ export class LayoutManager {
   }
 
   getOffsetsHexagonPointedTop(dataSize: number): any {
-    //console.log(`getOffsets dataSize:${dataSize}`);
-    //console.log(`getOffsets initialWidth:${this.width} initialHeight:${this.height}`);
-    //console.log(`getOffsets numColumns:${this.numColumns} numRows:${this.numRows}`);
-
     let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
     hexRadius = this.truncateFloat(hexRadius);
-    //console.log(`getOffsets hexRadius:${hexRadius}`);
-
-    //const usedWidth = Math.ceil(this.numColumns * hexRadius * this.SQRT3 + hexRadius);
-    //console.log(`getOffsets usedWidth:${usedWidth}`);
-
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
-    //console.log(`getOffsets shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
 
     const offsetToViewY = shapeHeight * 0.5;
-    //const offsetToViewY = 0;
-    //console.log(`getOffsets offsetToViewY:${offsetToViewY}`);
     // even rows are half-sized
     const { oddCount, evenCount } = this.getOddEvenCountForRange(1, this.maxRowsUsed);
-    //console.log(`getOffsets for ${this.maxRowsUsed} rows, there are odds:${oddCount} evens: ${evenCount}`);
-
     // odd-numbered hexagons are full height, evens are half height
     const actualHeightUsed = oddCount * shapeHeight + evenCount * shapeHeight * 0.5;
-    //console.log(`getOffsets actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    //console.log(`getOffsets yoffset:${yoffset}`);
 
     const offsetToViewX = shapeWidth * 0.5;
-    //console.log(`getOffsets offsetToViewX:${offsetToViewX}`);
     // columns have a half-width offset if there are more than 1 rows
     let widthOffset = 0;
     if (this.numRows > 1) {
       // if the datasize is equal to or larger than the 2*Columns, there is an additional offset needed
       if (dataSize >= this.maxColumnsUsed * 2) {
-        //console.log(`getOffsets: full columns and rows, need to compute additional width`);
         widthOffset = 0.5;
       }
     }
     const actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
-    //console.log(`getOffsets actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    //console.log(`getOffsets xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
@@ -415,20 +384,14 @@ export class LayoutManager {
     const { diameterX, diameterY } = this.getDiameters();
     const shapeWidth = this.truncateFloat(diameterX);
     const shapeHeight = this.truncateFloat(diameterY);
-    //console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
     const offsetToViewY = shapeHeight * 0.5;
     const actualHeightUsed = this.maxRowsUsed * shapeHeight;
-    //console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    //console.log(`getOffsetsUniform: yoffset:${yoffset}`);
     const offsetToViewX = shapeWidth * 0.5;
-    //console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
     const actualWidthUsed = this.numColumns * shapeWidth;
-    //console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    //console.log(`getOffsetsUniform: xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 
@@ -436,20 +399,14 @@ export class LayoutManager {
     const { diameterX, diameterY } = this.getDiameters();
     const shapeWidth = this.truncateFloat(diameterX);
     const shapeHeight = this.truncateFloat(diameterY);
-    //console.log(`getOffsetsUniform: shapeWidth:${shapeWidth} shapeHeight:${shapeHeight}`);
     const offsetToViewY = 0; // shapeHeight * 0.5;
     const actualHeightUsed = this.maxRowsUsed * shapeHeight;
-    //console.log(`getOffsetsUniform: actualHeightUsed:${actualHeightUsed} available height: ${this.height}`);
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
-    //console.log(`getOffsetsUniform: yoffset:${yoffset}`);
     const offsetToViewX = 0; //shapeWidth * 0.5;
-    //console.log(`getOffsetsUniform: offsetToViewX:${offsetToViewX}`);
     const actualWidthUsed = this.numColumns * shapeWidth;
-    //console.log(`getOffsetsUniform: actualWidthUsed:${actualWidthUsed}`);
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
-    //console.log(`getOffsetsUniform: xoffset:${xoffset}`);
     return { xoffset, yoffset };
   }
 

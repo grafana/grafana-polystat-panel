@@ -76,7 +76,6 @@ export class MetricOverridesManager {
   }
 
   toggleHide(override: MetricOverride) {
-    //console.log("override enabled =  " + override.enabled);
     override.enabled = !override.enabled;
     this.$scope.ctrl.refresh();
   }
@@ -103,8 +102,6 @@ export class MetricOverridesManager {
         // set the operators
         aSeries.operatorName = anOverride.operatorName;
         const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
-        //console.log("series2 operator: " + series2.operatorName);
-        //console.log("series2 value: " + series2Value);
 
         // Use defaults or the specific threshold
         const thresholds = anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;
@@ -113,7 +110,6 @@ export class MetricOverridesManager {
         // set value to what was returned
         data[index].value = dataValue;
         data[index].color = result.color;
-        //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
         const formatFunc = kbn.valueFormats[anOverride.unitFormat];

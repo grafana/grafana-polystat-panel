@@ -121,7 +121,6 @@ function getThresholdLevelForValue(thresholds: PolystatThreshold[], value: numbe
     currentState = thresholds[0].state;
     currentColor = thresholds[0].color;
   }
-  //console.log("Returning threshold level: " + currentState + " color: " + currentColor);
   return { thresholdLevel: currentState, color: currentColor };
 }
 

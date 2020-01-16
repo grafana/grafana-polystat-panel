@@ -98,7 +98,6 @@ export class D3Wrapper {
     const width = this.opt.width;
     const height = this.opt.height;
 
-    //this.calculatedPoints = this.lm.generatePoints(this.data, this.opt.displayLimit);
     const ahexbin = d3hexbin
       .hexbin()
       .radius(this.lm.generateRadius(this.opt.polystat.shape))
@@ -137,7 +136,6 @@ export class D3Wrapper {
 
     const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
-      //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
       const aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
       aGradient
         .attr('x1', '30%')
@@ -269,7 +267,6 @@ export class D3Wrapper {
       // same for the value, also check for submetrics size in case of composite
       let maxValue = '';
       for (let i = 0; i < this.data.length; i++) {
-        //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
           maxValue = this.data[i].valueFormatted;
         }
@@ -278,7 +275,6 @@ export class D3Wrapper {
           let counter = 0;
           while (counter < submetricCount) {
             const checkContent = this.formatValueContent(i, counter, this);
-            //console.log("Checking len: \"" + checkContent + "\" vs: \"" + maxValue + "\"");
             if (checkContent && checkContent.length > maxValue.length) {
               maxValue = checkContent;
             }
@@ -328,11 +324,9 @@ export class D3Wrapper {
           .append('circle')
           .attr('class', 'circle')
           .attr('cx', (d: any) => {
-            //console.log(`dx = ${d}`);
             return d[0];
           })
           .attr('cy', (d: any) => {
-            //console.log(`dy = ${d}`);
             return d[1];
           })
           .attr('r', circleRadius);
@@ -347,11 +341,9 @@ export class D3Wrapper {
           .append('rect')
           .attr('class', 'rect')
           .attr('x', (d: any) => {
-            //console.log(`dx = ${d}`);
             return d[0];
           })
           .attr('y', (d: any) => {
-            //console.log(`dy = ${d}`);
             return d[1];
           })
           .attr('height', squareRadius * 2)
@@ -619,14 +611,12 @@ export class D3Wrapper {
       let triggeredIndex = -1;
       if (data.animateMode === 'all') {
         triggeredIndex = frames % len;
-        //console.log("triggeredIndex from all mode: " + triggeredIndex);
       } else {
         if (typeof data.triggerCache === 'undefined') {
           data.triggerCache = this.buildTriggerCache(data);
         }
         const z = frames % data.triggerCache.length;
         triggeredIndex = data.triggerCache[z].index;
-        //console.log("triggeredIndex from cache is: " + triggeredIndex);
       }
       const aMember = data.members[triggeredIndex];
 
@@ -652,7 +642,6 @@ export class D3Wrapper {
   }
 
   buildTriggerCache(item) {
-    //console.log("Building trigger cache for item");
     let triggerCache = [];
     for (let i = 0; i < item.members.length; i++) {
       const aMember = item.members[i];

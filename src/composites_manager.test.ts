@@ -131,19 +131,12 @@ describe('CompositesManager', () => {
 
   describe('Composite Colors', () => {
     it('returns A-series', () => {
-      //let data = mgr.applyComposites([aSeries, bSeries]);
       const data = mgr.applyComposites([aModel, bModel]);
-      //console.log("data is: " + data);
       expect(data.length).toBe(3);
-      //var str = JSON.stringify(data[2], null, 2); // spacing level = 2
-      //console.log("data[2] is: " + str);
       expect(data[2].color === 'green');
       aModel.value = 181;
       aModel.valueFormatted = '181';
-      //console.log("trying value 20");
       const datax = mgr.applyComposites([aModel, bModel]);
-      //str = JSON.stringify(datax[2], null, 2);
-      //console.log("datax[2] is: " + str);
       expect(datax[2].color).toBe('green');
     });
   });
