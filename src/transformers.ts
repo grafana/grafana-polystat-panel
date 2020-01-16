@@ -18,13 +18,11 @@ import { PolystatModel } from './polystatmodel';
 
 export class Transformers {
   static TimeSeriesToPolystat(operatorName: string, series: any): any {
-    //console.log("Converting time series to hexbin");
     // only use min length, and start from the "end"
     // use timestamp of X
     //let tsLength = series.datapoints.length;
     //let bins = [];
     const aPolystat = new PolystatModel(operatorName, series);
-    //console.log("Number of time series in X: " + tsLength);
     //for (let index = tsLength - 1; index >= 0; index--) {
     //for (let index = 0; index < tsLength; index++) {
     // get the number of metrics

@@ -61,3 +61,14 @@ export interface PolystatConfigs {
   tooltipSecondarySortField: string;
   tooltipTimestampEnabled: boolean;
 }
+
+export enum PolygonShapes {
+  HEXAGON_POINTED_TOP = 'hexagon_pointed_top',
+  CIRCLE = 'circle',
+  SQUARE = 'square',
+}
+
+export interface PolystatDiameters {
+  diameterX: number;
+  diameterY: number;
+}

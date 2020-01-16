@@ -9,7 +9,7 @@
         <input type="number" class="gf-form-input" ng-model="ctrl.panel.polystat.columns" ng-blur="ctrl.validateColumnValue()" ng-disabled="ctrl.panel.polystat.columnAutoSize"
           placeholder="auto">
       </div>
-      <gf-form-switch 
+      <gf-form-switch
         class="gf-form" label-class="width-6" label="Auto Size"
         checked="ctrl.panel.polystat.columnAutoSize"
         on-change="ctrl.validateColumnValue()">
@@ -78,29 +78,6 @@
       </div>
   </div>
   </div>
-  <div class="section gf-form-group">
-    <h5 class="section-heading">Sorting</h5>
-      <div class="gf-form">
-      <label class="gf-form-label width-10">Sort Direction
-        <tip>Sort direction</tip>
-      </label>
-      <div class="gf-form-select-wrapper width-12">
-        <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
-          ng-change="ctrl.refresh()">
-        </select>
-      </div>
-      </div>
-      <div class="gf-form">
-      <label class="gf-form-label width-10">Sort Field
-        <tip>Field to sort by</tip>
-      </label>
-      <div class="gf-form-select-wrapper width-12">
-        <select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-          ng-change="ctrl.refresh()">
-        </select>
-      </div>
-      </div>
-  </div>
 	<div class="section gf-form-group">
 		<h5 class="section-heading">Sorting</h5>
 			<div class="gf-form">
@@ -109,7 +86,7 @@
 			</label>
 			<div class="gf-form-select-wrapper width-12">
 				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
-				  ng-change="ctrl.refresh()">
+          ng-change="ctrl.refresh()">
 				</select>
 			</div>
 			</div>
@@ -119,7 +96,7 @@
 			</label>
 			<div class="gf-form-select-wrapper width-12">
 				<select class="gf-form-input" ng-model="ctrl.panel.polystat.hexagonSortByField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-				  ng-change="ctrl.refresh()">
+          ng-change="ctrl.refresh()">
 				</select>
 			</div>
 			</div>
@@ -155,8 +132,8 @@
       <tip>Primary sort direction</tip>
     </label>
     <div class="gf-form-select-wrapper width-12">
-      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
-       ng-change="ctrl.refresh()">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
+        ng-change="ctrl.refresh()">
       </select>
     </div>
     <label class="gf-form-label width-13">Primary Sort Field
@@ -164,7 +141,7 @@
     </label>
     <div class="gf-form-select-wrapper width-12">
       <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipPrimarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-       ng-change="ctrl.refresh()">
+        ng-change="ctrl.refresh()">
       </select>
     </div>
   </div>
@@ -173,8 +150,8 @@
       <tip>Secondary sort direction</tip>
     </label>
     <div class="gf-form-select-wrapper width-12">
-      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortDirections"
-       ng-change="ctrl.refresh()">
+      <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortDirection" ng-options="f.value as f.text for f  in ctrl.sortOptions"
+        ng-change="ctrl.refresh()">
       </select>
     </div>
     <label class="gf-form-label width-13">Secondary Sort Field
@@ -182,7 +159,7 @@
     </label>
     <div class="gf-form-select-wrapper width-12">
       <select class="gf-form-input" ng-model="ctrl.panel.polystat.tooltipSecondarySortField" ng-options="f.value as f.text for f  in ctrl.sortFields"
-       ng-change="ctrl.refresh()">
+        ng-change="ctrl.refresh()">
       </select>
     </div>
   </div>
@@ -204,7 +181,7 @@
           <input type="text" class="gf-form-input width-13" ng-model="ctrl.panel.polystat.globalDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
         </div>
       </div>
-  
+
     <div class="gf-form">
       <label class="gf-form-label width-11">Shape</label>
       <div class="gf-form-select-wrapper width-13">
@@ -253,7 +230,7 @@
           <select class="gf-form-input" ng-model="ctrl.panel.polystat.globalOperatorName" ng-options="f.value as f.text for f in ctrl.operatorOptions"
             ng-change="ctrl.refresh()"></select>
         </div>
-      </div> 
+      </div>
     </div>
     <div class="gf-form">
       <label class="gf-form-label width-11">Decimals</label>
@@ -272,8 +249,8 @@
     </div>
   </div>
 
-  <poly-thresholds 
-    thresholds="ctrl.panel.polystat.globalThresholds" 
+  <poly-thresholds
+    thresholds="ctrl.panel.polystat.globalThresholds"
     colors="ctrl.panel.colors"
     callback="ctrl.onThresholdsChanged()"/>
 

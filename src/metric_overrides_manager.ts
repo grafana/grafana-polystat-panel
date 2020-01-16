@@ -76,7 +76,6 @@ export class MetricOverridesManager {
   }
 
   toggleHide(override: MetricOverride) {
-    //console.log("override enabled =  " + override.enabled);
     override.enabled = !override.enabled;
     this.$scope.ctrl.refresh();
   }
@@ -134,7 +133,6 @@ export class MetricOverridesManager {
         // set value to what was returned
         data[index].value = dataValue;
         data[index].color = result.color;
-        //console.log("applyOverrides: value = " + data[index].value + " color " + data[index].color);
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
         const formatFunc = kbn.valueFormats[anOverride.unitFormat];

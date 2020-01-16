@@ -14,7 +14,7 @@ class ClickThroughTransformer {
 
   static compositeName: RegExp = /\${__composite_name}/;
 
-  static tranformSingleMetric(index: number, url: string, data: PolystatModel[]) {
+  static tranformSingleMetric(index: number, url: string, data: PolystatModel[]): string {
     if (isNaN(index)) {
       return url;
     }
@@ -38,7 +38,6 @@ class ClickThroughTransformer {
   static tranformNthMetric(url: string, data: PolystatModel[]) {
     while (url.match(this.nthCellName)) {
       const matched = url.match(this.nthCellName);
-      //console.log("matched: " + matched);
       if (matched.length >= 2) {
         // get the capture number
         const captureIndex = matched[1];

@@ -46,19 +46,13 @@ export class ThresholdsCtrl {
 
   // store user selection of color to be used for all items with the corresponding state
   setThresholdColor(threshold: PolystatThreshold) {
-    //console.log("setThresholdColor:", threshold);
     threshold.color = RGBToHex(threshold.color);
-    //console.log("setThresholdColor: parsed color set to " + threshold.color);
     this.doRefresh();
   }
 
   updateThresholdColor(threshold: PolystatThreshold) {
     const colors = this.$scope.colors;
     // threshold.state determines the color used
-    //console.log("threshold state = " + threshold.state);
-    //console.log("override color[0]: " + override.colors[0]);
-    //console.log("override color[1]: " + override.colors[1]);
-    //console.log("override color[2]: " + override.colors[2]);
     threshold.color = colors[threshold.state];
     this.doRefresh();
   }

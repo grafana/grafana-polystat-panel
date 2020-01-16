@@ -1,10 +1,10 @@
-/////<reference path="../node_modules/@types/d3-hexbin/index.d.ts" />
-/////<reference path="../node_modules/@types/d3/index.d.ts" />
-import * as d3 from './external/d3.min.js';
-import * as d3hexbin from './external/d3-hexbin.js';
+import * as d3 from 'd3';
+import * as d3hexbin from 'd3-hexbin';
 import { getTextSizeForWidthAndHeight } from './utils';
 import _ from 'lodash';
 import { Color } from './color';
+import { LayoutManager } from './layoutManager';
+import { PolygonShapes } from 'types';
 
 function resolveClickThroughURL(d: any): string {
   let clickThroughURL = d.clickThrough;
@@ -35,26 +35,17 @@ function showValue(item: any): boolean {
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
-  maxColumnsUsed: number;
-  maxRowsUsed: number;
   opt: any;
   data: any;
   templateSrv: any;
   calculatedPoints: any;
-  hexRadius: number;
-  autoHexRadius: number;
-  numColumns: number;
-  numRows: number;
-  margin: {
-    top: number;
-    right: number;
-    bottom: number;
-    left: number;
-  };
+  calculatedTextPoints: any;
   minFont = 8;
   maxFont = 240;
   purelight: any;
 
+  // layout
+  lm: LayoutManager;
   constructor(templateSrv: any, svgContainer: any, d3DivId: any, opt: any) {
     this.templateSrv = templateSrv;
     this.svgContainer = svgContainer;
@@ -63,35 +54,25 @@ export class D3Wrapper {
     this.opt = opt;
 
     this.purelight = new Color(255, 255, 255);
-    // title is 26px
-    this.margin = {
-      top: 30 + 26,
-      right: 0,
-      bottom: 20,
-      left: 50,
-    };
     // take 10 off the height
-    this.opt.height -= 10;
-    this.opt.width -= 20;
+    //this.opt.height -= 10;
+    //this.opt.width -= 20;
     this.data = this.opt.data;
-    this.numColumns = 5;
-    this.numRows = 5;
-    this.maxColumnsUsed = 0;
-    this.maxRowsUsed = 0;
-    if (opt.rowAutoSize && opt.columnAutoSize) {
-      // sqrt of # data items
-    } else {
-      this.numColumns = opt.columns || 6;
-      this.numRows = opt.rows || 6;
-    }
+    this.lm = new LayoutManager(this.opt.width, this.opt.height, opt.columns || 6, opt.rows || 6, this.opt.displayLimit, this.opt.polystat.shape);
+
+    // determine how many rows and columns are going to be generated
+    this.lm.generatePossibleColumnAndRowsSizes(this.opt.columnAutoSize, this.opt.rowAutoSize, this.data.length);
+    // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
+    this.lm.generateActualColumnAndRowUsage(this.data, opt.displayLimit);
+    // next the radius can be determined from actual rows and columns being used
     if (!opt.radiusAutoSize && opt.radius) {
-      this.hexRadius = opt.radius;
-      this.autoHexRadius = opt.radius;
+      this.lm.setRadius(opt.radius);
     } else {
-      this.hexRadius = this.getAutoHexRadius(); // || 50;
-      this.autoHexRadius = this.getAutoHexRadius(); //|| 50;
+      this.lm.generateRadius(this.opt.polystat.shape);
     }
-    this.calculatedPoints = this.generatePoints();
+    // using the known number of columns and rows that can be used in addition to the radius,
+    // generate the points to be filled
+    this.calculatedPoints = this.lm.generatePoints(this.data, opt.displayLimit, this.opt.polystat.shape);
   }
 
   computeTextFontSize(text: string, linesToDisplay: number, textAreaWidth: number, textAreaHeight: number): number {
@@ -112,98 +93,21 @@ export class D3Wrapper {
   }
 
   draw() {
-    if (this.opt.rowAutoSize && this.opt.columnAutoSize) {
-      // sqrt of # data items
-      const squared = Math.sqrt(this.data.length);
-      // favor columns when width is greater than height
-      // favor rows when width is less than height
-      if (this.opt.width > this.opt.height) {
-        this.numColumns = Math.ceil((this.opt.width / this.opt.height) * squared);
-        // always at least 1 column and max. data.length columns
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        } else if (this.numColumns > this.data.length) {
-          this.numColumns = this.data.length;
-        }
-
-        // Align rows count to computed columns count
-        this.numRows = Math.ceil(this.data.length / this.numColumns);
-        // always at least 1 row
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        }
-      } else {
-        this.numRows = Math.ceil((this.opt.height / this.opt.width) * squared);
-        // always at least 1 row and max. data.length rows
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        } else if (this.numRows > this.data.length) {
-          this.numRows = this.data.length;
-        }
-        // Align colunns count to computed rows count
-        this.numColumns = Math.ceil(this.data.length / this.numRows);
-        // always at least 1 column
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        }
-      }
-    } else if (this.opt.rowAutoSize) {
-      // Align rows count to fixed columns count
-      this.numRows = Math.ceil(this.data.length / this.numColumns);
-      // always at least 1 row
-      if (this.numRows < 1) {
-        this.numRows = 1;
-      }
-    } else if (this.opt.columnAutoSize) {
-      // Align colunns count to fixed rows count
-      this.numColumns = Math.ceil(this.data.length / this.numRows);
-      // always at least 1 column
-      if (this.numColumns < 1) {
-        this.numColumns = 1;
-      }
-    }
-    //console.log("Calculated columns = " + this.numColumns);
-    //console.log("Calculated rows = " + this.numRows);
-    //console.log("Number of data items to render = " + this.data.length);
-
-    if (this.opt.radiusAutoSize) {
-      this.hexRadius = this.getAutoHexRadius();
-      this.autoHexRadius = this.getAutoHexRadius();
-      //console.log("autoHexRadius:" + this.autoHexRadius);
-    }
-    this.calculatedPoints = this.generatePoints();
+    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
     const width = this.opt.width;
     const height = this.opt.height;
-    //console.log("Detected Width: " + width + " Height: " + height);
-    //console.log("autorad:" + this.autoHexRadius);
+
     const ahexbin = d3hexbin
       .hexbin()
-      .radius(this.autoHexRadius)
+      .radius(this.lm.generateRadius(this.opt.polystat.shape))
       .extent([
         [0, 0],
         [width, height],
       ]);
 
-    // d3 calculates the radius for x and y separately based on the value passed in
-    const diameterX = this.autoHexRadius * Math.sqrt(3);
-    const diameterY = this.autoHexRadius * 2;
-    let renderWidth = this.maxColumnsUsed * diameterX;
-    // Even rows are shifted by an x-radius (half x-diameter) on the right
-    // Check if at least one even row is full (first one is row 2)
-    if (this.maxRowsUsed >= 2 && this.data.length >= 2 * this.maxColumnsUsed) {
-      renderWidth += diameterX / 2;
-    }
-    // The space taken by 1 row of hexagons is 3/4 of its height (all minus pointy bottom)
-    // At then end we need to add the pointy bottom of the last row (1/4 of the height)
-    const renderHeight = (this.maxRowsUsed * 0.75 + 0.25) * diameterY;
-    // Translate the whole hexagons graph to have it cenetered in the drawing area
-    // - center the rendered area with the drawing area, translate by:
-    //     ((width - renderWidth) / 2, (height - renderHeight) / 2)
-    // - go to the center of the first hexagon, translate by:
-    //     (diameterX / 2, diameterY / 2)
-    const xoffset = (width - renderWidth + diameterX) / 2;
-    const yoffset = (height - renderHeight + diameterY) / 2;
+    const { diameterX, diameterY } = this.lm.getDiameters();
+    const { xoffset, yoffset } = this.lm.getOffsets(this.opt.polystat.shape, this.data.length);
 
     // Define the div for the tooltip
     // add it to the body and not the container so it can float outside of the panel
@@ -219,19 +123,19 @@ export class D3Wrapper {
       .attr('height', height + 'px')
       .append('svg')
       .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
-      .attr('width', width + 'px')
-      .attr('height', height + 'px')
-      .style('border', '0px solid white')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', xoffset + ',' + yoffset + ', ' + width + ', ' + height)
+      .style('border', '0px solid white') // TODO: make this light/dark friendly
       .attr('id', this.d3DivId)
       .append('g')
-      .attr('transform', 'translate(' + xoffset + ',' + yoffset + ')');
+      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
     const data = this.data;
     const defs = svg.append('defs');
 
     const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
-      //console.log("Name = " + this.d3DivId + "linear-gradient-state-data-" + i);
       const aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
       aGradient
         .attr('x1', '30%')
@@ -329,38 +233,20 @@ export class D3Wrapper {
     if (diameterY < diameterX) {
       innerArea = diameterY * diameterY;
     }
+    // square and circle do not use this
     const symbol = d3.symbol().size(innerArea);
     switch (this.opt.polystat.shape) {
-      case 'hexagon_pointed_top':
-        customShape = ahexbin.hexagon(this.autoHexRadius);
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
-      case 'hexagon_flat_top':
-        // TODO: use pointed for now
-        customShape = ahexbin.hexagon(this.autoHexRadius);
-        break;
-      case 'circle':
+      case PolygonShapes.CIRCLE:
         customShape = symbol.type(d3.symbolCircle);
         break;
-      case 'cross':
-        customShape = symbol.type(d3.symbolCross);
-        break;
-      case 'diamond':
-        customShape = symbol.type(d3.symbolDiamond);
-        break;
-      case 'square':
+      case PolygonShapes.SQUARE:
         customShape = symbol.type(d3.symbolSquare);
         break;
-      case 'star':
-        customShape = symbol.type(d3.symbolStar);
-        break;
-      case 'triangle':
-        customShape = symbol.type(d3.symbolTriangle);
-        break;
-      case 'wye':
-        customShape = symbol.type(d3.symbolWye);
-        break;
       default:
-        customShape = ahexbin.hexagon(this.autoHexRadius);
+        customShape = ahexbin.hexagon(this.lm.getRadius());
         break;
     }
 
@@ -381,7 +267,6 @@ export class D3Wrapper {
       // same for the value, also check for submetrics size in case of composite
       let maxValue = '';
       for (let i = 0; i < this.data.length; i++) {
-        //console.log("Checking len: " + this.data[i].valueFormatted + " vs: " + maxValue);
         if (this.data[i].valueFormatted.length > maxValue.length) {
           maxValue = this.data[i].valueFormatted;
         }
@@ -390,7 +275,6 @@ export class D3Wrapper {
           let counter = 0;
           while (counter < submetricCount) {
             const checkContent = this.formatValueContent(i, counter, this);
-            //console.log("Checking len: \"" + checkContent + "\" vs: \"" + maxValue + "\"");
             if (checkContent && checkContent.length > maxValue.length) {
               maxValue = checkContent;
             }
@@ -413,85 +297,174 @@ export class D3Wrapper {
     // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
     // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
     // - Label text (top text) will be aligned (negatively, i.e. higher) in the middle of the top half of the text area
-    const valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
-    const valueOnlyTextAlignment = activeValueFontSize / 2;
-    const labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
-    const labelOnlyTextAlignment = activeLabelFontSize / 2;
+    let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
+    let valueOnlyTextAlignment = activeValueFontSize / 2;
+    let labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
+    let labelOnlyTextAlignment = activeLabelFontSize / 2;
 
-    svg
-      .selectAll('.hexagon')
-      .data(ahexbin(this.calculatedPoints))
-      .enter()
-      .each((_, i, nodes) => {
-        let node = d3.select(nodes[i]);
-        const clickThroughURL = resolveClickThroughURL(data[i]);
-        if (clickThroughURL.length > 0) {
+    let labelTextAlignmentX = 0;
+    let labelValueAlignmentX = 0;
+
+    // hexagons need to use hexbin for layout, the square/circle shapes require rect/circle instead
+    let filledSVG = null;
+    let activeShape = 'hexagon';
+    switch (this.opt.polystat.shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        filledSVG = svg
+          .selectAll(`.${activeShape}`)
+          .data(ahexbin(this.calculatedPoints))
+          .enter();
+        break;
+      case PolygonShapes.CIRCLE:
+        activeShape = 'circle';
+        const circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        filledSVG = svg.selectAll('.circle').data(this.calculatedPoints);
+        filledSVG
+          .enter()
+          .append('circle')
+          .attr('class', 'circle')
+          .attr('cx', (d: any) => {
+            return d[0];
+          })
+          .attr('cy', (d: any) => {
+            return d[1];
+          })
+          .attr('r', circleRadius);
+        filledSVG = svg.selectAll('.circle').data(data);
+        break;
+      case PolygonShapes.SQUARE:
+        activeShape = 'square';
+        const squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
+        filledSVG = svg.selectAll('.rect').data(this.calculatedPoints);
+        filledSVG
+          .enter()
+          .append('rect')
+          .attr('class', 'rect')
+          .attr('x', (d: any) => {
+            return d[0];
+          })
+          .attr('y', (d: any) => {
+            return d[1];
+          })
+          .attr('height', squareRadius * 2)
+          .attr('width', squareRadius * 2);
+        filledSVG = svg.selectAll('.rect').data(data);
+        break;
+      default:
+        break;
+    }
+
+    filledSVG.each((_, i, nodes) => {
+      let node = d3.select(nodes[i]);
+      const clickThroughURL = resolveClickThroughURL(data[i]);
+      if (clickThroughURL.length > 0) {
+        node = node
+          .append('a')
+          .attr('target', resolveClickThroughTarget(data[i]))
+          .attr('xlink:href', clickThroughURL);
+      }
+      let fillColor = data[i].color;
+      if (this.opt.polystat.gradientEnabled) {
+        // safari needs the location.href
+        fillColor = `url("#${this.d3DivId}linear-gradient-state-data-${i}")`;
+      }
+      switch (this.opt.polystat.shape) {
+        case PolygonShapes.HEXAGON_POINTED_TOP:
           node = node
-            .append('a')
-            .attr('target', resolveClickThroughTarget(data[i]))
-            .attr('xlink:href', clickThroughURL);
-        }
-        let fillColor = data[i].color;
-        if (this.opt.polystat.gradientEnabled) {
-          // safari needs the location.href
-          fillColor = 'url(' + location.href + '#' + this.d3DivId + 'linear-gradient-state-data-' + i + ')';
-        }
-        node
-          .append('path')
-          .attr('class', 'hexagon')
-          .attr('transform', d => {
-            return 'translate(' + d.x + ',' + d.y + ')';
-          })
-          .attr('d', customShape)
-          .attr('stroke', this.opt.polystat.polygonBorderColor)
-          .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-          .style('fill', fillColor)
-          .on('mousemove', () => {
-            // use the viewportwidth to prevent the tooltip from going too far right
-            const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-            // use the mouse position for the entire page
-            const mouse = d3.mouse(d3.select('body').node());
-            let xpos = mouse[0] - 50;
-            // don't allow offscreen tooltip
-            if (xpos < 0) {
-              xpos = 0;
-            }
-            // prevent tooltip from rendering outside of viewport
-            if (xpos + 200 > viewPortWidth) {
-              xpos = viewPortWidth - 200;
-            }
-            const ypos = mouse[1] + 5;
-            tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
-          })
-          .on('mouseover', d => {
-            tooltip
-              .transition()
-              .duration(200)
-              .style('opacity', 0.9);
-            tooltip
-              .html(this.opt.tooltipContent[i])
-              .style('font-size', this.opt.tooltipFontSize)
-              .style('font-family', this.opt.tooltipFontType)
-              .style('left', d.x - 5 + 'px')
-              .style('top', d.y - 5 + 'px');
-          })
-          .on('mouseout', () => {
-            tooltip
-              .transition()
-              .duration(500)
-              .style('opacity', 0);
-          });
-      });
+            .append('path')
+            .attr('transform', (d: any) => {
+              return 'translate(' + d.x + ',' + d.y + ')';
+            })
+            .attr('d', customShape)
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
+          break;
+        case PolygonShapes.CIRCLE:
+          node
+            .join('circle')
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
+          break;
+        case PolygonShapes.SQUARE:
+          node
+            .join('square')
+            .attr('stroke', this.opt.polystat.polygonBorderColor)
+            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+            .style('fill', fillColor);
+          break;
+      }
+      node
+        .on('mousemove', () => {
+          // use the viewportwidth to prevent the tooltip from going too far right
+          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+          // use the mouse position for the entire page, received by
+          // d3.event.pageX, d3.event.pageY
+          let xpos = d3.event.pageX - 50;
+          // don't allow offscreen tooltip
+          if (xpos < 0) {
+            xpos = 0;
+          }
+          // prevent tooltip from rendering outside of viewport
+          if (xpos + 200 > viewPortWidth) {
+            xpos = viewPortWidth - 200;
+          }
+          const ypos = d3.event.pageY + 5;
+          tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
+        })
+        .on('mouseover', (d: any) => {
+          tooltip
+            .transition()
+            .duration(200)
+            .style('opacity', 0.9);
+          tooltip
+            .html(this.opt.tooltipContent[i])
+            .style('font-size', this.opt.tooltipFontSize)
+            .style('font-family', this.opt.tooltipFontType)
+            .style('left', d.x - 5 + 'px')
+            .style('top', d.y - 5 + 'px');
+        })
+        .on('mouseout', () => {
+          tooltip
+            .transition()
+            .duration(500)
+            .style('opacity', 0);
+        });
+    });
 
     // now labels
-    const textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
+    let textspot = null;
+    switch (this.opt.polystat.shape) {
+      case PolygonShapes.HEXAGON_POINTED_TOP:
+        textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
+        break;
+      case PolygonShapes.CIRCLE:
+        textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
+        break;
+      case PolygonShapes.SQUARE:
+        textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
+        // square is "centered" at top left, not the center
+
+        // compute alignment for each text element, base coordinate is at the top left corner (text is anchored at its bottom):
+        // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
+        // - Label text (top text) will be aligned in the middle of the top half of the text area
+        valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
+        valueOnlyTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
+        labelWithValueTextAlignment = diameterY / 4 + activeLabelFontSize / 2;
+        labelOnlyTextAlignment = activeLabelFontSize / 2;
+        //
+        labelTextAlignmentX = diameterX / 2;
+        labelValueAlignmentX = diameterX / 2;
+        break;
+    }
 
     textspot
       .enter()
       .append('text')
       .attr('class', 'toplabel')
-      .attr('x', d => {
-        return d.x;
+      .attr('x', (d: any) => {
+        return d.x + labelTextAlignmentX;
       })
       .attr('y', (d, i) => {
         const item = data[i];
@@ -523,7 +496,7 @@ export class D3Wrapper {
         return 'valueLabel' + i;
       })
       .attr('x', d => {
-        return d.x;
+        return d.x + labelValueAlignmentX;
       })
       .attr('y', (d, i) => {
         const item = data[i];
@@ -582,6 +555,18 @@ export class D3Wrapper {
       });
   }
 
+  /**
+   * Expands coordinates from the array to explicit x and y similar to hexbin but without any offsets
+   *
+   * @param data calculate coordinates in array pairs of x,y
+   */
+  miscbin(data: any): any {
+    for (let i = 0; i < data.length; i++) {
+      data[i].x = data[i][0];
+      data[i].y = data[i][1];
+    }
+    return data;
+  }
   formatValueContent(i, frames, thisRef): string {
     const data = thisRef.data[i];
     // options can specify to not show the value
@@ -626,14 +611,12 @@ export class D3Wrapper {
       let triggeredIndex = -1;
       if (data.animateMode === 'all') {
         triggeredIndex = frames % len;
-        //console.log("triggeredIndex from all mode: " + triggeredIndex);
       } else {
         if (typeof data.triggerCache === 'undefined') {
           data.triggerCache = this.buildTriggerCache(data);
         }
         const z = frames % data.triggerCache.length;
         triggeredIndex = data.triggerCache[z].index;
-        //console.log("triggeredIndex from cache is: " + triggeredIndex);
       }
       const aMember = data.members[triggeredIndex];
 
@@ -659,7 +642,6 @@ export class D3Wrapper {
   }
 
   buildTriggerCache(item) {
-    //console.log("Building trigger cache for item");
     let triggerCache = [];
     for (let i = 0; i < item.members.length; i++) {
       const aMember = item.members[i];
@@ -672,57 +654,5 @@ export class D3Wrapper {
     // sort it
     triggerCache = _.orderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
     return triggerCache;
-  }
-
-  getAutoHexRadius(): number {
-    //The maximum radius the hexagons can have to still fit the screen
-    // With (long) radius being R:
-    // - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
-    // - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
-    const radiusFromWidth = (2 * this.opt.width) / (Math.sqrt(3) * (1 + 2 * this.numColumns));
-    const radiusFromHeight = (2 * this.opt.height) / (3 * this.numRows + 1);
-    const hexRadius = d3.min([radiusFromWidth, radiusFromHeight]);
-    return hexRadius;
-  }
-
-  // Builds the placeholder polygons needed to represent each metric
-  generatePoints(): any {
-    const points = [];
-    if (typeof this.data === 'undefined') {
-      return points;
-    }
-    let maxRowsUsed = 0;
-    let columnsUsed = 0;
-    let maxColumnsUsed = 0;
-    // when duplicating panels, this gets odd
-    if (this.numRows === Infinity) {
-      //console.log("numRows infinity...");
-      return points;
-    }
-    if (isNaN(this.numColumns)) {
-      //console.log("numColumns NaN");
-      return points;
-    }
-    for (let i = 0; i < this.numRows; i++) {
-      if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
-        maxRowsUsed += 1;
-        columnsUsed = 0;
-        for (let j = 0; j < this.numColumns; j++) {
-          if ((!this.opt.displayLimit || points.length < this.opt.displayLimit) && points.length < this.data.length) {
-            columnsUsed += 1;
-            // track the most number of columns
-            if (columnsUsed > maxColumnsUsed) {
-              maxColumnsUsed = columnsUsed;
-            }
-            points.push([this.hexRadius * j * 1.75, this.hexRadius * i * 1.5]);
-          }
-        }
-      }
-    }
-    //console.log("Max rows used:" + maxRowsUsed);
-    //console.log("Actual columns used:" + maxColumnsUsed);
-    this.maxRowsUsed = maxRowsUsed;
-    this.maxColumnsUsed = maxColumnsUsed;
-    return points;
   }
 }
