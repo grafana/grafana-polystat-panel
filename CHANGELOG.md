@@ -41,3 +41,4 @@
 - New: Square-shape polygon now available (issue #92)
 - New: Optional Global thresholds
 - New: Sorting options for values and labels of polygons
+- New: Templating support overrides and composites
