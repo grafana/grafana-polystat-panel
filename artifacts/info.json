@@ -1,0 +1,14 @@
+{
+  "plugin": {
+    "name": "grafana-polystat-panel-1.1.0.zip",
+    "size": 936321,
+    "contents": {
+      "json": {
+        "bytes": 1710,
+        "count": 1
+      }
+    },
+    "sha1": "9dd3ab6b425638fd4383d28469eafde080969fd0",
+    "md5": "2cd51a3f619d678041a71c7f2686096a"
+  }
+}
