@@ -144,13 +144,13 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            PLUGIN_NAME=`cat dist/plugin.json|jq '.id'| sed s/\"//g`
             # copy ci dist
             cp -r ci/jobs/build_plugin/dist .
             # copy ci artifacts
             mkdir -p artifacts
             cp -r ci/packages/* artifacts
             apk add --update --no-cache jq
+            PLUGIN_NAME=`cat dist/plugin.json|jq '.id'| sed s/\"//g`
             RELEASE_NOTES=`awk 'BEGIN {FS="##"; RS=""} FNR==3 {print; exit}' CHANGELOG.md`
             VERSION=`cat dist/plugin.json|jq '.info.version'| sed s/\"//g`
             git config user.email "eng@grafana.com"
