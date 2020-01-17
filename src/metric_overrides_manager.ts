@@ -110,6 +110,9 @@ export class MetricOverridesManager {
             });
           });
         });
+      } else {
+        // does not match template, but can match a simple regex
+        ret.push(override);
       }
     });
 
