@@ -19,9 +19,9 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
-    "@grafana/data": "6.5.2",
-    "@grafana/toolkit": "6.5.2",
-    "@grafana/ui": "6.5.2",
+    "@grafana/data": "next",
+    "@grafana/toolkit": "next",
+    "@grafana/ui": "next",
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
