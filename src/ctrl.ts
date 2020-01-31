@@ -14,6 +14,8 @@ import { Tooltip } from './tooltip';
 import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
+import { convertOldAngularValueMapping } from '@grafana/ui';
+import { getMappedValue } from '@grafana/data';
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   static templateUrl = 'partials/template.html';
@@ -137,6 +139,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     savedComposites: [],
     savedOverrides: [], // Array<MetricOverride>(),
     colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a'],
+    valueMaps: [{ value: 'null', op: '=', text: 'N/A' }],
+    mappingTypes: [
+      { name: 'value to text', value: 1 },
+      { name: 'range to text', value: 2 },
+    ],
+    rangeMaps: [{ from: 'null', to: 'null', text: 'N/A' }],
+    mappingType: 1,
     polystat: {
       animationSpeed: 2500,
       columns: '',
@@ -239,8 +248,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     const compositesPath = thisPanelPath + 'partials/editor.composites.html';
     this.addEditorTab('Composites', compositesPath, 4);
     // disabled for now
-    //var mappingsPath = thisPanelPath + "partials/editor.mappings.html";
-    //this.addEditorTab("Value Mappings", mappingsPath, 5);
+    const mappingsPath = thisPanelPath + 'partials/editor.mappings.html';
+    this.addEditorTab('Value Mappings', mappingsPath, 5);
   }
 
   /**
@@ -496,12 +505,19 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   applyGlobalFormatting(data: any) {
+    const mappings = convertOldAngularValueMapping(this.panel);
     for (let index = 0; index < data.length; index++) {
-      const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
-      if (formatFunc) {
-        const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
-        data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
-        data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+      // Check for mapped value, if nothing set, format value
+      const mappedValue = getMappedValue(mappings, data[index].value);
+      if (mappedValue) {
+        data[index].valueFormatted = mappedValue.text;
+      } else {
+        const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+        if (formatFunc) {
+          const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+          data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
+          data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+        }
       }
       // default the color to the global setting
       data[index].color = this.panel.polystat.polygonGlobalFillColor;
