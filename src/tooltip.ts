@@ -36,10 +36,20 @@ export class Tooltip {
           </tr>
         `;
       }
+      const compositeContent =
+        data[index].displayMode === 'all'
+          ? ''
+          : `
+        <tr>
+          <th colspan="2" style="text-align: center;">${data[index].name}</th>
+        </tr>
+      `;
+
       const content = [
         `
         <table width="100%" class="polystat-panel-tooltiptable">
         <thead>
+          ${compositeContent}
           <tr>
             <th style="text-align: left;">Name</th>
             <th style="text-align: right;">Value</th>
