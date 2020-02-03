@@ -56,7 +56,7 @@ describe('Transforms', () => {
 
   // Datasource sends ElasticSearch results
   describe('With elasticsearch data', () => {
-    it('Can convert to hexbin', () => {
+    it.skip('Can convert to hexbin', () => {
       expect(true).toBeTruthy();
     });
   });
@@ -84,7 +84,7 @@ describe('Transforms', () => {
         type: 'table',
       },
     ];
-    it('Converts Table Data', () => {
+    it.skip('Converts Table Data', () => {
       console.log(tableData);
     });
     /*
@@ -121,7 +121,7 @@ describe('Transforms', () => {
 
   // Datasource sends JSON
   describe('With JSON data', () => {
-    it('Can convert to hexbin', () => {
+    it.skip('Can convert to hexbin', () => {
       const rawData = [
         {
           type: 'docs',
