@@ -29,7 +29,6 @@ export class Tooltip {
           continue;
         }
       }
-      const content = [];
       if (polystat.tooltipTimestampEnabled) {
         timestampContent = `
           <tr>
@@ -37,9 +36,20 @@ export class Tooltip {
           </tr>
         `;
       }
-      content.push(`
+      const compositeContent =
+        data[index].displayMode === 'all'
+          ? ''
+          : `
+        <tr>
+          <th colspan="2" style="text-align: center;">${data[index].name}</th>
+        </tr>
+      `;
+
+      const content = [
+        `
         <table width="100%" class="polystat-panel-tooltiptable">
         <thead>
+          ${compositeContent}
           <tr>
             <th style="text-align: left;">Name</th>
             <th style="text-align: right;">Value</th>
@@ -49,7 +59,8 @@ export class Tooltip {
           ${timestampContent}
         </tfoot>
         <tbody>
-      `);
+      `,
+      ];
 
       /* Scenarios:
         tooltip set to trigggered
