@@ -34,6 +34,7 @@ jobs:
         root: .
         paths:
         - ci
+
   build_docs:
     <<: *defaults
     steps:
@@ -58,6 +59,58 @@ jobs:
         root: .
         paths:
         - ci
+
+  code_coverage:
+    <<: *defaults
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+          - yarn-packages-{{ checksum "yarn.lock" }}
+    - run:
+        name:  Download cc-test-reporter
+        command: |
+          mkdir -p tmp/
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+          chmod +x ./tmp/cc-test-reporter
+    - run:
+        name: Run coverage report
+        command: |
+          ./tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json ci/jobs/build_plugin/coverage/lcov.info
+    - run:
+        name: Install jest and jest-junit
+        command: sudo yarn global add jest jest-junit
+    - run:
+        name: Run tests with JUnit as reporter
+        command: jest --ci --runInBand --reporters=default --reporters=jest-junit
+        environment:
+          JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
+    - save_cache:
+        paths:
+        - node_modules
+        key: yarn-packages-{{ checksum "yarn.lock" }}
+    - persist_to_workspace:
+        root: .
+        paths:
+        - tmp
+    - store_test_results:
+        path: test-results
+
+  upload_coverage:
+    docker:
+    - image:  circleci/circleci-cli:alpine
+    #  environment:
+    #    CC_TEST_REPORTER_ID: add_this_to_circleci_config
+    working_directory: ~/plugin
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Upload coverage results to Code Climate
+          command: |
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.frontend.json -d -p 1 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
+
   package:
     <<: *defaults
     steps:
@@ -180,10 +233,17 @@ workflows:
     jobs:
     - build_plugin
     - build_docs
+    - code_coverage:
+        requires:
+        - build_plugin
+    - upload_coverage:
+        requires:
+        - code_coverage
     - package:
         requires:
         - build_plugin
         - build_docs
+        - upload_coverage
     - test_6_5_2:
         requires:
         - package
