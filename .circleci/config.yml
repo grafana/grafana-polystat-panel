@@ -74,6 +74,14 @@ jobs:
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
     - run:
+        name: Install Node packages
+        command: |
+          yarn install --pure-lockfile
+    - run:
+        name: Run Toolkit Build
+        command: |
+          npx grafana-toolkit plugin:ci-build
+    - run:
         name: Run coverage report
         command: |
           ./tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json ci/jobs/build_plugin/coverage/lcov.info
