@@ -84,6 +84,8 @@ jobs:
     - run:
         name: Run coverage report
         command: |
+          ls -l ci/jobs/build_plugin
+          ls -l ci/jobs/build_plugin/coverage
           ./tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json ci/jobs/build_plugin/coverage/lcov.info
     - run:
         name: Install jest and jest-junit
@@ -138,7 +140,7 @@ jobs:
         - ci/packages
         - ci/dist
         - ci/grafana-test-env
-  test_6_5_2:
+  test_integration:
     <<: *defaults
     docker:
     - image: circleci/node:12-browsers
@@ -152,9 +154,9 @@ jobs:
     - run:
         name: Setup Grafana (local install)
         command: |
-          wget https://dl.grafana.com/oss/release/grafana_6.5.2_amd64.deb
+          wget https://dl.grafana.com/oss/release/grafana_6.6.1_amd64.deb
           sudo apt-get install -y adduser libfontconfig1
-          sudo dpkg -i grafana_6.5.2_amd64.deb
+          sudo dpkg -i grafana_6.6.1_amd64.deb
           sudo apt-get install locate
           sudo updatedb
           sudo locate grafana
@@ -171,11 +173,12 @@ jobs:
     - persist_to_workspace:
         root: .
         paths:
-        - ci/jobs/test_6_5_2
+        - ci/jobs/test_integration
     - store_test_results:
-        path: ci/jobs/test_6_5_2
+        path: ci/jobs/test_integration
     - store_artifacts:
-        path: ci/jobs/test_6_5_2
+        path: ci/jobs/test_integration
+
   report:
     <<: *defaults
     steps:
@@ -241,9 +244,7 @@ workflows:
     jobs:
     - build_plugin
     - build_docs
-    - code_coverage:
-        requires:
-        - build_plugin
+    - code_coverage
     - upload_coverage:
         requires:
         - code_coverage
@@ -252,12 +253,12 @@ workflows:
         - build_plugin
         - build_docs
         - upload_coverage
-    - test_6_5_2:
+    - test_integration:
         requires:
         - package
     - report:
         requires:
-        - test_6_5_2
+        - test_integration
     - approve_release:
         type: approval
         requires:
