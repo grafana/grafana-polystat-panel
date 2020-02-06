@@ -64,6 +64,8 @@ jobs:
     <<: *defaults
     steps:
     - checkout
+    - attach_workspace:
+        at: .
     - restore_cache:
         keys:
           - yarn-packages-{{ checksum "yarn.lock" }}
@@ -73,14 +75,6 @@ jobs:
           mkdir -p tmp/
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
-    - run:
-        name: Install Node packages
-        command: |
-          yarn install --pure-lockfile
-    - run:
-        name: Run Toolkit Build
-        command: |
-          npx grafana-toolkit plugin:ci-build
     - run:
         name: Run coverage report
         command: |
@@ -95,10 +89,6 @@ jobs:
         command: jest --ci --runInBand --reporters=default --reporters=jest-junit
         environment:
           JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
-    - save_cache:
-        paths:
-        - node_modules
-        key: yarn-packages-{{ checksum "yarn.lock" }}
     - persist_to_workspace:
         root: .
         paths:
@@ -244,7 +234,9 @@ workflows:
     jobs:
     - build_plugin
     - build_docs
-    - code_coverage
+    - code_coverage:
+        requies:
+        - build_plugin
     - upload_coverage:
         requires:
         - code_coverage
