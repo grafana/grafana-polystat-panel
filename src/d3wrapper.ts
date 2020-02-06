@@ -40,7 +40,7 @@ export class D3Wrapper {
   templateSrv: any;
   calculatedPoints: any;
   calculatedTextPoints: any;
-  minFont = 8;
+  minFont = 6;
   maxFont = 240;
   purelight: any;
 
@@ -254,6 +254,10 @@ export class D3Wrapper {
     let activeLabelFontSize = this.opt.polystat.fontSize;
     // font sizes are independent for label and values
     let activeValueFontSize = this.opt.polystat.fontSize;
+    //for showing ellipses for name on polygon
+    let isShowEllipses = false
+    //number of characters to show on polygon
+    let numOfChars = 0
 
     // compute font size if autoscale is activated
     if (this.opt.polystat.fontAutoScale) {
@@ -287,6 +291,22 @@ export class D3Wrapper {
       // if it is too small, hide everything
       activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
       activeValueFontSize = this.computeTextFontSize(maxValue, 2, textAreaWidth, textAreaHeight);
+      if (activeLabelFontSize < this.minFont) {
+        isShowEllipses = true
+        numOfChars = 18
+        maxLabel = maxLabel.substring(0, numOfChars+2)
+        activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
+        if (activeLabelFontSize < this.minFont) {
+          numOfChars = 10
+          maxLabel = maxLabel.substring(0, numOfChars+2)
+          activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
+          if (activeLabelFontSize < this.minFont) {
+            numOfChars = 6
+            maxLabel = maxLabel.substring(0, numOfChars+2)
+            activeLabelFontSize = this.computeTextFontSize(maxLabel, 2, textAreaWidth, textAreaHeight);
+          }
+        } 
+      }
 
       // value should never be larger than the label
       if (activeValueFontSize > activeLabelFontSize) {
@@ -482,6 +502,10 @@ export class D3Wrapper {
       .text((_, i) => {
         const item = data[i];
         if (showName(item)) {
+          if (isShowEllipses) {
+            let name = item.name.substring(0,numOfChars) + "..."
+            return name;
+          }
           return item.name;
         }
         return '';
