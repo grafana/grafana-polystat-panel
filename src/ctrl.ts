@@ -157,6 +157,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       fontAutoScale: true,
       fontSize: 12,
       fontType: 'Roboto',
+      fontAutoColor: true,
       globalUnitFormat: 'short',
       globalDecimals: 2,
       globalDisplayMode: 'all',
@@ -687,6 +688,16 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
       this.panel.polystat.radius = newRadius;
     }
+    this.render();
+  }
+
+  validateFontColorValue() {
+    if (this.panel.polystat.fontAutoColor) {
+      this.panel.polystat.fontColor = '';
+    } else if (!this.panel.polystat.fontColor) {
+      this.panel.polystat.fontColor = 'black';
+    }
+
     this.render();
   }
 
