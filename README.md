@@ -11,7 +11,6 @@ This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for
 
 A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
-
 ## Screenshots
 
 This plugin supports autoscaling for best-fit sizing of each polygon to the panel size. When the complete text cannot be displayed, only tooltips are active.

@@ -10,7 +10,6 @@ All notable changes to this project will be documented in this file.
 - New: Global Value Mappings
 - New: Show ellipses when no text can be displayed at smallest font
 
-
 ## v1.1.0
 
 - New: Sort options for polygons and tooltips (issue #37)
