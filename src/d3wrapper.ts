@@ -497,7 +497,7 @@ export class D3Wrapper {
       .attr('text-anchor', 'middle')
       .attr('font-family', this.opt.polystat.fontType)
       .attr('font-size', activeLabelFontSize + 'px')
-      .attr('fill', 'black')
+      .attr('fill', this.opt.polystat.fontColor)
       .style('pointer-events', 'none')
       .text((_, i) => {
         const item = data[i];
@@ -532,7 +532,7 @@ export class D3Wrapper {
       })
       .attr('text-anchor', 'middle')
       .attr('font-family', this.opt.polystat.fontType)
-      .attr('fill', 'black')
+      .attr('fill', this.opt.polystat.fontColor)
       .attr('font-size', activeValueFontSize + 'px')
       .style('pointer-events', 'none')
       .text((_, i) => {
