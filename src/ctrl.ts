@@ -184,6 +184,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipSecondarySortDirection: 'desc',
       tooltipSecondarySortField: 'value',
       tooltipTimestampEnabled: true,
+      valueEnabled: true,
     },
   };
 
