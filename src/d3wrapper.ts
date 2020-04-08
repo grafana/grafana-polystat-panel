@@ -312,6 +312,9 @@ export class D3Wrapper {
       if (activeValueFontSize > activeLabelFontSize) {
         activeValueFontSize = activeLabelFontSize;
       }
+      if (!this.opt.polystat.valueEnabled) {
+        activeValueFontSize = 0;
+      }
     }
 
     // compute alignment for each text element, base coordinate is at the center of the polygon (text is anchored at its bottom):
