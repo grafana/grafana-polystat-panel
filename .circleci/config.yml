@@ -248,12 +248,21 @@ jobs:
             VERSION=`cat ci/jobs/build_plugin/dist/plugin.json|jq '.info.version'| sed s/\"//g`
             # copy
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
-            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
             echo "Contents of artifacts"
             gsutil ls -r gs://integration-artifacts
-            echo "Copying artifacts"
-            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${CIRCLE_SHA1}
-            echo "Done"
+            echo "Copying artifacts to ${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/${CIRCLE_SHA1}"
+            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/${CIRCLE_SHA1}
+            echo "Cleaning latest"
+            gsutil rm gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest/**
+            echo "Copying artifacts to ${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest"
+            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest
+            # special handling for master
+            if [ ${CIRCLE_BRANCH} == "master" ]; then
+              echo "Cleaning master latest"
+              gsutil rm gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/latest/**
+              echo "Copying artifacts to master latest"
+              gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/latest
+            fi
 
 workflows:
   version: 2
