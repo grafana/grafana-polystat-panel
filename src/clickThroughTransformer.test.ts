@@ -11,7 +11,7 @@ import { TimeSeries } from './specs/timeseries';
 jest.mock('app/core/utils/kbn');
 
 describe('ClickThroughTransformer', () => {
-  const model = new Array<PolystatModel>();
+  const model: PolystatModel[] = [];
   let aSeries: TimeSeries;
 
   beforeEach(() => {

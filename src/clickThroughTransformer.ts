@@ -4,15 +4,15 @@
 import { PolystatModel } from './polystatmodel';
 
 class ClickThroughTransformer {
-  static cellName: RegExp = /\${__cell_name}/;
-  static cellValue: RegExp = /\${__cell}/;
-  static cellRawValue: RegExp = /\${__cell:raw}/;
+  static cellName = /\${__cell_name}/;
+  static cellValue = /\${__cell}/;
+  static cellRawValue = /\${__cell:raw}/;
 
-  static nthCellName: RegExp = /\${__cell_name_(\d+)}/;
-  static nthCellValue: RegExp = /\${__cell_(\d+)}/;
-  static nthCellRawValue: RegExp = /\${__cell_(\d+):raw}/;
+  static nthCellName = /\${__cell_name_(\d+)}/;
+  static nthCellValue = /\${__cell_(\d+)}/;
+  static nthCellRawValue = /\${__cell_(\d+):raw}/;
 
-  static compositeName: RegExp = /\${__composite_name}/;
+  static compositeName = /\${__composite_name}/;
 
   static tranformSingleMetric(index: number, url: string, data: PolystatModel[]): string {
     if (isNaN(index)) {

@@ -119,7 +119,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   ];
 
   dataRaw: any;
-  polystatData: PolystatModel[];
+  polystatData: PolystatModel[] = [];
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
@@ -201,7 +201,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.svgContainer = null;
     this.panelWidth = null;
     this.panelHeight = null;
-    this.polystatData = new Array<PolystatModel>();
     this.d3Object = null;
     this.data = [];
     this.series = [];
@@ -526,8 +525,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   filterByGlobalDisplayMode(data: any) {
-    const filteredMetrics = new Array<number>();
-    const compositeMetrics = new Array<PolystatModel>();
+    const filteredMetrics: number[] = [];
+    const compositeMetrics: PolystatModel[] = [];
     if (this.panel.polystat.globalDisplayMode !== 'all') {
       const dataLen = data.length;
       for (let i = 0; i < dataLen; i++) {
