@@ -1,0 +1,15 @@
+apiVersion: 1
+
+datasources:
+  - name: TestDataDB
+    isDefault: true
+    type: testdata
+    access: proxy
+    url: ''
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    jsonData: {}
+    readOnly: false
+    editable: true
