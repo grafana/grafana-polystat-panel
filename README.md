@@ -1,6 +1,6 @@
 # Grafana Polystat Panel
 
-[![CircleCI](https://circleci.com/gh/grafana/grafana-polystat-panel.svg?style=svg&circle-token=b78cf4ee3d98c447a7473f542a8dee69f9901f4d)](https://circleci.com/gh/grafana/grafana-polystat-panel)
+[![CircleCI](https://circleci.com/gh/grafana/grafana-polystat-panel/tree/master.svg?style=shield&circle-token=b78cf4ee3d98c447a7473f542a8dee69f9901f4d)](https://circleci.com/gh/grafana/grafana-polystat-panel)
 [![David Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel.svg)](https://david-dm.org/grafana/grafana-polystat-panel)
 [![David Dev Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel/dev-status.svg)](https://david-dm.org/grafana/grafana-polystat-panel/?type=dev)
 [![Known Vulnerabilities](https://snyk.io/test/github/grafana/grafana-polystat-panel/badge.svg)](https://snyk.io/test/github/grafana/grafana-polystat-panel)
