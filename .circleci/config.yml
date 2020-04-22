@@ -243,7 +243,7 @@ jobs:
             # copy ci artifacts
             mkdir -p artifacts
             cp -r ci/packages/* artifacts
-            apk add --update --no-cache jq
+            apt install -y jq
             PLUGIN_NAME=`cat ci/jobs/build_plugin/dist/plugin.json|jq '.id'| sed s/\"//g`
             VERSION=`cat ci/jobs/build_plugin/dist/plugin.json|jq '.info.version'| sed s/\"//g`
             # copy
