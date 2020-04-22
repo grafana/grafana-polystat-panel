@@ -250,16 +250,16 @@ jobs:
             echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
             echo "Contents of artifacts"
             gsutil ls -r gs://integration-artifacts
-            echo "Copying artifacts to ${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/${CIRCLE_SHA1}"
-            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/${CIRCLE_SHA1}
+            echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/${CIRCLE_SHA1}"
+            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/${CIRCLE_SHA1}
             echo "Cleaning latest"
-            gsutil rm gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest/**
-            echo "Copying artifacts to ${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest"
-            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/${VERSION}/latest
+            gsutil rm -f gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/latest/**
+            echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/latest"
+            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/latest
             # special handling for master
             if [ ${CIRCLE_BRANCH} == "master" ]; then
               echo "Cleaning master latest"
-              gsutil rm gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/latest/**
+              gsutil rm -f gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/latest/**
               echo "Copying artifacts to master latest"
               gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${CIRCLE_BRANCH}/latest
             fi
