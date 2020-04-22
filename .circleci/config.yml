@@ -227,6 +227,33 @@ jobs:
               v${VERSION} \
               ./artifacts/
 
+  publish_artifacts_to_gcp:
+    <<: *defaults
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Copy Artifacts to GCP Bucket"
+          command: |
+            # copy ci dist
+            cp -r ci/jobs/build_plugin/dist .
+            # copy ci artifacts
+            mkdir -p artifacts
+            cp -r ci/packages/* artifacts
+            apk add --update --no-cache jq
+            PLUGIN_NAME=`cat ci/jobs/build_plugin/dist/plugin.json|jq '.id'| sed s/\"//g`
+            VERSION=`cat ci/jobs/build_plugin/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            # copy
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+            echo "Contents of artifacts"
+            gsutil ls -r gs://integration-artifacts
+            echo "Copying artifacts"
+            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${CIRCLE_SHA1}
+            echo "Done"
 
 workflows:
   version: 2
@@ -260,3 +287,6 @@ workflows:
         requires:
           - approve_release
         filters: *filter-only-master
+    - publish_artifacts_to_gcp:
+        requires:
+          - package
