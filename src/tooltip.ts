@@ -74,7 +74,10 @@ export class Tooltip {
         const sortedMembers = _.orderBy(
           data[index].members,
           [scope.ctrl.panel.polystat.tooltipPrimarySortField, scope.ctrl.panel.polystat.tooltipSecondarySortField],
-          [scope.ctrl.panel.polystat.tooltipPrimarySortDirection, scope.ctrl.panel.polystat.tooltipSecondarySortDirection]
+          [
+            scope.ctrl.panel.polystat.tooltipPrimarySortDirection,
+            scope.ctrl.panel.polystat.tooltipSecondarySortDirection,
+          ]
         );
         // use new sort method
         for (let j = 0; j < sortedMembers.length; j++) {

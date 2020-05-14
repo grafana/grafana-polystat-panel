@@ -79,7 +79,11 @@ function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
   return worstSeries;
 }
 
-function getThresholdLevelForValue(thresholds: PolystatThreshold[], value: number, defaultColor: string): { thresholdLevel: number; color: string } {
+function getThresholdLevelForValue(
+  thresholds: PolystatThreshold[],
+  value: number,
+  defaultColor: string
+): { thresholdLevel: number; color: string } {
   const colorGrey = '#808080'; // "grey"
   let currentColor = defaultColor;
   if (value === null) {

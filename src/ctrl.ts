@@ -201,7 +201,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.svgContainer = null;
     this.panelWidth = null;
     this.panelHeight = null;
-    this.polystatData = new Array<PolystatModel>();
+    this.polystatData = [] as PolystatModel[];
     this.d3Object = null;
     this.data = [];
     this.series = [];
@@ -470,7 +470,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // apply global unit formatting and decimals
     this.applyGlobalFormatting(this.polystatData);
     // now sort
-    this.polystatData = _.orderBy(this.polystatData, [config.hexagonSortByField], [this.panel.polystat.hexagonSortByDirection]);
+    this.polystatData = _.orderBy(
+      this.polystatData,
+      [config.hexagonSortByField],
+      [this.panel.polystat.hexagonSortByDirection]
+    );
     // this needs to be performed after sorting rules are applied
     // apply overrides
     this.overridesCtrl.applyOverrides(this.polystatData);
@@ -489,7 +493,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
     // now sort
-    this.polystatData = SortVariableValuesByField(this.polystatData, 'name', this.panel.polystat.hexagonSortByDirection);
+    this.polystatData = SortVariableValuesByField(
+      this.polystatData,
+      'name',
+      this.panel.polystat.hexagonSortByDirection
+    );
     this.polystatData = _.orderBy(this.polystatData, this.sortByField([this.panel.polystat.hexagonSortByField]), [
       this.panel.polystat.hexagonSortByDirection,
     ]);
@@ -526,8 +534,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   filterByGlobalDisplayMode(data: any) {
-    const filteredMetrics = new Array<number>();
-    const compositeMetrics = new Array<PolystatModel>();
+    const filteredMetrics: number[] = [];
+    const compositeMetrics: PolystatModel[] = [];
     if (this.panel.polystat.globalDisplayMode !== 'all') {
       const dataLen = data.length;
       for (let i = 0; i < dataLen; i++) {

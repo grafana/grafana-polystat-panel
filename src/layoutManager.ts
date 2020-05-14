@@ -15,7 +15,14 @@ export class LayoutManager {
   shape: PolygonShapes;
   readonly SQRT3 = 1.7320508075688772;
 
-  constructor(width: number, height: number, numColumns: number, numRows: number, displayLimit: number, shape: PolygonShapes) {
+  constructor(
+    width: number,
+    height: number,
+    numColumns: number,
+    numRows: number,
+    displayLimit: number,
+    shape: PolygonShapes
+  ) {
     this.width = width;
     this.height = height;
     this.numColumns = numColumns;
@@ -67,7 +74,10 @@ export class LayoutManager {
    */
   getHexFlatTopRadius(): number {
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
-    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([
+      this.width / ((this.numColumns + 0.5) * this.SQRT3),
+      this.height / ((this.numRows + 1 / 3) * 1.5),
+    ]);
     hexRadius = hexRadius - polygonBorderSize;
     return this.truncateFloat(hexRadius);
   }
@@ -352,7 +362,10 @@ export class LayoutManager {
   }
 
   getOffsetsHexagonPointedTop(dataSize: number): any {
-    let hexRadius = d3.min([this.width / ((this.numColumns + 0.5) * this.SQRT3), this.height / ((this.numRows + 1 / 3) * 1.5)]);
+    let hexRadius = d3.min([
+      this.width / ((this.numColumns + 0.5) * this.SQRT3),
+      this.height / ((this.numRows + 1 / 3) * 1.5),
+    ]);
     hexRadius = this.truncateFloat(hexRadius);
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);

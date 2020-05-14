@@ -160,11 +160,11 @@ export class CompositesManager {
   }
 
   applyComposites(data) {
-    const filteredMetrics = new Array<number>();
-    const clonedComposites = new Array<PolystatModel>();
+    const filteredMetrics: number[] = [];
+    const clonedComposites: PolystatModel[] = [];
     const resolvedComposites = this.resolveCompositeTemplates();
     for (let i = 0; i < resolvedComposites.length; i++) {
-      const matchedMetrics = new Array<number>();
+      const matchedMetrics: number[] = [];
       const aComposite = resolvedComposites[i];
       if (!aComposite.enabled) {
         continue;

@@ -58,7 +58,14 @@ export class D3Wrapper {
     //this.opt.height -= 10;
     //this.opt.width -= 20;
     this.data = this.opt.data;
-    this.lm = new LayoutManager(this.opt.width, this.opt.height, opt.columns || 6, opt.rows || 6, this.opt.displayLimit, this.opt.polystat.shape);
+    this.lm = new LayoutManager(
+      this.opt.width,
+      this.opt.height,
+      opt.columns || 6,
+      opt.rows || 6,
+      this.opt.displayLimit,
+      this.opt.polystat.shape
+    );
 
     // determine how many rows and columns are going to be generated
     this.lm.generatePossibleColumnAndRowsSizes(this.opt.columnAutoSize, this.opt.rowAutoSize, this.data.length);
@@ -671,7 +678,12 @@ export class D3Wrapper {
       const aMember = item.members[i];
       if (aMember.thresholdLevel > 0) {
         // add to list
-        const cachedMemberState = { index: i, name: aMember.name, value: aMember.value, thresholdLevel: aMember.thresholdLevel };
+        const cachedMemberState = {
+          index: i,
+          name: aMember.name,
+          value: aMember.value,
+          thresholdLevel: aMember.thresholdLevel,
+        };
         triggerCache.push(cachedMemberState);
       }
     }

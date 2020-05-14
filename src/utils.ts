@@ -84,7 +84,14 @@ function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontP
  * @param {minFontPx} the smallest acceptable font size in pixels
  * @param {maxFontPx} the largest acceptable font size in pixels
  */
-function getTextSizeForWidthAndHeight(text: string, font: any, width: number, height: number, minFontPx: number, maxFontPx: number) {
+function getTextSizeForWidthAndHeight(
+  text: string,
+  font: any,
+  width: number,
+  height: number,
+  minFontPx: number,
+  maxFontPx: number
+) {
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
   // need to pad the width: use 80% of the space (leave 10% padding on each side)
@@ -177,4 +184,11 @@ function SortVariableValuesByField(options, field: any, sortOrder: number) {
   return options;
 }
 
-export { GetDecimalsForValue, getTextSizeForWidth, getTextSizeForWidthAndHeight, getTextWidth, RGBToHex, SortVariableValuesByField };
+export {
+  GetDecimalsForValue,
+  getTextSizeForWidth,
+  getTextSizeForWidthAndHeight,
+  getTextWidth,
+  RGBToHex,
+  SortVariableValuesByField,
+};
