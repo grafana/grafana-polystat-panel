@@ -1,0 +1,41 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "plugin": "grafana-polystat-panel",
+  "version": "1.2.0",
+  "files": {
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "README.md": "b7b757827121490e6801a1725f963328b1d80f69a93333518164e81d7fdeb6dc",
+    "dark.js": "1e1732392f8c733433d5078f62c181732b2e9cf801915a7cac1db1b29777d22e",
+    "dark.js.map": "9f9a08e0c7c69f92a7bab8690faadc8ec2f65379834362cdb45fb8d6679a7336",
+    "img/logo-credit.html": "44ea34b46fc8538cec8193f3dbd1b9fa56f297b10d53f8c9176dfd73308fe920",
+    "light.js": "eb1808113eafd870881e57b3a28f4229a3710981670b0dc7409742a01b041259",
+    "light.js.map": "80ee11ec21f071cf8988b3b049e8159cbcdb6153b5ca9a5523fe7dbf96083323",
+    "module.js": "bd4a8a0ed995a0f9e0c32cb0a0cd0acd5eff9d290d4e907b509ca2c55c124f40",
+    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
+    "module.js.map": "2f816f81515b3074b56069714a2a7316d9baa5729b06bbd5a20a495d91b85ddd",
+    "partials/editor.composites.html": "1fada7bca15041548d92ea4dfa98e5deabd0279b24cae1466d1f74bb8d783015",
+    "partials/editor.mappings.html": "f6bea74f2ddad164af04912e512b3bfbe228acb35b9f74f50a9cb8644dafb964",
+    "partials/editor.options.html": "b6f09ebb055377c649e15fbc1feaf632e7a6a3f07438a88a7083c982f68a0984",
+    "partials/editor.overrides.html": "916933741e3484ba5a49b8bfe3a9ae28d0527722b6aee60d6df65c33cb06d934",
+    "partials/template.html": "30bab805274f200a5e199cd3b90836500c0379c6d78736e9017ff391f182ad86",
+    "partials/thresholds.html": "7e16fe758e2f488215bbf70fcb3e73ad681cb0740522fdb5f9795031630a3050",
+    "plugin.json": "ef572187682eaab4a6c08f1b824cc181dba89e438586f0ba96a84a145d18b2e5",
+    "styles/dark.css": "9b588621505f4375d443eb36b70844684e390f8be99b54fb9c146cd6fd2c6446",
+    "styles/light.css": "9b588621505f4375d443eb36b70844684e390f8be99b54fb9c146cd6fd2c6446"
+  },
+  "time": 1589469429952,
+  "keyId": "7e4d0c6a708866e7"
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqEEARMKAAYFAl69YPYACgkQfk0ManCIZudeMAIJAQ4T9vI70YOUgFKLAIrz
+vuhvXoaNGrMP7NZw2i5IXEA3C29MexR7ZW7slDl0kxJ8dmlai63HFqMMH48D
+rBS4bC02Agiu0EzEmI/MEbVb0JLSXTtmUn7yCAAer3Pebg5b1TnRRjHcI+di
+cbY+pk51xpmmhwKmuzXcVd6cs+MngIk35akGMw==
+=yP9x
+-----END PGP SIGNATURE-----
