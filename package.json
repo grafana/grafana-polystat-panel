@@ -1,6 +1,6 @@
 {
   "name": "grafana-polystat-panel",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Grafana Polystat Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
