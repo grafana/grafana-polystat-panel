@@ -130,7 +130,8 @@ export class MetricOverridesManager {
         const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
 
         // Use defaults or the specific threshold
-        const thresholds = anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;
+        const thresholds =
+          anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : config.globalThresholds;
 
         const result = getThresholdLevelForValue(thresholds, dataValue, config.polygonGlobalFillColor);
         // set value to what was returned
@@ -162,7 +163,11 @@ export class MetricOverridesManager {
           }
         }
       } else if (config.globalThresholds && config.globalThresholds.length) {
-        const result = getThresholdLevelForValue(config.globalThresholds, data[index].value, config.polygonGlobalFillColor);
+        const result = getThresholdLevelForValue(
+          config.globalThresholds,
+          data[index].value,
+          config.polygonGlobalFillColor
+        );
         // set value to what was returned
         data[index].color = result.color;
         data[index].thresholdLevel = result.thresholdLevel;

@@ -11,7 +11,7 @@ import { TimeSeries } from './specs/timeseries';
 jest.mock('app/core/utils/kbn');
 
 describe('ClickThroughTransformer', () => {
-  const model = new Array<PolystatModel>();
+  const model: PolystatModel[] = [];
   let aSeries: TimeSeries;
 
   beforeEach(() => {
@@ -194,7 +194,9 @@ describe('ClickThroughTransformer', () => {
         'https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=${__cell_name}&var-port=9100';
       const url = model[0].clickThrough;
       const result = ClickThroughTransformer.tranformSingleMetric(0, url, model);
-      expect(result).toBe('https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=A-series&var-port=9100');
+      expect(result).toBe(
+        'https://test.grafana.net/dashboard/instance-details?orgId=1&var-job=node_exporter&var-node=A-series&var-port=9100'
+      );
     });
   });
 
@@ -204,7 +206,9 @@ describe('ClickThroughTransformer', () => {
         'https://test.grafana.net/dashboard/instance-details?orgId=1&var-CUSTOM0=${__cell_0:raw}&var-CUSTOM1=${__cell_1:raw}&var-port=9100';
       const url = model[0].clickThrough;
       const result = ClickThroughTransformer.tranformNthMetric(url, model);
-      expect(result).toBe('https://test.grafana.net/dashboard/instance-details?orgId=1&var-CUSTOM0=285&var-CUSTOM1=385&var-port=9100');
+      expect(result).toBe(
+        'https://test.grafana.net/dashboard/instance-details?orgId=1&var-CUSTOM0=285&var-CUSTOM1=385&var-port=9100'
+      );
     });
   });
 

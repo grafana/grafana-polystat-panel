@@ -1,5 +1,7 @@
 # Change Log
-
+## Entries
+## v1.2.0
+- Grafana 7.0.0 release with plugin signing
 ## v1.0.0
 - Initial commit
 ## v1.0.1
