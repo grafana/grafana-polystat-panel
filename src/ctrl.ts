@@ -212,10 +212,20 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
-    this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
-    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
-    this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
+
+    // v6 compat
+    if (typeof PanelEvents === 'undefined') {
+      this.events.on('data-received', this.onDataReceived.bind(this));
+      this.events.on('data-error', this.onDataError.bind(this));
+      this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+      this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+    } else {
+      // v7+ compat
+      this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+      this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
+    }
   }
 
   migrateSortDirections() {
