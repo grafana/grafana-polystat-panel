@@ -216,7 +216,7 @@ jobs:
             #
             # 3. move all files into ANY subdir
             #
-            mkdir -p temp_ci/packages/any
+            mkdir -p ci/packages/any
             cp -p ci/packages/info.json ci/packages/any/info.json
             cp -p ci/packages/info.json ci/packages/any/info-any.json
             mv ci/packages/${PLUGIN_NAME}* ci/packages/any/
