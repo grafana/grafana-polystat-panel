@@ -21,9 +21,6 @@ executors:
   e2e_exec:
     docker:
       - image: srclosson/grafana-plugin-ci-e2e:latest
-  circle_cli:
-    docker:
-      - image: circleci/circleci-cli:alpine
   cloud_sdk_exec:
     docker:
       - image: google/cloud-sdk
@@ -158,7 +155,7 @@ jobs:
         command: yarn global add jest jest-junit
     - run:
         name: Run tests with JUnit as reporter
-        command: jest --ci --runInBand --reporters=default --reporters=jest-junit
+        command: jest --passWithNoTests --ci --runInBand --reporters=default --reporters=jest-junit
         environment:
           JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
     - persist_to_workspace:
@@ -179,6 +176,7 @@ jobs:
           command: |
             /usr/local/bin/cc-test-reporter sum-coverage out/codeclimate.*.json -d -p 1 -o out/codeclimate.total.json
             /usr/local/bin/cc-test-reporter upload-coverage -i out/codeclimate.total.json
+
   package:
     executor: e2e_exec
     steps:
@@ -202,6 +200,26 @@ jobs:
             VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
             echo "Plugin Name: ${PLUGIN_NAME}"
             echo "Plugin Version: ${VERSION}"
+            #
+            # Create zip file "any" platform
+            #
+            # 1. rename to ANY package
+            #
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.any.zip
+            mv ci/packages/${PLUGIN_NAME}-${VERSION}.zip.sha1 \
+              ci/packages/${PLUGIN_NAME}-${VERSION}.any.zip.sha1
+            #
+            # 2. update info.json with new zip file name
+            #
+            sed -i 's/zip/any\.zip/g' ci/packages/info.json
+            #
+            # 3. move all files into ANY subdir
+            #
+            mkdir -p temp_ci/packages/any
+            cp -p ci/packages/info.json ci/packages/any/info.json
+            cp -p ci/packages/info.json ci/packages/any/info-any.json
+            mv ci/packages/${PLUGIN_NAME}* ci/packages/any/
       - persist_to_workspace:
           root: .
           paths:
@@ -295,8 +313,10 @@ jobs:
             fi
             echo ${GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
             echo "Contents of artifacts"
-            echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/${CIRCLE_SHA1}"
-            gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}
+            echo "Copying artifacts to ${PLUGIN_NAME}/release/${VERSION}"
+            if [ -d ci/packages/any ]; then
+              gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/any
+            fi
 
   publish_github_release:
     executor: default_exec
@@ -320,9 +340,6 @@ jobs:
     executor: default_exec
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-          - << pipeline.parameters.ssh-fingerprint >>
       - attach_workspace:
           at: .
       - restore_cache:
@@ -332,8 +349,19 @@ jobs:
       - run:
           name: "Validate Environment Variables"
           command: |
-            ./node_modules/.bin/grafana-publisher validate
+            if [ -f ./node_modules/.bin/grafana-publisher ]; then
+              ./node_modules/.bin/grafana-publisher validate
+            fi
       - run:
           name: "Publish Plugin to grafana.com"
           command: |
-            ./node_modules/.bin/grafana-publisher --dryrun --auto publish
+            apt update
+            apt install -y jq git-lfs
+            PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+            echo "Plugin Name: ${PLUGIN_NAME}"
+            VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo "Plugin Version: ${VERSION}"
+            yarn add @google-cloud/storage
+            if [ -f ./node_modules/.bin/grafana-publisher ]; then
+              ./node_modules/.bin/grafana-publisher --auto publish ${PLUGIN_NAME} ${VERSION}
+            fi
