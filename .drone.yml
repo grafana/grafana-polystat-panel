@@ -64,7 +64,7 @@ steps:
 - name: package
   image: srclosson/grafana-plugin-ci-e2e:latest
   commands:
-  - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified;  exit -1; fi
+  - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit -1; fi
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-package
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
