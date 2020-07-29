@@ -72,6 +72,7 @@ steps:
   - "echo \"Plugin Version: ${VERSION}\""
   - mkdir -p ci/packages/any
   - cp -p ci/packages/info.json ci/packages/any/info.json
+  - ls -alR ci/packages
   - mv ci/packages/${PLUGIN_NAME}* ci/packages/any/
   depends_on:
   - upload_coverage
