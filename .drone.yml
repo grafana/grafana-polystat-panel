@@ -68,13 +68,12 @@ steps:
   - ./node_modules/.bin/grafana-toolkit plugin:ci-package
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-  - "echo \"Plugin Name: ${PLUGIN_NAME}\""
-  - "echo \"Plugin Version: ${VERSION}\""
+  - echo Plugin Name $PLUGIN_NAME
+  - echo Plugin Version $VERSION
   - mkdir -p ci/packages/any
   - cp -p ci/packages/info.json ci/packages/any/info.json
-  - ls -alR ci/packages
-  - ls -l ci/packages/$PLUGIN_NAME-*
   - mv ci/packages/$PLUGIN_NAME-* ci/packages/any/
+  - ls -alR ci/packages
   environment:
     GRAFANA_API_KEY:
       from_secret: grafana_api_key
@@ -103,20 +102,20 @@ steps:
       echo "Missing GCS Publish Key" \
       exit -1 \
     fi
-  - echo ${GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+  - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
   - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${CIRCLE_SHA1}"
-  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${DRONE_SHA1}
-  - echo gsutil rm -f gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest/** || true
+  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/$DRONE_SHA1
+  - echo gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest/** || true
   - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest"
-  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest
-  - if [ ${CIRCLE_BRANCH} == "master" ]; then \
+  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest
+  - if [ $DRONE_BRANCH == "master" ]; then \
       echo "Cleaning master latest" \
-      gsutil rm -f gs://integration-artifacts/${PLUGIN_NAME}/${DRONE_BRANCH}/latest/** || true \
+      gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest/** || true \
       echo "Copying artifacts to master latest" \
-      gsutil -m cp -r ci/packages/** gs://integration-artifacts/${PLUGIN_NAME}/${DRONE_BRANCH}/latest \
+      gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest \
     fi
-  - gsutil ls -r gs://integration-artifacts/${PLUGIN_NAME}
+  - gsutil ls -r gs://integration-artifacts/$PLUGIN_NAME
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
@@ -141,18 +140,18 @@ steps:
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-  - "echo \"Plugin Name: ${PLUGIN_NAME}\""
+  - echo Plugin Name $PLUGIN_NAME
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-  - "echo \"Plugin Version: ${VERSION}\""
+  - echo Plugin Version $VERSION
   - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then \
       echo "Missing GCS Publish Key" \
       exit -1 \
     fi
-  - echo ${GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+  - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
-  - echo "Copying artifacts to ${PLUGIN_NAME}/release/${VERSION}"
+  - echo Copying artifacts to $PLUGIN_NAME/release/$VERSION
   - if [ -d ci/packages/any ]; then \
-      gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/any \
+      gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any \
     fi
   environment:
     GCLOUD_SERVICE_KEY:
@@ -191,10 +190,13 @@ steps:
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-  - echo Plugin Name ${PLUGIN_NAME}
+  - echo Plugin Name $PLUGIN_NAME
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-  - echo Plugin Version ${VERSION}
-  - ./node_modules/.bin/grafana-publisher --auto publish ${PLUGIN_NAME} ${VERSION}
+  - echo Plugin Version $VERSION
+  - ./node_modules/.bin/grafana-publisher --auto publish $PLUGIN_NAME $VERSION
+  environment:
+    GCOM_PUBLISH_KEY:
+      from_secret: gcom_publish_key
   when:
     branch:
     - release-*
