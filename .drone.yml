@@ -20,6 +20,7 @@ steps:
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-build
   - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+  - ls -aRl ci
   depends_on:
   - initialize
 
