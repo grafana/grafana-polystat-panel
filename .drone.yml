@@ -64,6 +64,10 @@ steps:
 - name: package
   image: srclosson/grafana-plugin-ci-e2e:latest
   commands:
+  - if [ -z "$GRAFANA_API_KEY" ]; then \
+      echo Error - no API key specified \
+      exit -1 \
+    fi
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-package
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
@@ -85,7 +89,14 @@ steps:
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
+  - if [ -z "$GRAFANA_API_KEY" ]; then \
+      echo Error - no API key specified \
+      exit -1 \
+    fi
   - ./node_modules/.bin/grafana-toolkit plugin:ci-report
+  environment:
+    GRAFANA_API_KEY:
+      from_secret: grafana_api_key
   depends_on:
   - upload_coverage
   - package
@@ -93,15 +104,15 @@ steps:
 - name: publish_artifacts_to_gcs
   image: google/cloud-sdk
   commands:
-  - apt update
-  - apt install -y jq git-lfs
-  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
   - env
   - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then \
       echo "Missing GCS Publish Key" \
       exit -1 \
     fi
+  - apt update
+  - apt install -y jq git-lfs
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
   - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
   - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${DRONE_SHA1}"
