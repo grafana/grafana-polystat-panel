@@ -22,3 +22,49 @@ steps:
   - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
   depends_on:
   - initialize
+
+- name: build_docs
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-docs
+  depends_on:
+  - initialize
+
+- name: code_coverage_frontend
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - /usr/local/bin/cc-test-reporter format-coverage -t lcov -o out/codeclimate.frontend.json ci/jobs/build_frontend/coverage/lcov.info
+  - yarn global add jest jest-junit
+  - jest --passWithNoTests --ci --runInBand --reporters=default --reporters=jest-junit
+  environment:
+    JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
+  depends_on:
+  - build_frontend
+
+- name: upload_coverage
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - /usr/local/bin/cc-test-reporter sum-coverage out/codeclimate.*.json -d -p 1 -o out/codeclimate.total.json
+  - /usr/local/bin/cc-test-reporter upload-coverage -i out/codeclimate.total.json
+  environment:
+    CC_TEST_REPORTER_ID: "replaceme"
+  depends_on:
+  - code_coverage_frontend
+
+- name: package
+  image: srclosson/grafana-plugin-ci-e2e:latest
+  commands:
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-package
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  - "echo \"Plugin Name: ${PLUGIN_NAME}\""
+  - "echo \"Plugin Version: ${VERSION}\""
+  - mkdir -p ci/packages/any
+  - cp -p ci/packages/info.json ci/packages/any/info.json
+  - mv ci/packages/${PLUGIN_NAME}* ci/packages/any/
+  depends_on:
+  - upload_coverage
+  - build_docs
+  - build_frontend
