@@ -64,6 +64,10 @@ steps:
 - name: package
   image: srclosson/grafana-plugin-ci-e2e:latest
   commands:
+  - if [ -z "$GRAFANA_API_KEY" ]; then \\
+      echo Error - no API key specified \\
+      exit 255; \\
+    fi
   - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-package
@@ -102,10 +106,7 @@ steps:
   image: google/cloud-sdk
   commands:
   - env
-  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then \
-      echo "Missing GCS Publish Key" \
-      exit -1 \
-    fi
+  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then echo "Missing GCS Publish Key" && exit 255; fi
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
