@@ -104,7 +104,7 @@ steps:
     fi
   - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
-  - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${CIRCLE_SHA1}"
+  - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${DRONE_SHA1}"
   - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/$DRONE_SHA1
   - echo gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest/** || true
   - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest"
