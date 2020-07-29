@@ -64,10 +64,6 @@ steps:
 - name: package
   image: srclosson/grafana-plugin-ci-e2e:latest
   commands:
-  - if [ -z "$GRAFANA_API_KEY" ]; then \\
-      echo Error - no API key specified \\
-      exit 255; \\
-    fi
   - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-package
@@ -90,10 +86,7 @@ steps:
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
-  - if [ -z "$GRAFANA_API_KEY" ]; then \
-      echo Error - no API key specified \
-      exit -1 \
-    fi
+  - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
   - ./node_modules/.bin/grafana-toolkit plugin:ci-report
   environment:
     GRAFANA_API_KEY:
@@ -118,12 +111,7 @@ steps:
   - echo gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest/** || true
   - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest"
   - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest
-  - if [ $DRONE_BRANCH == "master" ]; then \
-      echo "Cleaning master latest" \
-      gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest/** || true \
-      echo "Copying artifacts to master latest" \
-      gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest \
-    fi
+  - if [ $DRONE_BRANCH == "master" ]; then echo "Cleaning master latest" && gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest/** || true &&  echo "Copying artifacts to master latest" && gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest; fi
   - gsutil ls -r gs://integration-artifacts/$PLUGIN_NAME
   environment:
     GCLOUD_SERVICE_KEY:
@@ -146,22 +134,17 @@ steps:
 - name: publish_gcs_release
   image: google/cloud-sdk
   commands:
+  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then echo "Missing GCS Publish Key" && exit 255; fi
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
   - echo Plugin Name $PLUGIN_NAME
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
   - echo Plugin Version $VERSION
-  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then \
-      echo "Missing GCS Publish Key" \
-      exit -1 \
-    fi
   - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
   - echo Copying artifacts to $PLUGIN_NAME/release/$VERSION
-  - if [ -d ci/packages/any ]; then \
-      gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any \
-    fi
+  - if [ -d ci/packages/any ]; then gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any; fi
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
@@ -172,8 +155,12 @@ steps:
 - name: publish_github_release
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
+  - if [ -z "${GITHUB_API_KEY}" ]; then echo "Missing github api key" && exit 255; fi
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:github-publish
+  environment:
+    GITHUB_API_KEY:
+      from_secret: github_api_key
   when:
     branch:
     - release-*
@@ -193,9 +180,7 @@ steps:
 - name: publish_to_gcom
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
-  - if [ -f ./node_modules/.bin/grafana-publisher ]; then \
-      ./node_modules/.bin/grafana-publisher validate \
-    fi
+  - if [ -f ./node_modules/.bin/grafana-publisher ]; then ./node_modules/.bin/grafana-publisher validate; fi
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
