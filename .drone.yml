@@ -73,7 +73,11 @@ steps:
   - mkdir -p ci/packages/any
   - cp -p ci/packages/info.json ci/packages/any/info.json
   - ls -alR ci/packages
-  - mv ci/packages/${PLUGIN_NAME}* ci/packages/any/
+  - ls -l ci/packages/$PLUGIN_NAME-*
+  - mv ci/packages/$PLUGIN_NAME-* ci/packages/any/
+  environment:
+    GRAFANA_API_KEY:
+      from_secret: grafana_api_key
   depends_on:
   - upload_coverage
   - build_docs
