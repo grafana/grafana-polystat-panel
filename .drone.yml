@@ -14,7 +14,7 @@ steps:
   - yarn install
   - cp -r $(yarn cache dir) yarn-cache
 
-- name: build_frontend
+- name: build_plugin
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
@@ -35,13 +35,13 @@ steps:
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
   - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
-  - /usr/local/bin/cc-test-reporter format-coverage -t lcov -o out/codeclimate.frontend.json ci/jobs/build_frontend/coverage/lcov.info
+  - /usr/local/bin/cc-test-reporter format-coverage -t lcov -o out/codeclimate.frontend.json ci/jobs/build_plugin/coverage/lcov.info
   - yarn global add jest jest-junit
   - jest --passWithNoTests --ci --runInBand --reporters=default --reporters=jest-junit
   environment:
     JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
   depends_on:
-  - build_frontend
+  - build_plugin
 
 - name: upload_coverage
   image: srclosson/grafana-plugin-ci-alpine:latest
@@ -68,4 +68,4 @@ steps:
   depends_on:
   - upload_coverage
   - build_docs
-  - build_frontend
+  - build_plugin
