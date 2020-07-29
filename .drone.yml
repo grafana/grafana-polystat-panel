@@ -9,21 +9,10 @@ platform:
 
 steps:
 - name: initialize
-  image: grafana/build-container:1.2.21
+  image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
-  - curl -fLO https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$${GRABPL_VERSION}/grabpl
-  - chmod +x grabpl
-  - mkdir -p bin
-  - mv grabpl bin
-  - curl -fLO https://github.com/jwilder/dockerize/releases/download/v$${DOCKERIZE_VERSION}/dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
-  - tar -C bin -xzvf dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
-  - rm dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
   - yarn install
-  - npm rebuild node-sass
   - cp -r $(yarn cache dir) yarn-cache
-  environment:
-    DOCKERIZE_VERSION: 0.6.1
-    GRABPL_VERSION: 0.4.25
 
 - name: build_frontend
   image: srclosson/grafana-plugin-ci-alpine:latest
