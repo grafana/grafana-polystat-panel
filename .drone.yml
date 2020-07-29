@@ -1,0 +1,34 @@
+---
+kind: pipeline
+type: docker
+name: build-pr
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: initialize
+  image: grafana/build-container:1.2.21
+  commands:
+  - curl -fLO https://grafana-downloads.storage.googleapis.com/grafana-build-pipeline/v$${GRABPL_VERSION}/grabpl
+  - chmod +x grabpl
+  - mkdir -p bin
+  - mv grabpl bin
+  - curl -fLO https://github.com/jwilder/dockerize/releases/download/v$${DOCKERIZE_VERSION}/dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
+  - tar -C bin -xzvf dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
+  - rm dockerize-linux-amd64-v$${DOCKERIZE_VERSION}.tar.gz
+  - yarn install --frozen-lockfile --no-progress
+  - cp -r $(yarn cache dir) yarn-cache
+  environment:
+    DOCKERIZE_VERSION: 0.6.1
+    GRABPL_VERSION: 0.4.25
+
+- name: build_frontend
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-build
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+  depends_on:
+  - initialize
