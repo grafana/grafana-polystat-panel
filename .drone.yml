@@ -53,6 +53,7 @@ steps:
 - name: upload_coverage
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
+  - env
   - /usr/local/bin/cc-test-reporter sum-coverage out/codeclimate.*.json -d -p 1 -o out/codeclimate.total.json
   - /usr/local/bin/cc-test-reporter upload-coverage -i out/codeclimate.total.json
   environment:
