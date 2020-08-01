@@ -6,6 +6,8 @@
 
 - Update for v6 event compatibility
 - New tooltip value feature
+- Fix for custom sizing
+- Text alignment fix for "square" and "circle" shapes
 
 ## v1.2.0
 

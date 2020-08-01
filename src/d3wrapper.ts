@@ -64,6 +64,7 @@ export class D3Wrapper {
       opt.columns || 6,
       opt.rows || 6,
       this.opt.displayLimit,
+      this.opt.radiusAutoSize,
       this.opt.polystat.shape
     );
 
@@ -112,7 +113,6 @@ export class D3Wrapper {
         [0, 0],
         [width, height],
       ]);
-
     const { diameterX, diameterY } = this.lm.getDiameters();
     const { xoffset, yoffset } = this.lm.getOffsets(this.opt.polystat.shape, this.data.length);
 
