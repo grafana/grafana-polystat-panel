@@ -468,9 +468,13 @@ export class D3Wrapper {
     switch (this.opt.polystat.shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         textspot = svg.selectAll('text.toplabel').data(ahexbin(this.calculatedPoints));
+        // offset when only showing label
+        labelOnlyTextAlignment = activeLabelFontSize * 0.37;
         break;
       case PolygonShapes.CIRCLE:
         textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
+        // offset when only showing label
+        labelOnlyTextAlignment = activeLabelFontSize * 0.37;
         break;
       case PolygonShapes.SQUARE:
         textspot = svg.selectAll('text.toplabel').data(this.miscbin(this.calculatedPoints));
@@ -480,9 +484,10 @@ export class D3Wrapper {
         // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
         // - Label text (top text) will be aligned in the middle of the top half of the text area
         valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
-        valueOnlyTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
+        valueOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
         labelWithValueTextAlignment = diameterY / 4 + activeLabelFontSize / 2;
-        labelOnlyTextAlignment = activeLabelFontSize / 2;
+        // alignment is equal to the half of height plus a fraction of the fontSize
+        labelOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
         //
         labelTextAlignmentX = diameterX / 2;
         labelValueAlignmentX = diameterX / 2;
