@@ -8,7 +8,7 @@ trigger:
     exclude:
     - release-*
   event:
-    - push
+    - pull_request
 
 platform:
   os: linux
@@ -59,6 +59,10 @@ steps:
   environment:
     CC_TEST_REPORTER_ID:
       from_secret: code_climate_key
+  when:
+    repo:
+      include:
+        - grafana/*
   depends_on:
   - code_coverage_frontend
 
@@ -79,6 +83,10 @@ steps:
   environment:
     GRAFANA_API_KEY:
       from_secret: grafana_api_key
+  when:
+    repo:
+      include:
+        - grafana/*
   depends_on:
   - upload_coverage
   - build_docs
@@ -105,6 +113,10 @@ steps:
   environment:
     GRAFANA_API_KEY:
       from_secret: grafana_api_key
+  when:
+    repo:
+      include:
+        - grafana/*
   depends_on:
   - upload_coverage
   - package
