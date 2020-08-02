@@ -111,6 +111,7 @@ steps:
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
   - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-report
   environment:
     GRAFANA_API_KEY:
@@ -242,6 +243,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: aa4315ba80d2a1fe7cbb6f931ec387f7c72d1aef22e3010b66004d7edb6f5f20
+hmac: ca8b374f1807c6421fce3df6735bdcd914b023efd313bcb932ab42dc209e0a4b
 
 ...
