@@ -123,9 +123,6 @@ steps:
     - promote
     target:
     - staging
-  depends_on:
-  - upload_coverage
-  - package
 
 - name: publish_artifacts_to_gcs
   image: google/cloud-sdk
@@ -245,6 +242,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: e3eabb996c63f471aa40436f9a150a5763baa2ad3049da90c1334a4ce2b33fe7
+hmac: aa4315ba80d2a1fe7cbb6f931ec387f7c72d1aef22e3010b66004d7edb6f5f20
 
 ...
