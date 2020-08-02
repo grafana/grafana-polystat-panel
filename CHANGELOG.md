@@ -5,9 +5,11 @@
 ## v1.2.1
 
 - Update for v6 event compatibility
-- New tooltip value feature
-- Fix for custom sizing
+- Global hide/value feature
+- Fix for custom sizing #136
 - Text alignment fix for "square" and "circle" shapes
+- Fix for crashing issue #135
+- Fix for tooltip width #133
 
 ## v1.2.0
 
