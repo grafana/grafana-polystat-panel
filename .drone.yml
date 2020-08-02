@@ -123,6 +123,7 @@ steps:
       from_secret: grafana_api_key
   depends_on:
   - initialize_staging
+  - package
   when:
     repo:
       include:
@@ -274,6 +275,6 @@ steps:
         - grafana/*
 ---
 kind: signature
-hmac: 0770833775f7e1670938c71ab4495e0a7148af23eff6d0f48fd1b05baef9d1b1
+hmac: 806fdc2317716e66188a7fe687e0787162437e3f20183b5b4fac37d5b162e913
 
 ...
