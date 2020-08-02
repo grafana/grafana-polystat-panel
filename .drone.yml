@@ -84,6 +84,19 @@ steps:
   - build_docs
   - build_plugin
 
+---
+kind: pipeline
+type: docker
+name: reporting
+
+trigger:
+  branches:
+    exclude:
+    - release-*
+  event:
+    - promote
+
+steps:
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
@@ -96,6 +109,19 @@ steps:
   - upload_coverage
   - package
 
+---
+kind: pipeline
+type: docker
+name: upload_artifacts
+
+trigger:
+  branches:
+    exclude:
+    - release-*
+  event:
+    - promote
+
+steps:
 - name: publish_artifacts_to_gcs
   image: google/cloud-sdk
   commands:
@@ -132,6 +158,21 @@ trigger:
     - promote
 
 steps:
+- name: publish_github_release
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - if [ -z "${GITHUB_API_KEY}" ]; then echo "Missing github api key" && exit 255; fi
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:github-publish
+  environment:
+    GITHUB_API_KEY:
+      from_secret: github_api_key
+  depends_on:
+  - upload_artifacts
+  when:
+    branch:
+    - release-*
+
 - name: publish_gcs_release
   image: google/cloud-sdk
   commands:
@@ -149,22 +190,12 @@ steps:
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
+  depends_on:
+  - publish_github_release
   when:
     branch:
     - release-*
 
-- name: publish_github_release
-  image: srclosson/grafana-plugin-ci-alpine:latest
-  commands:
-  - if [ -z "${GITHUB_API_KEY}" ]; then echo "Missing github api key" && exit 255; fi
-  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
-  - ./node_modules/.bin/grafana-toolkit plugin:github-publish
-  environment:
-    GITHUB_API_KEY:
-      from_secret: github_api_key
-  when:
-    branch:
-    - release-*
 
 ---
 kind: pipeline
