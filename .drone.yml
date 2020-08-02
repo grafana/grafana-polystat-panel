@@ -238,3 +238,8 @@ steps:
   when:
     branch:
     - release-*
+---
+kind: signature
+hmac: 4f0d1336307d4b813b4c174bf3bd7b551501473d46762e725f008c3f33fec2df
+
+...
