@@ -103,6 +103,8 @@ trigger:
     - release-*
   event:
     - promote
+  target:
+    - staging
 
 steps:
 - name: report
@@ -121,19 +123,6 @@ steps:
   - upload_coverage
   - package
 
----
-kind: pipeline
-type: docker
-name: upload_artifacts
-
-trigger:
-  branches:
-    exclude:
-    - release-*
-  event:
-    - promote
-
-steps:
 - name: publish_artifacts_to_gcs
   image: google/cloud-sdk
   commands:
@@ -156,7 +145,7 @@ steps:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
   depends_on:
-  - package
+  - report
 
 ---
 kind: pipeline
@@ -168,6 +157,8 @@ trigger:
     - release-*
   event:
     - promote
+  target:
+    - release
 
 steps:
 - name: publish_github_release
@@ -219,19 +210,21 @@ trigger:
     - release-*
   event:
     - promote
+  target:
+    - publish
 
 steps:
 - name: publish_to_gcom
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
-  - if [ -f ./node_modules/.bin/grafana-publisher ]; then ./node_modules/.bin/grafana-publisher validate; fi
+  - if [ -f ./node_modules/.bin/grafana-publisher ]; then ./node_modules/.bin/grafana-publisher validate; else echo "Missing Publisher" && exit 255; fi
   - apt update
   - apt install -y jq git-lfs
   - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
   - echo Plugin Name $PLUGIN_NAME
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
   - echo Plugin Version $VERSION
-  - ./node_modules/.bin/grafana-publisher --auto publish $PLUGIN_NAME $VERSION
+  - ./node_modules/.bin/grafana-publisher --auto --dryrun publish $PLUGIN_NAME $VERSION
   environment:
     GCOM_PUBLISH_KEY:
       from_secret: gcom_publish_key
@@ -240,6 +233,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: 4f0d1336307d4b813b4c174bf3bd7b551501473d46762e725f008c3f33fec2df
+hmac: c3097b7567a672918526fd75bdf52f13ce7de4ac1c69e46c8953abcbd8da16a0
 
 ...
