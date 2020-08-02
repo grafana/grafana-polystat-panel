@@ -107,6 +107,12 @@ trigger:
     - staging
 
 steps:
+- name: initialize
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
@@ -116,6 +122,8 @@ steps:
   environment:
     GRAFANA_API_KEY:
       from_secret: grafana_api_key
+  depends_on:
+  - initialize
   when:
     repo:
       include:
@@ -146,6 +154,8 @@ steps:
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
+  depends_on:
+  - report
   when:
     repo:
       include:
@@ -154,8 +164,6 @@ steps:
     - promote
     target:
     - staging
-  depends_on:
-  - report
 
 ---
 kind: pipeline
@@ -171,6 +179,13 @@ trigger:
     - release
 
 steps:
+
+- name: initialize
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
 - name: publish_github_release
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
@@ -181,6 +196,7 @@ steps:
     GITHUB_API_KEY:
       from_secret: github_api_key
   depends_on:
+  - initialize
   - upload_artifacts
   when:
     branch:
@@ -243,6 +259,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: ca8b374f1807c6421fce3df6735bdcd914b023efd313bcb932ab42dc209e0a4b
+hmac: abf51deb618586788f0f606974e543cd99e39dfe23be4996c63f1eacd4741815
 
 ...
