@@ -23,7 +23,7 @@ export class LayoutManager {
     numRows: number,
     displayLimit: number,
     autoSize: boolean,
-    shape: PolygonShapes,
+    shape: PolygonShapes
   ) {
     this.width = width;
     this.height = height;
