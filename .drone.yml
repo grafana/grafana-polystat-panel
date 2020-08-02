@@ -107,12 +107,6 @@ trigger:
     - staging
 
 steps:
-- name: initialize
-  image: srclosson/grafana-plugin-ci-alpine:latest
-  commands:
-  - yarn install
-  - cp -r $(yarn cache dir) yarn-cache
-
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
@@ -259,6 +253,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: abf51deb618586788f0f606974e543cd99e39dfe23be4996c63f1eacd4741815
+hmac: 3a7cf3b332b4e6710a0a92842e8cc6803512d05fbc62d6fcb443de294e0d5b3a
 
 ...
