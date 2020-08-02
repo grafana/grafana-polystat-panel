@@ -119,6 +119,10 @@ steps:
     repo:
       include:
         - grafana/*
+    event:
+    - promote
+    target:
+    - staging
   depends_on:
   - upload_coverage
   - package
@@ -144,6 +148,14 @@ steps:
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
+  when:
+    repo:
+      include:
+        - grafana/*
+    event:
+    - promote
+    target:
+    - staging
   depends_on:
   - report
 
@@ -233,6 +245,6 @@ steps:
     - release-*
 ---
 kind: signature
-hmac: c3097b7567a672918526fd75bdf52f13ce7de4ac1c69e46c8953abcbd8da16a0
+hmac: e3eabb996c63f471aa40436f9a150a5763baa2ad3049da90c1334a4ce2b33fe7
 
 ...
