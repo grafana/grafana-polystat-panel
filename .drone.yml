@@ -107,17 +107,22 @@ trigger:
     - staging
 
 steps:
+- name: initialize_staging
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
 - name: report
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
   - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
-  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
   - ./node_modules/.bin/grafana-toolkit plugin:ci-report
   environment:
     GRAFANA_API_KEY:
       from_secret: grafana_api_key
   depends_on:
-  - initialize
+  - initialize_staging
   when:
     repo:
       include:
@@ -174,7 +179,7 @@ trigger:
 
 steps:
 
-- name: initialize
+- name: initialize_release
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
   - yarn install
@@ -190,11 +195,13 @@ steps:
     GITHUB_API_KEY:
       from_secret: github_api_key
   depends_on:
-  - initialize
-  - upload_artifacts
+  - initialize_release
   when:
     branch:
     - release-*
+    repo:
+      include:
+        - grafana/*
 
 - name: publish_gcs_release
   image: google/cloud-sdk
@@ -209,7 +216,7 @@ steps:
   - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
   - echo "Contents of artifacts"
   - echo Copying artifacts to $PLUGIN_NAME/release/$VERSION
-  - if [ -d ci/packages/any ]; then gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any; fi
+  - if [ -d ci/packages/any ]; then echo gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any; fi
   environment:
     GCLOUD_SERVICE_KEY:
       from_secret: gcloud_service_key
@@ -218,6 +225,9 @@ steps:
   when:
     branch:
     - release-*
+    repo:
+      include:
+        - grafana/*
 
 
 ---
@@ -234,6 +244,12 @@ trigger:
     - publish
 
 steps:
+- name: initialize_publish
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
 - name: publish_to_gcom
   image: srclosson/grafana-plugin-ci-alpine:latest
   commands:
@@ -244,15 +260,20 @@ steps:
   - echo Plugin Name $PLUGIN_NAME
   - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
   - echo Plugin Version $VERSION
-  - ./node_modules/.bin/grafana-publisher --auto --dryrun publish $PLUGIN_NAME $VERSION
+  - echo ./node_modules/.bin/grafana-publisher --auto --dryrun publish $PLUGIN_NAME $VERSION
   environment:
     GCOM_PUBLISH_KEY:
       from_secret: gcom_publish_key
+  depends_on:
+  - initialize_release
   when:
     branch:
     - release-*
+    repo:
+      include:
+        - grafana/*
 ---
 kind: signature
-hmac: 3a7cf3b332b4e6710a0a92842e8cc6803512d05fbc62d6fcb443de294e0d5b3a
+hmac: abf51deb618586788f0f606974e543cd99e39dfe23be4996c63f1eacd4741815
 
 ...
