@@ -6,6 +6,7 @@ import { PolygonShapes, PolystatDiameters } from './types';
 export class LayoutManager {
   width: number;
   height: number;
+  radiusAutoSize: boolean;
   numColumns: number;
   numRows: number;
   radius: number;
@@ -18,6 +19,7 @@ export class LayoutManager {
   constructor(
     width: number,
     height: number,
+    radiusAutoSize: boolean,
     numColumns: number,
     numRows: number,
     displayLimit: number,
@@ -25,6 +27,7 @@ export class LayoutManager {
   ) {
     this.width = width;
     this.height = height;
+    this.radiusAutoSize = radiusAutoSize;
     this.numColumns = numColumns;
     this.numRows = numRows;
     this.maxColumnsUsed = 0;
@@ -73,13 +76,16 @@ export class LayoutManager {
    *  - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
    */
   getHexFlatTopRadius(): number {
+    if (!this.radiusAutoSize) {
+      return this.radius
+    }
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     let hexRadius = d3.min([
       this.width / ((this.numColumns + 0.5) * this.SQRT3),
       this.height / ((this.numRows + 1 / 3) * 1.5),
     ]);
     hexRadius = hexRadius - polygonBorderSize;
-    return this.truncateFloat(hexRadius);
+    return this.truncateFloat(hexRadius)
   }
 
   /**
@@ -109,6 +115,9 @@ export class LayoutManager {
    * the smaller of the two is used since that is the "best fit" for a square
    */
   getUniformRadius(): number {
+    if (!this.radiusAutoSize) {
+      return this.radius
+    }
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     // width divided by the number of columns determines the max horizontal of the square
     // height divided by the number of rows determines the max vertical size ofthe square

@@ -61,6 +61,7 @@ export class D3Wrapper {
     this.lm = new LayoutManager(
       this.opt.width,
       this.opt.height,
+      this.opt.radiusAutoSize,
       opt.columns || 6,
       opt.rows || 6,
       this.opt.displayLimit,
