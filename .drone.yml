@@ -1,0 +1,280 @@
+---
+kind: pipeline
+type: docker
+name: build-pull-request
+
+trigger:
+  branches:
+    exclude:
+    - release-*
+  event:
+    - pull_request
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: initialize
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
+- name: build_plugin
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-build
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+  - ls -aRl ci
+  depends_on:
+  - initialize
+
+- name: build_docs
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-docs
+  depends_on:
+  - initialize
+
+- name: code_coverage_frontend
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - /usr/local/bin/cc-test-reporter format-coverage -t lcov -o out/codeclimate.frontend.json ci/jobs/build_plugin/coverage/lcov.info
+  - yarn global add jest jest-junit
+  - jest --passWithNoTests --ci --runInBand --reporters=default --reporters=jest-junit
+  environment:
+    JEST_JUNIT_OUTPUT_DIR: "test-results/jest/results.xml"
+  depends_on:
+  - build_plugin
+
+- name: upload_coverage
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - env
+  - /usr/local/bin/cc-test-reporter sum-coverage out/codeclimate.*.json -d -p 1 -o out/codeclimate.total.json
+  - /usr/local/bin/cc-test-reporter upload-coverage -i out/codeclimate.total.json
+  environment:
+    CC_TEST_REPORTER_ID:
+      from_secret: code_climate_key
+  when:
+    repo:
+      include:
+        - grafana/*
+  depends_on:
+  - code_coverage_frontend
+
+- name: package
+  image: srclosson/grafana-plugin-ci-e2e:latest
+  commands:
+  - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-package
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  - echo Plugin Name $PLUGIN_NAME
+  - echo Plugin Version $VERSION
+  - mkdir -p ci/packages/any
+  - cp -p ci/packages/info.json ci/packages/any/info.json
+  - mv ci/packages/$PLUGIN_NAME-* ci/packages/any/
+  - ls -alR ci/packages
+  environment:
+    GRAFANA_API_KEY:
+      from_secret: grafana_api_key
+  when:
+    repo:
+      include:
+        - grafana/*
+  depends_on:
+  - upload_coverage
+  - build_docs
+  - build_plugin
+
+---
+kind: pipeline
+type: docker
+name: reporting
+
+trigger:
+  branches:
+    exclude:
+    - release-*
+  event:
+    - promote
+  target:
+    - staging
+
+steps:
+- name: initialize_staging
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
+- name: report
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - if [ -z "$GRAFANA_API_KEY" ]; then echo Error - no API key specified && exit 255; fi
+  - ./node_modules/.bin/grafana-toolkit plugin:ci-report
+  environment:
+    GRAFANA_API_KEY:
+      from_secret: grafana_api_key
+  depends_on:
+  - initialize_staging
+  - package
+  when:
+    repo:
+      include:
+        - grafana/*
+    event:
+    - promote
+    target:
+    - staging
+
+- name: publish_artifacts_to_gcs
+  image: google/cloud-sdk
+  commands:
+  - env
+  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then echo "Missing GCS Publish Key" && exit 255; fi
+  - apt update
+  - apt install -y jq git-lfs
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+  - echo "Contents of artifacts"
+  - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/${DRONE_SHA1}"
+  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/$DRONE_SHA1
+  - echo gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest/** || true
+  - echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${DRONE_BRANCH}/latest"
+  - echo gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$VERSION/$DRONE_BRANCH/latest
+  - if [ $DRONE_BRANCH == "master" ]; then echo "Cleaning master latest" && gsutil rm -f gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest/** || true &&  echo "Copying artifacts to master latest" && gsutil -m cp -r ci/packages/** gs://integration-artifacts/$PLUGIN_NAME/$DRONE_BRANCH/latest; fi
+  - gsutil ls -r gs://integration-artifacts/$PLUGIN_NAME
+  environment:
+    GCLOUD_SERVICE_KEY:
+      from_secret: gcloud_service_key
+  depends_on:
+  - report
+  when:
+    repo:
+      include:
+        - grafana/*
+    event:
+    - promote
+    target:
+    - staging
+
+---
+kind: pipeline
+type: docker
+name: release
+
+trigger:
+  branches:
+    - release-*
+  event:
+    - promote
+  target:
+    - release
+
+steps:
+
+- name: initialize_release
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
+- name: publish_github_release
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - if [ -z "${GITHUB_API_KEY}" ]; then echo "Missing github api key" && exit 255; fi
+  - rm -rf $(yarn cache dir) && cp -r yarn-cache $(yarn cache dir)
+  - ./node_modules/.bin/grafana-toolkit plugin:github-publish
+  environment:
+    GITHUB_API_KEY:
+      from_secret: github_api_key
+  depends_on:
+  - initialize_release
+  when:
+    branch:
+    - release-*
+    repo:
+      include:
+        - grafana/*
+
+- name: publish_gcs_release
+  image: google/cloud-sdk
+  commands:
+  - if [ -z "${GCLOUD_SERVICE_KEY}" ]; then echo "Missing GCS Publish Key" && exit 255; fi
+  - apt update
+  - apt install -y jq git-lfs
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - echo Plugin Name $PLUGIN_NAME
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  - echo Plugin Version $VERSION
+  - echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+  - echo "Contents of artifacts"
+  - echo Copying artifacts to $PLUGIN_NAME/release/$VERSION
+  - if [ -d ci/packages/any ]; then echo gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/$PLUGIN_NAME/release/$VERSION/any; fi
+  environment:
+    GCLOUD_SERVICE_KEY:
+      from_secret: gcloud_service_key
+  depends_on:
+  - publish_github_release
+  when:
+    branch:
+    - release-*
+    repo:
+      include:
+        - grafana/*
+
+
+---
+kind: pipeline
+type: docker
+name: publish
+
+trigger:
+  branches:
+    - release-*
+  event:
+    - promote
+  target:
+    - publish
+
+steps:
+- name: initialize_publish
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - yarn install
+  - cp -r $(yarn cache dir) yarn-cache
+
+- name: publish_to_gcom
+  image: srclosson/grafana-plugin-ci-alpine:latest
+  commands:
+  - if [ -f ./node_modules/.bin/grafana-publisher ]; then ./node_modules/.bin/grafana-publisher validate; else echo "Missing Publisher" && exit 255; fi
+  - apt update
+  - apt install -y jq git-lfs
+  - PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+  - echo Plugin Name $PLUGIN_NAME
+  - VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+  - echo Plugin Version $VERSION
+  - echo ./node_modules/.bin/grafana-publisher --auto --dryrun publish $PLUGIN_NAME $VERSION
+  environment:
+    GCOM_PUBLISH_KEY:
+      from_secret: gcom_publish_key
+  depends_on:
+  - initialize_release
+  when:
+    branch:
+    - release-*
+    repo:
+      include:
+        - grafana/*
+---
+kind: signature
+hmac: 806fdc2317716e66188a7fe687e0787162437e3f20183b5b4fac37d5b162e913
+
+...

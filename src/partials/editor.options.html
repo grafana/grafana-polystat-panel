@@ -77,7 +77,7 @@
           <tip>Polygon Font Color. All CSS color attributes are valid</tip>
         </label>
         <input type="text" class="gf-form-input width-10" ng-model="ctrl.panel.polystat.fontColor" ng-disabled="ctrl.panel.polystat.fontAutoColor"
-               placeholder="auto" ng-blur="ctrl.validateFontColorValue()"
+          placeholder="auto" ng-blur="ctrl.validateFontColorValue()"
         >
         <gf-form-switch class="gf-form" label-class="width-4" label="Auto" checked="ctrl.panel.polystat.fontAutoColor"
                         on-change="ctrl.validateFontColorValue()"
@@ -197,11 +197,14 @@
           <input type="text" class="gf-form-input width-13" ng-model="ctrl.panel.polystat.globalDisplayTextTriggeredEmpty" ng-blur="ctrl.refresh()" placeholder="OK">
         </div>
       </div>
-	  
+
     <div class="gf-form-inline">
-        <gf-form-switch class="gf-form" label-class="width-11" label="Show Value" checked="ctrl.panel.polystat.valueEnabled"
-          on-change="ctrl.refresh()">
-        </gf-form-switch>
+      <gf-form-switch class="gf-form" label-class="width-11"
+        label="Show Value"
+        checked="ctrl.panel.polystat.valueEnabled"
+        tooltip="Show Value on Polygon and within Tooltip"
+        on-change="ctrl.refresh()">
+      </gf-form-switch>
     </div>
     <div class="gf-form">
       <label class="gf-form-label width-11">Shape</label>

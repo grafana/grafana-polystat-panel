@@ -42,7 +42,7 @@ export class MetricOverridesManager {
       '#299c46', // "rgba(50, 172, 45, 1)", // green
       '#e5ac0e', // "rgba(237, 129, 40, 1)", // yellow
       '#bf1b00', // "rgba(245, 54, 54, 1)", // red
-      '#ffffff', // white
+      '#4040a0', // blue
     ];
     override.decimals = '';
     override.enabled = true;
