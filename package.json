@@ -25,7 +25,7 @@
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/lodash": "^4.14.158"
+    "@types/lodash": "^4.14.159"
   },
   "jest": {
     "moduleNameMapper": {
