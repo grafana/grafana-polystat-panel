@@ -9,6 +9,7 @@ export class LayoutManager {
   numColumns: number;
   numRows: number;
   radius: number;
+  autoSize: boolean;
   maxRowsUsed: number;
   maxColumnsUsed: number;
   displayLimit: number;
@@ -21,6 +22,7 @@ export class LayoutManager {
     numColumns: number,
     numRows: number,
     displayLimit: number,
+    autoSize: boolean,
     shape: PolygonShapes
   ) {
     this.width = width;
@@ -32,6 +34,7 @@ export class LayoutManager {
     this.displayLimit = displayLimit;
     this.shape = shape;
     this.radius = 0;
+    this.autoSize = autoSize;
   }
 
   /**
@@ -321,6 +324,9 @@ export class LayoutManager {
   }
 
   generateRadius(shape: PolygonShapes): number {
+    if (!this.autoSize) {
+      return this.radius;
+    }
     let radius = 0;
     switch (shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:

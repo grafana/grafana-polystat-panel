@@ -138,7 +138,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   panelDefaults = {
     savedComposites: [],
     savedOverrides: [], // Array<MetricOverride>(),
-    colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a'],
+    colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a', '#4040a0'],
     valueMaps: [{ value: 'null', op: '=', text: 'N/A' }],
     mappingTypes: [
       { name: 'value to text', value: 1 },
@@ -184,6 +184,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipSecondarySortDirection: 'desc',
       tooltipSecondarySortField: 'value',
       tooltipTimestampEnabled: true,
+      valueEnabled: true,
     },
   };
 
@@ -211,10 +212,20 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
-    this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
-    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
-    this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
+
+    // v6 compat
+    if (typeof PanelEvents === 'undefined') {
+      this.events.on('data-received', this.onDataReceived.bind(this));
+      this.events.on('data-error', this.onDataError.bind(this));
+      this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+      this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
+    } else {
+      // v7+ compat
+      this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+      this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
+    }
   }
 
   migrateSortDirections() {

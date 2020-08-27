@@ -11,6 +11,8 @@ export class Tooltip {
       const tooltipTimeFormat = 'YYYY-MM-DD HH:mm:ss';
       const time = scope.ctrl.dashboard.formatDate(data[index].timestamp, tooltipTimeFormat);
       let timestampContent = '';
+      let valueHeadingContent = '';
+      let valueContent = '';
       if (polystat.tooltipDisplayMode === 'triggered') {
         const triggeredCount = Tooltip.getTriggeredCount(data[index]);
         if (triggeredCount === 0) {
@@ -44,7 +46,11 @@ export class Tooltip {
           <th colspan="2" style="text-align: center;">${data[index].name}</th>
         </tr>
       `;
-
+      if (polystat.valueEnabled) {
+        valueHeadingContent = `
+        <th style="text-align: right;">Value</th>
+        `;
+      }
       const content = [
         `
         <table width="100%" class="polystat-panel-tooltiptable">
@@ -52,7 +58,7 @@ export class Tooltip {
           ${compositeContent}
           <tr>
             <th style="text-align: left;">Name</th>
-            <th style="text-align: right;">Value</th>
+            ${valueHeadingContent}
           </tr>
         </thead>
         <tfoot>
@@ -82,10 +88,15 @@ export class Tooltip {
         // use new sort method
         for (let j = 0; j < sortedMembers.length; j++) {
           const aMember: any = sortedMembers[j];
+          if (polystat.valueEnabled) {
+            valueContent = `
+            <td style="text-align: right; color: ${aMember.color}">${aMember.valueFormatted}</td>
+            `;
+          }
           const aRow = `
             <tr>
               <td style="text-align: left; color: ${aMember.color}">${aMember.name}</td>
-              <td style="text-align: right; color: ${aMember.color}">${aMember.valueFormatted}</td>
+              ${valueContent}
             </tr>
           `;
           switch (polystat.tooltipDisplayMode) {
@@ -100,10 +111,15 @@ export class Tooltip {
           }
         }
       } else {
+        if (polystat.valueEnabled) {
+          valueContent = `
+          <td style="text-align: right; color: ${data[index].color}">${data[index].valueFormatted}</td>
+          `;
+        }
         const aRow = `
         <tr>
           <td style="text-align: left; color: ${data[index].color}">${data[index].name}</td>
-          <td style="text-align: right; color: ${data[index].color}">${data[index].valueFormatted}</td>
+          ${valueContent}
         </tr>
         `;
         switch (polystat.tooltipDisplayMode) {
