@@ -335,22 +335,63 @@ jobs:
             fi
 
   publish_github_release:
-    executor: default_exec
+    docker:
+      - image: cibuilds/github:0.13.0
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
-          - << pipeline.parameters.ssh-fingerprint >>
+            - << pipeline.parameters.ssh-fingerprint >>
       - attach_workspace:
           at: .
       - restore_cache:
           name: restore node_modules
           keys:
-          - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: "Publish Release on GitHub"
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:github-publish
+            # copy ci artifacts
+            mkdir -p artifacts
+            if [ -d ci/packages/linux ]; then
+              cp ci/packages/linux/* artifacts
+            fi
+            if [ -d ci/packages/windows ]; then
+              cp ci/packages/windows/* artifacts
+            fi
+            if [ -d ci/packages/darwin ]; then
+              cp ci/packages/darwin/* artifacts
+            fi
+            if [ -d ci/packages/any ]; then
+              cp ci/packages/any/* artifacts
+            fi
+            apk add --update --no-cache jq git-lfs
+            PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
+            echo "Plugin Name: ${PLUGIN_NAME}"
+            VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo "Plugin Version: ${VERSION}"
+            RELEASE_NOTES=`awk 'BEGIN {FS="##"; RS=""} FNR==4 {print; exit}' CHANGELOG.md`
+            git config user.email "eng@grafana.com"
+            git config user.name "CircleCI Automation"
+            git checkout -b release-${VERSION}
+            # add dist, it is needed to get the right plugin.json info during gcom publish
+            mkdir -p dist
+            cp -rp ci/dist/${PLUGIN_NAME}/* dist/
+            git add --force dist/
+            git commit -m "automated release $VERSION [skip ci]"
+            git push -f origin release-${VERSION}
+            git tag -f v${VERSION}
+            git push -f origin v${VERSION}
+            ghr \
+              -t ${GITHUB_TOKEN} \
+              -u ${CIRCLE_PROJECT_USERNAME} \
+              -r ${CIRCLE_PROJECT_REPONAME} \
+              -c ${CIRCLE_SHA1} \
+              -n "${PLUGIN_NAME} v${VERSION}" \
+              -b "${RELEASE_NOTES}" \
+              -delete \
+              v${VERSION} \
+              ./artifacts/
 
   publish_to_gcom:
     executor: grafana_publisher
