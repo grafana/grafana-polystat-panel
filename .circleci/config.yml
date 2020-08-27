@@ -4,6 +4,9 @@ parameters:
   ssh-fingerprint:
     type: string
     default: ${GITHUB_SSH_FINGERPRINT}
+  codeclimate-reporter-id:
+    type: string
+    default: ${CC_TEST_REPORTER_ID}
 
 aliases:
   # Workflow filters
@@ -24,6 +27,9 @@ executors:
   cloud_sdk_exec:
     docker:
       - image: google/cloud-sdk
+  grafana_publisher:
+    docker:
+      - image: briangann/integration-grafana-publisher:latest
 
 workflows:
   plugin_workflow:
@@ -65,14 +71,15 @@ workflows:
           requires:
           - approve_release
           filters: *filter-only-release
-      - approve_publish_gcom:
+      - approve_publish_to_gcom:
           type: approval
           requires:
           - publish_github_release
+          - publish_gcs_release
           filters: *filter-only-release
       - publish_to_gcom:
           requires:
-          - approve_publish_gcom
+          - approve_publish_to_gcom
           filters: *filter-only-release
 
 jobs:
@@ -253,7 +260,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: "Copy Artifacts to GCP Bucket"
+          name: "Copy Artifacts to GCS Bucket"
           command: |
             ls -l ci/jobs/build_frontend/dist/plugin.json
             echo "Contents of ci/jobs/build_frontend/dist/plugin.json"
@@ -294,7 +301,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: "Copy Artifacts to GCP Release Bucket"
+          name: "Copy Artifacts to GCS Release Bucket"
           command: |
             ls -l ci/jobs/build_frontend/dist/plugin.json
             echo "Contents of ci/jobs/build_frontend/dist/plugin.json"
@@ -313,7 +320,16 @@ jobs:
             fi
             echo ${GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
             echo "Contents of artifacts"
-            echo "Copying artifacts to ${PLUGIN_NAME}/release/${VERSION}"
+            echo "Copying artifacts to ${PLUGIN_NAME}/${VERSION}/${CIRCLE_BRANCH}/${CIRCLE_SHA1}"
+            if [ -d ci/packages/linux ]; then
+              gsutil -m cp -r ci/packages/linux/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/linux
+            fi
+            if [ -d ci/packages/windows ]; then
+              gsutil -m cp -r ci/packages/windows/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/windows
+            fi
+            if [ -d ci/packages/darwin ]; then
+              gsutil -m cp -r ci/packages/darwin/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/darwin
+            fi
             if [ -d ci/packages/any ]; then
               gsutil -m cp -r ci/packages/any/** gs://integration-artifacts/${PLUGIN_NAME}/release/${VERSION}/any
             fi
@@ -337,31 +353,28 @@ jobs:
             ./node_modules/.bin/grafana-toolkit plugin:github-publish
 
   publish_to_gcom:
-    executor: default_exec
+    executor: grafana_publisher
     steps:
       - checkout
       - attach_workspace:
           at: .
-      - restore_cache:
-          name: restore node_modules
-          keys:
-          - build-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
-          name: "Validate Environment Variables"
+          name: "Publish to GCOM"
           command: |
-            if [ -f ./node_modules/.bin/grafana-publisher ]; then
-              ./node_modules/.bin/grafana-publisher validate
+            if [ -z "${GCOM_PUBLISH_TOKEN}" ]; then
+              echo "Missing GCOM Publish Key"
+              exit -1
             fi
-      - run:
-          name: "Publish Plugin to grafana.com"
-          command: |
-            apt update
-            apt install -y jq git-lfs
+            if [ -z "${GITHUB_TOKEN}" ]; then
+              echo "Missing GITHUB_TOKEN"
+              exit -1
+            fi
+            if [ -z "${GCLOUD_SERVICE_KEY}" ]; then
+              echo "Missing GCLOUD_SERVICE_KEY"
+              exit -1
+            fi
             PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
-            echo "Plugin Name: ${PLUGIN_NAME}"
-            VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
-            echo "Plugin Version: ${VERSION}"
-            yarn add @google-cloud/storage
-            if [ -f ./node_modules/.bin/grafana-publisher ]; then
-              ./node_modules/.bin/grafana-publisher --auto publish ${PLUGIN_NAME} ${VERSION}
-            fi
+            PLUGIN_VERSION=`cat ci/dist/plugin.json|jq '.info.version'| sed s/\"//g`
+            echo ${GCLOUD_SERVICE_KEY} | gcloud auth activate-service-account --key-file=-
+            echo "Publishing to GCOM: $PLUGIN_NAME $PLUGIN_VERSION"
+            /root/app/bin/grafana-publisher.js --auto publishremote $PLUGIN_NAME $PLUGIN_VERSION
