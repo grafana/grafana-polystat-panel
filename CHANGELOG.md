@@ -1,6 +1,8 @@
 # Change Log
 
-## Entries
+## v1.2.2
+
+- Fix for gradient threshold color issue #126
 
 ## v1.2.1
 
