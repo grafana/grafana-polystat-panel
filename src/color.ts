@@ -38,29 +38,34 @@ export class Color {
   }
 
   RGBToHex(rgb) {
-    let sep = rgb.indexOf(",") > -1 ? "," : " ";
-    rgb = rgb.substr(4).split(")")[0].split(sep);
+    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
+    rgb = rgb
+      .substr(4)
+      .split(')')[0]
+      .split(sep);
     // Convert %s to 0–255
     for (let R in rgb) {
       let r = rgb[R];
-      if (r.indexOf("%") > -1)
-        rgb[R] = Math.round(r.substr(0, r.length - 1) / 100 * 255);
+      if (r.indexOf('%') > -1) {
+        rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
+      }
     }
   }
 
   static RGBAToHex(orig: string) {
     const rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+),?([^,\s)]+)?/i);
-    const alpha = (rgb && rgb[4] || "").trim();
-    let hex = rgb ?
-      (parseInt(rgb[1], 10) | 1 << 8).toString(16).slice(1) +
-      (parseInt(rgb[2], 10) | 1 << 8).toString(16).slice(1) +
-      (parseInt(rgb[3], 10) | 1 << 8).toString(16).slice(1) : orig;
+    const alpha = ((rgb && rgb[4]) || '').trim();
+    let hex = rgb
+      ? (parseInt(rgb[1], 10) | (1 << 8)).toString(16).slice(1) +
+        (parseInt(rgb[2], 10) | (1 << 8)).toString(16).slice(1) +
+        (parseInt(rgb[3], 10) | (1 << 8)).toString(16).slice(1)
+      : orig;
 
     var a;
-    if (alpha !== "") {
+    if (alpha !== '') {
       const alphaVal = parseFloat(alpha);
       // multiply before convert to HEX
-      a = ((alphaVal * 255) | 1 << 8).toString(16).slice(1);
+      a = ((alphaVal * 255) | (1 << 8)).toString(16).slice(1);
     } else {
       a = 1;
     }
