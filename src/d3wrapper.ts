@@ -384,7 +384,10 @@ export class D3Wrapper {
         break;
     }
 
-    filledSVG.each((_, i, nodes) => {
+    svg.selectAll('.hexagon')
+      .data(ahexbin(this.calculatedPoints))
+      .enter()
+      .each((_, i, nodes) => {
       let node = d3.select(nodes[i]);
       const clickThroughURL = resolveClickThroughURL(data[i]);
       if (clickThroughURL.length > 0) {
@@ -411,15 +414,35 @@ export class D3Wrapper {
             .style('fill', fillColor);
           break;
         case PolygonShapes.CIRCLE:
-          node
+          const circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
+          node = node
             .join('circle')
+            .append('circle')
+          .attr('class', 'circle')
+          .attr('cx', (d: any) => {
+            return d[0];
+          })
+          .attr('cy', (d: any) => {
+            return d[1];
+          })
+          .attr('r', circleRadius)
             .attr('stroke', this.opt.polystat.polygonBorderColor)
             .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
             .style('fill', fillColor);
           break;
         case PolygonShapes.SQUARE:
-          node
-            .join('square')
+          const squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
+          node = node
+          .append('rect')
+          .attr('class', 'rect')
+          .attr('x', (d: any) => {
+            return d[0];
+          })
+          .attr('y', (d: any) => {
+            return d[1];
+          })
+          .attr('height', squareRadius * 2)
+          .attr('width', squareRadius * 2)
             .attr('stroke', this.opt.polystat.polygonBorderColor)
             .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
             .style('fill', fillColor);
