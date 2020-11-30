@@ -3,6 +3,8 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
+import { getMappedValue } from '@grafana/data';
+import { convertOldAngularValueMapping } from '@grafana/ui';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
 
 export class MetricOverridesManager {
@@ -139,11 +141,17 @@ export class MetricOverridesManager {
         data[index].color = result.color;
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
-        const formatFunc = kbn.valueFormats[anOverride.unitFormat];
-        if (formatFunc) {
-          // put the value in quotes to escape "most" special characters
-          data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
-          data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
+        const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
+        const mappedValue = getMappedValue(mappings, data[index].value);
+        if (mappedValue) {
+          data[index].valueFormatted = mappedValue.text;
+        } else {
+          const formatFunc = kbn.valueFormats[anOverride.unitFormat];
+          if (formatFunc) {
+            // put the value in quotes to escape "most" special characters
+            data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
+            data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
+          }
         }
         // copy the threshold data into the object
         data[index].thresholds = anOverride.thresholds;
