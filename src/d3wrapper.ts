@@ -32,6 +32,24 @@ function showValue(item: any): boolean {
   return !('showValue' in item) || item.showValue;
 }
 
+function getMouseXY(): any {
+  const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  // use the mouse position for the entire page, received by
+  // d3.event.pageX, d3.event.pageY
+  let xpos = d3.event.pageX - 50;
+  // don't allow offscreen tooltip
+  if (xpos < 0) {
+    xpos = 0;
+  }
+  // prevent tooltip from rendering outside of viewport
+  if (xpos + 200 > viewPortWidth) {
+    xpos = viewPortWidth - 200;
+  }
+  const ypos = d3.event.pageY + 5;
+
+  return { xpos, ypos };
+}
+
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
@@ -428,22 +446,11 @@ export class D3Wrapper {
       node
         .on('mousemove', () => {
           // use the viewportwidth to prevent the tooltip from going too far right
-          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-          // use the mouse position for the entire page, received by
-          // d3.event.pageX, d3.event.pageY
-          let xpos = d3.event.pageX - 50;
-          // don't allow offscreen tooltip
-          if (xpos < 0) {
-            xpos = 0;
-          }
-          // prevent tooltip from rendering outside of viewport
-          if (xpos + 200 > viewPortWidth) {
-            xpos = viewPortWidth - 200;
-          }
-          const ypos = d3.event.pageY + 5;
+          let { xpos, ypos } = getMouseXY();
           tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
         })
         .on('mouseover', (d: any) => {
+          let { xpos, ypos } = getMouseXY();
           tooltip
             .transition()
             .duration(200)
@@ -452,8 +459,8 @@ export class D3Wrapper {
             .html(this.opt.tooltipContent[i])
             .style('font-size', this.opt.tooltipFontSize)
             .style('font-family', this.opt.tooltipFontType)
-            .style('left', d.x - 5 + 'px')
-            .style('top', d.y - 5 + 'px');
+            .style('left', xpos + 'px')
+            .style('top', ypos + 'px');
         })
         .on('mouseout', () => {
           tooltip
