@@ -33,6 +33,7 @@ function showValue(item: any): boolean {
 }
 
 function getMouseXY(): any {
+  // use the viewportwidth to prevent the tooltip from going too far right
   const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   // use the mouse position for the entire page, received by
   // d3.event.pageX, d3.event.pageY
@@ -445,7 +446,6 @@ export class D3Wrapper {
       }
       node
         .on('mousemove', () => {
-          // use the viewportwidth to prevent the tooltip from going too far right
           let { xpos, ypos } = getMouseXY();
           tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
         })
