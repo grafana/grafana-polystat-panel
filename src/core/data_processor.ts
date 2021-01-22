@@ -105,5 +105,4 @@ export class DataProcessor {
     }
     return series;
   }
-
 }

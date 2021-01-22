@@ -607,7 +607,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   onDataFramesReceived(data: DataFrame[]) {
-    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map((ts) => {
+    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map(ts => {
       ts.color = undefined; // remove whatever the processor set
       ts.flotpairs = ts.getFlotPairs(this.panel.nullPointMode);
       return ts;
@@ -624,8 +624,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     );
 
     if (datapointsCount === 0) {
-    // @ts-ignore
-    this.dataWarning = {
+      // @ts-ignore
+      this.dataWarning = {
         title: 'No data points',
         tip: 'No datapoints returned from data query',
       };
@@ -651,7 +651,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
     this.render();
   }
-
 
   seriesHandler(seriesData) {
     const series = new TimeSeries({

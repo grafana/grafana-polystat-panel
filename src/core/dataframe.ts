@@ -1,12 +1,7 @@
 // from grafana core
 
 import { map as isArray } from 'lodash';
-import {
-  DataFrame,
-  DataQueryResponseData,
-  guessFieldTypes,
-  toDataFrame,
-} from '@grafana/data';
+import { DataFrame, DataQueryResponseData, guessFieldTypes, toDataFrame } from '@grafana/data';
 
 export function getProcessedDataFrames(results?: DataQueryResponseData[]): DataFrame[] {
   if (!results || !isArray(results)) {
