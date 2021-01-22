@@ -18,9 +18,9 @@ aliases:
       only: /^v[1-9]*[0-9]+\.[1-9]*[0-9]+\.x$/
 
 executors:
-  default_exec: # declares a reusable executor
+  default_exec:
     docker:
-      - image: srclosson/grafana-plugin-ci-alpine:latest
+      - image: grafana/grafana-plugin-ci:1.1.2-alpine
   e2e_exec:
     docker:
       - image: srclosson/grafana-plugin-ci-e2e:latest
