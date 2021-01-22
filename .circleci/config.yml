@@ -23,13 +23,13 @@ executors:
       - image: grafana/grafana-plugin-ci:1.1.2-alpine
   e2e_exec:
     docker:
-      - image: srclosson/grafana-plugin-ci-e2e:latest
+      - image: grafana/grafana-plugin-ci-e2e:latest
   cloud_sdk_exec:
     docker:
       - image: google/cloud-sdk
   grafana_publisher:
     docker:
-      - image: briangann/integration-grafana-publisher:latest
+      - image: grafana/integration-grafana-publisher:latest
 
 workflows:
   plugin_workflow:
