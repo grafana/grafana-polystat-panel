@@ -201,7 +201,7 @@ export class CompositesManager {
             }
             if (aComposite.clickThrough && aComposite.clickThrough.length > 0) {
               // process template variables
-              let url = this.templateSrv.replaceWithText(aComposite.clickThrough);
+              let url = this.templateSrv.replace(aComposite.clickThrough, 'text');
               // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
               url = ClickThroughTransformer.tranformComposite(aComposite.compositeName, url);
               url = ClickThroughTransformer.tranformSingleMetric(index, url, data);

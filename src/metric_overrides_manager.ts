@@ -151,7 +151,7 @@ export class MetricOverridesManager {
         data[index].suffix = anOverride.suffix;
         // set the url, replace template vars
         if (anOverride.clickThrough && anOverride.clickThrough.length > 0) {
-          let url = this.templateSrv.replaceWithText(anOverride.clickThrough);
+          let url = this.templateSrv.replace(anOverride.clickThrough, 'text');
           // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
           url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
           url = ClickThroughTransformer.tranformNthMetric(url, data);

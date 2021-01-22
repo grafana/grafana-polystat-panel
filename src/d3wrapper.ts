@@ -671,7 +671,7 @@ export class D3Wrapper {
     //
     if (content && content.length > 0) {
       try {
-        const replacedContent = thisRef.templateSrv.replaceWithText(content);
+        const replacedContent = thisRef.templateSrv.replace(content, 'text');
         content = replacedContent;
       } catch (err) {
         console.log('ERROR: template server threw error: ' + err);

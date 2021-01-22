@@ -1,6 +1,6 @@
 {
   "name": "grafana-polystat-panel",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Grafana Polystat Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -19,9 +19,9 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
-    "@grafana/data": "next",
-    "@grafana/toolkit": "next",
-    "@grafana/ui": "next",
+    "@grafana/data": "7.3.7",
+    "@grafana/toolkit": "7.3.7",
+    "@grafana/ui": "7.3.7",
     "@types/d3": "6.2.0",
     "@types/d3-hexbin": "0.2.3",
     "@types/grafana": "github:CorpGlory/types-grafana.git",

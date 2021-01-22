@@ -15,9 +15,12 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { getMappedValue } from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue } from '@grafana/data';
+import { DataProcessor } from './core/data_processor';
+import { getProcessedDataFrames } from './core/dataframe';
 
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
+  processor: DataProcessor;
   static templateUrl = 'partials/template.html';
   animationModes = [
     { value: 'all', text: 'Show All' },
@@ -193,7 +196,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaultsDeep(this.panel, this.panelDefaults);
-
+    // @ts-ignore
+    this.useDataFrames = true;
+    this.processor = new DataProcessor({
+      xaxis: { mode: 'custom' },
+      aliasColors: {},
+    });
     this.d3DivId = 'd3_svg_' + this.panel.id;
     this.containerDivId = 'container_' + this.d3DivId;
     this.initialized = false;
@@ -215,15 +223,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
     // v6 compat
     if (typeof PanelEvents === 'undefined') {
-      this.events.on('data-received', this.onDataReceived.bind(this));
+      this.events.on('data-frames-received', this.onDataFramesReceived.bind(this));
       this.events.on('data-error', this.onDataError.bind(this));
-      this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
+      this.events.on('data-snapshot-load', this.onSnapshotLoad.bind(this));
       this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     } else {
       // v7+ compat
-      this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
       this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
-      this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
+      this.events.on(PanelEvents.dataSnapshotLoad, this.onSnapshotLoad.bind(this));
       this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
     }
   }
@@ -576,13 +584,17 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return data;
   }
 
-  onDataError(err) {
+  onDataError(err: DataFrame[]) {
     console.log(err);
-    this.onDataReceived([]);
+    this.onDataFramesReceived([]);
     this.render();
   }
 
-  onDataReceived(dataList) {
+  onSnapshotLoad(dataList: LegacyResponseData[]) {
+    this.onDataFramesReceived(getProcessedDataFrames(dataList));
+  }
+
+  onDataReceivedOLD(dataList) {
     this.series = dataList.map(this.seriesHandler.bind(this));
     const data = {
       value: 0,
@@ -593,6 +605,53 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.data = data;
     this.render();
   }
+
+  onDataFramesReceived(data: DataFrame[]) {
+    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map((ts) => {
+      ts.color = undefined; // remove whatever the processor set
+      ts.flotpairs = ts.getFlotPairs(this.panel.nullPointMode);
+      return ts;
+    });
+
+    // @ts-ignore
+    this.dataWarning = null;
+    const datapointsCount = _.reduce(
+      this.series,
+      (sum, series) => {
+        return sum + series.datapoints.length;
+      },
+      0
+    );
+
+    if (datapointsCount === 0) {
+    // @ts-ignore
+    this.dataWarning = {
+        title: 'No data points',
+        tip: 'No datapoints returned from data query',
+      };
+    } else {
+      for (const series of this.series) {
+        if (series.isOutsideRange) {
+          // @ts-ignore
+          this.dataWarning = {
+            title: 'Data points outside time range',
+            tip: 'Can be caused by timezone mismatch or missing time filter in query',
+          };
+          break;
+        }
+      }
+    }
+    const dataNew = {
+      value: 0,
+      valueFormatted: 0,
+      valueRounded: 0,
+    };
+    this.setValues(dataNew);
+    this.data = dataNew;
+
+    this.render();
+  }
+
 
   seriesHandler(seriesData) {
     const series = new TimeSeries({
@@ -751,7 +810,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
     url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
     // process template variables inside clickthrough
-    url = this.templateSrv.replaceWithText(url);
+    url = this.templateSrv.replace(url, 'text');
     return url;
   }
 
