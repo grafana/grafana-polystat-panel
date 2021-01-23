@@ -15,7 +15,7 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { LegacyResponseData, DataFrame, getMappedValue } from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue, Field, FieldType, ArrayVector } from '@grafana/data';
 import { DataProcessor } from './core/data_processor';
 import { getProcessedDataFrames } from './core/dataframe';
 
@@ -137,8 +137,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   svgContainer: any;
   panelWidth: any;
   panelHeight: any;
-
   panelDefaults = {
+    nullPointMode: 'connected',
     savedComposites: [],
     savedOverrides: [], // Array<MetricOverride>(),
     colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a', '#4040a0'],
@@ -606,9 +606,42 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.render();
   }
 
+  // Inserts a "Time" field into each dataframe if it is missing
+  // the value of the timestamp is "now"
+  insertTime(data: DataFrame[]): DataFrame[] {
+    const timeToInsert = Date.now();
+    for (let i = 0; i < data.length; i++) {
+      const aFrame = data[i];
+      let haveTimeField = false;
+      for (let j = 0; j < aFrame.fields.length; j++) {
+        const aField = aFrame.fields[j];
+        if (aField.type === FieldType.time) {
+          haveTimeField = true;
+          continue;
+        }
+      }
+      if (!haveTimeField) {
+        // create a time field
+        const values = new ArrayVector([timeToInsert]);
+        const aField: Field = {
+          name: 'Time',
+          type: FieldType.time,
+          values: values,
+          config: null,
+        };
+        // insert it
+        aFrame.fields.push(aField);
+      }
+    }
+    return data;
+  }
   onDataFramesReceived(data: DataFrame[]) {
+    // check if data contains a field called Time of type time
+    data = this.insertTime(data);
+    // if it does not, insert one with time "now"
     this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map(ts => {
       ts.color = undefined; // remove whatever the processor set
+      // TODO: this needs to be added to the editor options
       ts.flotpairs = ts.getFlotPairs(this.panel.nullPointMode);
       return ts;
     });
