@@ -60,6 +60,7 @@ export interface PolystatConfigs {
   tooltipSecondarySortDirection: string;
   tooltipSecondarySortField: string;
   tooltipTimestampEnabled: boolean;
+  tooltipEnabled: boolean;
   valueEnabled: boolean;
 }
 
