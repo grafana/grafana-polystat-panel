@@ -15,7 +15,7 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { LegacyResponseData, DataFrame, getMappedValue, Field, FieldType, ArrayVector , Labels} from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue, Field, FieldType, ArrayVector, Labels } from '@grafana/data';
 import { DataProcessor } from './core/data_processor';
 import { getProcessedDataFrames } from './core/dataframe';
 
@@ -605,7 +605,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         const buffer = frame.fields[j].values.buffer;
         for (let k = 0; k < buffer.length; k++) {
           const aLabelValue = buffer[k];
-          const aLabel = {[aLabelKey]: aLabelValue} as any;
+          const aLabel = { [aLabelKey]: aLabelValue } as any;
           labels.push(aLabel);
         }
       }
@@ -628,7 +628,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return false;
   }
 
-  newFieldWithLabels(field: Field, labels: Labels) : Field {
+  newFieldWithLabels(field: Field, labels: Labels): Field {
     const newField = _.cloneDeep(field);
     newField.labels = labels;
     return newField;
@@ -714,7 +714,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
           const aLabelKey = aFrame.fields[j].name;
           // @ts-ignore
           const aLabelValue = aFrame.fields[j].values.buffer[j];
-          labels = {[aLabelKey]: aLabelValue} as any;
+          labels = { [aLabelKey]: aLabelValue } as any;
           ////labels = newLabel;
         }
       }
