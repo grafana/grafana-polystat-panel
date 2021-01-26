@@ -15,7 +15,7 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { LegacyResponseData, DataFrame, getMappedValue, Field, FieldType, ArrayVector } from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue, Field, FieldType, ArrayVector , Labels} from '@grafana/data';
 import { DataProcessor } from './core/data_processor';
 import { getProcessedDataFrames } from './core/dataframe';
 
@@ -594,22 +594,99 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.onDataFramesReceived(getProcessedDataFrames(dataList));
   }
 
-  onDataReceivedOLD(dataList) {
-    this.series = dataList.map(this.seriesHandler.bind(this));
-    const data = {
-      value: 0,
-      valueFormatted: 0,
-      valueRounded: 0,
-    };
-    this.setValues(data);
-    this.data = data;
-    this.render();
+  getLabelsOfFrame(frame: DataFrame) {
+    const numFields = frame.fields.length;
+    let labels: Labels[] = [];
+    // get the labels (non-number fields)
+    for (let j = 0; j < numFields; j++) {
+      if (frame.fields[j].type === FieldType.string) {
+        const aLabelKey = frame.fields[j].name;
+        // @ts-ignore
+        const buffer = frame.fields[j].values.buffer;
+        for (let k = 0; k < buffer.length; k++) {
+          const aLabelValue = buffer[k];
+          const aLabel = {[aLabelKey]: aLabelValue} as any;
+          labels.push(aLabel);
+        }
+      }
+    }
+    return labels;
+  }
+
+  getValueOfField(field: Field, index: number) {
+    const bufferValue = field.values.toArray()[index];
+    return bufferValue;
+  }
+
+  frameHasTimestamp(frame: DataFrame): boolean {
+    for (let j = 0; j < frame.fields.length; j++) {
+      const aField = frame.fields[j];
+      if (aField.type === FieldType.time) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  newFieldWithLabels(field: Field, labels: Labels) : Field {
+    const newField = _.cloneDeep(field);
+    newField.labels = labels;
+    return newField;
+  }
+
+  insertTimeNEXT(data: DataFrame[]): DataFrame[] {
+    // TODO: time to insert can be taken from the first row if there are timeseries already
+    // for now, just insert now
+    const timeToInsert = Date.now();
+    const newData: DataFrame[] = [];
+    for (let i = 0; i < data.length; i++) {
+      const frame = data[i];
+      const newFrame = _.cloneDeep(frame);
+      // clear the fields
+      newFrame.fields = [];
+      const labels = this.getLabelsOfFrame(frame);
+      const hasTimestamp = this.frameHasTimestamp(frame);
+      // rebuild a new frame with labels on the numerical fields
+      const numFields = frame.fields.length;
+      for (let j = 0; j < numFields; j++) {
+        const aField = frame.fields[j];
+        if (aField.type === FieldType.number) {
+          // make as many fields with this name as there are labels
+          for (let x = 0; x < labels.length; x++) {
+            const newField = this.newFieldWithLabels(aField, labels[x]);
+            // now replace the values
+            const value = this.getValueOfField(aField, x);
+            const z = new ArrayVector();
+            z.add(value);
+            newField.values = z;
+            newFrame.fields.push(newField);
+          }
+        }
+      }
+      if (!hasTimestamp) {
+        const values = new ArrayVector([timeToInsert]);
+        const timeField: Field = {
+          name: 'Time',
+          type: FieldType.time,
+          values: values,
+          config: null,
+        };
+        // insert it
+        newFrame.fields.push(timeField);
+      }
+      newData.push(newFrame);
+    }
+
+    return newData;
   }
 
   // Inserts a "Time" field into each dataframe if it is missing
   // the value of the timestamp is "now"
+  // any field without a numeric type is considered a label
   insertTime(data: DataFrame[]): DataFrame[] {
     const timeToInsert = Date.now();
+    const insertFrames = [];
+    const newFrames: DataFrame[] = [];
     for (let i = 0; i < data.length; i++) {
       const aFrame = data[i];
       let haveTimeField = false;
@@ -621,23 +698,64 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
       if (!haveTimeField) {
-        // create a time field
-        const values = new ArrayVector([timeToInsert]);
-        const aField: Field = {
-          name: 'Time',
-          type: FieldType.time,
-          values: values,
-          config: null,
-        };
-        // insert it
-        aFrame.fields.push(aField);
+        insertFrames.push(i);
+      } else {
+        newFrames.push(aFrame);
       }
     }
-    return data;
+    // for frames without timestamps, create a new frame for each column
+    for (let i = 0; i < insertFrames.length; i++) {
+      const aFrame = data[i];
+      const numFields = aFrame.fields.length;
+      let labels: Labels = {};
+      // get the labels (non-number fields)
+      for (let j = 0; j < numFields; j++) {
+        if (aFrame.fields[j].type === FieldType.string) {
+          const aLabelKey = aFrame.fields[j].name;
+          // @ts-ignore
+          const aLabelValue = aFrame.fields[j].values.buffer[j];
+          labels = {[aLabelKey]: aLabelValue} as any;
+          ////labels = newLabel;
+        }
+      }
+      for (let j = 0; j < numFields; j++) {
+        const aField = aFrame.fields[j];
+        if (aField.type === FieldType.string) {
+          continue;
+        }
+        // copy the frame
+        const newFrame = _.cloneDeep(aFrame);
+        newFrame.fields = [aField];
+        newFrame.fields[0].labels = labels;
+        // set the value
+        // the original frame has a value for the column
+        ///const values = aFrame.fields[j].values[j];
+        // @ts-ignore
+        const bufferValue = aFrame.fields[j].values.buffer[j];
+        const buffer = new ArrayVector([bufferValue]);
+        newFrame.fields[0].values = buffer;
+        // only numerical fields need a timestamp
+        if (newFrame.fields[0].type === FieldType.number) {
+          // create a time field
+          const timeValues = new ArrayVector([timeToInsert]);
+          const timeField: Field = {
+            name: 'Time',
+            type: FieldType.time,
+            values: timeValues,
+            config: null,
+          };
+          // insert it
+          newFrame.fields.push(timeField);
+        }
+        newFrames.push(newFrame);
+      }
+    }
+
+    return newFrames;
   }
   onDataFramesReceived(data: DataFrame[]) {
     // check if data contains a field called Time of type time
-    data = this.insertTime(data);
+    data = this.insertTimeNEXT(data);
     // if it does not, insert one with time "now"
     this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map(ts => {
       ts.color = undefined; // remove whatever the processor set

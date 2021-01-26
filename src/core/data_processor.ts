@@ -43,6 +43,7 @@ export class DataProcessor {
         if (field.type !== FieldType.number) {
           continue;
         }
+        //field.state.displayName = field.name;
         const name = getFieldDisplayName(field, series, dataList);
         const datapoints = [];
 
