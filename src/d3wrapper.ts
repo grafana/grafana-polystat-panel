@@ -94,11 +94,11 @@ export class D3Wrapper {
     );
   }
 
-  update(data: any) {
-    if (data) {
-      this.data = data;
-    }
-  }
+  //update(data: any) {
+  //  if (data) {
+  //    this.data = data;
+  //  }
+  // }
 
   draw() {
     const margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -285,7 +285,8 @@ export class D3Wrapper {
         if (submetricCount > 0) {
           let counter = 0;
           while (counter < submetricCount) {
-            const checkContent = this.formatValueContent(i, counter, this);
+            const copiedData = Object.assign({}, this.data[i]);
+            const checkContent = this.formatValueContent(counter, copiedData);
             if (checkContent && checkContent.length > maxValue.length) {
               maxValue = checkContent;
             }
@@ -528,7 +529,8 @@ export class D3Wrapper {
         return '';
       });
 
-    let frames = 0;
+    // each composite tracks its own frames
+    let compositeFrames = new Array(data.length).fill(0);
 
     textspot
       .enter()
@@ -554,17 +556,24 @@ export class D3Wrapper {
       .style('pointer-events', 'none')
       .text((_, i) => {
         // animation/displaymode can modify what is being displayed
-        let counter = 0;
+        let initialItemIndex = 0;
         const dataLen = this.data.length;
         let content = null;
-        while (content === null && counter < dataLen) {
-          content = this.formatValueContent(i, frames + counter, this);
-          counter++;
+        // get the first non-hidden item, this will be displayed first (before the interval starts)
+        while (content === null && initialItemIndex < dataLen) {
+          const copiedData = Object.assign({}, this.data[i]);
+          content = this.formatValueContent(compositeFrames[i] + initialItemIndex, copiedData);
+          if (content !== null) {
+            break;
+          }
+          initialItemIndex++;
         }
         const valueTextLocation = svg.select('text.valueLabel' + i);
         // use the dynamic size for the value
         valueTextLocation.attr('font-size', activeValueFontSize + 'px');
-        d3.interval(() => {
+        // pass the index of the first item being displayed, the counter can start from there
+        d3.interval(initialItemIndex => {
+          // there is a leak in here, data is being held by frames
           const valueTextLocation = svg.select('text.valueLabel' + i);
           const compositeIndex = i;
           valueTextLocation.text(() => {
@@ -573,10 +582,12 @@ export class D3Wrapper {
 
             let content = null;
             let counter = 0;
+            // TODO: fix this loop
             const dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
             while (content === null && counter < dataLen) {
-              content = this.formatValueContent(compositeIndex, frames + counter, this);
+              const copiedData = Object.assign({}, this.data[compositeIndex]);
+              content = this.formatValueContent(compositeFrames[compositeIndex] + counter, copiedData);
               counter++;
             }
             if (content === null) {
@@ -590,8 +601,9 @@ export class D3Wrapper {
             }
             return content;
           });
-          frames++;
+          compositeFrames[i]++;
         }, this.opt.animationSpeed);
+        //frames++;
         return content;
       });
   }
@@ -608,8 +620,8 @@ export class D3Wrapper {
     }
     return data;
   }
-  formatValueContent(i, frames, thisRef): string {
-    const data = thisRef.data[i];
+  formatValueContent(frames, data): string {
+    //const data = thisRef.data[index];
     // options can specify to not show the value
     if (typeof data !== 'undefined') {
       if (data.hasOwnProperty('showValue')) {
@@ -659,7 +671,7 @@ export class D3Wrapper {
         const z = frames % data.triggerCache.length;
         triggeredIndex = data.triggerCache[z].index;
       }
-      const aMember = data.members[triggeredIndex];
+      const aMember = Object.assign({}, data.members[triggeredIndex]);
 
       content = aMember.name + ': ' + aMember.valueFormatted;
       if (aMember.prefix && aMember.prefix.length > 0) {
@@ -673,7 +685,7 @@ export class D3Wrapper {
     //
     if (content && content.length > 0) {
       try {
-        const replacedContent = thisRef.templateSrv.replace(content, 'text');
+        const replacedContent = this.templateSrv.replace(content, 'text');
         content = replacedContent;
       } catch (err) {
         console.log('ERROR: template server threw error: ' + err);

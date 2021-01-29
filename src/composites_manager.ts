@@ -18,6 +18,8 @@ export class MetricComposite {
   sanitizeURLEnabled: boolean;
   sanitizedURL: string;
   label: string;
+  isTemplated: boolean;
+  templatedName: string;
 }
 
 export class CompositesManager {
@@ -112,6 +114,8 @@ export class CompositesManager {
         ret.push({
           ...item,
           compositeName: newName,
+          isTemplated: true,
+          templatedName: item.compositeName,
         });
       });
     });
@@ -119,7 +123,13 @@ export class CompositesManager {
     return ret;
   }
 
-  resolveMemberTemplates(members: any[], vars: ScopedVars[] = this.templateSrv.ScopedVars): any[] {
+  resolveMemberTemplates(
+    compositeName: string,
+    isTemplated: boolean,
+    templatedName: string,
+    members: any[],
+    vars: ScopedVars[] = this.templateSrv.ScopedVars
+  ): any[] {
     const ret: any[] = [];
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
     members.forEach(member => {
@@ -128,6 +138,11 @@ export class CompositesManager {
         const matchResult = member.seriesName.match(variableRegex);
         if (matchResult && matchResult.length > 0) {
           matchResult.forEach(template => {
+            // if the template contains the composite template, replace it with the compositeName
+            if (isTemplated && template.includes(templatedName)) {
+              // replace it
+              template = template.replace(templatedName, compositeName);
+            }
             const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
             resolvedSeriesNames.forEach(seriesName => {
               const newName = member.seriesName.replace(matchResult, seriesName);
@@ -162,6 +177,8 @@ export class CompositesManager {
   applyComposites(data) {
     const filteredMetrics: number[] = [];
     const clonedComposites: PolystatModel[] = [];
+    // the composite Name can be a template variable
+    // the composite should only match specific metrics or expanded templated metrics that use the composite name
     const resolvedComposites = this.resolveCompositeTemplates();
     for (let i = 0; i < resolvedComposites.length; i++) {
       const matchedMetrics: number[] = [];
@@ -170,11 +187,17 @@ export class CompositesManager {
         continue;
       }
       let currentWorstSeries = null;
-
-      const templatedMembers = this.resolveMemberTemplates(aComposite.members, {
-        ...this.templateSrv.ScopedVars,
-        compositeName: { text: 'compositeName', value: aComposite.compositeName },
-      });
+      // this should filter the members that are matches for the composite name
+      const templatedMembers = this.resolveMemberTemplates(
+        aComposite.compositeName,
+        aComposite.isTemplated,
+        aComposite.templatedName,
+        aComposite.members,
+        {
+          ...this.templateSrv.ScopedVars,
+          compositeName: { text: 'compositeName', value: aComposite.compositeName },
+        }
+      );
       for (let j = 0; j < templatedMembers.length; j++) {
         const aMetric = templatedMembers[j];
         // look for the matches to the pattern in the data

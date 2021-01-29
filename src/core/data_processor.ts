@@ -48,7 +48,12 @@ export class DataProcessor {
         const datapoints = [];
 
         for (let r = 0; r < series.length; r++) {
-          datapoints.push([field.values.get(r), timeField.values.get(r)]);
+          const fieldValues = field.values.get(r);
+          const timeValues = timeField.values.get(r);
+          // make sure there are values, this can end up being undefined
+          if (fieldValues) {
+            datapoints.push([fieldValues, timeValues]);
+          }
         }
 
         list.push(this.toTimeSeries(field, name, i, j, datapoints, list.length, range));

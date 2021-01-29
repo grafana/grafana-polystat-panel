@@ -214,21 +214,21 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.d3Object = null;
     this.data = [];
     this.series = [];
-    this.polystatData = [];
     this.tooltipContent = [];
     // convert old sort method to new
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-
     // v6 compat
     if (typeof PanelEvents === 'undefined') {
+      //this.events.on('data-received', this.onDataReceived.bind(this));
       this.events.on('data-frames-received', this.onDataFramesReceived.bind(this));
       this.events.on('data-error', this.onDataError.bind(this));
       this.events.on('data-snapshot-load', this.onSnapshotLoad.bind(this));
       this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     } else {
       // v7+ compat
+      //this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
       this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
       this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
       this.events.on(PanelEvents.dataSnapshotLoad, this.onSnapshotLoad.bind(this));
@@ -357,7 +357,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   renderD3() {
-    this.setValues(this.data);
+    //this.setValues(this.data);
     this.clearSVG();
     if (this.panelWidth === 0) {
       this.panelWidth = this.getPanelWidthFailsafe();
@@ -384,6 +384,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderColor = 'black';
     }
 
+    // try deep copy of data so we don't get a reference and leak
+    const copiedData = _.cloneDeep(this.polystatData);
     const opt = {
       width: width,
       height: height,
@@ -391,7 +393,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       radiusAutoSize: config.radiusAutoSize,
       tooltipFontSize: config.tooltipFontSize,
       tooltipFontType: config.tooltipFontType,
-      data: this.polystatData,
+      data: copiedData,
       displayLimit: config.displayLimit,
       globalDisplayMode: config.globalDisplayMode,
       columns: config.columns,
@@ -403,6 +405,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: this.getDefaultClickThrough(NaN),
       polystat: config,
     };
+    this.d3Object = null;
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
     this.d3Object.draw();
   }
@@ -476,6 +479,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
+    //this.polystatData = dataList;
     const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
@@ -587,6 +591,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   onDataError(err: DataFrame[]) {
     console.log(err);
     this.onDataFramesReceived([]);
+    //this.onDataReceived([]);
     this.render();
   }
 
@@ -634,7 +639,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return newField;
   }
 
-  insertTimeNEXT(data: DataFrame[]): DataFrame[] {
+  // Inserts a "Time" field into each dataframe if it is missing
+  // the value of the timestamp is "now"
+  // any field without a numeric type is considered a label
+  insertTime(data: DataFrame[]): DataFrame[] {
     // TODO: time to insert can be taken from the first row if there are timeseries already
     // for now, just insert now
     const timeToInsert = Date.now();
@@ -664,11 +672,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
       if (!hasTimestamp) {
-        const values = new ArrayVector([timeToInsert]);
+        const z = new ArrayVector();
+        z.add(timeToInsert);
+
         const timeField: Field = {
           name: 'Time',
           type: FieldType.time,
-          values: values,
+          values: z,
           config: null,
         };
         // insert it
@@ -680,82 +690,45 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return newData;
   }
 
-  // Inserts a "Time" field into each dataframe if it is missing
-  // the value of the timestamp is "now"
-  // any field without a numeric type is considered a label
-  insertTime(data: DataFrame[]): DataFrame[] {
-    const timeToInsert = Date.now();
-    const insertFrames = [];
-    const newFrames: DataFrame[] = [];
-    for (let i = 0; i < data.length; i++) {
-      const aFrame = data[i];
-      let haveTimeField = false;
-      for (let j = 0; j < aFrame.fields.length; j++) {
-        const aField = aFrame.fields[j];
-        if (aField.type === FieldType.time) {
-          haveTimeField = true;
-          continue;
-        }
-      }
-      if (!haveTimeField) {
-        insertFrames.push(i);
-      } else {
-        newFrames.push(aFrame);
-      }
-    }
-    // for frames without timestamps, create a new frame for each column
-    for (let i = 0; i < insertFrames.length; i++) {
-      const aFrame = data[i];
-      const numFields = aFrame.fields.length;
-      let labels: Labels = {};
-      // get the labels (non-number fields)
-      for (let j = 0; j < numFields; j++) {
-        if (aFrame.fields[j].type === FieldType.string) {
-          const aLabelKey = aFrame.fields[j].name;
-          // @ts-ignore
-          const aLabelValue = aFrame.fields[j].values.buffer[j];
-          labels = { [aLabelKey]: aLabelValue } as any;
-          ////labels = newLabel;
-        }
-      }
-      for (let j = 0; j < numFields; j++) {
-        const aField = aFrame.fields[j];
-        if (aField.type === FieldType.string) {
-          continue;
-        }
-        // copy the frame
-        const newFrame = _.cloneDeep(aFrame);
-        newFrame.fields = [aField];
-        newFrame.fields[0].labels = labels;
-        // set the value
-        // the original frame has a value for the column
-        ///const values = aFrame.fields[j].values[j];
-        // @ts-ignore
-        const bufferValue = aFrame.fields[j].values.buffer[j];
-        const buffer = new ArrayVector([bufferValue]);
-        newFrame.fields[0].values = buffer;
-        // only numerical fields need a timestamp
-        if (newFrame.fields[0].type === FieldType.number) {
-          // create a time field
-          const timeValues = new ArrayVector([timeToInsert]);
-          const timeField: Field = {
-            name: 'Time',
-            type: FieldType.time,
-            values: timeValues,
-            config: null,
-          };
-          // insert it
-          newFrame.fields.push(timeField);
-        }
-        newFrames.push(newFrame);
-      }
-    }
-
-    return newFrames;
+  seriesToPolystat(globalOperatorName: string, data: any) {
+    const converted = Transformers.TimeSeriesToPolystat(globalOperatorName, data);
+    return converted;
   }
+
+  tableToPolystat(globalOperatorName: string, data: any) {
+    return null;
+  }
+
+  onDataReceived(data: any) {
+    const allData: PolystatModel[] = [];
+    const config: PolystatConfigs = this.panel.polystat;
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      switch (item.type) {
+        case 'table':
+          const xconverted = this.tableToPolystat(config.globalOperatorName, item);
+          if (xconverted) {
+            allData.push(xconverted);
+          }
+          break;
+        default:
+          const converted = this.seriesToPolystat(config.globalOperatorName, item);
+          if (converted) {
+            allData.push(converted);
+          }
+          break;
+      }
+    }
+    this.setValues(allData);
+    this.data.length = 0;
+    this.data = allData;
+    this.render();
+  }
+
   onDataFramesReceived(data: DataFrame[]) {
+    //console.log(JSON.stringify(data));
     // check if data contains a field called Time of type time
-    data = this.insertTimeNEXT(data);
+    data = this.insertTime(data);
     // if it does not, insert one with time "now"
     this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map(ts => {
       ts.color = undefined; // remove whatever the processor set
