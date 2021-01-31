@@ -39,7 +39,9 @@ export class PolystatModel {
     this.value = operatorValue;
     this.valueFormatted = operatorValue;
     this.stats = aSeries.stats;
-    this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
+    if (aSeries.datapoints.length > 0) {
+      this.timestamp = aSeries.datapoints[aSeries.datapoints.length - 1][1];
+    }
     this.prefix = '';
     this.suffix = '';
     this.seriesRaw = null;
