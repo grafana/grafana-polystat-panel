@@ -126,7 +126,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
-  data: any;
   series: any[];
   templateSrv: any;
   overridesCtrl: MetricOverridesManager;
@@ -212,7 +211,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.panelHeight = null;
     this.polystatData = [] as PolystatModel[];
     this.d3Object = null;
-    this.data = [];
     this.series = [];
     this.tooltipContent = [];
     // convert old sort method to new
@@ -736,8 +734,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
     }
     this.setValues(allData);
-    this.data.length = 0;
-    this.data = allData;
     this.render();
   }
 
@@ -787,8 +783,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       valueRounded: 0,
     };
     this.setValues(dataNew);
-    this.data = dataNew;
-
     this.render();
   }
 
