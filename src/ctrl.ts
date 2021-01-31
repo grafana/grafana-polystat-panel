@@ -660,14 +660,21 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         const aField = frame.fields[j];
         if (aField.type === FieldType.number) {
           // make as many fields with this name as there are labels
-          for (let x = 0; x < labels.length; x++) {
-            const newField = this.newFieldWithLabels(aField, labels[x]);
-            // now replace the values
-            const value = this.getValueOfField(aField, x);
-            const z = new ArrayVector();
-            z.add(value);
-            newField.values = z;
-            newFrame.fields.push(newField);
+          // only when there is no timestamp (typically expanding a table)
+          if ((labels.length > 0) && (!hasTimestamp)) {
+            for (let labelIndex = 0; labelIndex < labels.length; labelIndex++) {
+              const newField = this.newFieldWithLabels(aField, labels[labelIndex]);
+              // now replace the values
+              const value = this.getValueOfField(aField, labelIndex);
+              const newFieldValues = new ArrayVector();
+              newFieldValues.add(value);
+              newField.values = newFieldValues;
+              newFrame.fields.push(newField);
+            }
+          } else {
+            // copy the object
+            const copiedField = Object.assign({}, aField);
+            newFrame.fields.push(copiedField);
           }
         }
       }
@@ -683,6 +690,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         };
         // insert it
         newFrame.fields.push(timeField);
+      } else {
+        // time field already exists
+        // copy all non-number fields from original frame
+        for (let j = 0; j < frame.fields.length; j++) {
+          const aField = frame.fields[j];
+          if (aField.type !== FieldType.number) {
+            newFrame.fields.push(aField);
+          }
+        }
       }
       newData.push(newFrame);
     }
