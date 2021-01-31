@@ -661,7 +661,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         if (aField.type === FieldType.number) {
           // make as many fields with this name as there are labels
           // only when there is no timestamp (typically expanding a table)
-          if ((labels.length > 0) && (!hasTimestamp)) {
+          if (labels.length > 0 && !hasTimestamp) {
             for (let labelIndex = 0; labelIndex < labels.length; labelIndex++) {
               const newField = this.newFieldWithLabels(aField, labels[labelIndex]);
               // now replace the values
