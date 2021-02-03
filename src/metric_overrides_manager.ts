@@ -4,6 +4,7 @@ import { getThresholdLevelForValue, getValueByStatName } from './threshold_proce
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
+import { PolystatModel } from './polystatmodel';
 
 export class MetricOverridesManager {
   metricOverrides: MetricOverride[];
@@ -119,7 +120,7 @@ export class MetricOverridesManager {
     return ret;
   }
 
-  applyOverrides(data) {
+  applyOverrides(data: PolystatModel[]) {
     const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
       const anOverride = this.matchOverride(data[index].name);
@@ -146,7 +147,6 @@ export class MetricOverridesManager {
           data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
         }
         // copy the threshold data into the object
-        data[index].thresholds = anOverride.thresholds;
         data[index].prefix = anOverride.prefix;
         data[index].suffix = anOverride.suffix;
         // set the url, replace template vars
