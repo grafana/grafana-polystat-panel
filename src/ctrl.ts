@@ -631,9 +631,17 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return false;
   }
 
-  newFieldWithLabels(field: Field, labels: Labels): Field {
+  // the dataframe code that converts labels expects a simple format
+  newFieldWithLabels(field: Field, labels: Labels[]): Field {
     const newField = _.cloneDeep(field);
-    newField.labels = labels;
+    let newLabels = {};
+    for (let i = 0; i < labels.length; i++) {
+      const aLabel = labels[i];
+      for (let key in aLabel) {
+        newLabels[key] = aLabel[key];
+      }
+    }
+    newField.labels = newLabels as any;
     return newField;
   }
 
@@ -660,15 +668,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
           // make as many fields with this name as there are labels
           // only when there is no timestamp (typically expanding a table)
           if (labels.length > 0 && !hasTimestamp) {
-            for (let labelIndex = 0; labelIndex < labels.length; labelIndex++) {
-              const newField = this.newFieldWithLabels(aField, labels[labelIndex]);
-              // now replace the values
-              const value = this.getValueOfField(aField, labelIndex);
-              const newFieldValues = new ArrayVector();
-              newFieldValues.add(value);
-              newField.values = newFieldValues;
-              newFrame.fields.push(newField);
-            }
+            const newField = this.newFieldWithLabels(aField, labels);
+            // now replace the values
+            const value = this.getValueOfField(aField, 0);
+            const newFieldValues = new ArrayVector();
+            newFieldValues.add(value);
+            newField.values = newFieldValues;
+            newFrame.fields.push(newField);
           } else {
             // copy the object
             const copiedField = Object.assign({}, aField);
