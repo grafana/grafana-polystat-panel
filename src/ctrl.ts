@@ -597,25 +597,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.onDataFramesReceived(getProcessedDataFrames(dataList));
   }
 
-  getLabelsOfFrame(frame: DataFrame) {
-    const numFields = frame.fields.length;
-    let labels: Labels[] = [];
-    // get the labels (non-number fields)
-    for (let j = 0; j < numFields; j++) {
-      if (frame.fields[j].type === FieldType.string) {
-        const aLabelKey = frame.fields[j].name;
-        // @ts-ignore
-        const buffer = frame.fields[j].values.buffer;
-        for (let k = 0; k < buffer.length; k++) {
-          const aLabelValue = buffer[k];
-          const aLabel = { [aLabelKey]: aLabelValue } as any;
-          labels.push(aLabel);
-        }
-      }
-    }
-    return labels;
-  }
-
   getValueOfField(field: Field, index: number) {
     const bufferValue = field.values.toArray()[index];
     return bufferValue;
@@ -631,20 +612,35 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return false;
   }
 
-  // the dataframe code that converts labels expects a simple format
-  newFieldWithLabels(field: Field, labels: Labels[]): Field {
+  newFieldWithLabels(field: Field, labels: Labels): Field {
     const newField = _.cloneDeep(field);
-    let newLabels = {};
-    for (let i = 0; i < labels.length; i++) {
-      const aLabel = labels[i];
-      for (let key in aLabel) {
-        newLabels[key] = aLabel[key];
-      }
-    }
-    newField.labels = newLabels as any;
+    newField.labels = labels;
     return newField;
   }
 
+  getLabelValues(frame: DataFrame, indexes: any[], rowNum: number) {
+    let labelAndValue = {};
+    for (let index = 0; index < indexes.length; index++) {
+      let aField = frame.fields[index];
+      let value = this.getValueOfField(aField, rowNum);
+      labelAndValue[aField.name] = value;
+    }
+    return labelAndValue;
+  }
+
+  flattenLabels(frame: DataFrame, rowNum: number) {
+    let labelIndexes = [];
+    const numFields = frame.fields.length;
+
+    // first get the fields of type string
+    for (let j = 0; j < numFields; j++) {
+      if (frame.fields[j].type === FieldType.string) {
+        labelIndexes.push(j);
+      }
+    }
+    let labelWithValues = this.getLabelValues(frame, labelIndexes, rowNum);
+    return labelWithValues;
+  }
   // Inserts a "Time" field into each dataframe if it is missing
   // the value of the timestamp is "now"
   // any field without a numeric type is considered a label
@@ -655,26 +651,33 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     const newData: DataFrame[] = [];
     for (let i = 0; i < data.length; i++) {
       const frame = data[i];
+      //const flattened = this.flattenLabels(frame, 0);
       const newFrame = _.cloneDeep(frame);
       // clear the fields
       newFrame.fields = [];
-      const labels = this.getLabelsOfFrame(frame);
+      //const labels = this.getLabelsOfFrame(frame);
       const hasTimestamp = this.frameHasTimestamp(frame);
       // rebuild a new frame with labels on the numerical fields
       const numFields = frame.fields.length;
       for (let j = 0; j < numFields; j++) {
         const aField = frame.fields[j];
         if (aField.type === FieldType.number) {
-          // make as many fields with this name as there are labels
-          // only when there is no timestamp (typically expanding a table)
-          if (labels.length > 0 && !hasTimestamp) {
-            const newField = this.newFieldWithLabels(aField, labels);
-            // now replace the values
-            const value = this.getValueOfField(aField, 0);
-            const newFieldValues = new ArrayVector();
-            newFieldValues.add(value);
-            newField.values = newFieldValues;
-            newFrame.fields.push(newField);
+          // need to get the number of rows of data for this frame
+          const rowsOfField = aField.values.toArray().length;
+          if (!hasTimestamp) {
+            for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
+              // only create a new field when the rowValue is not null
+              if (aField.values.toArray()[rowNum] !== null) {
+                // this has a nonnull value
+                const flattened = this.flattenLabels(frame, rowNum);
+                const newField = this.newFieldWithLabels(aField, flattened);
+                const newFieldValues = new ArrayVector();
+                const value = this.getValueOfField(aField, rowNum);
+                newFieldValues.add(value);
+                newField.values = newFieldValues;
+                newFrame.fields.push(newField);
+              }
+            }
           } else {
             // copy the object
             const copiedField = Object.assign({}, aField);
