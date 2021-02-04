@@ -729,15 +729,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       const item = data[i];
       switch (item.type) {
         case 'table':
-          const xconverted = this.tableToPolystat(config.globalOperatorName, item);
-          if (xconverted) {
-            allData.push(xconverted);
+          const tableConverted = this.tableToPolystat(config.globalOperatorName, item);
+          if (tableConverted) {
+            allData.push(tableConverted);
           }
           break;
         default:
-          const converted = this.seriesToPolystat(config.globalOperatorName, item);
-          if (converted) {
-            allData.push(converted);
+          const seriesConverted = this.seriesToPolystat(config.globalOperatorName, item);
+          if (seriesConverted) {
+            allData.push(seriesConverted);
           }
           break;
       }
