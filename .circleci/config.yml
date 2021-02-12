@@ -51,7 +51,7 @@ workflows:
           requires:
           - build_frontend
           - build_docs
-      - publish_artifacts_to_gcs:
+      - copy_artifacts_to_gcs:
           requires:
           - package
       - report:
@@ -253,7 +253,7 @@ jobs:
     - store_artifacts:
         path: ci
 
-  publish_artifacts_to_gcs:
+  copy_artifacts_to_gcs:
     executor: cloud_sdk_exec
     steps:
       - checkout
