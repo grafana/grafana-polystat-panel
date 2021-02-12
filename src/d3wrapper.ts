@@ -144,88 +144,38 @@ export class D3Wrapper {
     const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
       const aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
-      aGradient
-        .attr('x1', '30%')
-        .attr('y1', '30%')
-        .attr('x2', '70%')
-        .attr('y2', '70%');
-      aGradient
-        .append('stop')
-        .attr('offset', '0%')
-        .attr('stop-color', colorGradients[i].start);
-      aGradient
-        .append('stop')
-        .attr('offset', '100%')
-        .attr('stop-color', colorGradients[i].end);
+      aGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+      aGradient.append('stop').attr('offset', '0%').attr('stop-color', colorGradients[i].start);
+      aGradient.append('stop').attr('offset', '100%').attr('stop-color', colorGradients[i].end);
     }
     const okColorStart = new Color(82, 194, 52); // #52c234
     const okColorEnd = okColorStart.Mul(this.purelight, 0.7);
     const okGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-ok');
-    okGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    okGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', okColorStart.asHex());
-    okGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', okColorEnd.asHex());
+    okGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    okGradient.append('stop').attr('offset', '0%').attr('stop-color', okColorStart.asHex());
+    okGradient.append('stop').attr('offset', '100%').attr('stop-color', okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
     const warningColorStart = new Color(255, 200, 55); // #FFC837
     const warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
     const warningGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-warning');
-    warningGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    warningGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', warningColorStart.asHex()); // light orange
-    warningGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', warningColorEnd.asHex()); // dark orange
+    warningGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    warningGradient.append('stop').attr('offset', '0%').attr('stop-color', warningColorStart.asHex()); // light orange
+    warningGradient.append('stop').attr('offset', '100%').attr('stop-color', warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
     const criticalColorStart = new Color(229, 45, 39); // e52d27
     const criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
     const criticalGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-critical');
-    criticalGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    criticalGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', criticalColorStart.asHex()); // light red
-    criticalGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', criticalColorEnd.asHex()); // dark red
+    criticalGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    criticalGradient.append('stop').attr('offset', '0%').attr('stop-color', criticalColorStart.asHex()); // light red
+    criticalGradient.append('stop').attr('offset', '100%').attr('stop-color', criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
     const unknownGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-unknown');
-    unknownGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    unknownGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#73808A'); // light grey
-    unknownGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', '#757F9A'); // dark grey
+    unknownGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    unknownGradient.append('stop').attr('offset', '0%').attr('stop-color', '#73808A'); // light grey
+    unknownGradient.append('stop').attr('offset', '100%').attr('stop-color', '#757F9A'); // dark grey
 
     let customShape = null;
     // compute text area size (used to calculate the fontsize)
@@ -341,10 +291,7 @@ export class D3Wrapper {
     let activeShape = 'hexagon';
     switch (this.opt.polystat.shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
-        filledSVG = svg
-          .selectAll(`.${activeShape}`)
-          .data(ahexbin(this.calculatedPoints))
-          .enter();
+        filledSVG = svg.selectAll(`.${activeShape}`).data(ahexbin(this.calculatedPoints)).enter();
         break;
       case PolygonShapes.CIRCLE:
         activeShape = 'circle';
@@ -389,10 +336,7 @@ export class D3Wrapper {
       let node = d3.select(nodes[i]);
       const clickThroughURL = resolveClickThroughURL(data[i]);
       if (clickThroughURL.length > 0) {
-        node = node
-          .append('a')
-          .attr('target', resolveClickThroughTarget(data[i]))
-          .attr('xlink:href', clickThroughURL);
+        node = node.append('a').attr('target', resolveClickThroughTarget(data[i])).attr('xlink:href', clickThroughURL);
       }
       let fillColor = data[i].color;
       if (this.opt.polystat.gradientEnabled) {
@@ -447,10 +391,7 @@ export class D3Wrapper {
           tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
         })
         .on('mouseover', (d: any) => {
-          tooltip
-            .transition()
-            .duration(200)
-            .style('opacity', 0.9);
+          tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip
             .html(this.opt.tooltipContent[i])
             .style('font-size', this.opt.tooltipFontSize)
@@ -459,10 +400,7 @@ export class D3Wrapper {
             .style('top', d.y - 5 + 'px');
         })
         .on('mouseout', () => {
-          tooltip
-            .transition()
-            .duration(500)
-            .style('opacity', 0);
+          tooltip.transition().duration(500).style('opacity', 0);
         });
     });
 
@@ -538,7 +476,7 @@ export class D3Wrapper {
       .attr('class', (_, i) => {
         return 'valueLabel' + i;
       })
-      .attr('x', d => {
+      .attr('x', (d) => {
         return d.x + labelValueAlignmentX;
       })
       .attr('y', (d, i) => {
@@ -572,7 +510,7 @@ export class D3Wrapper {
         // use the dynamic size for the value
         valueTextLocation.attr('font-size', activeValueFontSize + 'px');
         // pass the index of the first item being displayed, the counter can start from there
-        d3.interval(initialItemIndex => {
+        d3.interval((initialItemIndex) => {
           // there is a leak in here, data is being held by frames
           const valueTextLocation = svg.select('text.valueLabel' + i);
           const compositeIndex = i;

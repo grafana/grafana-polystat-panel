@@ -20,7 +20,7 @@ export class MetricOverridesManager {
     this.activeOverrideIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
-      return _.map(this.$scope.ctrl.series, series => {
+      return _.map(this.$scope.ctrl.series, (series) => {
         return series.alias;
       });
     };
@@ -96,16 +96,16 @@ export class MetricOverridesManager {
   resolveOverrideTemplates(): any[] {
     const ret: any[] = [];
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
-    this.metricOverrides.forEach(override => {
+    this.metricOverrides.forEach((override) => {
       // Resolve templates in series names
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
-        matchResult.forEach(template => {
+        matchResult.forEach((template) => {
           // this will not work if the value has a pipe (less common but still can happen)
           const resolvedSeriesNames = this.templateSrv
             .replace(template, this.templateSrv.ScopedVars, 'pipe')
             .split('|');
-          resolvedSeriesNames.forEach(seriesName => {
+          resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
               ...override,

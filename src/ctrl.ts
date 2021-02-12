@@ -751,7 +751,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // check if data contains a field called Time of type time
     data = this.insertTime(data);
     // if it does not, insert one with time "now"
-    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map(ts => {
+    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map((ts) => {
       ts.color = undefined; // remove whatever the processor set
       // TODO: this needs to be added to the editor options
       ts.flotpairs = ts.getFlotPairs(this.panel.nullPointMode);

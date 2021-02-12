@@ -11,7 +11,7 @@ export function flatten(target, opts): any {
   const output = {};
 
   function step(object, prev) {
-    Object.keys(object).forEach(key => {
+    Object.keys(object).forEach((key) => {
       const value = object[key];
       const isarray = opts.safe && Array.isArray(value);
       const type = Object.prototype.toString.call(value);

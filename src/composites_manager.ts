@@ -37,7 +37,7 @@ export class CompositesManager {
     this.subTabIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
-      return _.map(this.$scope.ctrl.series, series => {
+      return _.map(this.$scope.ctrl.series, (series) => {
         return series.alias;
       });
     };
@@ -111,7 +111,7 @@ export class CompositesManager {
     this.metricComposites.forEach((item: MetricComposite) => {
       // this will not work if the value has a pipe (less common but still can happen)
       const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'pipe').split('|');
-      resolved.forEach(newName => {
+      resolved.forEach((newName) => {
         ret.push({
           ...item,
           compositeName: newName,
@@ -133,12 +133,12 @@ export class CompositesManager {
   ): any[] {
     const ret: any[] = [];
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
-    members.forEach(member => {
+    members.forEach((member) => {
       // Resolve templates in series names
       if (member.seriesName) {
         const matchResult = member.seriesName.match(variableRegex);
         if (matchResult && matchResult.length > 0) {
-          matchResult.forEach(template => {
+          matchResult.forEach((template) => {
             // if the template contains the composite template, replace it with the compositeName
             if (isTemplated && template.includes(templatedName)) {
               // replace it
@@ -146,7 +146,7 @@ export class CompositesManager {
             }
             // this will not work if the value has a pipe (less common but still can happen)
             const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'pipe').split('|');
-            resolvedSeriesNames.forEach(seriesName => {
+            resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesName.replace(matchResult, seriesName);
               ret.push({
                 ...member,
@@ -169,7 +169,7 @@ export class CompositesManager {
       templateVars[i] = { text: i, value: name };
     });
     if (matches.groups) {
-      Object.keys(matches.groups).forEach(key => {
+      Object.keys(matches.groups).forEach((key) => {
         templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
       });
     }
