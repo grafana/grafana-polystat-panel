@@ -101,8 +101,10 @@ export class MetricOverridesManager {
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach(template => {
-      // this will not work if the value has a pipe (less common but still can happen)
-      const resolvedSeriesNames = this.templateSrv.replace(template, this.templateSrv.ScopedVars, 'pipe').split('|');
+          // this will not work if the value has a pipe (less common but still can happen)
+          const resolvedSeriesNames = this.templateSrv
+            .replace(template, this.templateSrv.ScopedVars, 'pipe')
+            .split('|');
           resolvedSeriesNames.forEach(seriesName => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
