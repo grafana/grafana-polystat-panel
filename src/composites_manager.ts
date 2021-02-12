@@ -109,7 +109,8 @@ export class CompositesManager {
   resolveCompositeTemplates(): MetricComposite[] {
     const ret: MetricComposite[] = [];
     this.metricComposites.forEach((item: MetricComposite) => {
-      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'csv').split(',');
+      // this will not work if the value has a pipe (less common but still can happen)
+      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'pipe').split('|');
       resolved.forEach(newName => {
         ret.push({
           ...item,
@@ -143,7 +144,8 @@ export class CompositesManager {
               // replace it
               template = template.replace(templatedName, compositeName);
             }
-            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
+            // this will not work if the value has a pipe (less common but still can happen)
+            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'pipe').split('|');
             resolvedSeriesNames.forEach(seriesName => {
               const newName = member.seriesName.replace(matchResult, seriesName);
               ret.push({
