@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@grafana/data": "7.3.7",
-    "@grafana/toolkit": "7.4.1",
+    "@grafana/toolkit": "7.4.3",
     "@grafana/ui": "7.3.7",
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
