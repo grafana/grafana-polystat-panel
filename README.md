@@ -148,7 +148,7 @@ Template variables are available in the clickThroughUrl setting, specified by us
 They can also be passed to another dashboard by appending var-VARNAME=value to the url
 
 ```URL
-/dasboard/xyz?var-VARNAME=${VARNAME}
+/dashboard/xyz?var-VARNAME=${VARNAME}
 ```
 
 #### Using Polystat Variables
