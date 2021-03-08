@@ -104,7 +104,8 @@ export class MetricOverridesManager {
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template) => {
           const resolvedSeriesNames = this.templateSrv
-            .replace(template, this.templateSrv.ScopedVars, this.customFormatter).split(this.customSplitDelimiter);
+            .replace(template, this.templateSrv.ScopedVars, this.customFormatter)
+            .split(this.customSplitDelimiter);
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({

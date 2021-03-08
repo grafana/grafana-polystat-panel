@@ -117,7 +117,9 @@ export class CompositesManager {
   resolveCompositeTemplates(): MetricComposite[] {
     const ret: MetricComposite[] = [];
     this.metricComposites.forEach((item: MetricComposite) => {
-      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, this.customFormatter).split(this.customSplitDelimiter);
+      const resolved = this.templateSrv
+        .replace(item.compositeName, this.templateSrv.ScopedVars, this.customFormatter)
+        .split(this.customSplitDelimiter);
       resolved.forEach((newName) => {
         ret.push({
           ...item,
