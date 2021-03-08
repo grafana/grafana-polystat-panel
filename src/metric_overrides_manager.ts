@@ -12,11 +12,13 @@ export class MetricOverridesManager {
   templateSrv: any;
   suggestMetricNames: any;
   activeOverrideIndex: number;
+  customSplitDelimiter: string;
 
   constructor($scope, templateSrv, $sanitize, metricOverrides: MetricOverride[]) {
     this.$scope = $scope;
     this.$sanitize = $sanitize;
     this.templateSrv = templateSrv;
+    this.customSplitDelimiter = '#️⃣🔠🆗🆗🔠#️⃣';
     this.activeOverrideIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
@@ -101,10 +103,8 @@ export class MetricOverridesManager {
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template) => {
-          // this will not work if the value has a pipe (less common but still can happen)
           const resolvedSeriesNames = this.templateSrv
-            .replace(template, this.templateSrv.ScopedVars, 'pipe')
-            .split('|');
+            .replace(template, this.templateSrv.ScopedVars, this.customFormatter).split(this.customSplitDelimiter);
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
@@ -122,6 +122,12 @@ export class MetricOverridesManager {
     return ret;
   }
 
+  customFormatter(value: any) {
+    if (Object.prototype.toString.call(value) === '[object Array]') {
+      return value.join(this.customSplitDelimiter);
+    }
+    return value;
+  }
   applyOverrides(data) {
     const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {

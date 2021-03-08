@@ -6,6 +6,9 @@ import { stringToJsRegex, ScopedVars } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
+  useEllipse: boolean;
+  ellipseCharacters: number;
+  displayName: string;
   members: any[];
   enabled: boolean;
   hideMembers: boolean;
@@ -29,11 +32,13 @@ export class CompositesManager {
   suggestMetricNames: any;
   metricComposites: MetricComposite[];
   subTabIndex: number;
+  customSplitDelimiter: string;
 
   constructor($scope, templateSrv, $sanitize, savedComposites) {
     this.$scope = $scope;
     this.$sanitize = $sanitize;
     this.templateSrv = templateSrv;
+    this.customSplitDelimiter = '#️⃣🔠🆗🆗🔠#️⃣';
     this.subTabIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
@@ -54,6 +59,9 @@ export class CompositesManager {
     const aComposite = new MetricComposite();
     aComposite.label = 'COMPOSITE ' + (this.metricComposites.length + 1);
     aComposite.compositeName = '';
+    aComposite.ellipseCharacters = 0;
+    aComposite.useEllipse = false;
+    aComposite.displayName = '';
     aComposite.members = [{}];
     aComposite.enabled = true;
     aComposite.clickThrough = '';
@@ -109,8 +117,7 @@ export class CompositesManager {
   resolveCompositeTemplates(): MetricComposite[] {
     const ret: MetricComposite[] = [];
     this.metricComposites.forEach((item: MetricComposite) => {
-      // this will not work if the value has a pipe (less common but still can happen)
-      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'pipe').split('|');
+      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, this.customFormatter).split(this.customSplitDelimiter);
       resolved.forEach((newName) => {
         ret.push({
           ...item,
@@ -122,6 +129,13 @@ export class CompositesManager {
     });
 
     return ret;
+  }
+
+  customFormatter(value: any) {
+    if (Object.prototype.toString.call(value) === '[object Array]') {
+      return value.join(this.customSplitDelimiter);
+    }
+    return value;
   }
 
   resolveMemberTemplates(
@@ -144,8 +158,7 @@ export class CompositesManager {
               // replace it
               template = template.replace(templatedName, compositeName);
             }
-            // this will not work if the value has a pipe (less common but still can happen)
-            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'pipe').split('|');
+            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'raw');
             resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesName.replace(matchResult, seriesName);
               ret.push({
