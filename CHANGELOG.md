@@ -4,10 +4,13 @@
 
 ## v1.2.3
 
-- Fix for polygon click-through causing incorrect fill color Fixes #174 #154
-- Support global value mappings in Overrides #164, Fixes #159
-- Compute X and Y mouse positions in mouseover #166, fixes #163
-- Increase polystat-panel-tooltip z-index #165, Fixes #130
+- Fix for polygon click-through causing incorrect fill color, Issues #174 #154
+- Support global value mappings in Overrides #164, Issue #159
+- Compute X and Y mouse positions in mouseover #166, Issue #163
+- Increase polystat-panel-tooltip z-index #165, Issue #130
+- Fix for composite threshold evalation using global thresholds #174, Issues #158 and #173
+- Fix for default warning color not rendering corectly #179
+- Feature: Tooltip can now be disabled (on by default), PR 158
 
 ## v1.2.2
 
