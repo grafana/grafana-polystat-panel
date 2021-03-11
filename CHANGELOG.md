@@ -4,7 +4,10 @@
 
 ## v1.2.3
 
-- Fix for polygon click-through causing incorrect fill color
+- Fix for polygon click-through causing incorrect fill color Fixes #174 #154
+- Support global value mappings in Overrides #164, Fixes #159
+- Compute X and Y mouse positions in mouseover #166, fixes #163
+- Increase polystat-panel-tooltip z-index #165, Fixes #130
 
 ## v1.2.2
 
