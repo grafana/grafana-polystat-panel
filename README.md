@@ -119,6 +119,79 @@ Animate hexagon to display metrics if there are composites
 
 Speed of animation in milliseconds
 
+## Thresholds
+
+This plugin supports "ranged" states.
+
+Thresholds are expected to be sorted by ascending value, where
+
+```TEXT
+T0 = lowest decimal value, any state
+TN = highest decimal value, any state
+```
+
+Initial state is set to "ok"
+
+A comparison is made using "greater than or equal to" against the value
+  `If value >= thresholdValue state = X`
+
+Comparisons are made in reverse order, using the range between the Nth (inclusive) threshold and N+1 (exclusive)
+
+```TEXT
+  InclusiveValue = T(n).value
+  ExclusiveValue = T(n+1).value
+```
+
+When there is no n+1 threshold, the highest value threshold T(n), a simple inclusive >= comparison is made
+
+Example 1: (typical linear)
+
+```TEXT
+    T0 - 5, ok
+    T1 - 10, warning
+    T2 - 20, critical
+```
+
+```TEXT
+  Value >= 20 (Value >= T2)
+  10 <= Value < 20  (T1 <= Value < T2)
+  5 <= Value < 10   (T0 <= Value < T1)
+```
+
+Example 2: (reverse linear)
+
+```TEXT
+    T0 - 50, critical
+    T1 - 90, warning
+    T2 - 100, ok
+```
+
+```TEXT
+  Value >= 100
+  90 <= value < 100
+  50 <= value < 90
+```
+
+Example 3: (bounded)
+
+```TEXT
+    T0 - 50, critical
+    T1 - 60, warning
+    T2 - 70, ok
+    T3 - 80, warning
+    T4 - 90, critical
+```
+
+```TEXT
+    Value >= 90
+    80 <= Value < 90
+    70 <= Value < 80
+    60 <= Value < 70
+    50 <= Value < 60
+```
+
+The "worst" state is returned after checking every threshold range
+
 ## Time Range
 
 ### Additional Screenshots
@@ -211,7 +284,7 @@ Then browse to <http://localhost:3000>
 
 ## External Dependencies
 
-* Grafana 5.x/6.x
+* Grafana 6.5.3+
 
 ## Enable Grafana TestData
 
@@ -222,3 +295,14 @@ Then browse to <http://localhost:3000>
 This panel is based on this D3 example:
 
 * <https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html>
+
+Many thanks to contributors:
+
+* Mathieu Rollet (matletix)
+* Mattias Jiderhamn (mjiderhamn)
+* AnushaBoggarapu
+* KamalakarGoretta
+* Rene Hennig (renehennig)
+* Hamza Ziyani (HZiyani)
+
+and many others!
