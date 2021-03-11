@@ -143,6 +143,10 @@ export class D3Wrapper {
       .attr('id', this.d3DivId + '-tooltip')
       .attr('class', 'polystat-panel-tooltip')
       .style('opacity', 0);
+    if (this.opt.polystat.tooltipEnabled === false) {
+      tooltip.style('display', 'none');
+    }
+
     const svg: any = d3
       .select(this.svgContainer)
       .attr('width', width + 'px')
