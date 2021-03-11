@@ -1,6 +1,7 @@
 /**
  * Tests for utils
  */
+import 'jest-canvas-mock';
 import { MetricOverridesManager } from './metric_overrides_manager';
 import { PolystatModel } from './polystatmodel';
 
