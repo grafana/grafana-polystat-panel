@@ -98,24 +98,27 @@ describe('CompositesManager', () => {
 
   describe('Worst Series', () => {
     it('returns A-series', () => {
-      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+      aModel.thresholdLevel = 1;
+      bModel.thresholdLevel = 1;
+      const result = getWorstSeries(aModel, bModel);
       expect(result.alias).toBe('A-series');
     });
-    it('returns A-series when aSeries.value is 20', () => {
-      aSeries.stats.current = 20;
-      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
-      expect(result.alias).toBe('A-series');
-    });
-    it('returns B-series when aSeries.value is null', () => {
-      aSeries.value = null;
-      aSeries.stats.current = null;
-      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+    it('returns B-series when bModel.thresholdLevel is 2', () => {
+      aModel.thresholdLevel = 1;
+      bModel.thresholdLevel = 2;
+      const result = getWorstSeries(aModel, bModel);
       expect(result.alias).toBe('B-series');
     });
-    it('returns A-series when aSeries.value and bSeries.value are null', () => {
-      aSeries.value = null;
-      bSeries.value = null;
-      const result = getWorstSeries(aSeries, bSeries, '#ffffff');
+    it('returns B-series when aModel.thresholdLevel is 3', () => {
+      aModel.thresholdLevel = 3;
+      bModel.thresholdLevel = 1;
+      const result = getWorstSeries(aModel, bModel);
+      expect(result.alias).toBe('B-series');
+    });
+    it('returns A-series when aModel.thresholdLevel and bModel.thresholdLevel are 3', () => {
+      aModel.thresholdLevel = 3;
+      bModel.thresholdLevel = 3;
+      const result = getWorstSeries(aModel, bModel);
       expect(result.alias).toBe('A-series');
     });
 

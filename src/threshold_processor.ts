@@ -1,4 +1,5 @@
 import { PolystatThreshold } from 'types';
+import { PolystatModel } from './polystatmodel';
 
 /*
 
@@ -53,21 +54,19 @@ When there is no n+1 threshold, the highest value threshold T(n), a simple inclu
 The "worst" state is returned after checking every threshold range
 
 */
-function getWorstSeries(series1: any, series2: any, defaultColor: string): any {
+function getWorstSeries(series1: PolystatModel, series2: PolystatModel): any {
   let worstSeries = series1;
-  const series1Value = getValueByStatName(series1.operatorName, series1);
-  const series2Value = getValueByStatName(series2.operatorName, series2);
-  const series1result = getThresholdLevelForValue(series1.thresholds, series1Value, defaultColor);
-  const series2result = getThresholdLevelForValue(series2.thresholds, series2Value, defaultColor);
+  const series1ThresholdLevel = series1.thresholdLevel;
+  const series2ThresholdLevel = series2.thresholdLevel;
 
   // State 3 is Unknown and is not be worse than CRITICAL (state 2)
-  if (series2result.thresholdLevel > series1result.thresholdLevel) {
+  if (series2ThresholdLevel > series1ThresholdLevel) {
     // series2 has higher threshold violation
     worstSeries = series2;
   }
-  if (series1result.thresholdLevel === 3) {
+  if (series1ThresholdLevel === 3) {
     // series1 is in state unknown, check if series2 is in state 1 or 2
-    switch (series2result.thresholdLevel) {
+    switch (series2ThresholdLevel) {
       case 1:
         worstSeries = series2;
         break;
