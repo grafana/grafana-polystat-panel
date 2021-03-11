@@ -32,6 +32,25 @@ function showValue(item: any): boolean {
   return !('showValue' in item) || item.showValue;
 }
 
+function getMouseXY(): any {
+  // use the viewportwidth to prevent the tooltip from going too far right
+  const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+  // use the mouse position for the entire page, received by
+  // d3.event.pageX, d3.event.pageY
+  let xpos = d3.event.pageX - 50;
+  // don't allow offscreen tooltip
+  if (xpos < 0) {
+    xpos = 0;
+  }
+  // prevent tooltip from rendering outside of viewport
+  if (xpos + 200 > viewPortWidth) {
+    xpos = viewPortWidth - 200;
+  }
+  const ypos = d3.event.pageY + 5;
+
+  return { xpos, ypos };
+}
+
 export class D3Wrapper {
   svgContainer: any;
   d3DivId: any;
@@ -335,57 +354,21 @@ export class D3Wrapper {
     let labelTextAlignmentX = 0;
     let labelValueAlignmentX = 0;
 
-    // hexagons need to use hexbin for layout, the square/circle shapes require rect/circle instead
     let filledSVG = null;
-    let activeShape = 'hexagon';
-    switch (this.opt.polystat.shape) {
-      case PolygonShapes.HEXAGON_POINTED_TOP:
-        filledSVG = svg
-          .selectAll(`.${activeShape}`)
-          .data(ahexbin(this.calculatedPoints))
-          .enter();
-        break;
-      case PolygonShapes.CIRCLE:
-        activeShape = 'circle';
-        const circleRadius = this.lm.generateRadius(this.opt.polystat.shape);
-        filledSVG = svg.selectAll('.circle').data(this.calculatedPoints);
-        filledSVG
-          .enter()
-          .append('circle')
-          .attr('class', 'circle')
-          .attr('cx', (d: any) => {
-            return d[0];
-          })
-          .attr('cy', (d: any) => {
-            return d[1];
-          })
-          .attr('r', circleRadius);
-        filledSVG = svg.selectAll('.circle').data(data);
-        break;
-      case PolygonShapes.SQUARE:
-        activeShape = 'square';
-        const squareRadius = this.lm.generateRadius(this.opt.polystat.shape);
-        filledSVG = svg.selectAll('.rect').data(this.calculatedPoints);
-        filledSVG
-          .enter()
-          .append('rect')
-          .attr('class', 'rect')
-          .attr('x', (d: any) => {
-            return d[0];
-          })
-          .attr('y', (d: any) => {
-            return d[1];
-          })
-          .attr('height', squareRadius * 2)
-          .attr('width', squareRadius * 2);
-        filledSVG = svg.selectAll('.rect').data(data);
-        break;
-      default:
-        break;
-    }
+    let activeShape = this.opt.polystat.shape;
 
+    // Create placeholders for each polygon
+    // hexagons need to use hexbin for layout, the square/circle shapes require rect/circle instead
+    filledSVG = svg
+      .selectAll(`.${activeShape}`)
+      .data(activeShape === PolygonShapes.HEXAGON_POINTED_TOP ? ahexbin(this.calculatedPoints) : this.calculatedPoints)
+      .enter();
+
+    // Create polygons
     filledSVG.each((_, i, nodes) => {
       let node = d3.select(nodes[i]);
+
+      // Make it clickable if clickThroughURL is specified
       const clickThroughURL = resolveClickThroughURL(data[i]);
       if (clickThroughURL.length > 0) {
         node = node
@@ -393,57 +376,62 @@ export class D3Wrapper {
           .attr('target', resolveClickThroughTarget(data[i]))
           .attr('xlink:href', clickThroughURL);
       }
+
       let fillColor = data[i].color;
       if (this.opt.polystat.gradientEnabled) {
         // safari needs the location.href
         fillColor = `url("#${this.d3DivId}linear-gradient-state-data-${i}")`;
       }
-      switch (this.opt.polystat.shape) {
+
+      switch (activeShape) {
         case PolygonShapes.HEXAGON_POINTED_TOP:
           node = node
             .append('path')
             .attr('transform', (d: any) => {
               return 'translate(' + d.x + ',' + d.y + ')';
             })
-            .attr('d', customShape)
-            .attr('stroke', this.opt.polystat.polygonBorderColor)
-            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-            .style('fill', fillColor);
+            .attr('d', customShape);
           break;
         case PolygonShapes.CIRCLE:
-          node
-            .join('circle')
-            .attr('stroke', this.opt.polystat.polygonBorderColor)
-            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-            .style('fill', fillColor);
+          const circleRadius = this.lm.generateRadius(activeShape);
+          node = node
+            .append('circle')
+            .attr('class', 'circle')
+            .attr('cx', (d: any) => {
+              return d[0];
+            })
+            .attr('cy', (d: any) => {
+              return d[1];
+            })
+            .attr('r', circleRadius);
           break;
         case PolygonShapes.SQUARE:
-          node
-            .join('square')
-            .attr('stroke', this.opt.polystat.polygonBorderColor)
-            .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
-            .style('fill', fillColor);
+          const squareRadius = this.lm.generateRadius(activeShape);
+          node = node
+            .append('rect')
+            .attr('class', 'rect')
+            .attr('x', (d: any) => {
+              return d[0];
+            })
+            .attr('y', (d: any) => {
+              return d[1];
+            })
+            .attr('height', squareRadius * 2)
+            .attr('width', squareRadius * 2);
           break;
       }
-      node
+      node = node
+        // Set colors
+        .attr('stroke', this.opt.polystat.polygonBorderColor)
+        .attr('stroke-width', this.opt.polystat.polygonBorderSize + 'px')
+        .style('fill', fillColor)
+        // Tooltips
         .on('mousemove', () => {
-          // use the viewportwidth to prevent the tooltip from going too far right
-          const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-          // use the mouse position for the entire page, received by
-          // d3.event.pageX, d3.event.pageY
-          let xpos = d3.event.pageX - 50;
-          // don't allow offscreen tooltip
-          if (xpos < 0) {
-            xpos = 0;
-          }
-          // prevent tooltip from rendering outside of viewport
-          if (xpos + 200 > viewPortWidth) {
-            xpos = viewPortWidth - 200;
-          }
-          const ypos = d3.event.pageY + 5;
+          let { xpos, ypos } = getMouseXY();
           tooltip.style('left', xpos + 'px').style('top', ypos + 'px');
         })
         .on('mouseover', (d: any) => {
+          let { xpos, ypos } = getMouseXY();
           tooltip
             .transition()
             .duration(200)
@@ -452,8 +440,8 @@ export class D3Wrapper {
             .html(this.opt.tooltipContent[i])
             .style('font-size', this.opt.tooltipFontSize)
             .style('font-family', this.opt.tooltipFontType)
-            .style('left', d.x - 5 + 'px')
-            .style('top', d.y - 5 + 'px');
+            .style('left', xpos + 'px')
+            .style('top', ypos + 'px');
         })
         .on('mouseout', () => {
           tooltip

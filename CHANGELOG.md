@@ -2,6 +2,14 @@
 
 ## Entries
 
+## v1.2.3
+
+- Fix for polygon click-through causing incorrect fill color
+
+## v1.2.2
+
+- Fix for gradient threshold color issue #126
+
 ## v1.2.1
 
 - Update for v6 event compatibility
