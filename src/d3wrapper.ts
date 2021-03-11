@@ -378,8 +378,12 @@ export class D3Wrapper {
           node = node
             .append('circle')
             .attr('class', 'circle')
-            .attr('cx', data[i][0])
-            .attr('cy', data[i][1])
+            .attr('cx', (d: any) => {
+              return d[0];
+            })
+            .attr('cy', (d: any) => {
+              return d[1];
+            })
             .attr('r', circleRadius);
           break;
         case PolygonShapes.SQUARE:
@@ -387,8 +391,12 @@ export class D3Wrapper {
           node = node
             .append('rect')
             .attr('class', 'rect')
-            .attr('x', data[i][0])
-            .attr('y', data[i][1])
+            .attr('x', (d: any) => {
+              return d[0];
+            })
+            .attr('y', (d: any) => {
+              return d[1];
+            })
             .attr('height', squareRadius * 2)
             .attr('width', squareRadius * 2);
           break;
