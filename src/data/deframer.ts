@@ -1,7 +1,6 @@
 import { DataFrame, Field, FieldType, ArrayVector, Labels } from '@grafana/data';
 import _ from 'lodash';
 
-
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"
 // any field without a numeric type is considered a label
