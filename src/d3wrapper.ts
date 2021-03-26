@@ -37,6 +37,8 @@ function getMouseXY(): any {
   const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   // use the mouse position for the entire page, received by
   // d3.event.pageX, d3.event.pageY
+  //
+  // the type doesn't exist, but the object does, ignore the error
   // @ts-ignore
   let xpos = d3.event.pageX - 50;
   // don't allow offscreen tooltip
@@ -47,6 +49,7 @@ function getMouseXY(): any {
   if (xpos + 200 > viewPortWidth) {
     xpos = viewPortWidth - 200;
   }
+  // the type doesn't exist, but the object does, ignore the error
   // @ts-ignore
   const ypos = d3.event.pageY + 5;
 
