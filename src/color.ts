@@ -39,10 +39,7 @@ export class Color {
 
   RGBToHex(rgb) {
     let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
-    rgb = rgb
-      .substr(4)
-      .split(')')[0]
-      .split(sep);
+    rgb = rgb.substr(4).split(')')[0].split(sep);
     // Convert %s to 0–255
     for (let R in rgb) {
       let r = rgb[R];

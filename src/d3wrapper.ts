@@ -384,10 +384,7 @@ export class D3Wrapper {
         })
         .on('mouseover', (d: any) => {
           let { xpos, ypos } = getMouseXY();
-          tooltip
-            .transition()
-            .duration(200)
-            .style('opacity', 0.9);
+          tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip
             .html(this.opt.tooltipContent[i])
             .style('font-size', this.opt.tooltipFontSize)
