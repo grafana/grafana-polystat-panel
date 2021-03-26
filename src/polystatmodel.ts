@@ -10,8 +10,10 @@ export class PolystatModel {
   thresholdLevel: number; // 0 = ok, 1 = warn, 2 = crit, 3 = unknown (same as sensu)
   value: number;
   valueFormatted: string;
+  valueRounded: number;
   stats: any;
   name: string;
+  displayName: string; // Used for composites
   timestamp: number;
   prefix: string;
   suffix: string;

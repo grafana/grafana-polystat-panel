@@ -3,7 +3,10 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
+import { getMappedValue } from '@grafana/data';
+import { convertOldAngularValueMapping } from '@grafana/ui';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
+import { PolystatModel } from './polystatmodel';
 
 export class MetricOverridesManager {
   metricOverrides: MetricOverride[];
@@ -134,7 +137,7 @@ export class MetricOverridesManager {
     return value;
   }
 
-  applyOverrides(data) {
+  applyOverrides(data: PolystatModel[]) {
     const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
       const anOverride = this.matchOverride(data[index].name);
@@ -154,14 +157,19 @@ export class MetricOverridesManager {
         data[index].color = result.color;
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
-        const formatFunc = kbn.valueFormats[anOverride.unitFormat];
-        if (formatFunc) {
-          // put the value in quotes to escape "most" special characters
-          data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
-          data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
+        const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
+        const mappedValue = getMappedValue(mappings, data[index].value);
+        if (mappedValue) {
+          data[index].valueFormatted = mappedValue.text;
+        } else {
+          const formatFunc = kbn.valueFormats[anOverride.unitFormat];
+          if (formatFunc) {
+            // put the value in quotes to escape "most" special characters
+            data[index].valueFormatted = formatFunc(data[index].value, anOverride.decimals, anOverride.scaledDecimals);
+            data[index].valueRounded = kbn.roundValue(data[index].value, anOverride.decimals);
+          }
         }
         // copy the threshold data into the object
-        data[index].thresholds = anOverride.thresholds;
         data[index].prefix = anOverride.prefix;
         data[index].suffix = anOverride.suffix;
         // set the url, replace template vars

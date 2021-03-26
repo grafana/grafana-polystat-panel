@@ -191,7 +191,7 @@ export class CompositesManager {
     return this.templateSrv.replace(name, templateVars);
   }
 
-  applyComposites(data) {
+  applyComposites(data: PolystatModel[]) {
     const filteredMetrics: number[] = [];
     const clonedComposites: PolystatModel[] = [];
     // the composite Name can be a template variable
@@ -256,9 +256,6 @@ export class CompositesManager {
         continue;
       }
       // now determine the most triggered threshold
-      const worstColor = this.$scope // required for testing
-        ? this.$scope.ctrl.panel.polystat.polygonGlobalFillColor
-        : '#F00';
 
       for (let k = 0; k < matchedMetrics.length; k++) {
         const itemIndex = matchedMetrics[k];
@@ -267,7 +264,7 @@ export class CompositesManager {
         if (currentWorstSeries === null) {
           currentWorstSeries = seriesItem;
         } else {
-          currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem, worstColor);
+          currentWorstSeries = getWorstSeries(currentWorstSeries, seriesItem);
         }
       }
       // Prefix the valueFormatted with the actual metric name

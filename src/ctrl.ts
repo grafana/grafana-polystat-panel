@@ -140,7 +140,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     nullPointMode: 'connected',
     savedComposites: [],
     savedOverrides: [], // Array<MetricOverride>(),
-    colors: ['#299c46', 'rgba(237, 129, 40, 0.89)', '#d44a3a', '#4040a0'],
+    colors: ['#299c46', '#ED8128', '#d44a3a', '#4040a0'],
     valueMaps: [{ value: 'null', op: '=', text: 'N/A' }],
     mappingTypes: [
       { name: 'value to text', value: 1 },
@@ -186,6 +186,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipSecondarySortDirection: 'desc',
       tooltipSecondarySortField: 'value',
       tooltipTimestampEnabled: true,
+      tooltipEnabled: true,
       valueEnabled: true,
     },
   };
