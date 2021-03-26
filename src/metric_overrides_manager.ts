@@ -18,6 +18,7 @@ export class MetricOverridesManager {
     this.$scope = $scope;
     this.$sanitize = $sanitize;
     this.templateSrv = templateSrv;
+    // note: this delimiter appears to not work when referenced this way
     this.customSplitDelimiter = '#️⃣🔠🆗🆗🔠#️⃣';
     this.activeOverrideIndex = 0;
     // typeahead requires this form
