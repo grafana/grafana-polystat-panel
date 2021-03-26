@@ -119,7 +119,7 @@ export class CompositesManager {
     this.metricComposites.forEach((item: MetricComposite) => {
       const resolved = this.templateSrv
         .replace(item.compositeName, this.templateSrv.ScopedVars, this.customFormatter)
-        .split(this.customSplitDelimiter);
+        .split('#️⃣🔠🆗🆗🔠#️⃣');
       resolved.forEach((newName) => {
         ret.push({
           ...item,
@@ -135,7 +135,7 @@ export class CompositesManager {
 
   customFormatter(value: any) {
     if (Object.prototype.toString.call(value) === '[object Array]') {
-      return value.join(this.customSplitDelimiter);
+      return value.join('#️⃣🔠🆗🆗🔠#️⃣');
     }
     return value;
   }
@@ -160,7 +160,7 @@ export class CompositesManager {
               // replace it
               template = template.replace(templatedName, compositeName);
             }
-            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'raw');
+            const resolvedSeriesNames = [this.templateSrv.replace(template, vars, 'raw')];
             resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesName.replace(matchResult, seriesName);
               ret.push({

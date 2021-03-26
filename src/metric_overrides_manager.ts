@@ -105,7 +105,9 @@ export class MetricOverridesManager {
         matchResult.forEach((template) => {
           const resolvedSeriesNames = this.templateSrv
             .replace(template, this.templateSrv.ScopedVars, this.customFormatter)
-            .split(this.customSplitDelimiter);
+            .split('#️⃣🔠🆗🆗🔠#️⃣');
+          //const resolvedSeriesNames = this.templateSrv
+          //  .replace(template, this.templateSrv.ScopedVars, 'raw');
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
@@ -125,10 +127,11 @@ export class MetricOverridesManager {
 
   customFormatter(value: any) {
     if (Object.prototype.toString.call(value) === '[object Array]') {
-      return value.join(this.customSplitDelimiter);
+      return value.join('#️⃣🔠🆗🆗🔠#️⃣');
     }
     return value;
   }
+
   applyOverrides(data) {
     const config: PolystatConfigs = this.$scope.ctrl.panel.polystat;
     for (let index = 0; index < data.length; index++) {
