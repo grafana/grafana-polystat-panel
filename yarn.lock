@@ -986,10 +986,10 @@
     rxjs "6.6.2"
     xss "1.0.6"
 
-"@grafana/data@7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@grafana/data/-/data-7.4.3.tgz#b19a6a767e0be92e9a3d49d6441d2b056eefe944"
-  integrity sha512-zYpqNVtcAbJnY9KiW2bYH9fAu5H91+SC5W926KCc4ZKwT5I/B/uAvl1TwT3pLF1w8bMsuotrNorWQOFSk36Fbg==
+"@grafana/data@7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@grafana/data/-/data-7.4.5.tgz#d08b300cac56a9554c180e85047ba6de96a54f9f"
+  integrity sha512-QLRBNKbghTimZz0wp7jEYJ63uaMvEkMqU37197RTCBv630APnpU3D/GRRufCFCYCueOPz4GavEnSlBH8+v6bWA==
   dependencies:
     "@braintree/sanitize-url" "4.0.0"
     "@types/d3-interpolate" "^1.3.1"
@@ -1011,10 +1011,10 @@
     typescript "4.0.2"
     yaml "^1.8.3"
 
-"@grafana/e2e-selectors@7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@grafana/e2e-selectors/-/e2e-selectors-7.4.3.tgz#e86aeea9dd7f34252f210acfc9dd7814e4a8d42d"
-  integrity sha512-ojQOeclSZboi7hj/kTMDHP94A/Ac1yAaJnDuSvVyc098JP0KaaNaJAgJljjIZLVVC53B6A3p4PGpJPWxAsQUWw==
+"@grafana/e2e-selectors@7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@grafana/e2e-selectors/-/e2e-selectors-7.4.5.tgz#87bef6935e91e1602160cd84c2d9eb7674f049ba"
+  integrity sha512-RXWkTwtMnHNWSflr7Xn8kFaexkulQsc7+cW1fJA2KXxfizmGLo5Ttvidh2daL2j1+vGxW5Qin4b94Ny3LyIjWA==
   dependencies:
     "@grafana/tsconfig" "^1.0.0-rc1"
     commander "5.0.0"
@@ -1060,17 +1060,17 @@
     tiny-invariant "^1.0.1"
     tiny-warning "^0.0.3"
 
-"@grafana/toolkit@7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-7.4.3.tgz#60189f1de299bb143e79540173628c723cb434ca"
-  integrity sha512-2RRndgCUmMkK5wJVmNSSjJbpAZ8KHcwcAS1LkWdEqJLX36O6/LklSGDzVPecP4XmKSgqhvxAjOv9/j+FLGP+Pg==
+"@grafana/toolkit@7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@grafana/toolkit/-/toolkit-7.4.5.tgz#f3a8782bc7da63972e794cec63dc765d21980cf7"
+  integrity sha512-gd+WGbg26fFPpsCtP3XbTUinhghc6NRfhCEkCb99Xnw8DoFF1wtI+cHXne/mg6kozietWmqsVqqO35arq3eFXQ==
   dependencies:
     "@babel/core" "7.9.0"
     "@babel/preset-env" "7.9.0"
-    "@grafana/data" "7.4.3"
+    "@grafana/data" "7.4.5"
     "@grafana/eslint-config" "2.1.0"
     "@grafana/tsconfig" "^1.0.0-rc1"
-    "@grafana/ui" "7.4.3"
+    "@grafana/ui" "7.4.5"
     "@types/command-exists" "^1.2.0"
     "@types/execa" "^0.9.0"
     "@types/expect-puppeteer" "3.3.1"
@@ -1204,14 +1204,14 @@
     tinycolor2 "1.4.1"
     uplot "1.1.2"
 
-"@grafana/ui@7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-7.4.3.tgz#9de5225f102f133d143186281045e11a4ca75320"
-  integrity sha512-EZW9Y/idL8bNCIW8lHcqPLytP4yNn5dmx+zJYumWuO4drW+Jx/UJVdEkEUQ5H7Es3rNr2Y5HwDO09ubD+T1PCQ==
+"@grafana/ui@7.4.5":
+  version "7.4.5"
+  resolved "https://registry.yarnpkg.com/@grafana/ui/-/ui-7.4.5.tgz#e5b7a317d0278c80fc5dad05234d23404a9b6dc5"
+  integrity sha512-ExZ8mWEI4mz7pYHnW9EePmEg7Sc9vlMhdHuR8yYq/xBttczH08+d/9ESq3ENjoYPVmZqmGGE1ftXFVYMvQcUUg==
   dependencies:
     "@emotion/core" "^10.0.27"
-    "@grafana/data" "7.4.3"
-    "@grafana/e2e-selectors" "7.4.3"
+    "@grafana/data" "7.4.5"
+    "@grafana/e2e-selectors" "7.4.5"
     "@grafana/slate-react" "0.22.9-grafana"
     "@grafana/tsconfig" "^1.0.0-rc1"
     "@iconscout/react-unicons" "1.1.4"
@@ -5152,9 +5152,9 @@ ecc-jsbn@~0.1.1:
     safer-buffer "^2.1.0"
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.649:
-  version "1.3.682"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.682.tgz#f4b5c8d4479df96b61e508a721d6c32c1262ef23"
-  integrity sha512-zok2y37qR00U14uM6qBz/3iIjWHom2eRfC2S1StA0RslP7x34jX+j4mxv80t8OEOHLJPVG54ZPeaFxEI7gPrwg==
+  version "1.3.683"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.683.tgz#2c9ab53ff5275cf3dd49278af714d0f8975204f7"
+  integrity sha512-8mFfiAesXdEdE0DhkMKO7W9U6VU/9T3VTWwZ+4g84/YMP4kgwgFtQgUxuu7FUMcvSeKSNhFQNU+WZ68BQTLT5A==
 
 elliptic@^6.5.3:
   version "6.5.4"
