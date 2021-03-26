@@ -19,6 +19,7 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
+    "@babel/helper-validator-option": "^7.12.17",
     "@grafana/data": "7.3.7",
     "@grafana/toolkit": "7.4.5",
     "@grafana/ui": "7.3.7",

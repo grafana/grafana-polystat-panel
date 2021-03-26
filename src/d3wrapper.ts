@@ -37,6 +37,7 @@ function getMouseXY(): any {
   const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   // use the mouse position for the entire page, received by
   // d3.event.pageX, d3.event.pageY
+  // @ts-ignore
   let xpos = d3.event.pageX - 50;
   // don't allow offscreen tooltip
   if (xpos < 0) {
@@ -46,6 +47,7 @@ function getMouseXY(): any {
   if (xpos + 200 > viewPortWidth) {
     xpos = viewPortWidth - 200;
   }
+  // @ts-ignore
   const ypos = d3.event.pageY + 5;
 
   return { xpos, ypos };
