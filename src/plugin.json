@@ -1,52 +1,34 @@
 {
-    "type": "panel",
-    "name": "Polystat",
-    "id": "grafana-polystat-panel",
-    "info": {
-        "description": "Polystat panel for Grafana",
-        "author": {
-            "name": "Grafana Project",
-            "url": "https://github.com/grafana/grafana-polystat-panel"
-        },
-        "keywords": ["hexbin", "honeycomb", "panel"],
-        "logos": {
-            "small": "img/polystat.svg",
-            "large": "img/polystat.svg"
-        },
-        "links": [{
-            "name": "Project site",
-            "url": "https://github.com/grafana/grafana-polystat-panel"
-        }, {
-            "name": "Apache-2.0",
-            "url": "https://github.com/grafana/grafana-polystat-panel/blob/master/LICENSE.md"
-        }],
-        "screenshots": [{
-            "name": "Showcase",
-            "path": "img/screenshots/polystat-composite-example1.png"
-        }, {
-            "name": "Animation",
-            "path": "img/screenshots/polystat-animate1.gif"
-        }, {
-            "name": "Options",
-            "path": "img/screenshots/polystat-options-all.png"
-        }, {
-            "name": "Overrides",
-            "path": "img/screenshots/polystat-overrides-all.png"
-        }, {
-            "name": "Tooltips",
-            "path": "img/screenshots/polystat-tooltip.png"
-        }
-        ,{
-            "name": "Composites",
-            "path": "img/screenshots/polystat-composites-all.png"
-        }],
-        "version": "%VERSION%",
-        "updated": "%TODAY%"
-    },
+  "type": "panel",
+  "name": "Traffic Lights",
+  "id": "snuids-trafficlights-panel",
 
-    "dependencies": {
-        "grafanaVersion": "6.5.3",
-        "grafanaDependency": ">=6.5.3",
-        "plugins": []
-    }
+  "info": {
+    "description": "Traffic lights for grafana",
+    "author": {
+      "name": "snuids",
+      "url": "https://github.com/snuids/trafficlights-panel"
+    },
+    "keywords": ["traffic","lights", "panel"],
+    "logos": {
+      "small": "src/img/traffic_light_logo.jpg",
+      "large": "src/img/traffic_light_logo.jpg"
+    },
+    "links": [
+      {"name": "Project site", "url": "https://github.com/snuids/trafficlights-panel"},
+      {"name": "MIT License", "url": "https://github.com/snuids/trafficlights-panel"}
+    ],
+    "screenshots": [
+      {"name": "Showcase", "path": "src/img/screenshot-traffic-showcase.jpg"},
+      {"name": "Showcase", "path": "src/img/screenshot-traffic-showcase2.jpg"},
+      {"name": "Options", "path": "src/img/screenshot-traffic-options.jpg"}
+    ],
+    "version": "1.4.7",
+    "updated": "2020-09-17"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": [ ]
+  }
 }

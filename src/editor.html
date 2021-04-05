@@ -1,0 +1,124 @@
+<div class="editor-row">
+	<!-- OPTIONS -->
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Traffic light options</h5>
+
+		<div class="gf-form">
+				<label class="gf-form-label width-12">Width</label>
+				<info-popover   mode="right-absolute">Width in pixels of a single traffic light.</info-popover>
+				<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.width" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form">
+				<label class="gf-form-label width-12">Font Size</label>
+				<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.fontSize" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form">
+				<label class="gf-form-label width-12">Font Color</label>
+				<span class="max-width-10">
+					<spectrum-picker class="gf-form-input padding-8" ng-model="ctrl.panel.trafficLightSettings.fontColor" ng-change="ctrl.render()" ></spectrum-picker>
+				</span>
+		</div>
+		<gf-form-switch class="gf-form" label="Show Value" label-class="width-12" checked="ctrl.panel.trafficLightSettings.showValue" on-change="ctrl.render()"></gf-form-switch>
+		<div class="gf-form" ng-show="ctrl.panel.trafficLightSettings.showValue">
+				<label class="gf-form-label width-12">Units</label>
+				<info-popover   mode="right-absolute">Free text added to the value.</info-popover>
+				<input type="text" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.units" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form" ng-show="ctrl.panel.trafficLightSettings.showValue">
+				<label class="gf-form-label width-12">Digits</label>
+				<info-popover   mode="right-absolute">Number of digits used to display the values.</info-popover>
+				<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.digits" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<gf-form-switch class="gf-form" label="Show Trend" label-class="width-12" checked="ctrl.panel.trafficLightSettings.showTrend" on-change="ctrl.render()"></gf-form-switch>
+		<gf-form-switch class="gf-form" label="Sort Lights" label-class="width-12" checked="ctrl.panel.trafficLightSettings.sortLights" on-change="ctrl.render()"></gf-form-switch>
+    <gf-form-switch class="gf-form" label-class="width-12" label="Render as link" checked="ctrl.panel.trafficLightSettings.renderLink" change="ctrl.render()"></gf-form-switch>
+	</div>
+	<!-- Link -->
+	<div class="section gf-form-group" ng-if="ctrl.panel.trafficLightSettings.renderLink">
+		<h5 class="section-heading">Link</h5>
+		<div class="gf-form">
+			<label class="gf-form-label width-9">
+				Url
+				<info-popover mode="right-normal">
+					<p>Specify an URL (relative or absolute)</p>
+					<span>
+              Use special variables to specify timeseries values:
+              <br>
+              <em>$value</em> Value of the timeseries
+              <br>
+              <em>$name</em> Name of the timeseries
+              <br>
+              <em>$template</em> Any template defined on grafana
+            </span>
+				</info-popover>
+			</label>
+			<input type="text" class="gf-form-input width-29" ng-model="ctrl.panel.trafficLightSettings.linkUrl" ng-blur="editor.render()" ng-model-onblur data-placement="right">
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-9">
+				Tooltip
+				<info-popover mode="right-normal">
+					<p>Specify text for link tooltip.</p>
+					<span>
+              This title appears when user hovers pointer over the lights with link. Use the same variables as for URL.
+            </span>
+				</info-popover></label>
+			<input type="text" class="gf-form-input width-29" ng-model="ctrl.panel.trafficLightSettings.linkTooltip" ng-blur="editor.render()" ng-model-onblur
+				   data-placement="right">
+		</div>
+		<gf-form-switch class="gf-form" label-class="width-9" label="Open in new tab" checked="ctrl.panel.trafficLightSettings.linkTargetBlank"></gf-form-switch>
+	</div>
+	<!-- OPTIONS -->
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Design</h5>
+		<gf-form-switch class="gf-form" label="Spread Traffic Lights per line" label-class="width-12" checked="ctrl.panel.trafficLightSettings.spreadControls" on-change="ctrl.render()"></gf-form-switch>
+		<div class="gf-form" ng-show="!ctrl.panel.trafficLightSettings.spreadControls">
+			<label class="gf-form-label width-12">Controls per line</label>
+			<info-popover   mode="right-absolute">Numbers of traffic lights spread per line.</info-popover>
+
+			<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.lightsPerLine" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+	</div>
+
+	<!-- Threshold -->
+	<div class="section gf-form-group" >
+		<h5 class="section-heading">Thresholds</h5>
+		<gf-form-switch class="gf-form" label="Invert Scale" label-class="width-12" checked="ctrl.panel.trafficLightSettings.invertScale" on-change="ctrl.render()"></gf-form-switch>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Red Threshold</label>
+			<info-popover  ng-show="ctrl.panel.trafficLightSettings.invertScale" mode="right-absolute">Values above this limit will turn the traffic light to red.</info-popover>
+			<info-popover  ng-show="!ctrl.panel.trafficLightSettings.invertScale" mode="right-absolute">Values below this limit will turn the traffic light to red.</info-popover>
+			<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.redThreshold" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form">
+			<label class="gf-form-label width-12">Green Threshold</label>
+			<info-popover  ng-show="ctrl.panel.trafficLightSettings.invertScale" mode="right-absolute">Values below this limit will turn the traffic light to green.</info-popover>
+			<info-popover  ng-show="!ctrl.panel.trafficLightSettings.invertScale" mode="right-absolute">Values above this limit will turn the traffic light to green.</info-popover>
+			<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.greenThreshold" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form" ng-show="!ctrl.panel.trafficLightSettings.invertScale">
+				<label class="gf-form-label width-12">Max Threshold</label>
+				<info-popover   mode="right-absolute">Values above this limit will turn the traffic light to red.</info-popover>
+				<input type="number" class="input-small gf-form-input max-width-10" ng-model="ctrl.panel.trafficLightSettings.max" ng-change="ctrl.render()" ng-model-onblur>
+		</div>
+		<div class="gf-form" ng-show="ctrl.panel.trafficLightSettings.invertScale && (ctrl.panel.trafficLightSettings.greenThreshold>ctrl.panel.trafficLightSettings.redThreshold)">
+			<label class="errorlabel">Red threshold Must be greater than green threshold.</label>
+		</div>
+		<div class="gf-form" ng-show="!ctrl.panel.trafficLightSettings.invertScale && (ctrl.panel.trafficLightSettings.redThreshold>ctrl.panel.trafficLightSettings.greenThreshold)">
+			<label class="errorlabel">Red threshold Must be lower than red threshold.</label>
+		</div>
+		<div class="gf-form" ng-show="!ctrl.panel.trafficLightSettings.invertScale && (ctrl.panel.trafficLightSettings.greenThreshold>ctrl.panel.trafficLightSettings.max)">
+			<label class="errorlabel">Max threshold Must be greater than green threshold.</label>
+		</div>
+	</div>
+	<!-- Regex-->
+	<div class="section gf-form-group">
+		<h5 class="section-heading">Regex</h5>
+		<div class="gf-form">
+		  <label class="gf-form-label width-8">Regex Pattern
+			<tip>Optional, The values in the specified column are filtered and displayed according to this regex. Ex: String: Url|broadcom.com|mirror|location-1 regex: /Url\|(.*?)\|/ Output: broadcom.com</tip>
+		  </label>
+		  <input type="text" class="gf-form-input" ng-model="ctrl.panel.trafficLightSettings.regexPattern" ng-blur="ctrl.render()" placeholder="regex">
+		</div>
+	</div>
+</div>

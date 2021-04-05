@@ -1,0 +1,33 @@
+<div class="trafficlight-panel" ng-style="{height: ctrl.height}" class="traffic-light-vis">
+   <div class="traffic-light-vis" ng-repeat="line in ctrl.lines">
+      <div ng-repeat="metric in line" class="traffic-light-box" ng-style="{'width':ctrl.percentPerLight+'%'}">
+         <div class="traffic-light-container" ng-style="{'width': ctrl.panel.trafficLightSettings.width+'px', 'height': (2.68 * ctrl.panel.trafficLightSettings.width)+'px' }">
+            <div class="traffic-light">
+              <a ng-href="{{ ctrl.panel.trafficLightSettings.renderLink ? ctrl.renderLink(ctrl.panel.trafficLightSettings.linkUrl, metric, encodeURIComponent) : '' }}"
+                  target="{{ctrl.panel.trafficLightSettings.linkTargetBlank ? '_blank' : '_self'}}"
+                  data-placement="right"
+                  class="{{ ctrl.panel.trafficLightSettings.renderLink ? '' : 'traffic-light-empty-href'}}"
+                  bs-tooltip="{{ ctrl.panel.trafficLightSettings.renderLink && ctrl.panel.trafficLightSettings.linkTooltip != '' ? '\'' +   ctrl.renderLink(ctrl.panel.trafficLightSettings.linkTooltip, metric) + '\'' : '' }}">
+                  <div class="light red" ng-class="{'on':
+                     (!ctrl.panel.trafficLightSettings.invertScale && ((metric.value <= ctrl.panel.trafficLightSettings.redThreshold) || (metric.value >= ctrl.panel.trafficLightSettings.max)))
+                     || (ctrl.panel.trafficLightSettings.invertScale && metric.value >= ctrl.panel.trafficLightSettings.redThreshold) }">
+                  </div>
+                  <div class="light yellow" ng-class="{'on': (!ctrl.panel.trafficLightSettings.invertScale && metric.value > ctrl.panel.trafficLightSettings.redThreshold && metric.value < ctrl.panel.trafficLightSettings.greenThreshold) || (ctrl.panel.trafficLightSettings.invertScale && metric.value < ctrl.panel.trafficLightSettings.redThreshold && metric.value > ctrl.panel.trafficLightSettings.greenThreshold) }"></div>
+                  <div class="light green" ng-class="{'on':
+                     (!ctrl.panel.trafficLightSettings.invertScale && metric.value >= ctrl.panel.trafficLightSettings.greenThreshold && metric.value < ctrl.panel.trafficLightSettings.max)
+                     || (ctrl.panel.trafficLightSettings.invertScale && metric.value <= ctrl.panel.trafficLightSettings.greenThreshold) }"></div>
+              </a>
+            </div>
+         </div>
+         <div class="traffic-light-legend" style="font-size: {{ctrl.panel.trafficLightSettings.fontSize}};color: {{ctrl.panel.trafficLightSettings.fontColor}}">{{metric.name}}&nbsp;
+            <span ng-if="ctrl.panel.trafficLightSettings.showValue || ctrl.panel.trafficLightSettings.showTrend">
+            <br/>
+            </span>
+            <span ng-if="ctrl.panel.trafficLightSettings.showValue">
+            ({{metric.value | number:ctrl.panel.trafficLightSettings.digits}}{{ctrl.panel.trafficLightSettings.units}})
+            </span>
+            <span ng-if="ctrl.panel.trafficLightSettings.showTrend" ng-class="metric.trendClass">&nbsp;{{metric.trend | number:ctrl.panel.trafficLightSettings.digits}}&nbsp;</span>
+         </div>
+      </div>
+   </div>
+</div>
