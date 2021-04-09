@@ -156,6 +156,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: '',
       defaultClickThroughNewTab: false,
       defaultClickThroughSanitize: false,
+      ellipseEnabled: false,
+      ellipseCharacters: 18,
       fontAutoScale: true,
       fontSize: 12,
       fontType: 'Roboto',

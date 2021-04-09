@@ -460,6 +460,10 @@ export class D3Wrapper {
             const name = item.name.substring(0, numOfChars) + '...';
             return name;
           }
+          if ((!this.opt.polystat.fontAutoScale) && (this.opt.polystat.ellipseEnabled)) {
+            const name = item.name.substring(0, this.opt.polystat.ellipseCharacters) + '...';
+            return name;
+          }
           return item.name;
         }
         return '';

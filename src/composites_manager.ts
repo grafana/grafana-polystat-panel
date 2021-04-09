@@ -6,8 +6,6 @@ import { stringToJsRegex, ScopedVars } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
-  useEllipse: boolean;
-  ellipseCharacters: number;
   displayName: string;
   members: any[];
   enabled: boolean;
@@ -59,8 +57,6 @@ export class CompositesManager {
     const aComposite = new MetricComposite();
     aComposite.label = 'COMPOSITE ' + (this.metricComposites.length + 1);
     aComposite.compositeName = '';
-    aComposite.ellipseCharacters = 0;
-    aComposite.useEllipse = false;
     aComposite.displayName = '';
     aComposite.members = [{}];
     aComposite.enabled = true;
