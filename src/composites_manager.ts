@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { PolystatModel } from './polystatmodel';
 import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { stringToJsRegex, ScopedVars } from '@grafana/data';
+import { stringToJsRegex, escapeStringForRegex, ScopedVars } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
@@ -98,18 +98,6 @@ export class CompositesManager {
     this.$scope.ctrl.refresh();
   }
 
-  matchComposite(pattern): number {
-    for (let index = 0; index < this.metricComposites.length; index++) {
-      const aComposite = this.metricComposites[index];
-      const regex = stringToJsRegex(aComposite.compositeName);
-      const matches = pattern.match(regex);
-      if (matches && matches.length > 0 && aComposite.enabled) {
-        return index;
-      }
-    }
-    return -1;
-  }
-
   resolveCompositeTemplates(): MetricComposite[] {
     const ret: MetricComposite[] = [];
     this.metricComposites.forEach((item: MetricComposite) => {
@@ -159,9 +147,13 @@ export class CompositesManager {
             const resolvedSeriesNames = [this.templateSrv.replace(template, vars, 'raw')];
             resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesName.replace(matchResult, seriesName);
+              const escapedName = escapeStringForRegex(seriesName);
+              const newSeriesNameEscaped = member.seriesName.replace(matchResult, escapedName);
+
               ret.push({
                 ...member,
                 seriesName: newName,
+                seriesNameEscaped: newSeriesNameEscaped,
               });
             });
           });
@@ -220,7 +212,7 @@ export class CompositesManager {
           if (typeof aMetric.seriesName === 'undefined') {
             continue;
           }
-          const regex = stringToJsRegex(aMetric.seriesName);
+          const regex = stringToJsRegex(aMetric.seriesNameEscaped);
           const matches = regex.exec(data[index].name);
           if (matches && matches.length > 0) {
             const seriesItem = data[index];

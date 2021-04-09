@@ -91,6 +91,9 @@ export class MetricOverridesManager {
     const resolvedOverrides = this.resolveOverrideTemplates();
     for (let index = 0; index < resolvedOverrides.length; index++) {
       const anOverride = resolvedOverrides[index];
+      // TODO: might be needed
+      //const escaped = escapeStringForRegex(anOverride.metricName)
+      //const regex = stringToJsRegex(escaped);
       const regex = stringToJsRegex(anOverride.metricName);
       const matches = pattern.match(regex);
       if (matches && matches.length > 0 && anOverride.enabled) {
