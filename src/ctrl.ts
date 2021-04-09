@@ -529,7 +529,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     const mappings = convertOldAngularValueMapping(this.panel);
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
-      const mappedValue = getMappedValue(mappings, data[index].value);
+      const mappedValue = getMappedValue(mappings, data[index].value.toString());
       if (mappedValue) {
         data[index].valueFormatted = mappedValue.text;
       } else {
