@@ -84,7 +84,6 @@ describe('CompositesManager', () => {
     });
   });
 
-
   describe('Worst Series', () => {
     it('returns A-series', () => {
       aModel.thresholdLevel = 1;
