@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v1.2.4
+
+- Convert to use dataframes
+- Add support for Ellipses when using Fixed Font Size Labels
+- Add support for composite creation using template variable
+
 ## v1.2.3
 
 - Fix for polygon click-through causing incorrect fill color, Issues #174 #154
