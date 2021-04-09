@@ -613,6 +613,13 @@ export class D3Wrapper {
       }
       const aMember = Object.assign({}, data.members[triggeredIndex]);
 
+      // TODO: future ellipses for alias before value
+      /*
+      let useName = aMember.name;
+      if ((!this.opt.polystat.fontAutoScale) && (this.opt.polystat.ellipseEnabled) && (useName.length > this.opt.polystat.ellipseCharacters)) {
+        useName = useName.substring(0, this.opt.polystat.ellipseCharacters-5) + '...';
+      }
+      */
       content = aMember.name + ': ' + aMember.valueFormatted;
       if (aMember.prefix && aMember.prefix.length > 0) {
         content = aMember.prefix + ' ' + content;
