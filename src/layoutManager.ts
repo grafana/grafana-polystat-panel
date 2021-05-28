@@ -77,7 +77,7 @@ export class LayoutManager {
    */
   getHexFlatTopRadius(): number {
     if (!this.radiusAutoSize) {
-      return this.radius
+      return this.radius;
     }
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     let hexRadius = d3.min([
@@ -85,7 +85,7 @@ export class LayoutManager {
       this.height / ((this.numRows + 1 / 3) * 1.5),
     ]);
     hexRadius = hexRadius - polygonBorderSize;
-    return this.truncateFloat(hexRadius)
+    return this.truncateFloat(hexRadius);
   }
 
   /**
@@ -116,7 +116,7 @@ export class LayoutManager {
    */
   getUniformRadius(): number {
     if (!this.radiusAutoSize) {
-      return this.radius
+      return this.radius;
     }
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
     // width divided by the number of columns determines the max horizontal of the square
