@@ -78,7 +78,7 @@ export class MetricOverridesManager {
 
   metricNameChanged(override: MetricOverride) {
     // TODO: validate item is a valid regex
-    console.log("metricNameChanged: '" + override.metricName + "'");
+    // console.log("metricNameChanged: '" + override.metricName + "'");
     this.$scope.ctrl.refresh();
   }
 
