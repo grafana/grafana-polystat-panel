@@ -179,21 +179,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-    // v6 compat
-    if (typeof PanelEvents === 'undefined') {
-      //this.events.on('data-received', this.onDataReceived.bind(this));
-      this.events.on('data-frames-received', this.onDataFramesReceived.bind(this));
-      this.events.on('data-error', this.onDataError.bind(this));
-      this.events.on('data-snapshot-load', this.onSnapshotLoad.bind(this));
-      this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    } else {
-      // v7+ compat
-      //this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
-      this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
-      this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
-      this.events.on(PanelEvents.dataSnapshotLoad, this.onSnapshotLoad.bind(this));
-      this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
-    }
+    // events
+    this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
+    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+    this.events.on(PanelEvents.dataSnapshotLoad, this.onSnapshotLoad.bind(this));
+    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
   }
 
   migrateSortDirections() {
@@ -501,7 +491,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
       const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      if (mappedValue) {
+      if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
       } else {
         const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];

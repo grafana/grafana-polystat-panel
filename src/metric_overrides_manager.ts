@@ -161,7 +161,7 @@ export class MetricOverridesManager {
         // format it
         const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
         const mappedValue = getMappedValue(mappings, data[index].value.toString());
-        if (mappedValue) {
+        if (mappedValue && mappedValue.text !== '') {
           data[index].valueFormatted = mappedValue.text;
         } else {
           const formatFunc = kbn.valueFormats[anOverride.unitFormat];
