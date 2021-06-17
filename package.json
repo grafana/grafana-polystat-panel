@@ -29,6 +29,9 @@
     "@types/lodash": "4.14.168",
     "jest-canvas-mock": "2.3.1"
   },
+  "engines": {
+    "node": "^14.5.0"
+  },
   "jest": {
     "moduleNameMapper": {
       "grafana/app/core/utils/kbn": "<rootDir>/tests/__mocks__/app/core/utils/kbn.ts"
