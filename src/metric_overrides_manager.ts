@@ -161,7 +161,7 @@ export class MetricOverridesManager {
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
         const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
-        const mappedValue = getMappedValue(mappings, data[index].value);
+        const mappedValue = getMappedValue(mappings, data[index].value.toString());
         if (mappedValue) {
           data[index].valueFormatted = mappedValue.text;
         } else {
