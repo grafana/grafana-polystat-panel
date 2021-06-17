@@ -90,7 +90,7 @@ export class Tooltip {
           const aMember: any = sortedMembers[j];
           if (polystat.valueEnabled) {
             valueContent = `
-            <td style="text-align: right; color: ${aMember.color}">${aMember.valueFormatted}</td>
+            <td style="text-align: right; padding-left: 8px; color: ${aMember.color}">${aMember.valueFormatted}</td>
             `;
           }
           const aRow = `
@@ -113,7 +113,7 @@ export class Tooltip {
       } else {
         if (polystat.valueEnabled) {
           valueContent = `
-          <td style="text-align: right; color: ${data[index].color}">${data[index].valueFormatted}</td>
+          <td style="text-align: right; padding-left: 8px; color: ${data[index].color}">${data[index].valueFormatted}</td>
           `;
         }
         const aRow = `
