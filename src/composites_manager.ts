@@ -212,7 +212,12 @@ export class CompositesManager {
           if (typeof aMetric.seriesName === 'undefined') {
             continue;
           }
-          const regex = stringToJsRegex(aMetric.seriesNameEscaped);
+          // name may not be escaped, check both
+          let metricName = aMetric.seriesName;
+          if (aMetric.seriesNameEscaped !== undefined) {
+            metricName = aMetric.seriesNameEscaped;
+          }
+          const regex = stringToJsRegex(metricName);
           const matches = regex.exec(data[index].name);
           if (matches && matches.length > 0) {
             const seriesItem = data[index];
