@@ -1,5 +1,6 @@
 grafana:
-  image: grafana/grafana:latest
+  #image: grafana/grafana:latest
+  image: grafana/grafana:7.5.8
   ports:
     - "3000:3000"
   volumes:
@@ -7,3 +8,4 @@ grafana:
     - ./provisioning:/etc/grafana/provisioning
   environment:
     - TERM=linux
+    - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-polystat-panel
