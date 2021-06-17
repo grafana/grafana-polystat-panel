@@ -3,7 +3,6 @@ import _ from 'lodash';
 import $ from 'jquery';
 import kbn from 'grafana/app/core/utils/kbn';
 import TimeSeries from 'grafana/app/core/time_series2';
-import { PanelEvents } from '@grafana/data';
 
 import { D3Wrapper } from './d3wrapper';
 import { Transformers } from './transformers';
@@ -15,7 +14,7 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { LegacyResponseData, DataFrame, getMappedValue } from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue, PanelEvents } from '@grafana/data';
 import { DataProcessor } from './core/data_processor';
 import { getProcessedDataFrames } from './core/dataframe';
 import { InsertTime } from './data/deframer';
@@ -42,48 +41,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     //{ value: "wye", text: "Wye" }
   ];
   fontSizes = [
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    22,
-    24,
-    26,
-    28,
-    30,
-    32,
-    34,
-    36,
-    38,
-    40,
-    42,
-    44,
-    46,
-    48,
-    50,
-    52,
-    54,
-    56,
-    58,
-    60,
-    62,
-    64,
-    66,
-    68,
-    70,
+    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
+    48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70,
   ];
   unitFormats = kbn.getUnitFormats();
   operatorOptions = [
