@@ -37,6 +37,9 @@ function getMouseXY(): any {
   const viewPortWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
   // use the mouse position for the entire page, received by
   // d3.event.pageX, d3.event.pageY
+  //
+  // the type doesn't exist, but the object does, ignore the error
+  // @ts-ignore
   let xpos = d3.event.pageX - 50;
   // don't allow offscreen tooltip
   if (xpos < 0) {
@@ -46,6 +49,8 @@ function getMouseXY(): any {
   if (xpos + 200 > viewPortWidth) {
     xpos = viewPortWidth - 200;
   }
+  // the type doesn't exist, but the object does, ignore the error
+  // @ts-ignore
   const ypos = d3.event.pageY + 5;
 
   return { xpos, ypos };
@@ -113,11 +118,11 @@ export class D3Wrapper {
     );
   }
 
-  update(data: any) {
-    if (data) {
-      this.data = data;
-    }
-  }
+  //update(data: any) {
+  //  if (data) {
+  //    this.data = data;
+  //  }
+  // }
 
   draw() {
     const margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -167,88 +172,38 @@ export class D3Wrapper {
     const colorGradients = Color.createGradients(data);
     for (let i = 0; i < colorGradients.length; i++) {
       const aGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-data-' + i);
-      aGradient
-        .attr('x1', '30%')
-        .attr('y1', '30%')
-        .attr('x2', '70%')
-        .attr('y2', '70%');
-      aGradient
-        .append('stop')
-        .attr('offset', '0%')
-        .attr('stop-color', colorGradients[i].start);
-      aGradient
-        .append('stop')
-        .attr('offset', '100%')
-        .attr('stop-color', colorGradients[i].end);
+      aGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+      aGradient.append('stop').attr('offset', '0%').attr('stop-color', colorGradients[i].start);
+      aGradient.append('stop').attr('offset', '100%').attr('stop-color', colorGradients[i].end);
     }
     const okColorStart = new Color(82, 194, 52); // #52c234
     const okColorEnd = okColorStart.Mul(this.purelight, 0.7);
     const okGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-ok');
-    okGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    okGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', okColorStart.asHex());
-    okGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', okColorEnd.asHex());
+    okGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    okGradient.append('stop').attr('offset', '0%').attr('stop-color', okColorStart.asHex());
+    okGradient.append('stop').attr('offset', '100%').attr('stop-color', okColorEnd.asHex());
 
     // https://uigradients.com/#JuicyOrange
     const warningColorStart = new Color(255, 200, 55); // #FFC837
     const warningColorEnd = warningColorStart.Mul(this.purelight, 0.7);
     const warningGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-warning');
-    warningGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    warningGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', warningColorStart.asHex()); // light orange
-    warningGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', warningColorEnd.asHex()); // dark orange
+    warningGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    warningGradient.append('stop').attr('offset', '0%').attr('stop-color', warningColorStart.asHex()); // light orange
+    warningGradient.append('stop').attr('offset', '100%').attr('stop-color', warningColorEnd.asHex()); // dark orange
 
     // https://uigradients.com/#YouTube
     const criticalColorStart = new Color(229, 45, 39); // e52d27
     const criticalColorEnd = criticalColorStart.Mul(this.purelight, 0.7);
     const criticalGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-critical');
-    criticalGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    criticalGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', criticalColorStart.asHex()); // light red
-    criticalGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', criticalColorEnd.asHex()); // dark red
+    criticalGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    criticalGradient.append('stop').attr('offset', '0%').attr('stop-color', criticalColorStart.asHex()); // light red
+    criticalGradient.append('stop').attr('offset', '100%').attr('stop-color', criticalColorEnd.asHex()); // dark red
 
     // https://uigradients.com/#Ash
     const unknownGradient = defs.append('linearGradient').attr('id', this.d3DivId + 'linear-gradient-state-unknown');
-    unknownGradient
-      .attr('x1', '30%')
-      .attr('y1', '30%')
-      .attr('x2', '70%')
-      .attr('y2', '70%');
-    unknownGradient
-      .append('stop')
-      .attr('offset', '0%')
-      .attr('stop-color', '#73808A'); // light grey
-    unknownGradient
-      .append('stop')
-      .attr('offset', '100%')
-      .attr('stop-color', '#757F9A'); // dark grey
+    unknownGradient.attr('x1', '30%').attr('y1', '30%').attr('x2', '70%').attr('y2', '70%');
+    unknownGradient.append('stop').attr('offset', '0%').attr('stop-color', '#73808A'); // light grey
+    unknownGradient.append('stop').attr('offset', '100%').attr('stop-color', '#757F9A'); // dark grey
 
     let customShape = null;
     // compute text area size (used to calculate the fontsize)
@@ -308,7 +263,8 @@ export class D3Wrapper {
         if (submetricCount > 0) {
           let counter = 0;
           while (counter < submetricCount) {
-            const checkContent = this.formatValueContent(i, counter, this);
+            const copiedData = Object.assign({}, this.data[i]);
+            const checkContent = this.formatValueContent(counter, copiedData);
             if (checkContent && checkContent.length > maxValue.length) {
               maxValue = checkContent;
             }
@@ -375,10 +331,7 @@ export class D3Wrapper {
       // Make it clickable if clickThroughURL is specified
       const clickThroughURL = resolveClickThroughURL(data[i]);
       if (clickThroughURL.length > 0) {
-        node = node
-          .append('a')
-          .attr('target', resolveClickThroughTarget(data[i]))
-          .attr('xlink:href', clickThroughURL);
+        node = node.append('a').attr('target', resolveClickThroughTarget(data[i])).attr('xlink:href', clickThroughURL);
       }
 
       let fillColor = data[i].color;
@@ -436,10 +389,7 @@ export class D3Wrapper {
         })
         .on('mouseover', (d: any) => {
           let { xpos, ypos } = getMouseXY();
-          tooltip
-            .transition()
-            .duration(200)
-            .style('opacity', 0.9);
+          tooltip.transition().duration(200).style('opacity', 0.9);
           tooltip
             .html(this.opt.tooltipContent[i])
             .style('font-size', this.opt.tooltipFontSize)
@@ -448,10 +398,7 @@ export class D3Wrapper {
             .style('top', ypos + 'px');
         })
         .on('mouseout', () => {
-          tooltip
-            .transition()
-            .duration(500)
-            .style('opacity', 0);
+          tooltip.transition().duration(500).style('opacity', 0);
         });
     });
 
@@ -513,12 +460,21 @@ export class D3Wrapper {
             const name = item.name.substring(0, numOfChars) + '...';
             return name;
           }
+          if (
+            !this.opt.polystat.fontAutoScale &&
+            this.opt.polystat.ellipseEnabled &&
+            item.name.length > this.opt.polystat.ellipseCharacters
+          ) {
+            const name = item.name.substring(0, this.opt.polystat.ellipseCharacters) + '...';
+            return name;
+          }
           return item.name;
         }
         return '';
       });
 
-    let frames = 0;
+    // each composite tracks its own frames
+    let compositeFrames = new Array(data.length).fill(0);
 
     textspot
       .enter()
@@ -526,7 +482,7 @@ export class D3Wrapper {
       .attr('class', (_, i) => {
         return 'valueLabel' + i;
       })
-      .attr('x', d => {
+      .attr('x', (d) => {
         return d.x + labelValueAlignmentX;
       })
       .attr('y', (d, i) => {
@@ -544,17 +500,24 @@ export class D3Wrapper {
       .style('pointer-events', 'none')
       .text((_, i) => {
         // animation/displaymode can modify what is being displayed
-        let counter = 0;
+        let initialItemIndex = 0;
         const dataLen = this.data.length;
         let content = null;
-        while (content === null && counter < dataLen) {
-          content = this.formatValueContent(i, frames + counter, this);
-          counter++;
+        // get the first non-hidden item, this will be displayed first (before the interval starts)
+        while (content === null && initialItemIndex < dataLen) {
+          const copiedData = Object.assign({}, this.data[i]);
+          content = this.formatValueContent(compositeFrames[i] + initialItemIndex, copiedData);
+          if (content !== null) {
+            break;
+          }
+          initialItemIndex++;
         }
         const valueTextLocation = svg.select('text.valueLabel' + i);
         // use the dynamic size for the value
         valueTextLocation.attr('font-size', activeValueFontSize + 'px');
-        d3.interval(() => {
+        // pass the index of the first item being displayed, the counter can start from there
+        d3.interval((initialItemIndex) => {
+          // there is a leak in here, data is being held by frames
           const valueTextLocation = svg.select('text.valueLabel' + i);
           const compositeIndex = i;
           valueTextLocation.text(() => {
@@ -563,10 +526,12 @@ export class D3Wrapper {
 
             let content = null;
             let counter = 0;
+            // TODO: fix this loop
             const dataLen = this.data.length * 2;
             // search for a value cycling through twice to allow rollover
             while (content === null && counter < dataLen) {
-              content = this.formatValueContent(compositeIndex, frames + counter, this);
+              const copiedData = Object.assign({}, this.data[compositeIndex]);
+              content = this.formatValueContent(compositeFrames[compositeIndex] + counter, copiedData);
               counter++;
             }
             if (content === null) {
@@ -580,8 +545,9 @@ export class D3Wrapper {
             }
             return content;
           });
-          frames++;
+          compositeFrames[i]++;
         }, this.opt.animationSpeed);
+        //frames++;
         return content;
       });
   }
@@ -598,8 +564,8 @@ export class D3Wrapper {
     }
     return data;
   }
-  formatValueContent(i, frames, thisRef): string {
-    const data = thisRef.data[i];
+  formatValueContent(frames, data): string {
+    //const data = thisRef.data[index];
     // options can specify to not show the value
     if (typeof data !== 'undefined') {
       if (data.hasOwnProperty('showValue')) {
@@ -649,8 +615,15 @@ export class D3Wrapper {
         const z = frames % data.triggerCache.length;
         triggeredIndex = data.triggerCache[z].index;
       }
-      const aMember = data.members[triggeredIndex];
+      const aMember = Object.assign({}, data.members[triggeredIndex]);
 
+      // TODO: future ellipses for alias before value
+      /*
+      let useName = aMember.name;
+      if ((!this.opt.polystat.fontAutoScale) && (this.opt.polystat.ellipseEnabled) && (useName.length > this.opt.polystat.ellipseCharacters)) {
+        useName = useName.substring(0, this.opt.polystat.ellipseCharacters-5) + '...';
+      }
+      */
       content = aMember.name + ': ' + aMember.valueFormatted;
       if (aMember.prefix && aMember.prefix.length > 0) {
         content = aMember.prefix + ' ' + content;
@@ -663,7 +636,7 @@ export class D3Wrapper {
     //
     if (content && content.length > 0) {
       try {
-        const replacedContent = thisRef.templateSrv.replaceWithText(content);
+        const replacedContent = this.templateSrv.replace(content, 'text');
         content = replacedContent;
       } catch (err) {
         console.log('ERROR: template server threw error: ' + err);

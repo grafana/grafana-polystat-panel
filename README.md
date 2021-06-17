@@ -1,15 +1,15 @@
 # Grafana Polystat Panel
 
-[![David Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel.svg)](https://david-dm.org/grafana/grafana-polystat-panel)
-[![David Dev Dependency Status](https://david-dm.org/grafana/grafana-polystat-panel/dev-status.svg)](https://david-dm.org/grafana/grafana-polystat-panel/?type=dev)
+[![Marketplace](https://img.shields.io/badge/dynamic/json?logo=grafana&color=F47A20&label=marketplace&prefix=v&query=%24.items%5B%3F%28%40.slug%20%3D%3D%20%22grafana-polystat-panel%22%29%5D.version&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins)](https://grafana.com/grafana/plugins/grafana-polystat-panel)
+[![Downloads](https://img.shields.io/badge/dynamic/json?logo=grafana&color=F47A20&label=downloads&query=%24.items%5B%3F%28%40.slug%20%3D%3D%20%22grafana-polystat-panel%22%29%5D.downloads&url=https%3A%2F%2Fgrafana.com%2Fapi%2Fplugins)](https://grafana.com/grafana/plugins/grafana-polystat-panel)
+[![License](https://img.shields.io/github/license/grafana/grafana-polystat-panel)](LICENSE)
 [![Known Vulnerabilities](https://snyk.io/test/github/grafana/grafana-polystat-panel/badge.svg)](https://snyk.io/test/github/grafana/grafana-polystat-panel)
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/5c5cd1076777c637b931/maintainability)](https://codeclimate.com/github/grafana/grafana-polystat-panel/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5c5cd1076777c637b931/test_coverage)](https://codeclimate.com/github/grafana/grafana-polystat-panel/test_coverage)
-This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](https://grafana.com/) 6.x.
+
+This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](https://grafana.com/) 7.3+.
 
 A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
-
 
 ## Screenshots
 
@@ -221,7 +221,7 @@ Template variables are available in the clickThroughUrl setting, specified by us
 They can also be passed to another dashboard by appending var-VARNAME=value to the url
 
 ```URL
-/dasboard/xyz?var-VARNAME=${VARNAME}
+/dashboard/xyz?var-VARNAME=${VARNAME}
 ```
 
 #### Using Polystat Variables

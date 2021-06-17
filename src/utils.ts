@@ -138,7 +138,7 @@ function RGBToHex(text: string) {
   try {
     const a = text.split('(')[1].split(')')[0];
     const b = a.split(',');
-    const c = b.map(x => {
+    const c = b.map((x) => {
       // For each array element
       x = parseInt(x, 10).toString(16); // Convert to a base16 string
       return x.length === 1 ? '0' + x : x; // Add zero if we get only one character
@@ -162,7 +162,7 @@ function SortVariableValuesByField(options, field: any, sortOrder: number) {
     const sortField = options[field];
     options = _.sortBy(options, sortField);
   } else if (sortType === 2) {
-    options = _.sortBy(options, opt => {
+    options = _.sortBy(options, (opt) => {
       const matchField = opt[field];
       const matches = matchField.match(/.*?(\d+).*/);
       if (!matches || matches.length < 2) {
@@ -172,7 +172,7 @@ function SortVariableValuesByField(options, field: any, sortOrder: number) {
       }
     });
   } else if (sortType === 3) {
-    options = _.sortBy(options, opt => {
+    options = _.sortBy(options, (opt) => {
       return _.toLower(opt[field]);
     });
   }

@@ -2,10 +2,11 @@ import _ from 'lodash';
 import { PolystatModel } from './polystatmodel';
 import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { stringToJsRegex, ScopedVars } from '@grafana/data';
+import { stringToJsRegex, escapeStringForRegex, ScopedVars } from '@grafana/data';
 
 export class MetricComposite {
   compositeName: string;
+  displayName: string;
   members: any[];
   enabled: boolean;
   hideMembers: boolean;
@@ -18,6 +19,8 @@ export class MetricComposite {
   sanitizeURLEnabled: boolean;
   sanitizedURL: string;
   label: string;
+  isTemplated: boolean;
+  templatedName: string;
 }
 
 export class CompositesManager {
@@ -27,15 +30,17 @@ export class CompositesManager {
   suggestMetricNames: any;
   metricComposites: MetricComposite[];
   subTabIndex: number;
+  customSplitDelimiter: string;
 
   constructor($scope, templateSrv, $sanitize, savedComposites) {
     this.$scope = $scope;
     this.$sanitize = $sanitize;
     this.templateSrv = templateSrv;
+    this.customSplitDelimiter = '#️⃣🔠🆗🆗🔠#️⃣';
     this.subTabIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
-      return _.map(this.$scope.ctrl.series, series => {
+      return _.map(this.$scope.ctrl.series, (series) => {
         return series.alias;
       });
     };
@@ -52,6 +57,7 @@ export class CompositesManager {
     const aComposite = new MetricComposite();
     aComposite.label = 'COMPOSITE ' + (this.metricComposites.length + 1);
     aComposite.compositeName = '';
+    aComposite.displayName = '';
     aComposite.members = [{}];
     aComposite.enabled = true;
     aComposite.clickThrough = '';
@@ -92,26 +98,18 @@ export class CompositesManager {
     this.$scope.ctrl.refresh();
   }
 
-  matchComposite(pattern): number {
-    for (let index = 0; index < this.metricComposites.length; index++) {
-      const aComposite = this.metricComposites[index];
-      const regex = stringToJsRegex(aComposite.compositeName);
-      const matches = pattern.match(regex);
-      if (matches && matches.length > 0 && aComposite.enabled) {
-        return index;
-      }
-    }
-    return -1;
-  }
-
   resolveCompositeTemplates(): MetricComposite[] {
     const ret: MetricComposite[] = [];
     this.metricComposites.forEach((item: MetricComposite) => {
-      const resolved = this.templateSrv.replace(item.compositeName, this.templateSrv.ScopedVars, 'csv').split(',');
-      resolved.forEach(newName => {
+      const resolved = this.templateSrv
+        .replace(item.compositeName, this.templateSrv.ScopedVars, this.customFormatter)
+        .split('#️⃣🔠🆗🆗🔠#️⃣');
+      resolved.forEach((newName) => {
         ret.push({
           ...item,
           compositeName: newName,
+          isTemplated: true,
+          templatedName: item.compositeName,
         });
       });
     });
@@ -119,21 +117,43 @@ export class CompositesManager {
     return ret;
   }
 
-  resolveMemberTemplates(members: any[], vars: ScopedVars[] = this.templateSrv.ScopedVars): any[] {
+  customFormatter(value: any) {
+    if (Object.prototype.toString.call(value) === '[object Array]') {
+      return value.join('#️⃣🔠🆗🆗🔠#️⃣');
+    }
+    return value;
+  }
+
+  resolveMemberTemplates(
+    compositeName: string,
+    isTemplated: boolean,
+    templatedName: string,
+    members: any[],
+    vars: ScopedVars[] = this.templateSrv.ScopedVars
+  ): any[] {
     const ret: any[] = [];
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
-    members.forEach(member => {
+    members.forEach((member) => {
       // Resolve templates in series names
       if (member.seriesName) {
         const matchResult = member.seriesName.match(variableRegex);
         if (matchResult && matchResult.length > 0) {
-          matchResult.forEach(template => {
-            const resolvedSeriesNames = this.templateSrv.replace(template, vars, 'csv').split(',');
-            resolvedSeriesNames.forEach(seriesName => {
+          matchResult.forEach((template) => {
+            // if the template contains the composite template, replace it with the compositeName
+            if (isTemplated && template.includes(templatedName)) {
+              // replace it
+              template = template.replace(templatedName, compositeName);
+            }
+            const resolvedSeriesNames = [this.templateSrv.replace(template, vars, 'raw')];
+            resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesName.replace(matchResult, seriesName);
+              const escapedName = escapeStringForRegex(seriesName);
+              const newSeriesNameEscaped = member.seriesName.replace(matchResult, escapedName);
+
               ret.push({
                 ...member,
                 seriesName: newName,
+                seriesNameEscaped: newSeriesNameEscaped,
               });
             });
           });
@@ -152,7 +172,7 @@ export class CompositesManager {
       templateVars[i] = { text: i, value: name };
     });
     if (matches.groups) {
-      Object.keys(matches.groups).forEach(key => {
+      Object.keys(matches.groups).forEach((key) => {
         templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
       });
     }
@@ -162,6 +182,8 @@ export class CompositesManager {
   applyComposites(data: PolystatModel[]) {
     const filteredMetrics: number[] = [];
     const clonedComposites: PolystatModel[] = [];
+    // the composite Name can be a template variable
+    // the composite should only match specific metrics or expanded templated metrics that use the composite name
     const resolvedComposites = this.resolveCompositeTemplates();
     for (let i = 0; i < resolvedComposites.length; i++) {
       const matchedMetrics: number[] = [];
@@ -170,11 +192,17 @@ export class CompositesManager {
         continue;
       }
       let currentWorstSeries = null;
-
-      const templatedMembers = this.resolveMemberTemplates(aComposite.members, {
-        ...this.templateSrv.ScopedVars,
-        compositeName: { text: 'compositeName', value: aComposite.compositeName },
-      });
+      // this should filter the members that are matches for the composite name
+      const templatedMembers = this.resolveMemberTemplates(
+        aComposite.compositeName,
+        aComposite.isTemplated,
+        aComposite.templatedName,
+        aComposite.members,
+        {
+          ...this.templateSrv.ScopedVars,
+          compositeName: { text: 'compositeName', value: aComposite.compositeName },
+        }
+      );
       for (let j = 0; j < templatedMembers.length; j++) {
         const aMetric = templatedMembers[j];
         // look for the matches to the pattern in the data
@@ -184,7 +212,12 @@ export class CompositesManager {
           if (typeof aMetric.seriesName === 'undefined') {
             continue;
           }
-          const regex = stringToJsRegex(aMetric.seriesName);
+          // name may not be escaped, check both
+          let metricName = aMetric.seriesName;
+          if (aMetric.seriesNameEscaped !== undefined) {
+            metricName = aMetric.seriesNameEscaped;
+          }
+          const regex = stringToJsRegex(metricName);
           const matches = regex.exec(data[index].name);
           if (matches && matches.length > 0) {
             const seriesItem = data[index];
@@ -201,7 +234,7 @@ export class CompositesManager {
             }
             if (aComposite.clickThrough && aComposite.clickThrough.length > 0) {
               // process template variables
-              let url = this.templateSrv.replaceWithText(aComposite.clickThrough);
+              let url = this.templateSrv.replace(aComposite.clickThrough, 'text');
               // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
               url = ClickThroughTransformer.tranformComposite(aComposite.compositeName, url);
               url = ClickThroughTransformer.tranformSingleMetric(index, url, data);

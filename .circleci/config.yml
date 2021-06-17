@@ -18,18 +18,18 @@ aliases:
       only: /^v[1-9]*[0-9]+\.[1-9]*[0-9]+\.x$/
 
 executors:
-  default_exec: # declares a reusable executor
+  default_exec:
     docker:
-      - image: srclosson/grafana-plugin-ci-alpine:latest
+      - image: grafana/grafana-plugin-ci:1.1.3-alpine
   e2e_exec:
     docker:
-      - image: srclosson/grafana-plugin-ci-e2e:latest
+      - image: grafana/grafana-plugin-ci-e2e:latest
   cloud_sdk_exec:
     docker:
       - image: google/cloud-sdk
   grafana_publisher:
     docker:
-      - image: briangann/integration-grafana-publisher:latest
+      - image: grafana/integration-grafana-publisher:latest
 
 workflows:
   plugin_workflow:
@@ -48,13 +48,19 @@ workflows:
           requires:
           - code_coverage_frontend
       - package:
+          context:
+            - Plugins
           requires:
           - build_frontend
           - build_docs
-      - publish_artifacts_to_gcs:
+      - copy_artifacts_to_gcs:
+          context:
+            - Plugins
           requires:
           - package
       - report:
+          context:
+            - Plugins
           requires:
           - package
           - upload_coverage
@@ -64,20 +70,28 @@ workflows:
           - report
           filters: *filter-only-release
       - publish_gcs_release:
+          context:
+            - Plugins
           requires:
             - approve_release
           filters: *filter-only-release
       - publish_github_release:
+          context:
+            - Plugins
           requires:
           - approve_release
           filters: *filter-only-release
       - approve_publish_to_gcom:
+          context:
+            - Plugins
           type: approval
           requires:
           - publish_github_release
           - publish_gcs_release
           filters: *filter-only-release
       - publish_to_gcom:
+          context:
+            - Plugins
           requires:
           - approve_publish_to_gcom
           filters: *filter-only-release
@@ -118,7 +132,7 @@ jobs:
       - run:
           name: Build docs
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-docs
+            npx grafana-toolkit plugin:ci-docs
             [ -d "dist" ] || circleci-agent step halt
       - persist_to_workspace:
           root: .
@@ -136,8 +150,8 @@ jobs:
       - run:
           name: Build and test frontend
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+            npx grafana-toolkit plugin:ci-build
+            npx grafana-toolkit plugin:ci-build --finish
       - persist_to_workspace:
           root: .
           paths:
@@ -159,7 +173,7 @@ jobs:
           /usr/local/bin/cc-test-reporter format-coverage -t lcov -o out/codeclimate.frontend.json ci/jobs/build_frontend/coverage/lcov.info
     - run:
         name: Install jest and jest-junit
-        command: yarn global add jest jest-junit
+        command: yarn global add jest jest-junit --ignore-engines
     - run:
         name: Run tests with JUnit as reporter
         command: jest --passWithNoTests --ci --runInBand --reporters=default --reporters=jest-junit
@@ -200,7 +214,7 @@ jobs:
             #
             # ci-package will create the zip file
             #
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package
+            npx grafana-toolkit plugin:ci-package
             #
             #
             PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
@@ -249,11 +263,11 @@ jobs:
     - run:
         name: Toolkit report
         command: |
-          ./node_modules/.bin/grafana-toolkit plugin:ci-report
+          npx grafana-toolkit plugin:ci-report
     - store_artifacts:
         path: ci
 
-  publish_artifacts_to_gcs:
+  copy_artifacts_to_gcs:
     executor: cloud_sdk_exec
     steps:
       - checkout

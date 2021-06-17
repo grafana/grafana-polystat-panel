@@ -3,7 +3,6 @@ import _ from 'lodash';
 import $ from 'jquery';
 import kbn from 'grafana/app/core/utils/kbn';
 import TimeSeries from 'grafana/app/core/time_series2';
-import { PanelEvents } from '@grafana/data';
 
 import { D3Wrapper } from './d3wrapper';
 import { Transformers } from './transformers';
@@ -15,9 +14,12 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { getMappedValue } from '@grafana/data';
-
+import { LegacyResponseData, DataFrame, getMappedValue, PanelEvents } from '@grafana/data';
+import { DataProcessor } from './core/data_processor';
+import { getProcessedDataFrames } from './core/dataframe';
+import { InsertTime } from './data/deframer';
 class D3PolystatPanelCtrl extends MetricsPanelCtrl {
+  processor: DataProcessor;
   static templateUrl = 'partials/template.html';
   animationModes = [
     { value: 'all', text: 'Show All' },
@@ -39,48 +41,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     //{ value: "wye", text: "Wye" }
   ];
   fontSizes = [
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    22,
-    24,
-    26,
-    28,
-    30,
-    32,
-    34,
-    36,
-    38,
-    40,
-    42,
-    44,
-    46,
-    48,
-    50,
-    52,
-    54,
-    56,
-    58,
-    60,
-    62,
-    64,
-    66,
-    68,
-    70,
+    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
+    48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70,
   ];
   unitFormats = kbn.getUnitFormats();
   operatorOptions = [
@@ -123,7 +85,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   initialized: boolean;
   panelContainer: any;
   d3Object: D3Wrapper;
-  data: any;
   series: any[];
   templateSrv: any;
   overridesCtrl: MetricOverridesManager;
@@ -134,8 +95,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   svgContainer: any;
   panelWidth: any;
   panelHeight: any;
-
   panelDefaults = {
+    nullPointMode: 'connected',
     savedComposites: [],
     savedOverrides: [], // Array<MetricOverride>(),
     colors: ['#299c46', '#ED8128', '#d44a3a', '#4040a0'],
@@ -154,6 +115,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: '',
       defaultClickThroughNewTab: false,
       defaultClickThroughSanitize: false,
+      ellipseEnabled: false,
+      ellipseCharacters: 18,
       fontAutoScale: true,
       fontSize: 12,
       fontType: 'Roboto',
@@ -194,7 +157,12 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     super($scope, $injector);
     // merge existing settings with our defaults
     _.defaultsDeep(this.panel, this.panelDefaults);
-
+    // @ts-ignore
+    this.useDataFrames = true;
+    this.processor = new DataProcessor({
+      xaxis: { mode: 'custom' },
+      aliasColors: {},
+    });
     this.d3DivId = 'd3_svg_' + this.panel.id;
     this.containerDivId = 'container_' + this.d3DivId;
     this.initialized = false;
@@ -205,28 +173,17 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.panelHeight = null;
     this.polystatData = [] as PolystatModel[];
     this.d3Object = null;
-    this.data = [];
     this.series = [];
-    this.polystatData = [];
     this.tooltipContent = [];
     // convert old sort method to new
     this.migrateSortDirections();
     this.overridesCtrl = new MetricOverridesManager($scope, templateSrv, $sanitize, this.panel.savedOverrides);
     this.compositesManager = new CompositesManager($scope, templateSrv, $sanitize, this.panel.savedComposites);
-
-    // v6 compat
-    if (typeof PanelEvents === 'undefined') {
-      this.events.on('data-received', this.onDataReceived.bind(this));
-      this.events.on('data-error', this.onDataError.bind(this));
-      this.events.on('data-snapshot-load', this.onDataReceived.bind(this));
-      this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
-    } else {
-      // v7+ compat
-      this.events.on(PanelEvents.dataReceived, this.onDataReceived.bind(this));
-      this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
-      this.events.on(PanelEvents.dataSnapshotLoad, this.onDataReceived.bind(this));
-      this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
-    }
+    // events
+    this.events.on(PanelEvents.dataFramesReceived, this.onDataFramesReceived.bind(this));
+    this.events.on(PanelEvents.dataError, this.onDataError.bind(this));
+    this.events.on(PanelEvents.dataSnapshotLoad, this.onSnapshotLoad.bind(this));
+    this.events.on(PanelEvents.editModeInitialized, this.onInitEditMode.bind(this));
   }
 
   migrateSortDirections() {
@@ -350,7 +307,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   renderD3() {
-    this.setValues(this.data);
+    //this.setValues(this.data);
     this.clearSVG();
     if (this.panelWidth === 0) {
       this.panelWidth = this.getPanelWidthFailsafe();
@@ -377,6 +334,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderColor = 'black';
     }
 
+    // try deep copy of data so we don't get a reference and leak
+    const copiedData = _.cloneDeep(this.polystatData);
     const opt = {
       width: width,
       height: height,
@@ -384,7 +343,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       radiusAutoSize: config.radiusAutoSize,
       tooltipFontSize: config.tooltipFontSize,
       tooltipFontType: config.tooltipFontType,
-      data: this.polystatData,
+      data: copiedData,
       displayLimit: config.displayLimit,
       globalDisplayMode: config.globalDisplayMode,
       columns: config.columns,
@@ -396,6 +355,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       defaultClickThrough: this.getDefaultClickThrough(NaN),
       polystat: config,
     };
+    this.d3Object = null;
     this.d3Object = new D3Wrapper(this.templateSrv, this.svgContainer, this.d3DivId, opt);
     this.d3Object.draw();
   }
@@ -469,6 +429,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
+    //this.polystatData = dataList;
     const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
@@ -530,7 +491,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
       const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      if (mappedValue) {
+      if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
       } else {
         const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
@@ -577,21 +538,96 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     return data;
   }
 
-  onDataError(err) {
+  onDataError(err: DataFrame[]) {
     console.log(err);
-    this.onDataReceived([]);
+    this.onDataFramesReceived([]);
+    //this.onDataReceived([]);
     this.render();
   }
 
-  onDataReceived(dataList) {
-    this.series = dataList.map(this.seriesHandler.bind(this));
-    const data = {
+  onSnapshotLoad(dataList: LegacyResponseData[]) {
+    this.onDataFramesReceived(getProcessedDataFrames(dataList));
+  }
+
+  seriesToPolystat(globalOperatorName: string, data: any) {
+    const converted = Transformers.TimeSeriesToPolystat(globalOperatorName, data);
+    return converted;
+  }
+
+  tableToPolystat(globalOperatorName: string, data: any) {
+    return null;
+  }
+
+  onDataReceived(data: any) {
+    const allData: PolystatModel[] = [];
+    const config: PolystatConfigs = this.panel.polystat;
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      switch (item.type) {
+        case 'table':
+          const tableConverted = this.tableToPolystat(config.globalOperatorName, item);
+          if (tableConverted) {
+            allData.push(tableConverted);
+          }
+          break;
+        default:
+          const seriesConverted = this.seriesToPolystat(config.globalOperatorName, item);
+          if (seriesConverted) {
+            allData.push(seriesConverted);
+          }
+          break;
+      }
+    }
+    this.setValues(allData);
+    this.render();
+  }
+
+  onDataFramesReceived(data: DataFrame[]) {
+    //console.log(JSON.stringify(data));
+    // check if data contains a field called Time of type time
+    data = InsertTime(data);
+    // if it does not, insert one with time "now"
+    this.series = this.processor.getSeriesList({ dataList: data, range: this.range }).map((ts) => {
+      ts.color = undefined; // remove whatever the processor set
+      // TODO: this needs to be added to the editor options
+      ts.flotpairs = ts.getFlotPairs(this.panel.nullPointMode);
+      return ts;
+    });
+
+    // @ts-ignore
+    this.dataWarning = null;
+    const datapointsCount = _.reduce(
+      this.series,
+      (sum, series) => {
+        return sum + series.datapoints.length;
+      },
+      0
+    );
+
+    if (datapointsCount === 0) {
+      // @ts-ignore
+      this.dataWarning = {
+        title: 'No data points',
+        tip: 'No datapoints returned from data query',
+      };
+    } else {
+      for (const series of this.series) {
+        if (series.isOutsideRange) {
+          // @ts-ignore
+          this.dataWarning = {
+            title: 'Data points outside time range',
+            tip: 'Can be caused by timezone mismatch or missing time filter in query',
+          };
+          break;
+        }
+      }
+    }
+    const dataNew = {
       value: 0,
       valueFormatted: 0,
       valueRounded: 0,
     };
-    this.setValues(data);
-    this.data = data;
+    this.setValues(dataNew);
     this.render();
   }
 
@@ -752,7 +788,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
     url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
     // process template variables inside clickthrough
-    url = this.templateSrv.replaceWithText(url);
+    url = this.templateSrv.replace(url, 'text');
     return url;
   }
 

@@ -2,8 +2,7 @@ import _ from 'lodash';
 import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { stringToJsRegex } from '@grafana/data';
-import { getMappedValue } from '@grafana/data';
+import { getMappedValue, stringToJsRegex } from '@grafana/data';
 import { convertOldAngularValueMapping } from '@grafana/ui';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
 import { PolystatModel } from './polystatmodel';
@@ -15,15 +14,19 @@ export class MetricOverridesManager {
   templateSrv: any;
   suggestMetricNames: any;
   activeOverrideIndex: number;
+  customSplitDelimiter: string;
 
   constructor($scope, templateSrv, $sanitize, metricOverrides: MetricOverride[]) {
     this.$scope = $scope;
     this.$sanitize = $sanitize;
     this.templateSrv = templateSrv;
+    // note: this delimiter appears to not work when referenced this way
+    // TODO: use this as a constant (test)
+    this.customSplitDelimiter = '#️⃣🔠🆗🆗🔠#️⃣';
     this.activeOverrideIndex = 0;
     // typeahead requires this form
     this.suggestMetricNames = () => {
-      return _.map(this.$scope.ctrl.series, series => {
+      return _.map(this.$scope.ctrl.series, (series) => {
         return series.alias;
       });
     };
@@ -74,7 +77,7 @@ export class MetricOverridesManager {
 
   metricNameChanged(override: MetricOverride) {
     // TODO: validate item is a valid regex
-    console.log("metricNameChanged: '" + override.metricName + "'");
+    // console.log("metricNameChanged: '" + override.metricName + "'");
     this.$scope.ctrl.refresh();
   }
 
@@ -87,6 +90,9 @@ export class MetricOverridesManager {
     const resolvedOverrides = this.resolveOverrideTemplates();
     for (let index = 0; index < resolvedOverrides.length; index++) {
       const anOverride = resolvedOverrides[index];
+      // TODO: might be needed
+      //const escaped = escapeStringForRegex(anOverride.metricName)
+      //const regex = stringToJsRegex(escaped);
       const regex = stringToJsRegex(anOverride.metricName);
       const matches = pattern.match(regex);
       if (matches && matches.length > 0 && anOverride.enabled) {
@@ -99,13 +105,17 @@ export class MetricOverridesManager {
   resolveOverrideTemplates(): any[] {
     const ret: any[] = [];
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
-    this.metricOverrides.forEach(override => {
+    this.metricOverrides.forEach((override) => {
       // Resolve templates in series names
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
-        matchResult.forEach(template => {
-          const resolvedSeriesNames = this.templateSrv.replace(template, this.templateSrv.ScopedVars, 'csv').split(',');
-          resolvedSeriesNames.forEach(seriesName => {
+        matchResult.forEach((template) => {
+          const resolvedSeriesNames = this.templateSrv
+            .replace(template, this.templateSrv.ScopedVars, this.customFormatter)
+            .split('#️⃣🔠🆗🆗🔠#️⃣');
+          //const resolvedSeriesNames = this.templateSrv
+          //  .replace(template, this.templateSrv.ScopedVars, 'raw');
+          resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
               ...override,
@@ -120,6 +130,13 @@ export class MetricOverridesManager {
     });
 
     return ret;
+  }
+
+  customFormatter(value: any) {
+    if (Object.prototype.toString.call(value) === '[object Array]') {
+      return value.join('#️⃣🔠🆗🆗🔠#️⃣');
+    }
+    return value;
   }
 
   applyOverrides(data: PolystatModel[]) {
@@ -144,7 +161,7 @@ export class MetricOverridesManager {
         // format it
         const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
         const mappedValue = getMappedValue(mappings, data[index].value.toString());
-        if (mappedValue) {
+        if (mappedValue && mappedValue.text !== '') {
           data[index].valueFormatted = mappedValue.text;
         } else {
           const formatFunc = kbn.valueFormats[anOverride.unitFormat];
@@ -159,7 +176,7 @@ export class MetricOverridesManager {
         data[index].suffix = anOverride.suffix;
         // set the url, replace template vars
         if (anOverride.clickThrough && anOverride.clickThrough.length > 0) {
-          let url = this.templateSrv.replaceWithText(anOverride.clickThrough);
+          let url = this.templateSrv.replace(anOverride.clickThrough, 'text');
           // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
           url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
           url = ClickThroughTransformer.tranformNthMetric(url, data);
