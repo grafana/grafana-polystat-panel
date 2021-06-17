@@ -48,13 +48,19 @@ workflows:
           requires:
           - code_coverage_frontend
       - package:
+          context:
+            - Plugins
           requires:
           - build_frontend
           - build_docs
       - copy_artifacts_to_gcs:
+          context:
+            - Plugins
           requires:
           - package
       - report:
+          context:
+            - Plugins
           requires:
           - package
           - upload_coverage
@@ -64,20 +70,28 @@ workflows:
           - report
           filters: *filter-only-release
       - publish_gcs_release:
+          context:
+            - Plugins
           requires:
             - approve_release
           filters: *filter-only-release
       - publish_github_release:
+          context:
+            - Plugins
           requires:
           - approve_release
           filters: *filter-only-release
       - approve_publish_to_gcom:
+          context:
+            - Plugins
           type: approval
           requires:
           - publish_github_release
           - publish_gcs_release
           filters: *filter-only-release
       - publish_to_gcom:
+          context:
+            - Plugins
           requires:
           - approve_publish_to_gcom
           filters: *filter-only-release
