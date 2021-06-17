@@ -542,7 +542,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
       const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      if (mappedValue && mappedValue.text !== "") {
+      if (mappedValue) {
         data[index].valueFormatted = mappedValue.text;
       } else {
         const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
