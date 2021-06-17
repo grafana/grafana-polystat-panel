@@ -132,7 +132,7 @@ jobs:
       - run:
           name: Build docs
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-docs
+            npx grafana-toolkit plugin:ci-docs
             [ -d "dist" ] || circleci-agent step halt
       - persist_to_workspace:
           root: .
@@ -150,8 +150,8 @@ jobs:
       - run:
           name: Build and test frontend
           command: |
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build
-            ./node_modules/.bin/grafana-toolkit plugin:ci-build --finish
+            npx grafana-toolkit plugin:ci-build
+            npx grafana-toolkit plugin:ci-build --finish
       - persist_to_workspace:
           root: .
           paths:
@@ -214,7 +214,7 @@ jobs:
             #
             # ci-package will create the zip file
             #
-            ./node_modules/.bin/grafana-toolkit plugin:ci-package
+            npx grafana-toolkit plugin:ci-package
             #
             #
             PLUGIN_NAME=`cat ci/dist/plugin.json|jq '.id'| sed s/\"//g`
@@ -263,7 +263,7 @@ jobs:
     - run:
         name: Toolkit report
         command: |
-          ./node_modules/.bin/grafana-toolkit plugin:ci-report
+          npx grafana-toolkit plugin:ci-report
     - store_artifacts:
         path: ci
 
