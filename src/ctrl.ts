@@ -14,7 +14,7 @@ import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './util
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
-import { LegacyResponseData, DataFrame, getMappedValue, PanelEvents } from '@grafana/data';
+import { LegacyResponseData, DataFrame, getMappedValue, PanelEvents, stringToJsRegex } from '@grafana/data';
 import { DataProcessor } from './core/data_processor';
 import { getProcessedDataFrames } from './core/dataframe';
 import { InsertTime } from './data/deframer';
@@ -149,6 +149,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipTimestampEnabled: true,
       tooltipEnabled: true,
       valueEnabled: true,
+	  regexPattern: '',
     },
   };
 
@@ -305,6 +306,37 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       $('#' + this.d3DivId + '-tooltip').remove();
     }
   }
+  
+  applyRegexPattern() {
+    let seriesList = this.series;
+    for (let i = 0; i < seriesList.length; i++) {
+      if (this.panel.polystat.regexPattern !== '' && this.panel.polystat.regexPattern !== undefined) {
+        const regexVal = stringToJsRegex(this.panel.polystat.regexPattern);
+        if (seriesList[i].id && regexVal.test(seriesList[i].id.toString())) {
+          const temp = regexVal.exec(seriesList[i].id.toString());
+          if (!temp) {
+            continue;
+          }
+          let extractedtxt = '';
+          if (temp.length > 1) {
+            temp.slice(1).forEach((value, i) => {
+              if (value) {
+                extractedtxt += extractedtxt.length > 0 ? ' ' + value.toString() : value.toString();
+              }
+            });
+            seriesList[i].alias = extractedtxt;
+            seriesList[i].label = extractedtxt;
+          }
+        }
+      }
+      else {
+        seriesList[i].alias = seriesList[i].id;
+        seriesList[i].label = seriesList[i].id;
+
+      }
+    }
+    this.series = seriesList;
+  }
 
   renderD3() {
     //this.setValues(this.data);
@@ -363,6 +395,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   removeValueMap(map) {
     const index = _.indexOf(this.panel.valueMaps, map);
     this.panel.valueMaps.splice(index, 1);
+    this.render();
+  }
+  
+  applyRegex() {
+    this.applyRegexPattern();
     this.render();
   }
 
@@ -433,6 +470,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
+    this.applyRegexPattern();
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         const aSeries = this.series[index];
