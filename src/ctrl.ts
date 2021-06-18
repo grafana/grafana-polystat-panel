@@ -488,13 +488,13 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     );
     // this needs to be performed after sorting rules are applied
     // apply overrides
-    if(this.overridesCtrl.metricOverrides.length == 0) {
+    if(this.overridesCtrl.metricOverrides.length === 0 || this.overridesCtrl.metricOverrides.length !== this.panel.savedOverrides) {
       this.overridesCtrl.metricOverrides = this.panel.savedOverrides;
     }
     this.overridesCtrl.applyOverrides(this.polystatData);
 
     // apply composites, this will filter as needed and set clickthrough
-    if(this.compositesManager.metricComposites.length == 0) {
+    if(this.compositesManager.metricComposites.length === 0 || this.compositesManager.metricComposites.length !== this.panel.savedComposites) {
       this.compositesManager.metricComposites = this.panel.savedComposites;
     }
     this.polystatData = this.compositesManager.applyComposites(this.polystatData);
