@@ -306,7 +306,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       $('#' + this.d3DivId + '-tooltip').remove();
     }
   }
-  
+
   applyRegexPattern() {
     let seriesList = this.series;
     for (let i = 0; i < seriesList.length; i++) {
@@ -397,7 +397,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.panel.valueMaps.splice(index, 1);
     this.render();
   }
-  
+
   applyRegex() {
     this.applyRegexPattern();
     this.render();
@@ -488,9 +488,17 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     );
     // this needs to be performed after sorting rules are applied
     // apply overrides
+    if(this.overridesCtrl.metricOverrides.length == 0) {
+      this.overridesCtrl.metricOverrides = this.panel.savedOverrides;
+    }
     this.overridesCtrl.applyOverrides(this.polystatData);
+
     // apply composites, this will filter as needed and set clickthrough
+    if(this.compositesManager.metricComposites.length == 0) {
+      this.compositesManager.metricComposites = this.panel.savedComposites;
+    }
     this.polystatData = this.compositesManager.applyComposites(this.polystatData);
+
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
