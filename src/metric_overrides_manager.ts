@@ -206,5 +206,6 @@ export class MetricOverridesManager {
 
   setUnitFormat(override, subItem) {
     override.unitFormat = subItem.value;
+    this.$scope.ctrl.refresh();
   }
 }
