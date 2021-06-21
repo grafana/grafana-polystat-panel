@@ -840,6 +840,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   setGlobalUnitFormat(subItem) {
     this.panel.polystat.globalUnitFormat = subItem.value;
+    this.panel.refresh();
   }
 }
 
