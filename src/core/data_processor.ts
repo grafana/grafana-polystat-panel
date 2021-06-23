@@ -51,7 +51,7 @@ export class DataProcessor {
           const fieldValues = field.values.get(r);
           const timeValues = timeField.values.get(r);
           // make sure there are values, this can end up being undefined
-          if (fieldValues) {
+          if (typeof fieldValues !== undefined) {
             datapoints.push([fieldValues, timeValues]);
           }
         }

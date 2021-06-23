@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v1.2.5
+
+- Fix for null data from a query stopping processing other queries
+
 ## v1.2.4
 
 - Convert to use dataframes
