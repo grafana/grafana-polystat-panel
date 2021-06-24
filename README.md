@@ -284,7 +284,7 @@ Then browse to <http://localhost:3000>
 
 ## External Dependencies
 
-* Grafana 6.5.3+
+* Grafana 7.3+
 
 ## Enable Grafana TestData
 
