@@ -1,0 +1,71 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+{
+  "manifestVersion": "2.0.0",
+  "signatureType": "grafana",
+  "signedByOrg": "grafana",
+  "signedByOrgName": "Grafana Labs",
+  "plugin": "grafana-polystat-panel",
+  "version": "1.2.5",
+  "time": 1624758164613,
+  "keyId": "7e4d0c6a708866e7",
+  "files": {
+    "dark.js": "fff3149cb5b5f0bf129e44556950e4d748de1568754654609fa13f0ea8fc5bf3",
+    "light.js": "1d62878c5581538acfcbcc0e9c4550517a7820cf6234a954a386e6e2e365c7c5",
+    "module.js": "d63b058a77ee7a32eed323dbb1c9d9cdd8b4aa05e9153be8dd86e2082ad1f3b9",
+    "module.js.LICENSE.txt": "0d8f66cd4afb566cb5b7e1540c68f43b939d3eba12ace290f18abc4f4cb53ed0",
+    "dark.js.map": "e117e9e155d036a51c68c7dc5830d57ed02ac7d14c469c0d29356a87e81de2cc",
+    "light.js.map": "9d75b04323f2863737f4f11cd6a241bf681377b9549a76c411fefbca125a3ccb",
+    "module.js.map": "a85d52db9b7f160cd30530166fa22cac7427545f22144ad03a46e6adf9713c5c",
+    "plugin.json": "0bc77b6c7d67f69453de3d1b66aa5f45bf69ccbfb1d1a139478a507b296bed4e",
+    "README.md": "5ce9996813e8621e0223b719f5cc2acca84f8d070769d99a94a74504bcfe25a7",
+    "CHANGELOG.md": "a7826f6a42e9e9883424d298cc66b54b21a8874c7b599bd3a31e4bada39619d0",
+    "LICENSE": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "partials/editor.mappings.html": "f6bea74f2ddad164af04912e512b3bfbe228acb35b9f74f50a9cb8644dafb964",
+    "partials/editor.composites.html": "78e6041edfbbc085975f35bb53a56216406c841c790f827abe52144bc70b97a1",
+    "partials/template.html": "30bab805274f200a5e199cd3b90836500c0379c6d78736e9017ff391f182ad86",
+    "partials/editor.overrides.html": "916933741e3484ba5a49b8bfe3a9ae28d0527722b6aee60d6df65c33cb06d934",
+    "partials/thresholds.html": "7e16fe758e2f488215bbf70fcb3e73ad681cb0740522fdb5f9795031630a3050",
+    "partials/editor.options.html": "6c9e52c645b514b529f65e94b1b5d6e011bb5f635f2e7bfae41edf81cb9ab209",
+    "styles/dark.css": "47a4e3008c8bf904f8d315128b2cea0a9fc0f58ffea1400b31e9da584a34bc62",
+    "styles/light.css": "47a4e3008c8bf904f8d315128b2cea0a9fc0f58ffea1400b31e9da584a34bc62",
+    "img/screenshots/polystat-composites-all.png": "6cec49bff1427d6c643f10ef0755033f9f508ac515ffdd20c45e14c517578314",
+    "img/screenshots/polystat-composite-example1.png": "f4888b389ece9294a5986d7aa04be94017021c3a952822e79d633b9caeec3754",
+    "img/screenshots/polystat-animate1.gif": "ea7d4bf6cec14328ec969efb1c115623720e87fefd3f3d091dc69e90e104da60",
+    "img/screenshots/polystat-composites-with-tooltip.png": "4933080370ea46754266fa362c18b3b6e44ea5d420cb6b02cf8a874969d6eb36",
+    "img/screenshots/polystat-composites-animated.png": "21e3071744df8d127df9fe4279ddd87b9630279f3771b7dbed5da920a2b56cb2",
+    "img/screenshots/polystat-composites.png": "cf4bbff0d271a2d4e96104da3441064710e2bbd5f419601a60bf9f57ea2118aa",
+    "img/screenshots/polystat-gpu-no-composite.png": "a9d68d1eb830c6518cf0398487fb1318558995fb8789cd0d18f69464483cd905",
+    "img/screenshots/polystat-gpu-state-composites.png": "81be3815effe2a6e9a1cc80476be7bf2c8e3049b92078b19b25c837fbfd8cbe8",
+    "img/screenshots/polystat-options-animation.png": "43d6d38f04978fe4fa92e2704a7c8fef0518a828d6555687e332fe059e5b7967",
+    "img/screenshots/polystat-options-global.png": "2f3cccf1b7ef95cde27af352ce4f6a304ff31c4f5a6ca3964c8803aa31495761",
+    "img/screenshots/polystat-options-layout.png": "9e8597a9a6416e92e99ef8c1371caf7145734d8985f7a4cb8e969fe14629433e",
+    "img/screenshots/polystat-options-all.png": "7dd25293abfbfe67b22a3776fce578a372d878fa036c92700c030704ea920542",
+    "img/screenshots/polystat-options-sizing.png": "9dbefebe735e8a35d665be3bd76ef2b5e0ae819a5a6a6542e196e780ea2cd299",
+    "img/screenshots/polystat-options-show-all-example.png": "f51fea93def12b9a748c1ad35f71f3984c9d4c220f598e2b5b73ecc89af0395d",
+    "img/screenshots/polystat-options-sorting.png": "7b53fdb2303ac5516be3d65de7d1a9c3b7619c841aba05c503cab5069f0a3a86",
+    "img/screenshots/polystat-options-tooltips.png": "d57e3a5ced556bd83450a2bc98bd6b1e888b9d7fade2d57c3032b568cde91e19",
+    "img/screenshots/polystat-overrides-no-thresholds.png": "af92d2ed4d3aca3c926062897a45916e66c792945c4cb8e3cae0c85a624dcb70",
+    "img/screenshots/polystat-overrides-all.png": "489d3709e6ea90ea869503462cd6dfc019159ff474b082074fe91d62846180bf",
+    "img/screenshots/polystat-scaled2.png": "3de6fd6ba04b5121cd61d70477d9f355b679a9d03e50ffe2de5e5c41d6450a80",
+    "img/screenshots/polystat-scaled1.png": "0861cd567b5818137c2a164b28ffdd8d1de5dc3715157ebe38a6c336fc088783",
+    "img/screenshots/polystat-scaled3.png": "b545ee2df0877b9f5296361d3edc1bf377393fb4fc42b408a3ff3f1e284ce7ce",
+    "img/screenshots/polystat-tooltip.png": "61d0b58840f7c406a54d35c34dde505cbeaea74aca8378d1c6b3e304a97a764c",
+    "img/screenshots/polystat-overrides-gpu0-rendered.png": "3448665e19cd880d37b5f827287996ec9f7aa50443869749eba2e7d692bf5646",
+    "img/honeycomb-svgrepo-com.svg": "f1e244f5aaec0a4cdc943eb7ba2524f9ef53aaebe3e2688416b2a33468dd8459",
+    "img/polystat.svg": "bd94037df78ece840c59cb72e1f4c0e94682af6c436aa287d85694d1b50315e3",
+    "img/logo-credit.html": "44ea34b46fc8538cec8193f3dbd1b9fa56f297b10d53f8c9176dfd73308fe920"
+  }
+}
+-----BEGIN PGP SIGNATURE-----
+Version: OpenPGP.js v4.10.1
+Comment: https://openpgpjs.org
+
+wqIEARMKAAYFAmDX15QACgkQfk0ManCIZucp6wIJAQ+UdCmKZkEUcLln7UDT
+bTEA1btnEUZ3UBQHm/ztT8OqIQgDU6bE/yEr2rip3A6GUSEUfl5T+WdbJTEF
+Hub0fA+EAgkByGdjMlKO93JAyJej9KUejx1+Ce+HB3ci11Hb7N2Vh8Nllc/n
+KKTXB7pPcLs7jNSwHxvuqBgjX1HlCRCmwzgjCMA=
+=SjaS
+-----END PGP SIGNATURE-----
