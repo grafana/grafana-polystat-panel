@@ -240,7 +240,7 @@
         <div class="gf-form">
           <label class="gf-form-label width-11">Polygon Fill Color</label>
           <span class="gf-form-label">
-            <spectrum-picker ng-model="ctrl.panel.polystat.polygonGlobalFillColor" ng-change="ctrl.updatePolygonGlobalFillColor()"></spectrum-picker>
+            <spectrum-picker ng-model="ctrl.panel.polystat.polygonGlobalFillColor" ng-change="ctrl.refresh()"></spectrum-picker>
           </span>
         </div>
       </div>
@@ -287,6 +287,16 @@
       </gf-form-switch>
       <gf-form-switch class="gf-form" label-class="width-9" label="Open in new tab" checked="ctrl.panel.polystat.defaultClickThroughNewTab" on-change="ctrl.render()">
       </gf-form-switch>
+    </div>
+  </div>
+	
+  <div class="section gf-form-group">
+    <h5 class="section-heading">Regex</h5>
+    <div class="gf-form">
+      <label class="gf-form-label width-8">Regex Pattern
+        <tip>Optional, The values in the specified column are filtered and displayed according to this regex. Ex: String: Url|broadcom.com|mirror|location-1 regex: /Url\|(.*?)\|/ Output: broadcom.com</tip>
+      </label>
+      <input type="text" class="gf-form-input" ng-model="ctrl.panel.polystat.regexPattern" ng-blur="ctrl.refresh()" placeholder="regex">
     </div>
   </div>
 
