@@ -77,6 +77,23 @@ Show triggered
 
 ![Show all example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-show-all-example.png)
 
+### Global Aliasing
+
+This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name.
+
+If you have these 3 Queries, returning a series:
+Foo-A, values 1,2,3
+Bar-B, values 4,5,6
+Misc, values 7,8,9
+
+![Before Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/regex-alias-before.png)
+
+Adding the regular expression: `/(Foo|Bar)/`, will display:
+
+![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/regex-alias-after.png)
+
+Specify a regular expression to pick a portion of matching metric names.
+
 ### Actions
 
 #### Click Through
