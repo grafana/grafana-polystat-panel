@@ -10,7 +10,7 @@ import { PolystatModel } from './polystatmodel';
 import { MetricOverridesManager } from './metric_overrides_manager';
 import { CompositesManager } from './composites_manager';
 import { Tooltip } from './tooltip';
-import { GetDecimalsForValue, RGBToHex, SortVariableValuesByField } from './utils';
+import { GetDecimalsForValue, SortVariableValuesByField } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
@@ -131,8 +131,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       hexagonSortByField: 'name',
       maxMetrics: 0,
       polygonBorderSize: 2,
-      polygonBorderColor: 'black',
-      polygonGlobalFillColor: '#0a50a1',
+      polygonBorderColor: 'rgb(0,0,0)',
+      polygonGlobalFillColor: 'rgb(10, 80, 161)',
       radius: '',
       radiusAutoSize: true,
       rows: '',
@@ -149,7 +149,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       tooltipTimestampEnabled: true,
       tooltipEnabled: true,
       valueEnabled: true,
-	  regexPattern: '',
+      regexPattern: '',
     },
   };
 
@@ -328,11 +328,9 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
             seriesList[i].label = extractedtxt;
           }
         }
-      }
-      else {
+      } else {
         seriesList[i].alias = seriesList[i].id;
         seriesList[i].label = seriesList[i].id;
-
       }
     }
     this.series = seriesList;
@@ -363,7 +361,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderSize = 0;
     }
     if (typeof config.polygonBorderColor === 'undefined') {
-      config.polygonBorderColor = 'black';
+      config.polygonBorderColor = 'rgb(0,0,0)';
     }
 
     // try deep copy of data so we don't get a reference and leak
@@ -488,13 +486,19 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     );
     // this needs to be performed after sorting rules are applied
     // apply overrides
-    if(this.overridesCtrl.metricOverrides.length === 0 || this.overridesCtrl.metricOverrides.length !== this.panel.savedOverrides) {
+    if (
+      this.overridesCtrl.metricOverrides.length === 0 ||
+      this.overridesCtrl.metricOverrides.length !== this.panel.savedOverrides
+    ) {
       this.overridesCtrl.metricOverrides = this.panel.savedOverrides;
     }
     this.overridesCtrl.applyOverrides(this.polystatData);
 
     // apply composites, this will filter as needed and set clickthrough
-    if(this.compositesManager.metricComposites.length === 0 || this.compositesManager.metricComposites.length !== this.panel.savedComposites) {
+    if (
+      this.compositesManager.metricComposites.length === 0 ||
+      this.compositesManager.metricComposites.length !== this.panel.savedComposites
+    ) {
       this.compositesManager.metricComposites = this.panel.savedComposites;
     }
     this.polystatData = this.compositesManager.applyComposites(this.polystatData);
@@ -815,16 +819,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       }
     }
     this.panel.polystat.polygonBorderSize = newBorderSize;
-    this.render();
-  }
-
-  updatePolygonBorderColor() {
-    this.panel.polystat.polygonBorderColor = RGBToHex(this.panel.polystat.polygonBorderColor);
-    this.render();
-  }
-
-  updatePolygonGlobalFillColor() {
-    this.panel.polystat.polygonGlobalFillColor = RGBToHex(this.panel.polystat.polygonGlobalFillColor);
     this.render();
   }
 

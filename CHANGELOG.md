@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v1.2.6
+
+- Add support for global aliasing using regular expression
+- Fix custom border color #197
+- Updated docs
+
 ## v1.2.5
 
 - Fix for null data from a query stopping processing other queries
