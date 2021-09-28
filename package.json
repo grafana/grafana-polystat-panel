@@ -20,9 +20,9 @@
   },
   "devDependencies": {
     "@babel/helper-validator-option": "^7.14.5",
-    "@grafana/data": "7.3.7",
+    "@grafana/data": "7.3.10",
     "@grafana/toolkit": "8.1.5",
-    "@grafana/ui": "7.3.7",
+    "@grafana/ui": "7.3.10",
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
@@ -31,7 +31,7 @@
     "tslib": "^2.3.1"
   },
   "engines": {
-    "node": ">=14.5.0"
+    "node": ">= 14.5.0"
   },
   "jest": {
     "moduleNameMapper": {
