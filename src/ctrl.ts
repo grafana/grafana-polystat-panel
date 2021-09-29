@@ -591,7 +591,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   onDataError(err: DataFrame[]) {
     console.log(err);
     this.onDataFramesReceived([]);
-    //this.onDataReceived([]);
     this.render();
   }
 
@@ -606,30 +605,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   tableToPolystat(globalOperatorName: string, data: any) {
     return null;
-  }
-
-  onDataReceived(data: any) {
-    const allData: PolystatModel[] = [];
-    const config: PolystatConfigs = this.panel.polystat;
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      switch (item.type) {
-        case 'table':
-          const tableConverted = this.tableToPolystat(config.globalOperatorName, item);
-          if (tableConverted) {
-            allData.push(tableConverted);
-          }
-          break;
-        default:
-          const seriesConverted = this.seriesToPolystat(config.globalOperatorName, item);
-          if (seriesConverted) {
-            allData.push(seriesConverted);
-          }
-          break;
-      }
-    }
-    this.setValues(allData);
-    this.render();
   }
 
   onDataFramesReceived(data: DataFrame[]) {
