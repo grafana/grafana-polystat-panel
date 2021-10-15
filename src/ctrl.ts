@@ -80,7 +80,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     { value: 6, text: 'Alphabetical (case-insensitive, desc)' },
   ];
 
-  dataRaw: any;
   polystatData: PolystatModel[];
   initialized: boolean;
   panelContainer: any;
@@ -448,23 +447,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     });
   }
 
-  setValues(dataList) {
-    this.dataRaw = dataList;
-    // automatically correct transform mode based on data
-    if (this.dataRaw && this.dataRaw.length) {
-      if (this.dataRaw[0].type === 'table') {
-        this.panel.transform = 'table';
-      } else {
-        if (this.dataRaw[0].type === 'docs') {
-          this.panel.transform = 'json';
-        } else {
-          if (this.panel.transform === 'table' || this.panel.transform === 'json') {
-            this.panel.transform = 'timeseries_to_rows';
-          }
-        }
-      }
-    }
-    //this.polystatData = dataList;
+  setValues() {
     const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
@@ -472,8 +455,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         const aSeries = this.series[index];
-        const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
-        this.polystatData.push(converted);
+        // omit series with no datapoints
+        if (aSeries.datapoints.length > 0) {
+          const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
+          this.polystatData.push(converted);
+        }
       }
     }
     // apply global unit formatting and decimals
@@ -540,19 +526,21 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     const mappings = convertOldAngularValueMapping(this.panel);
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
-      const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      if (mappedValue && mappedValue.text !== '') {
-        data[index].valueFormatted = mappedValue.text;
-      } else {
-        const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
-        if (formatFunc) {
-          const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
-          data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
-          data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+      if (data[index].value !== null) {
+        const mappedValue = getMappedValue(mappings, data[index].value.toString());
+        if (mappedValue && mappedValue.text !== '') {
+          data[index].valueFormatted = mappedValue.text;
+        } else {
+          const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+          if (formatFunc) {
+            const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+            data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
+            data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+          }
         }
+        // default the color to the global setting
+        data[index].color = this.panel.polystat.polygonGlobalFillColor;
       }
-      // default the color to the global setting
-      data[index].color = this.panel.polystat.polygonGlobalFillColor;
     }
   }
 
@@ -647,12 +635,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
-    const dataNew = {
-      value: 0,
-      valueFormatted: 0,
-      valueRounded: 0,
-    };
-    this.setValues(dataNew);
+    this.setValues();
     this.render();
   }
 
