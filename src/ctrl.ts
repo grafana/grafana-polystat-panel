@@ -501,25 +501,14 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
-    // now sort
+    // now sort by field specified
     this.polystatData = SortVariableValuesByField(
       this.polystatData,
-      'name',
+      this.panel.polystat.hexagonSortByField,
       this.panel.polystat.hexagonSortByDirection
     );
-    this.polystatData = _.orderBy(this.polystatData, this.sortByField([this.panel.polystat.hexagonSortByField]), [
-      this.panel.polystat.hexagonSortByDirection,
-    ]);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, config);
-  }
-
-  sortByField(o: any) {
-    if (isNaN(o.name)) {
-      return o.name;
-    } else {
-      return Number(o.name);
-    }
   }
 
   applyGlobalFormatting(data: any) {
