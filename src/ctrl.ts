@@ -130,8 +130,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       hexagonSortByField: 'name',
       maxMetrics: 0,
       polygonBorderSize: 2,
-      polygonBorderColor: 'rgb(0,0,0)',
-      polygonGlobalFillColor: 'rgb(10, 80, 161)',
+      polygonBorderColor: '#000000',
+      polygonGlobalFillColor: '#0a55a1', // 'rgb(10, 80, 161)'  '#0a55a1'
       radius: '',
       radiusAutoSize: true,
       rows: '',
@@ -360,7 +360,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderSize = 0;
     }
     if (typeof config.polygonBorderColor === 'undefined') {
-      config.polygonBorderColor = 'rgb(0,0,0)';
+      config.polygonBorderColor = '#000000';
     }
 
     // try deep copy of data so we don't get a reference and leak
