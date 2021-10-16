@@ -18,7 +18,7 @@ describe('Utils GetDecimalsForValue', () => {
 });
 
 describe('Utils SortVariableValuesByField', () => {
-  describe('Simple Alphabetal Data', () => {
+  describe('Simple Alphabetal Label', () => {
     const testData = [
       {
         name: 'C',
@@ -33,51 +33,96 @@ describe('Utils SortVariableValuesByField', () => {
         value: 2.0,
       },
     ];
-    it('returns same ordered data (no-sorting) (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 0);
-      expect(result).toStrictEqual(testData);
+    describe('Using name field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 1);
+        expect(result[0].name).toBe('A');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns descending case sensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 2);
+        expect(result[0].name).toBe('C');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('A');
+      });
+      it('returns same order (numerical asc)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 3);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 4);
+        expect(result[0].name).toBe('B');
+        expect(result[1].name).toBe('A');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 5);
+        expect(result[0].name).toBe('A');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 6);
+        expect(result[0].name).toBe('C');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('A');
+      });
     });
-    it('returns ascending case sensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 1);
-      expect(result[0].name).toBe('A');
-      expect(result[1].name).toBe('B');
-      expect(result[2].name).toBe('C');
-    });
-    it('returns descending case sensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 2);
-      expect(result[0].name).toBe('C');
-      expect(result[1].name).toBe('B');
-      expect(result[2].name).toBe('A');
-    });
-    it('returns same order (numerical asc) (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 3);
-      expect(result).toStrictEqual(testData);
-    });
-    it('returns reverse order (numerical desc) (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 4);
-      expect(result[0].name).toBe('B');
-      expect(result[1].name).toBe('A');
-      expect(result[2].name).toBe('C');
-    });
-    it('returns ascending case insensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 5);
-      expect(result[0].name).toBe('A');
-      expect(result[1].name).toBe('B');
-      expect(result[2].name).toBe('C');
-    });
-    it('returns descending case insensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 6);
-      expect(result[0].name).toBe('C');
-      expect(result[1].name).toBe('B');
-      expect(result[2].name).toBe('A');
+    describe('Using value field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 1);
+        expect(result[0].name).toBe('A');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns descending case sensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 2);
+        expect(result[0].name).toBe('C');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('A');
+      });
+      it('returns numerical value ascending order (numerical asc)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 3);
+        expect(result[0].name).toBe('A');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns numerical value descending order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 4);
+        expect(result[0].name).toBe('C');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('A');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 5);
+        expect(result[0].name).toBe('A');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('C');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 6);
+        expect(result[0].name).toBe('C');
+        expect(result[1].name).toBe('B');
+        expect(result[2].name).toBe('A');
+      });
+
     });
   });
 
-  describe('Alphanumeric Data', () => {
+  describe('Alphanumeric Label', () => {
     const testData = [
       {
         name: 'A_00',
-        value: 3.0,
+        value: 0.0,
       },
       {
         name: 'A_10',
@@ -92,51 +137,337 @@ describe('Utils SortVariableValuesByField', () => {
         value: 2.0,
       },
     ];
-    it('returns same ordered data (no-sorting) (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 0);
-      expect(result).toStrictEqual(testData);
+    describe('Using name field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 1);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 2);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'name', 3);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 4);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 5);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 6);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
     });
-    it('returns ascending case sensitive Alphanumeric order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 1);
-      expect(result[0].name).toBe('A_00');
-      expect(result[1].name).toBe('A_02');
-      expect(result[2].name).toBe('A_10');
-      expect(result[3].name).toBe('A_20');
+    describe('Using value field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 1);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 2);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'value', 3);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 4);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 5);
+        expect(result[0].name).toBe('A_00');
+        expect(result[1].name).toBe('A_02');
+        expect(result[2].name).toBe('A_10');
+        expect(result[3].name).toBe('A_20');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 6);
+        expect(result[0].name).toBe('A_20');
+        expect(result[1].name).toBe('A_10');
+        expect(result[2].name).toBe('A_02');
+        expect(result[3].name).toBe('A_00');
+      });
     });
-    it('returns descending case sensitive Alphanumeric order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 2);
-      expect(result[0].name).toBe('A_20');
-      expect(result[1].name).toBe('A_10');
-      expect(result[2].name).toBe('A_02');
-      expect(result[3].name).toBe('A_00');
+  });
+
+  // numeric labels
+  describe('Numeric Label', () => {
+    const testData = [
+      {
+        name: '00',
+        value: 0.0,
+      },
+      {
+        name: '10',
+        value: 10.0,
+      },
+      {
+        name: '20',
+        value: 20.0,
+      },
+      {
+        name: '02',
+        value: 2.0,
+      },
+    ];
+    describe('Using name field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 1);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 2);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'name', 3);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 4);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 5);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 6);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
     });
-    it('returns numerical ascending (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 3);
-      expect(result[0].name).toBe('A_00');
-      expect(result[1].name).toBe('A_02');
-      expect(result[2].name).toBe('A_10');
-      expect(result[3].name).toBe('A_20');
+    describe('Using value field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 1);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 2);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'value', 3);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 4);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 5);
+        expect(result[0].name).toBe('00');
+        expect(result[1].name).toBe('02');
+        expect(result[2].name).toBe('10');
+        expect(result[3].name).toBe('20');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 6);
+        expect(result[0].name).toBe('20');
+        expect(result[1].name).toBe('10');
+        expect(result[2].name).toBe('02');
+        expect(result[3].name).toBe('00');
+      });
     });
-    it('returns reverse order (numerical desc) (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 4);
-      expect(result[0].name).toBe('A_20');
-      expect(result[1].name).toBe('A_10');
-      expect(result[2].name).toBe('A_02');
-      expect(result[3].name).toBe('A_00');
+  });
+
+  // example data from bug#204
+  describe('Alphanumeric Label', () => {
+    const testData = [
+      {
+        name: 'web_server_04',
+        value: 28.05,
+      },
+      {
+        name: 'web_server_03',
+        value: 28.64,
+      },
+      {
+        name: 'web_server_02',
+        value: 27.66,
+      },
+      {
+        name: 'web_server_01',
+        value: 21.12,
+      },
+    ];
+    describe('Using name field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 1);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_03');
+        expect(result[3].name).toBe('web_server_04');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 2);
+        expect(result[0].name).toBe('web_server_04');
+        expect(result[1].name).toBe('web_server_03');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'name', 3);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_03');
+        expect(result[3].name).toBe('web_server_04');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'name', 4);
+        expect(result[0].name).toBe('web_server_04');
+        expect(result[1].name).toBe('web_server_03');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 5);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_03');
+        expect(result[3].name).toBe('web_server_04');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'name', 6);
+        expect(result[0].name).toBe('web_server_04');
+        expect(result[1].name).toBe('web_server_03');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
     });
-    it('returns ascending case insensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 5);
-      expect(result[0].name).toBe('A_00');
-      expect(result[1].name).toBe('A_02');
-      expect(result[2].name).toBe('A_10');
-      expect(result[3].name).toBe('A_20');
-    });
-    it('returns descending case insensitive Alphabetical order (sortField: name)', () => {
-      const result = SortVariableValuesByField(testData, 'name', 6);
-      expect(result[0].name).toBe('A_20');
-      expect(result[1].name).toBe('A_10');
-      expect(result[2].name).toBe('A_02');
-      expect(result[3].name).toBe('A_00');
+    describe('Using value field', () => {
+      it('returns same ordered data (no-sorting)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 0);
+        expect(result).toStrictEqual(testData);
+      });
+      it('returns ascending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 1);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_04');
+        expect(result[3].name).toBe('web_server_03');
+      });
+      it('returns descending case sensitive Alphanumeric order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 2);
+        expect(result[0].name).toBe('web_server_03');
+        expect(result[1].name).toBe('web_server_04');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
+      it('returns numerical ascending', () => {
+        const result = SortVariableValuesByField(testData, 'value', 3);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_04');
+        expect(result[3].name).toBe('web_server_03');
+      });
+      it('returns reverse order (numerical desc)', () => {
+        const result = SortVariableValuesByField(testData, 'value', 4);
+        expect(result[0].name).toBe('web_server_03');
+        expect(result[1].name).toBe('web_server_04');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
+      it('returns ascending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 5);
+        expect(result[0].name).toBe('web_server_01');
+        expect(result[1].name).toBe('web_server_02');
+        expect(result[2].name).toBe('web_server_04');
+        expect(result[3].name).toBe('web_server_03');
+      });
+      it('returns descending case insensitive Alphabetical order', () => {
+        const result = SortVariableValuesByField(testData, 'value', 6);
+        expect(result[0].name).toBe('web_server_03');
+        expect(result[1].name).toBe('web_server_04');
+        expect(result[2].name).toBe('web_server_02');
+        expect(result[3].name).toBe('web_server_01');
+      });
     });
   });
 });

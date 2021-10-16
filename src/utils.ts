@@ -187,7 +187,12 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
       break;
     case 3: // Alphabetical Case Insensitive
       options = _.sortBy(options, (item) => {
-        return _.toLower(item[sortField]);
+        const itemContent = item[sortField];
+        if (isNaN(itemContent)) {
+          return _.toLower(item[sortField]);
+        } else {
+          return itemContent;
+        }
       });
       break;
     default:
