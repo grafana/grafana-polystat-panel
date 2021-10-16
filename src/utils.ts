@@ -195,8 +195,6 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
         }
       });
       break;
-    default:
-      break;
   }
 
   if (reverseSort) {
