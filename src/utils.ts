@@ -150,31 +150,48 @@ function RGBToHex(text: string) {
   return hex;
 }
 
-function SortVariableValuesByField(options, field: any, sortOrder: number) {
+function getTextOrValue(o: any) {
+  if (isNaN(o)) {
+    return o;
+  } else {
+    return Number(o);
+  }
+}
+
+function SortVariableValuesByField(options, sortField: string, sortOrder: number) {
   if (sortOrder === 0) {
     return options;
   }
-
   const sortType = Math.ceil(sortOrder / 2);
   const reverseSort = sortOrder % 2 === 0;
 
-  if (sortType === 1) {
-    const sortField = options[field];
-    options = _.sortBy(options, sortField);
-  } else if (sortType === 2) {
-    options = _.sortBy(options, (opt) => {
-      const matchField = opt[field];
-      const matches = matchField.match(/.*?(\d+).*/);
-      if (!matches || matches.length < 2) {
-        return -1;
-      } else {
-        return parseInt(matches[1], 10);
-      }
-    });
-  } else if (sortType === 3) {
-    options = _.sortBy(options, (opt) => {
-      return _.toLower(opt[field]);
-    });
+  switch(sortType) {
+    case 1: // Alphabetical Case Sensitive
+      options = _.sortBy(options, sortField);
+      break;
+    case 2: // Numerical with sub-match
+      options = _.sortBy(options, (item) => {
+        // if the content of the field to sort by is textual, check if there is a numerical area to sort by
+        if (isNaN(item[sortField])) {
+          const matchField = item[sortField];
+          const matches = matchField.match(/.*?(\d+).*/);
+          if (!matches || matches.length < 2) {
+            return -1;
+          } else {
+            return parseInt(matches[1], 10);
+          }
+        } else {
+          return getTextOrValue(item[sortField]);
+        }
+      });
+      break;
+    case 3: // Alphabetical Case Insensitive
+      options = _.sortBy(options, (item) => {
+        return _.toLower(item[sortField]);
+      });
+      break;
+    default:
+      break;
   }
 
   if (reverseSort) {
