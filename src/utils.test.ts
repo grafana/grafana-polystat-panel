@@ -2,7 +2,7 @@
  * Tests for utils
  */
 
-import { GetDecimalsForValue, SortVariableValuesByField } from './utils';
+import { GetDecimalsForValue, SortVariableValuesByField, getTextOrValue } from './utils';
 
 describe('Utils GetDecimalsForValue', () => {
   describe('With decimals', () => {
@@ -13,6 +13,29 @@ describe('Utils GetDecimalsForValue', () => {
     it('returns 1 decimal', () => {
       const result = GetDecimalsForValue(10.55, 1);
       expect(result.decimals).toBe(1);
+    });
+  });
+});
+
+describe('Utils getTextOrValue', () => {
+  describe('Text Content', () => {
+    it('returns text', () => {
+      const result = getTextOrValue('ABC');
+      expect(result).toBe('ABC');
+    });
+    it('returns text', () => {
+      const result = getTextOrValue('ABC_123');
+      expect(result).toBe('ABC_123');
+    });
+  });
+  describe('Numeric Content', () => {
+    it('returns number', () => {
+      const result = getTextOrValue(42);
+      expect(result).toBe(42);
+    });
+    it('returns number', () => {
+      const result = getTextOrValue('42');
+      expect(result).toBe(42);
     });
   });
 });

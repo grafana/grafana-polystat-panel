@@ -211,4 +211,5 @@ export {
   getTextWidth,
   RGBToHex,
   SortVariableValuesByField,
+  getTextOrValue,
 };
