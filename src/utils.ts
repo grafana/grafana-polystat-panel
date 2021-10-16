@@ -165,7 +165,7 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
   const sortType = Math.ceil(sortOrder / 2);
   const reverseSort = sortOrder % 2 === 0;
 
-  switch(sortType) {
+  switch (sortType) {
     case 1: // Alphabetical Case Sensitive
       options = _.sortBy(options, sortField);
       break;
