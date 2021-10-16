@@ -114,7 +114,6 @@ describe('Utils SortVariableValuesByField', () => {
         expect(result[1].name).toBe('B');
         expect(result[2].name).toBe('A');
       });
-
     });
   });
 
