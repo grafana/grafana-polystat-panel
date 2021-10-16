@@ -36,7 +36,7 @@ describe('MetricOverridesManager', () => {
   describe('Adding new override', () => {
     it('returns an override', () => {
       mgr.addMetricOverride();
-      console.log(model);
+      expect(model.operatorName).toBe('avg');
       expect(mgr.metricOverrides.length).toBe(1);
     });
   });
