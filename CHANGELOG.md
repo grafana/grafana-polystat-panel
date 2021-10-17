@@ -7,6 +7,7 @@
 - Fix for multiple queries not displaying when one or more contain no data
 - Sorting by field "value" now works #205
 - Display "NO DATA" instead of blank panel #199
+- Fix default fill color #201
 
 ## v1.2.6
 
