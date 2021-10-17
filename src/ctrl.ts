@@ -363,6 +363,19 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderColor = '#000000';
     }
 
+    if (this.polystatData.length === 0) {
+      this.d3Object = null;
+      // no data
+      this.svgContainer.innerHTML = `<div
+          style="text-align: center;
+          vertical-align: middle;
+          font-size: x-large;
+          line-height: ${height}px;"
+          id="${this.d3DivId}">
+        NO DATA
+        </div>`;
+      return;
+    }
     // try deep copy of data so we don't get a reference and leak
     const copiedData = _.cloneDeep(this.polystatData);
     const opt = {
