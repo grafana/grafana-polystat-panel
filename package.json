@@ -1,6 +1,6 @@
 {
   "name": "grafana-polystat-panel",
-  "version": "1.2.6",
+  "version": "1.2.7",
   "description": "Grafana Polystat Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
@@ -20,17 +20,18 @@
   },
   "devDependencies": {
     "@babel/helper-validator-option": "^7.14.5",
-    "@grafana/data": "7.3.7",
-    "@grafana/toolkit": "7.5.9",
-    "@grafana/ui": "7.3.7",
+    "@grafana/data": "7.3.10",
+    "@grafana/toolkit": "8.1.5",
+    "@grafana/ui": "7.3.10",
     "@types/d3": "5.7.2",
     "@types/d3-hexbin": "0.2.3",
     "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/lodash": "4.14.171",
-    "jest-canvas-mock": "2.3.1"
+    "@types/lodash": "4.14.175",
+    "jest-canvas-mock": "2.3.1",
+    "tslib": "^2.3.1"
   },
   "engines": {
-    "node": "^14.5.0"
+    "node": ">= 14.5.0"
   },
   "jest": {
     "moduleNameMapper": {

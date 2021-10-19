@@ -80,7 +80,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     { value: 6, text: 'Alphabetical (case-insensitive, desc)' },
   ];
 
-  dataRaw: any;
   polystatData: PolystatModel[];
   initialized: boolean;
   panelContainer: any;
@@ -131,8 +130,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       hexagonSortByField: 'name',
       maxMetrics: 0,
       polygonBorderSize: 2,
-      polygonBorderColor: 'rgb(0,0,0)',
-      polygonGlobalFillColor: 'rgb(10, 80, 161)',
+      polygonBorderColor: '#000000',
+      polygonGlobalFillColor: '#0a55a1', // 'rgb(10, 80, 161)'  '#0a55a1'
       radius: '',
       radiusAutoSize: true,
       rows: '',
@@ -361,9 +360,22 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
       config.polygonBorderSize = 0;
     }
     if (typeof config.polygonBorderColor === 'undefined') {
-      config.polygonBorderColor = 'rgb(0,0,0)';
+      config.polygonBorderColor = '#000000';
     }
 
+    if (this.polystatData.length === 0) {
+      this.d3Object = null;
+      // no data
+      this.svgContainer.innerHTML = `<div
+          style="text-align: center;
+          vertical-align: middle;
+          font-size: x-large;
+          line-height: ${height}px;"
+          id="${this.d3DivId}">
+        NO DATA
+        </div>`;
+      return;
+    }
     // try deep copy of data so we don't get a reference and leak
     const copiedData = _.cloneDeep(this.polystatData);
     const opt = {
@@ -448,23 +460,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     });
   }
 
-  setValues(dataList) {
-    this.dataRaw = dataList;
-    // automatically correct transform mode based on data
-    if (this.dataRaw && this.dataRaw.length) {
-      if (this.dataRaw[0].type === 'table') {
-        this.panel.transform = 'table';
-      } else {
-        if (this.dataRaw[0].type === 'docs') {
-          this.panel.transform = 'json';
-        } else {
-          if (this.panel.transform === 'table' || this.panel.transform === 'json') {
-            this.panel.transform = 'timeseries_to_rows';
-          }
-        }
-      }
-    }
-    //this.polystatData = dataList;
+  setValues() {
     const config: PolystatConfigs = this.panel.polystat;
     // ignore the above and use a timeseries
     this.polystatData.length = 0;
@@ -472,8 +468,11 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     if (this.series && this.series.length > 0) {
       for (let index = 0; index < this.series.length; index++) {
         const aSeries = this.series[index];
-        const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
-        this.polystatData.push(converted);
+        // omit series with no datapoints
+        if (aSeries.datapoints.length > 0) {
+          const converted = Transformers.TimeSeriesToPolystat(config.globalOperatorName, aSeries);
+          this.polystatData.push(converted);
+        }
       }
     }
     // apply global unit formatting and decimals
@@ -515,44 +514,35 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     }
     // filter out by globalDisplayMode
     this.polystatData = this.filterByGlobalDisplayMode(this.polystatData);
-    // now sort
+    // now sort by field specified
     this.polystatData = SortVariableValuesByField(
       this.polystatData,
-      'name',
+      this.panel.polystat.hexagonSortByField,
       this.panel.polystat.hexagonSortByDirection
     );
-    this.polystatData = _.orderBy(this.polystatData, this.sortByField([this.panel.polystat.hexagonSortByField]), [
-      this.panel.polystat.hexagonSortByDirection,
-    ]);
     // generate tooltips
     this.tooltipContent = Tooltip.generate(this.$scope, this.polystatData, config);
-  }
-
-  sortByField(o: any) {
-    if (isNaN(o.name)) {
-      return o.name;
-    } else {
-      return Number(o.name);
-    }
   }
 
   applyGlobalFormatting(data: any) {
     const mappings = convertOldAngularValueMapping(this.panel);
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
-      const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      if (mappedValue && mappedValue.text !== '') {
-        data[index].valueFormatted = mappedValue.text;
-      } else {
-        const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
-        if (formatFunc) {
-          const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
-          data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
-          data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+      if (data[index].value !== null) {
+        const mappedValue = getMappedValue(mappings, data[index].value.toString());
+        if (mappedValue && mappedValue.text !== '') {
+          data[index].valueFormatted = mappedValue.text;
+        } else {
+          const formatFunc = kbn.valueFormats[this.panel.polystat.globalUnitFormat];
+          if (formatFunc) {
+            const result = GetDecimalsForValue(data[index].value, this.panel.polystat.globalDecimals);
+            data[index].valueFormatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
+            data[index].valueRounded = kbn.roundValue(data[index].value, result.decimals);
+          }
         }
+        // default the color to the global setting
+        data[index].color = this.panel.polystat.polygonGlobalFillColor;
       }
-      // default the color to the global setting
-      data[index].color = this.panel.polystat.polygonGlobalFillColor;
     }
   }
 
@@ -591,7 +581,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   onDataError(err: DataFrame[]) {
     console.log(err);
     this.onDataFramesReceived([]);
-    //this.onDataReceived([]);
     this.render();
   }
 
@@ -606,30 +595,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
 
   tableToPolystat(globalOperatorName: string, data: any) {
     return null;
-  }
-
-  onDataReceived(data: any) {
-    const allData: PolystatModel[] = [];
-    const config: PolystatConfigs = this.panel.polystat;
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      switch (item.type) {
-        case 'table':
-          const tableConverted = this.tableToPolystat(config.globalOperatorName, item);
-          if (tableConverted) {
-            allData.push(tableConverted);
-          }
-          break;
-        default:
-          const seriesConverted = this.seriesToPolystat(config.globalOperatorName, item);
-          if (seriesConverted) {
-            allData.push(seriesConverted);
-          }
-          break;
-      }
-    }
-    this.setValues(allData);
-    this.render();
   }
 
   onDataFramesReceived(data: DataFrame[]) {
@@ -672,12 +637,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
         }
       }
     }
-    const dataNew = {
-      value: 0,
-      valueFormatted: 0,
-      valueRounded: 0,
-    };
-    this.setValues(dataNew);
+    this.setValues();
     this.render();
   }
 

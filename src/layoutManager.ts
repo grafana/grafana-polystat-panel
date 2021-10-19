@@ -135,7 +135,7 @@ export class LayoutManager {
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.width > this.height) {
-        this.numColumns = Math.ceil((this.width / this.height) * squared);
+        this.numColumns = Math.ceil((this.width / this.height) * squared * 0.75);
         // always at least 1 column and max. data.length columns
         if (this.numColumns < 1) {
           this.numColumns = 1;
@@ -150,7 +150,7 @@ export class LayoutManager {
           this.numRows = 1;
         }
       } else {
-        this.numRows = Math.ceil((this.height / this.width) * squared);
+        this.numRows = Math.ceil((this.height / this.width) * squared * 0.75);
         // always at least 1 row and max. data.length rows
         if (this.numRows < 1) {
           this.numRows = 1;

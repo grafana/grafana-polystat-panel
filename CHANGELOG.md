@@ -2,6 +2,14 @@
 
 ## Entries
 
+## v1.2.7
+
+- Fix for multiple queries not displaying when one or more contain no data
+- Sorting by field "value" now works #205
+- Fix default fill color #201
+- Display "NO DATA" instead of blank panel #199
+- Minor auto-layout ajustment for better fit
+
 ## v1.2.6
 
 - Add support for global aliasing using regular expression
