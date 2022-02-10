@@ -208,7 +208,7 @@ export class CompositesManager {
         // look for the matches to the pattern in the data
         for (let index = 0; index < data.length; index++) {
           // match regex
-          // seriesname may not be defined yet, skip
+          // seriesName may not be defined yet, skip
           if (typeof aMetric.seriesName === 'undefined') {
             continue;
           }
@@ -236,9 +236,9 @@ export class CompositesManager {
               // process template variables
               let url = this.templateSrv.replace(aComposite.clickThrough, 'text');
               // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
-              url = ClickThroughTransformer.tranformComposite(aComposite.compositeName, url);
-              url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
-              url = ClickThroughTransformer.tranformNthMetric(url, data);
+              url = ClickThroughTransformer.transformComposite(aComposite.compositeName, url);
+              url = ClickThroughTransformer.transformSingleMetric(index, url, data);
+              url = ClickThroughTransformer.transformNthMetric(url, data);
               seriesItem.clickThrough = url;
               seriesItem.sanitizedURL = this.$sanitize(url);
             }
@@ -275,13 +275,13 @@ export class CompositesManager {
         clone.thresholdLevel = currentWorstSeries.thresholdLevel;
         // currentWorstSeries.valueFormatted = currentWorstSeriesName + ': ' + currentWorstSeries.valueFormatted;
         // now push the composite into data
-        // add the composite seting for showing the name/value to the new cloned model
+        // add the composite setting for showing the name/value to the new cloned model
         clone.showName = aComposite.showName;
         clone.showValue = aComposite.showValue;
         clone.animateMode = aComposite.animateMode;
         clone.newTabEnabled = aComposite.newTabEnabled;
         clone.sanitizeURLEnabled = aComposite.sanitizeURLEnabled;
-        // mark this series as a compsite
+        // mark this series as a composite
         clone.isComposite = true;
         clonedComposites.push(clone);
       }
