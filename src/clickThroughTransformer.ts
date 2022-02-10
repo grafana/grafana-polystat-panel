@@ -1,6 +1,7 @@
 /**
  * Convert model data to url params
  */
+import { stringToJsRegex } from '@grafana/data';
 import { PolystatModel } from './polystatmodel';
 
 class ClickThroughTransformer {
@@ -14,7 +15,7 @@ class ClickThroughTransformer {
 
   static compositeName = /\${__composite_name}/;
 
-  static tranformSingleMetric(index: number, url: string, data: PolystatModel[]): string {
+  static transformSingleMetric(index: number, url: string, data: PolystatModel[]): string {
     if (isNaN(index)) {
       return url;
     }
@@ -35,7 +36,7 @@ class ClickThroughTransformer {
     return url;
   }
 
-  static tranformNthMetric(url: string, data: PolystatModel[]) {
+  static transformNthMetric(url: string, data: PolystatModel[]) {
     while (url.match(this.nthCellName)) {
       const matched = url.match(this.nthCellName);
       if (matched.length >= 2) {
@@ -69,11 +70,40 @@ class ClickThroughTransformer {
     return url;
   }
 
-  static tranformComposite(name: string, url: string) {
+  static transformComposite(name: string, url: string) {
     // check if url contains any dereferencing
     while (url.match(this.compositeName)) {
       // replace with series name
       url = url.replace(this.compositeName, name);
+    }
+    return url;
+  }
+
+  static transformByRegex(pattern: string, item: PolystatModel, url: string) {
+    // detect regex capture groups from override.metricName and replace any occurrences in the click-through
+    const regex = stringToJsRegex(pattern);
+    const matches = item.name.match(regex);
+    if (matches && matches.length > 0) {
+      matches.forEach((aMatch, index) => {
+        const value = matches[index];
+        console.log(`a match ${aMatch} index ${index} value ${value}`);
+        const matchType1 = `\$\{${index}\}`;
+        url = url.replace(matchType1, value);
+        const matchType2 = `\$${index}`;
+        url = url.replace(matchType2, value);
+      });
+    }
+    if (matches && matches.groups) {
+      for (const key in matches.groups) {
+        const value = matches.groups[key];
+        console.log(`key = ${key} value = ${value}`);
+        // support $CAPTURE and ${CAPTURE}
+        const matchType1 = `\$\{${key}\}`;
+        url = url.replace(matchType1, value);
+        const matchType2 = `\$${key}`;
+        url = url.replace(matchType2, value);
+      }
+      //debugger;
     }
     return url;
   }
