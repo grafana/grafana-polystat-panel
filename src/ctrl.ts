@@ -637,7 +637,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   onDataFramesReceived(data: DataFrame[]) {
-    //console.log(JSON.stringify(data));
+    // console.log(JSON.stringify(data));
     // check if data contains a field called Time of type time
     data = InsertTime(data);
     // if it does not, insert one with time "now"
