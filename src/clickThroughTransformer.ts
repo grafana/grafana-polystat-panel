@@ -86,7 +86,7 @@ class ClickThroughTransformer {
     if (matches && matches.length > 0) {
       matches.forEach((aMatch, index) => {
         const value = matches[index];
-        console.log(`a match ${aMatch} index ${index} value ${value}`);
+        // console.log(`a match ${aMatch} index ${index} value ${value}`);
         const matchType1 = `\$\{${index}\}`;
         url = url.replace(matchType1, value);
         const matchType2 = `\$${index}`;
@@ -96,14 +96,13 @@ class ClickThroughTransformer {
     if (matches && matches.groups) {
       for (const key in matches.groups) {
         const value = matches.groups[key];
-        console.log(`key = ${key} value = ${value}`);
+        // console.log(`key = ${key} value = ${value}`);
         // support $CAPTURE and ${CAPTURE}
         const matchType1 = `\$\{${key}\}`;
         url = url.replace(matchType1, value);
         const matchType2 = `\$${key}`;
         url = url.replace(matchType2, value);
       }
-      //debugger;
     }
     return url;
   }
