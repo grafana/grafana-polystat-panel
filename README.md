@@ -241,6 +241,15 @@ They can also be passed to another dashboard by appending var-VARNAME=value to t
 /dashboard/xyz?var-VARNAME=${VARNAME}
 ```
 
+Overrides using regular expressions with capture groups provide addition variables that can be referenced in a clickthroughUrl.
+
+Example:
+
+Regular Expression: `/TEMP_(?<A_HOST>.*)_/`
+Clickthrough URL: `/grafana/d/eCLHPr57k/drilldown?orgId=1&var-host=${A_HOST}`
+
+The above example will expand the capture named group `A_HOST` and replace the value in the specified URL.
+
 #### Using Polystat Variables
 
 Each polygon represents either a single metric, or a composite metric

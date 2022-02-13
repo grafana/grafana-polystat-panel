@@ -41,8 +41,48 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     //{ value: "wye", text: "Wye" }
   ];
   fontSizes = [
-    4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46,
-    48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22,
+    24,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    42,
+    44,
+    46,
+    48,
+    50,
+    52,
+    54,
+    56,
+    58,
+    60,
+    62,
+    64,
+    66,
+    68,
+    70,
   ];
   unitFormats = kbn.getUnitFormats();
   operatorOptions = [
@@ -92,6 +132,10 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   d3DivId: string;
   containerDivId: string;
   svgContainer: any;
+  mappingTypes = [
+    { text: 'value to text', value: 1 },
+    { text: 'range to text', value: 2 },
+  ];
   panelWidth: any;
   panelHeight: any;
   panelDefaults = {
@@ -100,10 +144,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     savedOverrides: [], // Array<MetricOverride>(),
     colors: ['#299c46', '#ED8128', '#d44a3a', '#4040a0'],
     valueMaps: [{ value: 'null', op: '=', text: 'N/A' }],
-    mappingTypes: [
-      { name: 'value to text', value: 1 },
-      { name: 'range to text', value: 2 },
-    ],
     rangeMaps: [{ from: 'null', to: 'null', text: 'N/A' }],
     mappingType: 1,
     polystat: {
@@ -217,7 +257,6 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     this.addEditorTab('Overrides', overridesPath, 3);
     const compositesPath = thisPanelPath + 'partials/editor.composites.html';
     this.addEditorTab('Composites', compositesPath, 4);
-    // disabled for now
     const mappingsPath = thisPanelPath + 'partials/editor.mappings.html';
     this.addEditorTab('Value Mappings', mappingsPath, 5);
   }
@@ -316,15 +355,15 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
           if (!temp) {
             continue;
           }
-          let extractedtxt = '';
+          let extractedTxt = '';
           if (temp.length > 1) {
             temp.slice(1).forEach((value, i) => {
               if (value) {
-                extractedtxt += extractedtxt.length > 0 ? ' ' + value.toString() : value.toString();
+                extractedTxt += extractedTxt.length > 0 ? ' ' + value.toString() : value.toString();
               }
             });
-            seriesList[i].alias = extractedtxt;
-            seriesList[i].label = extractedtxt;
+            seriesList[i].alias = extractedTxt;
+            seriesList[i].label = extractedTxt;
           }
         }
       } else {
@@ -505,7 +544,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     // apply global clickthrough to all items not set
     for (let index = 0; index < this.polystatData.length; index++) {
       if (this.polystatData[index].clickThrough.length === 0) {
-        // add the series alias as a var to the clickthroughurl
+        // add the series alias as a var to the clickthrough url
         this.polystatData[index].clickThrough = this.getDefaultClickThrough(index);
         this.polystatData[index].newTabEnabled = config.defaultClickThroughNewTab;
         this.polystatData[index].sanitizeURLEnabled = config.defaultClickThroughSanitize;
@@ -598,7 +637,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   }
 
   onDataFramesReceived(data: DataFrame[]) {
-    //console.log(JSON.stringify(data));
+    // console.log(JSON.stringify(data));
     // check if data contains a field called Time of type time
     data = InsertTime(data);
     // if it does not, insert one with time "now"
@@ -785,8 +824,8 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
   getDefaultClickThrough(index: number) {
     let url = this.panel.polystat.defaultClickThrough;
     // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
-    url = ClickThroughTransformer.tranformSingleMetric(index, url, this.polystatData);
-    url = ClickThroughTransformer.tranformNthMetric(url, this.polystatData);
+    url = ClickThroughTransformer.transformSingleMetric(index, url, this.polystatData);
+    url = ClickThroughTransformer.transformNthMetric(url, this.polystatData);
     // process template variables inside clickthrough
     url = this.templateSrv.replace(url, 'text');
     return url;

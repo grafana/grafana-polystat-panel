@@ -68,7 +68,9 @@ export class MetricOverridesManager {
     this.metricOverrides = _.without(this.metricOverrides, override);
     // fix the labels
     for (let index = 0; index < this.metricOverrides.length; index++) {
-      this.metricOverrides[index].label = 'OVERRIDE ' + (index + 1);
+      if (this.metricOverrides[index].label.startsWith('OVERRIDE ')) {
+        this.metricOverrides[index].label = 'OVERRIDE ' + (index + 1);
+      }
     }
     // reassign reference in panel
     this.$scope.ctrl.panel.savedOverrides = this.metricOverrides;
@@ -178,8 +180,9 @@ export class MetricOverridesManager {
         if (anOverride.clickThrough && anOverride.clickThrough.length > 0) {
           let url = this.templateSrv.replace(anOverride.clickThrough, 'text');
           // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
-          url = ClickThroughTransformer.tranformSingleMetric(index, url, data);
-          url = ClickThroughTransformer.tranformNthMetric(url, data);
+          url = ClickThroughTransformer.transformSingleMetric(index, url, data);
+          url = ClickThroughTransformer.transformNthMetric(url, data);
+          url = ClickThroughTransformer.transformByRegex(anOverride.metricName, data[index], url);
           data[index].clickThrough = url;
           data[index].newTabEnabled = anOverride.newTabEnabled;
           data[index].sanitizeURLEnabled = anOverride.sanitizeURLEnabled;
@@ -201,7 +204,7 @@ export class MetricOverridesManager {
   }
 
   onSetThresholds = (thresholds: PolystatThreshold[]) => {
-    console.log('OVERRIDE (threshold)', thresholds);
+    // console.log('OVERRIDE (threshold)', thresholds);
   };
 
   setUnitFormat(override, subItem) {
