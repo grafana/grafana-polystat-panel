@@ -88,10 +88,18 @@ export class DataProcessor {
     const colorIndex = index % colors.length;
     const color = this.panel.aliasColors[alias] || colors[colorIndex];
 
+    let useColor = color;
+    // v9 compatible
+    if (typeof config.theme.visualization !== 'undefined') {
+      useColor = config.theme.visualization.getColorByName(color);
+    } else {
+      useColor = getColorForTheme(color, config.theme);
+    }
+
     const series = new TimeSeries({
       datapoints: datapoints || [],
       alias: alias,
-      color: getColorForTheme(color, config.theme),
+      color: useColor,
       unit: field.config ? field.config.unit : undefined,
       dataFrameIndex,
       fieldIndex,

@@ -1,7 +1,7 @@
 grafana:
   #image: grafana/grafana:latest
-  #image: grafana/grafana:7.5.8
-  image: grafana/grafana:7.3.0
+  #image: grafana/grafana:9.0.0-beta3
+  image: grafana/grafana:7.3.10
   ports:
     - "3000:3000"
   volumes:
