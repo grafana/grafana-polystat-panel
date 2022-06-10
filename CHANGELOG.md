@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v1.2.9
+
+- Now compatible with Grafana v9.0.0
+
 ## v1.2.8
 
 - New Feature: Overrides can reference regex capture groupings for clickthrough urls
