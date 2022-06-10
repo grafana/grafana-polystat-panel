@@ -1,0 +1,71 @@
+{
+  "type": "panel",
+  "name": "Polystat",
+  "id": "grafana-polystat-panel",
+  "info": {
+    "description": "Polystat panel for Grafana",
+    "author": {
+      "name": "Grafana Project",
+      "url": "https://github.com/grafana/grafana-polystat-panel"
+    },
+    "keywords": [
+      "hexbin",
+      "honeycomb",
+      "panel"
+    ],
+    "logos": {
+      "small": "img/polystat.svg",
+      "large": "img/polystat.svg"
+    },
+    "links": [
+      {
+        "name": "Project site",
+        "url": "https://github.com/grafana/grafana-polystat-panel"
+      },
+      {
+        "name": "Apache-2.0",
+        "url": "https://github.com/grafana/grafana-polystat-panel/blob/master/LICENSE.md"
+      }
+    ],
+    "screenshots": [
+      {
+        "name": "Showcase",
+        "path": "img/screenshots/polystat-composite-example1.png"
+      },
+      {
+        "name": "Animation",
+        "path": "img/screenshots/polystat-animate1.gif"
+      },
+      {
+        "name": "Options",
+        "path": "img/screenshots/polystat-options-all.png"
+      },
+      {
+        "name": "Overrides",
+        "path": "img/screenshots/polystat-overrides-all.png"
+      },
+      {
+        "name": "Tooltips",
+        "path": "img/screenshots/polystat-tooltip.png"
+      },
+      {
+        "name": "Composites",
+        "path": "img/screenshots/polystat-composites-all.png"
+      }
+    ],
+    "version": "1.2.9",
+    "updated": "2022-06-10",
+    "build": {
+      "time": 1654874415989,
+      "repo": "git@github.com:grafana/grafana-polystat-panel.git",
+      "branch": "v1.2.x",
+      "hash": "2442c462794294641b5797939720841f2bde357f",
+      "number": 1916
+    }
+  },
+  "dependencies": {
+    "grafanaVersion": "7.3.0",
+    "grafanaDependency": ">=7.3.0",
+    "plugins": []
+  }
+}
