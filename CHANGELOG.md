@@ -2,9 +2,13 @@
 
 ## Entries
 
+## v1.2.10
+
+- Fixed issue with Grafana v9.0.0 (release)
+
 ## v1.2.9
 
-- Now compatible with Grafana v9.0.0
+- Now compatible with Grafana v9.0.0 (beta3)
 
 ## v1.2.8
 
