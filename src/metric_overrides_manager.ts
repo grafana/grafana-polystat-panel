@@ -2,7 +2,9 @@ import _ from 'lodash';
 import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { getMappedValue, stringToJsRegex } from '@grafana/data';
+import { stringToJsRegex } from '@grafana/data';
+import { getMappedValue } from './utils';
+
 import { convertOldAngularValueMapping } from '@grafana/ui';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
 import { PolystatModel } from './polystatmodel';
