@@ -1,7 +1,7 @@
 /**
  * @alpha
  */
- export enum MappingType {
+export enum MappingType {
   ValueToText = 'value', // was 1
   RangeToText = 'range', // was 2
   RegexToText = 'regex',

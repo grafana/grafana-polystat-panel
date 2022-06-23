@@ -11,7 +11,7 @@ V7.3.6 and V8.5.6 and V9.0.1 angular Value Maps JSON
   },
   {
     "op": "=",
-    "text": "OOPS",
+    "text": "V7_TEXT",
     "value": "20"
   }
 ],
@@ -30,7 +30,7 @@ V7.3.10
   },
   {
     "op":"=",
-    "text":"MY_TEXT",
+    "text":"V7_TEXT",
     "value":"20",
     "id":1,
     "type":1
@@ -52,7 +52,7 @@ V8.5.6 and V9.0.1
     "type":"value",
     "options":{
       "20":{
-        "text":"MY_TEXT"
+        "text":"V8_9_TEXT"
       }
     }
   }
@@ -69,7 +69,7 @@ what about rangeMaps?
     {
       "from": "10",
       "to": "20",
-      "text": "OUCH"
+      "text": "V7_TEXT"
     }
   ],
 
@@ -85,7 +85,7 @@ what about rangeMaps?
     {
       "from":"10",
       "to":"20",
-      "text":"OUCH",
+      "text":"V7_TEXT",
       "id":1,
       "type":2
     }
@@ -109,7 +109,7 @@ what about rangeMaps?
         "from":10,
         "to":20,
         "result":{
-          "text":"OUCH"
+          "text":"V8_9_TEXT"
         }
       }
     }
@@ -120,50 +120,50 @@ what about rangeMaps?
 describe('valueMappings', () => {
   const v7mappings = [
     {
-      "op":"=",
-      "text":"N/A",
-      "value":"null",
-      "id":0,
-      "type":1
+      op: '=',
+      text: 'N/A',
+      value: 'null',
+      id: 0,
+      type: 1,
     },
     {
-      "op":"=",
-      "text":"V7_TEXT",
-      "value":"20",
-      "id":1,
-      "type":1
-    }
+      op: '=',
+      text: 'V7_TEXT',
+      value: '20',
+      id: 1,
+      type: 1,
+    },
   ];
   const v8mappings = [
     {
-      "type":"special",
-      "options":{
-        "match":"null",
-        "result":{
-          "text":"N/A"
-        }
-      }
+      type: 'special',
+      options: {
+        match: 'null',
+        result: {
+          text: 'N/A',
+        },
+      },
     },
     {
-      "type":"range",
-      "options":{
-        "from":10,
-        "to":20,
-        "result":{
-          "text":"V8_9_TEXT"
-        }
-      }
-    }
-  ]
+      type: 'range',
+      options: {
+        from: 10,
+        to: 20,
+        result: {
+          text: 'V8_9_TEXT',
+        },
+      },
+    },
+  ];
   describe('With v7 data', () => {
     it('returns MY_TEXT', () => {
-      const result = GetMappedValue(v7mappings, 20)
+      const result = GetMappedValue(v7mappings, 20);
       expect(result.text).toEqual('V7_TEXT');
     });
   });
   describe('With v8 data', () => {
     it('returns MY_TEXT', () => {
-      const result = GetMappedValue(v8mappings, 20)
+      const result = GetMappedValue(v8mappings, 20);
       expect(result.text).toEqual('V8_9_TEXT');
     });
   });

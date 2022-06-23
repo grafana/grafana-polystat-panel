@@ -12,9 +12,9 @@ import { getValueMappingResult } from './v8/valueMappings';
 // here, to allow this to work work across all versions (7.3 > 9.x)
 //
 export const GetMappedValue = (valueMappings: any[], value: any): any => {
-    let mappedValue = getMappedValue(valueMappings, value);
-    if (typeof mappedValue === 'undefined') {
-      return getValueMappingResult(valueMappings, value);
-    }
-    return mappedValue;
+  let mappedValue = getMappedValue(valueMappings, value);
+  if (typeof mappedValue === 'undefined') {
+    return getValueMappingResult(valueMappings, value);
+  }
+  return mappedValue;
 };

@@ -1,4 +1,3 @@
-
 export enum MappingType {
   ValueToText = 1,
   RangeToText = 2,
