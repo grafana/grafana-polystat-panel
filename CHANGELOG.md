@@ -4,7 +4,7 @@
 
 ## v1.2.11
 
-- Fixes valueMappings for v8.0.x and v9.x (release)
+- Fixes valueMappings for v8.0.x and v9.x
 
 ## v1.2.10
 
