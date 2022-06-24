@@ -3,7 +3,7 @@ import kbn from 'grafana/app/core/utils/kbn';
 import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex } from '@grafana/data';
-import { getMappedValue } from './utils';
+import { GetMappedValue } from './valueMappingsWrapper';
 
 import { convertOldAngularValueMapping } from '@grafana/ui';
 import { MetricOverride, PolystatThreshold, PolystatConfigs } from 'types';
@@ -164,7 +164,7 @@ export class MetricOverridesManager {
         data[index].thresholdLevel = result.thresholdLevel;
         // format it
         const mappings = convertOldAngularValueMapping(this.$scope.ctrl.panel);
-        const mappedValue = getMappedValue(mappings, data[index].value.toString());
+        const mappedValue = GetMappedValue(mappings, data[index].value.toString());
         if (mappedValue && mappedValue.text !== '') {
           data[index].valueFormatted = mappedValue.text;
         } else {

@@ -10,7 +10,8 @@ import { PolystatModel } from './polystatmodel';
 import { MetricOverridesManager } from './metric_overrides_manager';
 import { CompositesManager } from './composites_manager';
 import { Tooltip } from './tooltip';
-import { GetDecimalsForValue, SortVariableValuesByField, getMappedValue } from './utils';
+import { GetMappedValue } from './valueMappingsWrapper';
+import { GetDecimalsForValue, SortVariableValuesByField } from './utils';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatConfigs } from 'types';
 import { convertOldAngularValueMapping } from '@grafana/ui';
@@ -528,7 +529,7 @@ class D3PolystatPanelCtrl extends MetricsPanelCtrl {
     for (let index = 0; index < data.length; index++) {
       // Check for mapped value, if nothing set, format value
       if (data[index].value !== null) {
-        const mappedValue = getMappedValue(mappings, data[index].value.toString());
+        const mappedValue = GetMappedValue(mappings, data[index].value.toString());
         if (mappedValue && mappedValue.text !== '') {
           data[index].valueFormatted = mappedValue.text;
         } else {

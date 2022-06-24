@@ -1,21 +1,4 @@
 import _ from 'lodash';
-import * as grafanaData from '@grafana/data';
-
-// We would like the plugin to work with Grafana versions >=v7.3.
-// Unfortunately the `getMappedValue()` function gets removed in v9, but its replacement `getValueMappingResult()` only gets introduced in v8.1.0.
-export const getMappedValue = (valueMappings: any[], value: any): any => {
-  if ('getMappedValue' in grafanaData) {
-    // @ts-ignore
-    return grafanaData.getMappedValue(valueMappings, value);
-  }
-
-  if ('getValueMappingResult' in grafanaData) {
-    // @ts-ignore
-    return grafanaData.getValueMappingResult(valueMappings, value);
-  }
-
-  return null;
-};
 
 function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaledDecimals } {
   if (_.isNumber(panelDecimals)) {
