@@ -17,5 +17,5 @@ export const GetMappedValue = (valueMappings: any[], value: any): any => {
     return getValueMappingResult(valueMappings, value);
   }
   return mappedValue;
-return getMappedValue(valueMappings, value) ?? getValueMappingResult(valueMappings, value);
+  return getMappedValue(valueMappings, value) ?? getValueMappingResult(valueMappings, value);
 };
