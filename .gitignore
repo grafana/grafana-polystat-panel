@@ -1,4 +1,5 @@
 node_modules
 dist
 provisioning
+coverage
 .DS_Store
