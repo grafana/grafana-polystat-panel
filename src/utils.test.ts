@@ -41,7 +41,7 @@ describe('Utils getTextOrValue', () => {
 });
 
 describe('Utils SortVariableValuesByField', () => {
-  describe('Simple Alphabetal Label', () => {
+  describe('Simple Alphabetical Label', () => {
     const testData = [
       {
         name: 'C',

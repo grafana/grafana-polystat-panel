@@ -2,6 +2,18 @@
 
 ## Entries
 
+## v1.2.11
+
+- Fixes valueMappings for v8.0.x and v9.x
+
+## v1.2.10
+
+- Fixed issue with Grafana v9.0.0 (release)
+
+## v1.2.9
+
+- Now compatible with Grafana v9.0.0 (beta3)
+
 ## v1.2.8
 
 - New Feature: Overrides can reference regex capture groupings for clickthrough urls
