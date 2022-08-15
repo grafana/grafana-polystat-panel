@@ -1,5 +1,5 @@
 import { DataFrame, Field, FieldType, ArrayVector, Labels } from '@grafana/data';
-import _ from 'lodash';
+import { cloneDeep as lodashCloneDeep } from 'lodash';
 
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"
@@ -12,7 +12,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
   for (let i = 0; i < data.length; i++) {
     const frame = data[i];
     //const flattened = this.flattenLabels(frame, 0);
-    const newFrame = _.cloneDeep(frame);
+    const newFrame = lodashCloneDeep(frame);
     // clear the fields
     newFrame.fields = [];
     //const labels = this.getLabelsOfFrame(frame);
@@ -28,7 +28,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
           for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
             // only create a new field when the rowValue is not null
             if (aField.values.toArray()[rowNum] !== null) {
-              // this has a nonnull value
+              // this has a non-null value
               const flattened = flattenLabels(frame, rowNum);
               const newField = newFieldWithLabels(aField, flattened);
               const newFieldValues = new ArrayVector();
@@ -98,7 +98,7 @@ function flattenLabels(frame: DataFrame, rowNum: number) {
 }
 
 function newFieldWithLabels(field: Field, labels: Labels): Field {
-  const newField = _.cloneDeep(field);
+  const newField = lodashCloneDeep(field);
   newField.labels = labels;
   return newField;
 }

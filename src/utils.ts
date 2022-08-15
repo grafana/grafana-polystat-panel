@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import { sortBy as lodashSortBy, toLower as lodashToLower, isNumber as lodashIsNumber } from 'lodash';
 
 function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaledDecimals } {
-  if (_.isNumber(panelDecimals)) {
+  if (lodashIsNumber(panelDecimals)) {
     return { decimals: panelDecimals, scaledDecimals: null };
   }
 
@@ -167,10 +167,10 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
 
   switch (sortType) {
     case 1: // Alphabetical Case Sensitive
-      options = _.sortBy(options, sortField);
+      options = lodashSortBy(options, sortField);
       break;
     case 2: // Numerical with sub-match
-      options = _.sortBy(options, (item) => {
+      options = lodashSortBy(options, (item) => {
         // if the content of the field to sort by is textual, check if there is a numerical area to sort by
         if (isNaN(item[sortField])) {
           const matchField = item[sortField];
@@ -186,10 +186,10 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
       });
       break;
     case 3: // Alphabetical Case Insensitive
-      options = _.sortBy(options, (item) => {
+      options = lodashSortBy(options, (item) => {
         const itemContent = item[sortField];
         if (isNaN(itemContent)) {
-          return _.toLower(item[sortField]);
+          return lodashToLower(item[sortField]);
         } else {
           return itemContent;
         }

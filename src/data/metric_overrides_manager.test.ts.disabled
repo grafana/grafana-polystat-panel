@@ -1,0 +1,36 @@
+/**
+ * Tests for utils
+ */
+import 'jest-canvas-mock';
+import { MetricOverridesManager } from './metric_overrides_manager';
+import { PolystatModel } from '../../components/types';
+import { FieldType, toDataFrame } from '@grafana/data';
+import { DataFrameToPolystat } from './processor';
+
+describe('MetricOverridesManager', () => {
+  var modelA: PolystatModel;
+  var mgr: MetricOverridesManager;
+
+  beforeEach(() => {
+    mgr = new MetricOverridesManager(null, null, null, []);
+    const time = new Date().getTime();
+    const frameA = toDataFrame({
+      fields: [
+        { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
+        { name: 'name', type: FieldType.string, values: ['A-series', 'B-series', 'C-series'] },
+        { name: 'value', type: FieldType.number, values: [200, 101, 555] },
+      ],
+    });
+    // operator mean
+    // alias ...
+    modelA = DataFrameToPolystat(frameA);
+    modelA.operatorName = 'avg';
+  });
+  describe('Adding new override', () => {
+    it('returns an override', () => {
+      mgr.addMetricOverride();
+      expect(modelA.operatorName).toBe('avg');
+      expect(mgr.metricOverrides.length).toBe(1);
+    });
+  });
+});
