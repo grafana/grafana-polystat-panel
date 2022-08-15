@@ -7,14 +7,15 @@ import { SelectableValue } from '@grafana/data';
 export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options) => {
   const [customOptions, setCustomOptions] = useState<Array<SelectableValue<string>>>([]);
 
-  const xoptions: SelectableValue[] = [
+  // TODO: testing selection presets
+  const optionPresets: SelectableValue[] = [
     { label: 'Basic option', value: 0 },
     { label: 'Option with description', value: 1, description: 'this is a description' },
     {
       label: 'Option with description and image',
       value: 2,
-      description: 'This is a very elaborate description, describing all the wonders in the world.',
-      imgUrl: 'https://placekitten.com/40/40',
+      description: 'Longer description.',
+      imgUrl: 'https://image.fake',
     },
   ];
 
@@ -61,7 +62,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
           width={24}
           key={`cmi-index-${options.index}`}
           allowCustomValue
-          options={[...xoptions, ...customOptions]}
+          options={[...optionPresets, ...customOptions]}
           value={options.metric.seriesMatch}
           onCreateOption={(v) => {
             const customValue: SelectableValue = { value: v, label: v, description: 'custom regex' };

@@ -1,0 +1,36 @@
+{
+  "language": "en",
+  "ignorePaths": [
+    "CHANGELOG.md",
+    "README.md",
+    "node_modules/**",
+    "dist/**",
+    "coverage/**",
+    "provisioning/**",
+    "src/dashboards/**",
+    "tests/__mocks__/**"
+  ],
+  "words": [
+    "Abbrevation",
+    "Appender",
+    "Clickthrough",
+    "clickthroughs",
+    "dataframe",
+    "dataframes",
+    "datapoints",
+    "DATAPROXY",
+    "deframer",
+    "hexbin",
+    "grafana",
+    "logmin",
+    "magn",
+    "Polystat",
+    "polystat",
+    "timeseries",
+    "tinycolor",
+    "tippyjs",
+    "toplabel",
+    "uuidv",
+    "verdana"
+  ]
+}
