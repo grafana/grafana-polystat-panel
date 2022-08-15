@@ -1,3 +1,5 @@
+cypress/report.json
+cypress/videos
 node_modules
 dist
 provisioning
