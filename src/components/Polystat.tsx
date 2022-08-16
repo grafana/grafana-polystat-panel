@@ -323,21 +323,21 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 ) : (
                   drawShape(index, options.shape)
                 )}
-                {options.globalTooltipsEnabled &&
+                {options.globalTooltipsEnabled && (
                   <Tooltip
-                  data={options.processedData[index]}
-                  renderTime={options.renderTime}
-                  showTime={options.globalTooltipsShowTimestampEnabled}
-                  valueEnabled={options.valueEnabled}
-                  visible={showTooltips[index]}
-                  followMouse={true}
-                  reference={elRefs[index]}
-                  primarySortByField={options.tooltipPrimarySortByField}
-                  primarySortDirection={options.tooltipPrimarySortDirection}
-                  secondarySortByField={options.tooltipSecondarySortByField}
-                  secondarySortDirection={options.tooltipSecondarySortDirection}
-                />
-                }
+                    data={options.processedData[index]}
+                    renderTime={options.renderTime}
+                    showTime={options.globalTooltipsShowTimestampEnabled}
+                    valueEnabled={options.valueEnabled}
+                    visible={showTooltips[index]}
+                    followMouse={true}
+                    reference={elRefs[index]}
+                    primarySortByField={options.tooltipPrimarySortByField}
+                    primarySortDirection={options.tooltipPrimarySortDirection}
+                    secondarySortByField={options.tooltipSecondarySortByField}
+                    secondarySortDirection={options.tooltipSecondarySortDirection}
+                  />
+                )}
                 <text
                   className="toplabel"
                   x={coords.x + alignments.labelTextAlignmentX}

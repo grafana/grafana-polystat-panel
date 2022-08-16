@@ -79,13 +79,13 @@ export const Tooltip = ({
           </tr>
         </thead>
         <tfoot>
-          { showTime &&
-          <tr>
-            <td className={styles.tooltipTime} colSpan={2}>
-              {dateTimeFormatWithAbbrevation(renderTime)}
-            </td>
-          </tr>
-          }
+          {showTime && (
+            <tr>
+              <td className={styles.tooltipTime} colSpan={2}>
+                {dateTimeFormatWithAbbrevation(renderTime)}
+              </td>
+            </tr>
+          )}
         </tfoot>
         <tbody>
           {data.isComposite ? (
