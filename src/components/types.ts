@@ -23,6 +23,8 @@ export interface PolystatOptions {
   globalPolygonSize: number;
   globalRegexPattern: string;
   globalThresholds: PolystatThreshold[];
+  globalTooltipsEnabled: boolean;
+  globalTooltipsShowTimestampEnabled: boolean;
   globalUnitFormat: string;
   layoutDisplayLimit: number;
   layoutNumColumns: number;

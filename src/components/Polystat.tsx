@@ -323,9 +323,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 ) : (
                   drawShape(index, options.shape)
                 )}
-                <Tooltip
+                {options.globalTooltipsEnabled &&
+                  <Tooltip
                   data={options.processedData[index]}
                   renderTime={options.renderTime}
+                  showTime={options.globalTooltipsShowTimestampEnabled}
                   valueEnabled={options.valueEnabled}
                   visible={showTooltips[index]}
                   followMouse={true}
@@ -335,6 +337,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   secondarySortByField={options.tooltipSecondarySortByField}
                   secondarySortDirection={options.tooltipSecondarySortDirection}
                 />
+                }
                 <text
                   className="toplabel"
                   x={coords.x + alignments.labelTextAlignmentX}

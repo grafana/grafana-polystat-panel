@@ -206,7 +206,7 @@ export const plugin = getPanelPluginOrFallback(
         })
         .addBooleanSwitch({
           name: 'Show timestamp',
-          path: 'tooltipShowTimestampEnabled',
+          path: 'globalTooltipsShowTimestampEnabled',
           defaultValue: true,
           category: ['Tooltips'],
           description: 'Show timestamp at bottom of tooltip',

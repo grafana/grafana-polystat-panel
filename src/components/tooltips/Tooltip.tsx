@@ -15,6 +15,7 @@ interface Props {
   reference: any;
   visible: boolean;
   renderTime: Date;
+  showTime: boolean;
   primarySortByField: string;
   primarySortDirection: any; // easier..
   secondarySortByField: string;
@@ -24,6 +25,7 @@ interface Props {
 export const Tooltip = ({
   data,
   renderTime,
+  showTime,
   valueEnabled,
   reference,
   visible,
@@ -77,11 +79,13 @@ export const Tooltip = ({
           </tr>
         </thead>
         <tfoot>
+          { showTime &&
           <tr>
             <td className={styles.tooltipTime} colSpan={2}>
               {dateTimeFormatWithAbbrevation(renderTime)}
             </td>
           </tr>
+          }
         </tfoot>
         <tbody>
           {data.isComposite ? (
