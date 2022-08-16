@@ -1,8 +1,11 @@
 {
     "extends": "@grafana/toolkit/src/config/tsconfig.plugin.json",
-    "include": ["**/*.ts"],
     "compilerOptions": {
         "baseUrl": "../node_modules",
-        "types": ["cypress", "@grafana/e2e/cypress/support"]
+        "types": [
+            "cypress",
+            "@grafana/e2e/cypress/support"
+        ],
+        "resolveJsonModule": true
     }
 }
