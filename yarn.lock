@@ -1461,7 +1461,7 @@
     tslib "2.3.1"
     typescript "4.4.4"
 
-"@grafana/e2e-selectors@9.0.7", "@grafana/e2e-selectors@^9.0.7":
+"@grafana/e2e-selectors@9.0.7":
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/@grafana/e2e-selectors/-/e2e-selectors-9.0.7.tgz#2537e0066ea82f134f30aabbb3f4b8d509f51436"
   integrity sha512-ed+RqIrCRgNZB1rV9MeuVABrg/rZRqvCnZKpkd/QHJG220fuvAJ/OFtMPGTFqV0+vfJjRRAXHi87HW1EvTVocQ==
@@ -1470,7 +1470,7 @@
     tslib "2.4.0"
     typescript "4.6.4"
 
-"@grafana/e2e@^9.0.7":
+"@grafana/e2e@9.0.7":
   version "9.0.7"
   resolved "https://registry.yarnpkg.com/@grafana/e2e/-/e2e-9.0.7.tgz#23e73c8099bd79b3ef12a533fb178ab5808938d9"
   integrity sha512-qgOb9V3usGNVGm5OOrOIgcq51pYptsF4SmxbDDqeCkMhTocEg9iNEEJO6RLaf4XDzz4DhAPG6qs7s2zKZpDhEA==
