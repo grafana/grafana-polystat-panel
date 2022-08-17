@@ -4,7 +4,7 @@ import { Button } from '@grafana/ui';
 import { v4 as uuidv4 } from 'uuid';
 import { PolystatThreshold, ThresholdItemTracker } from './types';
 import { ThresholdItem } from './ThresholdItem';
-
+import { DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX, DEFAULT_CRITICAL_COLOR_HEX } from '../defaults';
 interface Props {
   thresholds: PolystatThreshold[];
   setter: any;
@@ -48,12 +48,27 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     setTracker([...tracker]);
   };
 
-  const updateThresholdState = (index: number, state: number) => {
+  const updateThresholdState = (index: number, state: any) => {
     tracker[index].threshold.state = state;
-    // set the color also
+    // set the color if it is not a custom state
+    if (state.value < 3) {
+      tracker[index].threshold.color = colorForThresholdState(state.value);
+    }
     setTracker([...tracker]);
   };
 
+  const colorForThresholdState = (state: number) => {
+    switch (state) {
+      case 0:
+        return DEFAULT_OK_COLOR_HEX;
+      case 1:
+        return DEFAULT_WARNING_COLOR_HEX;
+      case 2:
+        return DEFAULT_CRITICAL_COLOR_HEX;
+      default:
+        return DEFAULT_OK_COLOR_HEX;
+    }
+  }
   const removeThreshold = (index: number) => {
     const allThresholds = [...tracker];
     let removeIndex = 0;
@@ -66,9 +81,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     allThresholds.splice(removeIndex, 1);
     // reorder
     for (let i = 0; i < allThresholds.length; i++) {
-      console.log(`old index ${allThresholds[i].order}`);
       allThresholds[i].order = i;
-      console.log(`new index ${allThresholds[i].order}`);
     }
     setTracker([...allThresholds]);
   };
@@ -76,7 +89,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
   const addItem = () => {
     const order = tracker.length;
     const aThreshold: PolystatThreshold = {
-      color: '#299c46', // "rgba(50, 172, 45, 1)",  // green
+      color: DEFAULT_OK_COLOR_HEX, // "rgba(50, 172, 45, 1)",  // green
       state: 0,
       value: 0,
     };

@@ -9,16 +9,20 @@ export const GLOBAL_BORDER_COLOR_RGBA = 'rgba(0, 0, 0, 0)'; // "#000000"
  * Color for threshold OK state
  */
 export const DEFAULT_OK_COLOR_RGBA = 'rgba(41, 156, 70, 1))'; // #299c46
+export const DEFAULT_OK_COLOR_HEX = '#299c46';
 export const DEFAULT_OK_COLOR = new Color(41, 156, 70);
 /**
  * Color for threshold Warning state
  */
 export const DEFAULT_WARNING_COLOR_RGBA = 'rgba(237, 129, 40, 1)'; // alternates // #FFC837 // '#e5ac0e'
+export const DEFAULT_WARNING_COLOR_HEX = '#ed8128'; // alternates // #FFC837 // '#e5ac0e'
+
 export const DEFAULT_WARNING_COLOR = new Color(237, 129, 40);
 /**
  * Color for threshold Critical state
  */
 export const DEFAULT_CRITICAL_COLOR_RGBA = 'rgba(245, 54, 54, 1)';
+export const DEFAULT_CRITICAL_COLOR_HEX = '#f53636';
 export const DEFAULT_CRITICAL_COLOR = new Color(245, 54, 54);
 /**
  * Unit to apply to all metrics without overrides

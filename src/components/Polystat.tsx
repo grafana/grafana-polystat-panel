@@ -81,7 +81,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
-  //console.log(`yes... ${options.panelWidth} ${options.panelHeight}`);
   // determine how many rows and columns are going to be generated
   lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData.length);
   // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
@@ -190,7 +189,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     e.preventDefault();
     // Do something
     let newState = [...showTooltips];
-    console.log(`handleTooltipShow ${newState[index]}`);
     newState[index] = true;
     setShowTooltips(newState);
   };
@@ -199,7 +197,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     e.preventDefault();
     // Do something
     let newState = [...showTooltips];
-    console.log(`handleTooltipHide ${newState[index]}`);
     newState[index] = false;
     setShowTooltips(newState);
   };

@@ -87,9 +87,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
     allOverrides.splice(removeIndex, 1);
     // reorder
     for (let i = 0; i < allOverrides.length; i++) {
-      console.log(`old index ${allOverrides[i].order}`);
       allOverrides[i].order = i;
-      console.log(`new index ${allOverrides[i].order}`);
     }
     setTracker([...allOverrides]);
     // TODO: openers should be fixed too

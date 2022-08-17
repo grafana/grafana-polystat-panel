@@ -22,7 +22,7 @@ export interface PolystatOptions {
   globalPolygonBorderColor: string;
   globalPolygonSize: number;
   globalRegexPattern: string;
-  globalThresholds: PolystatThreshold[];
+  globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
   globalTooltipsShowTimestampEnabled: boolean;
   globalUnitFormat: string;

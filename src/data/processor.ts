@@ -55,7 +55,6 @@ export function ProcessDataFrames(
   sortByDirection: number,
   sortByField: string
 ): PolystatModel[] {
-  // console.log(JSON.stringify(data));
   // check if data contains a field called Time of type time
   let processedData = InsertTime(data.series);
   let internalData = [] as PolystatModel[];
@@ -68,7 +67,6 @@ export function ProcessDataFrames(
   // colors (done in global formatting for speed)
   //ApplyGlobalColors(internalData, globalFillColor);
   // formatting can change colors due to value maps
-  //debugger;
   internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor);
   // applies overrides and global thresholds
   internalData = ApplyOverrides(overrides, internalData, globalFillColor, globalThresholds, replaceVariables);
@@ -159,30 +157,24 @@ const ApplyGlobalFormatting = (
 ) => {
   const theme = useTheme2();
   let realGlobalFillColor = theme.visualization.getColorByName(globalFillColor);
-  console.log(`globalUnitFormat: ${globalUnitFormat}`);
   const formatFunc = getValueFormat(globalUnitFormat);
   for (let index = 0; index < data.length; index++) {
     // Check for mapped value, if nothing set, format value
     if (data[index].value !== null) {
       const mappedValue = GetMappedValue(fieldConfig.defaults.mappings, data[index].value);
-      console.log(mappedValue);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
         // set color also
         if (mappedValue.color) {
           let realColor = theme.visualization.getColorByName(mappedValue.color);
           data[index].color = realColor;
-          console.log('set color:' + data[index].color);
         } else {
           data[index].color = realGlobalFillColor;
-          console.log('set color:' + data[index].color);
         }
       } else {
         if (formatFunc) {
-          console.log('yes, have formatFunc for global unit');
           const result = GetDecimalsForValue(data[index].value, globalDecimals);
           const formatted = formatFunc(data[index].value, result.decimals, result.scaledDecimals);
-          console.log(formatted);
           data[index].valueFormatted = formatted.text;
           if (formatted.suffix) {
             data[index].valueFormatted += ` ${formatted.suffix}`;
@@ -193,7 +185,6 @@ const ApplyGlobalFormatting = (
           data[index].valueRounded = roundValue(data[index].value, result.decimals);
         }
         data[index].color = realGlobalFillColor;
-        console.log('set color:' + data[index].color);
       }
     }
   }

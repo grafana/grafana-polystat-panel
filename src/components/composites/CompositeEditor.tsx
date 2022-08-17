@@ -86,9 +86,7 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
     allComposites.splice(removeIndex, 1);
     // reorder
     for (let i = 0; i < allComposites.length; i++) {
-      console.log(`old index ${allComposites[i].order}`);
       allComposites[i].order = i;
-      console.log(`new index ${allComposites[i].order}`);
     }
     setTracker([...allComposites]);
     // TODO: openers should be fixed too

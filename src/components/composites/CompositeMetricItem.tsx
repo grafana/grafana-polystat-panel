@@ -19,9 +19,9 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
     },
   ];
 
-  console.log('Composite Metric Item');
-  console.log(options.metric);
-  console.log(options.metric.seriesMatch);
+  //console.log('Composite Metric Item');
+  //console.log(options.metric);
+  //console.log(options.metric.seriesMatch);
   async function copySelectedMetricToClipboard(index: number) {
     if (options.metric.seriesMatch?.value) {
       const aValue = options.metric.seriesMatch.value;

@@ -30,7 +30,6 @@ const getComponentStyles = (theme: GrafanaTheme) => {
 
 export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
   const styles = useStyles(getComponentStyles);
-  console.log(fieldConfig.defaults.mappings);
   // each series is a converted to a model we can use
   const processedData = ProcessDataFrames(
     options.compositeConfig.composites,
@@ -45,7 +44,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.globalDisplayMode,
     options.globalRegexPattern,
     options.globalFillColor,
-    options.globalThresholds,
+    options.globalThresholdsConfig,
     options.globalUnitFormat,
     options.sortByDirection,
     options.sortByField
@@ -79,7 +78,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalFillColor={options.globalFillColor}
           globalRegexPattern={options.globalRegexPattern}
           globalGradientsEnabled={options.globalGradientsEnabled}
-          globalThresholds={options.globalThresholds}
+          globalThresholdsConfig={options.globalThresholdsConfig}
           globalTooltipsEnabled={options.globalTooltipsEnabled}
           globalTooltipsShowTimestampEnabled={options.globalTooltipsShowTimestampEnabled}
           globalUnitFormat={options.globalUnitFormat}

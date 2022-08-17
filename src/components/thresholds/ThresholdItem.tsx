@@ -41,6 +41,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
       suffix={
         <>
           <Select
+            menuShouldPortal={true}
             value={options.threshold.state}
             onChange={(v) => {
               options.stateSetter(options.index, v);
