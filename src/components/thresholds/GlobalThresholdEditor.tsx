@@ -12,15 +12,13 @@ interface Props extends StandardEditorProps<string | string[] | null, GlobalThre
 export const GlobalThresholdEditor: React.FC<Props> = ({ context }) => {
   const [globalThresholds, setGlobalThresholds] = useState(context.options.globalThresholdsConfig);
   const setThresholds = (val: PolystatThreshold[]) => {
-    setGlobalThresholds({ ...globalThresholds, thresholds: val });
-    context.options.globalThresholdsConfig = {
-      thresholds: val,
-    };
+    setGlobalThresholds(val);
+    context.options.globalThresholdsConfig = val;
   };
   return (
     <>
       <Field>
-        <ThresholdsEditor thresholds={globalThresholds.thresholds} setter={setThresholds} />
+        <ThresholdsEditor thresholds={globalThresholds} setter={setThresholds} />
       </Field>
     </>
   );

@@ -362,9 +362,7 @@ export const plugin = getPanelPluginOrFallback(
           path: 'globalThresholdsConfig',
           description: 'Default thresholds to be applied to all metrics that do not have an override',
           editor: GlobalThresholdEditor,
-          defaultValue: {
-            thresholds: [] as PolystatThreshold[],
-          },
+          defaultValue: [] as PolystatThreshold[],
           category: ['Global'],
         })
         // default clickthrough

@@ -39,7 +39,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     tracker[index].threshold.value = Number(value);
     // reorder
     const allThresholds = [...tracker];
-    const orderedThresholds = orderBy(allThresholds, ['threshold.value'], ['desc']);
+    const orderedThresholds = orderBy(allThresholds, ['threshold.value'], ['asc']);
     setTracker([...orderedThresholds]);
   };
 
@@ -91,7 +91,10 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     const order = tracker.length;
     const aThreshold: PolystatThreshold = {
       color: DEFAULT_OK_COLOR_HEX, // "rgba(50, 172, 45, 1)",  // green
-      state: 0,
+      state: {
+        value: 0,
+        label: 'ok',
+      },
       value: 0,
     };
     const aTracker: ThresholdItemTracker = {
