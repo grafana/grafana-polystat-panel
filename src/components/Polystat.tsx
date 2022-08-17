@@ -43,7 +43,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   }, [options.processedData.length]);
 
   if (options.processedData.length === 0) {
-    return <div style={messageStyleWarning}>Wait for rendering to complete...</div>;
+    return <div style={messageStyleWarning}>No thresholds exceeded...</div>;
   }
   if (!options.autoSizeColumns && !options.autoSizeRows) {
     const limit = options.layoutNumColumns * options.layoutNumRows;
@@ -167,7 +167,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let numOfChars = options.ellipseCharacters;
 
   if (options.globalAutoScaleFonts) {
-    const result = autoFontScaler(textAreaWidth, textAreaHeight, options.valueEnabled, options.processedData);
+    const result = autoFontScaler(textAreaWidth, textAreaHeight, options.globalShowValueEnabled, options.processedData);
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
     showEllipses = result.showEllipses;
@@ -325,7 +325,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     data={options.processedData[index]}
                     renderTime={options.renderTime}
                     showTime={options.globalTooltipsShowTimestampEnabled}
-                    valueEnabled={options.valueEnabled}
+                    valueEnabled={options.globalShowValueEnabled}
                     visible={showTooltips[index]}
                     followMouse={true}
                     reference={elRefs[index]}

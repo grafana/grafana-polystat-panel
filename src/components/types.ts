@@ -23,6 +23,7 @@ export interface PolystatOptions {
   globalPolygonSize: number;
   globalRegexPattern: string;
   globalShape: PolygonShapes;
+  globalShowValueEnabled: boolean;
   globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
   globalTooltipsShowTimestampEnabled: boolean;
@@ -38,7 +39,6 @@ export interface PolystatOptions {
   renderTime: Date;
   sortByField: string;
   sortByDirection: number;
-  valueEnabled: boolean;
   overrideConfig: {
     overrides: OverrideItemType[];
   };
