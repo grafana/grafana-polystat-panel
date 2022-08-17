@@ -68,7 +68,8 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
       default:
         return DEFAULT_OK_COLOR_HEX;
     }
-  }
+  };
+
   const removeThreshold = (index: number) => {
     const allThresholds = [...tracker];
     let removeIndex = 0;
