@@ -278,8 +278,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     ellipseCharacters: number,
     showEllipses: boolean,
     numOfChars: number,
-    text: string
+    text: string,
+    alias: string,
   ) => {
+    if (alias !== '') {
+      text = alias;
+    }
     if (showEllipses) {
       return text.substring(0, numOfChars) + '...';
     }
@@ -355,7 +359,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     options.ellipseCharacters,
                     showEllipses,
                     numOfChars,
-                    item.name
+                    item.name,
+                    item.displayName
                   )}
                 </text>
 

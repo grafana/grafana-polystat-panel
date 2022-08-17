@@ -1,4 +1,4 @@
-import { DataFrame } from '@grafana/data';
+import { DataFrame, SelectableValue } from '@grafana/data';
 import { CompositeItemType } from 'components/composites/types';
 import { OverrideItemType } from './overrides/types';
 import { PolystatThreshold } from './thresholds/types';
@@ -18,6 +18,7 @@ export interface PolystatOptions {
   globalFillColor: string;
   globalFontSize: number;
   globalGradientsEnabled: boolean;
+  globalOperator: string;
   globalPolygonBorderSize: number;
   globalPolygonBorderColor: string;
   globalPolygonSize: number;
@@ -71,7 +72,7 @@ export interface PolystatModel {
   seriesRaw: DataFrame;
   color: string;
   clickThrough: string;
-  operatorName: string;
+  operatorName: SelectableValue;
   newTabEnabled: boolean;
   sanitizedURL: string;
   sanitizeURLEnabled: boolean;
@@ -98,20 +99,20 @@ export interface PolystatDiameters {
   diameterY: number;
 }
 
-export const OperatorOptions = [
-  { value: 0, label: 'Average (mean)' },
-  { value: 1, label: 'Count' },
-  { value: 2, label: 'Current' },
-  { value: 3, label: 'Delta' },
-  { value: 4, label: 'Difference' },
-  { value: 5, label: 'First' },
-  { value: 6, label: 'Log Min' },
-  { value: 7, label: 'Max' },
-  { value: 8, label: 'Min' },
-  { value: 9, label: 'Name' },
-  { value: 10, label: 'Time of Last Point' },
-  { value: 11, label: 'Time Step' },
-  { value: 12, label: 'Total' },
+export const OperatorOptions : SelectableValue[] = [
+  { value: 'avg', label: 'Average (mean)' },
+  { value: 'count', label: 'Count' },
+  { value: 'current', label: 'Current' },
+  { value: 'delta', label: 'Delta' },
+  { value: 'diff', label: 'Difference' },
+  { value: 'first', label: 'First' },
+  { value: 'logmin', label: 'Log Min' },
+  { value: 'max', label: 'Max' },
+  { value: 'min', label: 'Min' },
+  { value: 'name', label: 'Name' },
+  { value: 'last_time', label: 'Time of Last Point' },
+  { value: 'time_step', label: 'Time Step' },
+  { value: 'total', label: 'Total' },
 ];
 
 export const SortOptions = [

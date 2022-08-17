@@ -140,7 +140,9 @@ export const ApplyOverrides = (
       if (anOverride.suffix !== '') {
         data[index].valueFormatted = data[index].valueFormatted + ' ' + anOverride.suffix;
       }
-      // TODO: needed?
+      if (anOverride.alias != '') {
+        data[index].displayName = anOverride.alias;
+      }
       data[index].prefix = anOverride.prefix;
       data[index].suffix = anOverride.suffix;
       // set the url, replace template vars
