@@ -25,6 +25,7 @@ export interface PolystatOptions {
   globalShape: PolygonShapes;
   globalShowValueEnabled: boolean;
   globalTextFontColor: string;
+  globalTextFontAutoColor: string;
   globalTextFontAutoColorEnabled: boolean;
   globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
