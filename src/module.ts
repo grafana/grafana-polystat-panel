@@ -143,6 +143,7 @@ export const plugin = getPanelPluginOrFallback(
           category: ['Text'],
           defaultValue: 'black', // TODO: fix this default to theme
           description: 'Font color to use when no overrides or thresholds apply to polygon',
+          showIf: (c) => c.globalTextFontAutoColorEnabled !== true,
         })
         // auto set font color
         .addBooleanSwitch({
@@ -160,6 +161,7 @@ export const plugin = getPanelPluginOrFallback(
           defaultValue: false,
           category: ['Text'],
           description: 'Use Ellipses when character count is exceeded',
+          showIf: (c) => c.globalAutoScaleFonts !== true,
         })
         // ellipse num chars
         .addNumberInput({
@@ -171,7 +173,7 @@ export const plugin = getPanelPluginOrFallback(
           },
           category: ['Text'],
           description: 'Default number of characters to display before showing ellipses',
-          showIf: (c) => c.ellipseEnabled === true,
+          showIf: (c) => c.ellipseEnabled === true && c.globalAutoScaleFonts !== true,
         })
 
         // Sorting
