@@ -5,6 +5,7 @@ import { OverrideItemType, OverrideItemTracker } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Collapse } from '@grafana/ui';
 import { PolystatThreshold } from 'components/thresholds/types';
+import { OperatorOptions } from 'components/types';
 
 export interface OverrideEditorSettings {
   overrides: OverrideItemType[];
@@ -121,7 +122,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
         '#bf1b00', // "rgba(245, 54, 54, 1)",  // red
         '#4040a0', // "rgba(64, 64, 160, 1)",  // blue
       ],
-      operatorName: 'avg',
+      operatorName: OperatorOptions[0],
       order: order,
     };
     const aTracker: OverrideItemTracker = {

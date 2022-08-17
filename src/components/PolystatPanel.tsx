@@ -40,6 +40,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.globalClickthrough,
     options.globalClickthroughNewTabEnabled,
     options.globalClickthroughSanitizedEnabled,
+    options.globalOperator,
     options.globalDecimals,
     options.globalDisplayMode,
     options.globalRegexPattern,
@@ -69,6 +70,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalClickthrough={options.globalClickthrough}
           globalClickthroughNewTabEnabled={options.globalClickthroughNewTabEnabled}
           globalClickthroughSanitizedEnabled={options.globalClickthroughSanitizedEnabled}
+          globalOperator={options.globalOperator}
           globalDecimals={options.globalDecimals}
           globalDisplayMode={options.globalDisplayMode}
           globalFontSize={options.globalFontSize}

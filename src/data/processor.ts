@@ -15,10 +15,11 @@ import {
   InterpolateFunction,
   FieldConfigSource,
   ScopedVars,
+  SelectableValue,
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
-import { PolystatModel } from 'components/types';
+import { OperatorOptions, PolystatModel } from 'components/types';
 import { GLOBAL_FILL_COLOR_RGBA } from 'components/defaults';
 import { GetDecimalsForValue, SortVariableValuesByField } from 'utils';
 import { ApplyComposites } from './composite_processor';
@@ -46,6 +47,7 @@ export function ProcessDataFrames(
   globalClickthrough: string,
   globalClickthroughTabEnabled: boolean,
   globalClickthroughSanitizedEnabled: boolean,
+  globalOperator: string,
   globalDecimals: number,
   globalDisplayMode: string,
   globalRegexPattern: string,
@@ -60,7 +62,7 @@ export function ProcessDataFrames(
   let internalData = [] as PolystatModel[];
   // just one for now...
   processedData.map((item) => {
-    const model = DataFrameToPolystat(item);
+    const model = DataFrameToPolystat(item, globalOperator);
     internalData.push(model);
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
@@ -232,7 +234,7 @@ const roundValue = (num: number, decimals: number) => {
   return Math.round(parseFloat(formatted)) / n;
 };
 
-export function DataFrameToPolystat(frame: DataFrame): PolystatModel {
+export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): PolystatModel {
   // @ts-ignore
   const shortenValue = (value: string, length: number) => {
     if (value.length > length) {
@@ -248,7 +250,7 @@ export function DataFrameToPolystat(frame: DataFrame): PolystatModel {
   const standardCalcs = reduceField({ field: valueField, reducers: ['bogus'] });
   //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
   const valueFieldName = getFieldDisplayName(valueField, frame);
-  const operatorValue = getValueByOperator(valueFieldName, 'avg', standardCalcs);
+  const operatorValue = getValueByOperator(valueFieldName, globalOperator, standardCalcs);
   //const y = x(operatorValue);
 
   let maxDecimals = 4;
@@ -274,7 +276,7 @@ export function DataFrameToPolystat(frame: DataFrame): PolystatModel {
     suffix: '',
     color: GLOBAL_FILL_COLOR_RGBA,
     clickThrough: '',
-    operatorName: '',
+    operatorName: OperatorOptions[0],
     newTabEnabled: true,
     sanitizedURL: '',
     sanitizeURLEnabled: true,
@@ -286,7 +288,7 @@ export function DataFrameToPolystat(frame: DataFrame): PolystatModel {
   return model;
 }
 
-function getValueByOperator(metricName: string, operatorName: string, calcs: FieldCalcs) {
+function getValueByOperator(metricName: string, operatorName: string|SelectableValue, calcs: FieldCalcs) {
   let value = calcs.avg;
   switch (operatorName) {
     case 'avg':

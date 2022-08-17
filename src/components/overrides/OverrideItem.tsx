@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 
-import { IconName, Input, Field, FieldSet, Switch, Card, IconButton, UnitPicker } from '@grafana/ui';
+import { IconName, Input, Field, FieldSet, Switch, Card, IconButton, UnitPicker, Select } from '@grafana/ui';
 import { OverrideItemProps, OverrideItemType } from './types';
 import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
+import { OperatorOptions } from 'components/types';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemProps) => {
   const [override, _setOverride] = useState(options.override);
@@ -48,10 +49,29 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
             />
           </Field>
           <Field label="Alias" disabled={!override.enabled}>
-            <Input value={override.alias} placeholder="" />
+            <Input value={override.alias} placeholder=""
+                          onChange={(e) => setOverride({ ...override, alias: e.currentTarget.value })}
+            />
+          </Field>
+          <Field label="Decimals" disabled={!override.enabled}>
+            <Input
+              value={override.decimals}
+              type="number"
+              step={1} placeholder=""
+              onChange={(e) => setOverride({ ...override, decimals: e.currentTarget.value })}
+            />
+          </Field>
+          <Field label="Stat" description="The statistic to be displayed">
+            <Select
+              value={override.operatorName}
+              onChange={(v) => {
+                setOverride({ ...override, operatorName: v });
+              }}
+              options={OperatorOptions}
+            />
           </Field>
           <Field label="Unit Format" disabled={!override.enabled}>
-            <UnitPicker value={override.unitFormat} onChange={(val) => (override.unitFormat = val)} />
+            <UnitPicker value={override.unitFormat} onChange={(val) => setOverride({ ...override, unitFormat: val })} />
           </Field>
           <Field label="Thresholds" disabled={!override.enabled}>
             <ThresholdsEditor thresholds={override.thresholds} setter={setThresholds} />

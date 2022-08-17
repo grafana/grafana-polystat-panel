@@ -1,3 +1,4 @@
+import { SelectableValue } from '@grafana/data';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { PolystatModel } from '../components/types';
 
@@ -127,9 +128,9 @@ function getThresholdLevelForValue(
   return { thresholdLevel: currentState, color: currentColor };
 }
 
-function getValueByStatName(operatorName: string, data: any): number {
+function getValueByStatName(operatorName: SelectableValue, data: any): number {
   let value = data.stats.avg;
-  switch (operatorName) {
+  switch (operatorName.value) {
     case 'avg':
       value = data.stats.mean;
       break;
@@ -137,7 +138,7 @@ function getValueByStatName(operatorName: string, data: any): number {
       value = data.stats.count;
       break;
     case 'current':
-      value = data.stats.current;
+      value = data.stats.last;
       break;
     case 'delta':
       value = data.stats.delta;

@@ -342,7 +342,7 @@ export const plugin = getPanelPluginOrFallback(
           path: 'globalOperator',
           description: 'Statistic to display',
           category: ['Global'],
-          defaultValue: 0,
+          defaultValue: OperatorOptions[0],
           settings: {
             options: OperatorOptions,
           },
