@@ -99,7 +99,7 @@ export interface PolystatDiameters {
   diameterY: number;
 }
 
-export const OperatorOptions : SelectableValue[] = [
+export const OperatorOptions: SelectableValue[] = [
   { value: 'avg', label: 'Average (mean)' },
   { value: 'count', label: 'Count' },
   { value: 'current', label: 'Current' },

@@ -279,7 +279,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     showEllipses: boolean,
     numOfChars: number,
     text: string,
-    alias: string,
+    alias: string
   ) => {
     if (alias !== '') {
       text = alias;

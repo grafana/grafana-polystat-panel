@@ -49,15 +49,18 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
             />
           </Field>
           <Field label="Alias" disabled={!override.enabled}>
-            <Input value={override.alias} placeholder=""
-                          onChange={(e) => setOverride({ ...override, alias: e.currentTarget.value })}
+            <Input
+              value={override.alias}
+              placeholder=""
+              onChange={(e) => setOverride({ ...override, alias: e.currentTarget.value })}
             />
           </Field>
           <Field label="Decimals" disabled={!override.enabled}>
             <Input
               value={override.decimals}
               type="number"
-              step={1} placeholder=""
+              step={1}
+              placeholder=""
               onChange={(e) => setOverride({ ...override, decimals: e.currentTarget.value })}
             />
           </Field>

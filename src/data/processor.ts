@@ -288,7 +288,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
   return model;
 }
 
-function getValueByOperator(metricName: string, operatorName: string|SelectableValue, calcs: FieldCalcs) {
+function getValueByOperator(metricName: string, operatorName: string | SelectableValue, calcs: FieldCalcs) {
   let value = calcs.avg;
   switch (operatorName) {
     case 'avg':

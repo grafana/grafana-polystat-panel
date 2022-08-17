@@ -140,7 +140,7 @@ export const ApplyOverrides = (
       if (anOverride.suffix !== '') {
         data[index].valueFormatted = data[index].valueFormatted + ' ' + anOverride.suffix;
       }
-      if (anOverride.alias != '') {
+      if (anOverride.alias !== '') {
         data[index].displayName = anOverride.alias;
       }
       data[index].prefix = anOverride.prefix;
