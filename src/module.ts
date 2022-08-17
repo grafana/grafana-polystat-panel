@@ -393,7 +393,8 @@ export const plugin = getPanelPluginOrFallback(
         .addTextInput({
           name: 'Global Regex',
           path: 'globalRegexPattern',
-          description: 'The values in the specified column are filtered and displayed according to this regular expression. Ex: String: Url|broadcom.com|mirror|location-1 regex: /Url&#92;|(.*?)&#92;|/ Output: broadcom.com',
+          description:
+            'The values in the specified column are filtered and displayed according to this regular expression. Ex: String: Url|broadcom.com|mirror|location-1 regex: /Url&#92;|(.*?)&#92;|/ Output: broadcom.com',
           category: ['Global Aliasing'],
           defaultValue: '',
         })
