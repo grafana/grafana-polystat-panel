@@ -77,7 +77,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.layoutNumRows,
     options.layoutDisplayLimit,
     options.autoSizePolygons,
-    options.shape
+    options.globalShape
   );
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
@@ -91,11 +91,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     lm.setRadius(options.globalPolygonSize);
     radius = options.globalPolygonSize;
   } else {
-    radius = lm.generateRadius(options.shape);
+    radius = lm.generateRadius(options.globalShape);
   }
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
-  const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.shape);
+  const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
 
   const aHexbin = hexbin()
     .radius(radius)
@@ -104,7 +104,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       [options.panelWidth, options.panelHeight],
     ]);
   const { diameterX, diameterY } = lm.getDiameters();
-  const { xoffset, yoffset } = lm.getOffsets(options.shape, options.processedData.length);
+  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.processedData.length);
 
   // compute text area size (used to calculate the fontsize)
   const textAreaWidth = diameterX;
@@ -122,7 +122,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const symbol = d3symbol().size(innerArea);
 
   let customShape = null;
-  switch (options.shape as any) {
+  switch (options.globalShape as any) {
     case PolygonShapes.HEXAGON_POINTED_TOP:
       customShape = aHexbin.hexagon(radius);
       break;
@@ -174,7 +174,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     numOfChars = result.numOfChars;
   }
   const alignments = getAlignments(
-    options.shape,
+    options.globalShape,
     diameterX,
     diameterY,
     textAreaHeight,
@@ -212,7 +212,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       // TODO: safari needs the location.href
       fillColor = `url(#${gradientId}_linear_gradient_state_data_${index})`;
     }
-    const useRadius = lm.generateRadius(options.shape);
+    const useRadius = lm.generateRadius(options.globalShape);
     const coords = getCoords(index);
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
@@ -315,10 +315,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 {item.clickThrough.length > 0 ? (
                   <a target={ct1} href={item.clickThrough}>
                     {' '}
-                    {drawShape(index, options.shape)}{' '}
+                    {drawShape(index, options.globalShape)}{' '}
                   </a>
                 ) : (
-                  drawShape(index, options.shape)
+                  drawShape(index, options.globalShape)
                 )}
                 {options.globalTooltipsEnabled && (
                   <Tooltip

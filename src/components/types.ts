@@ -22,6 +22,7 @@ export interface PolystatOptions {
   globalPolygonBorderColor: string;
   globalPolygonSize: number;
   globalRegexPattern: string;
+  globalShape: PolygonShapes;
   globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
   globalTooltipsShowTimestampEnabled: boolean;
@@ -35,7 +36,6 @@ export interface PolystatOptions {
   panelId: number;
   radius: number | null;
   renderTime: Date;
-  shape: PolygonShapes;
   sortByField: string;
   sortByDirection: number;
   valueEnabled: boolean;
