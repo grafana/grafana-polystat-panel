@@ -342,7 +342,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   textAnchor="middle"
                   fontFamily="Roboto"
                   fontSize={activeLabelFontSize + 'px'}
-                  style={{ fill: options.globalTextFontAutoColorEnabled ? options.globalTextFontAutoColor : options.globalTextFontColor, pointerEvents: 'none' }}
+                  style={{
+                    fill: options.globalTextFontAutoColorEnabled
+                      ? options.globalTextFontAutoColor
+                      : options.globalTextFontColor,
+                    pointerEvents: 'none',
+                  }}
                 >
                   {getTextToDisplay(
                     options.globalAutoScaleFonts,
@@ -361,7 +366,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   textAnchor="middle"
                   fontFamily="Roboto"
                   fontSize={activeValueFontSize + 'px'}
-                  style={{ fill: options.globalTextFontAutoColorEnabled ? options.globalTextFontAutoColor : options.globalTextFontColor, pointerEvents: 'none' }}
+                  style={{
+                    fill: options.globalTextFontAutoColorEnabled
+                      ? options.globalTextFontAutoColor
+                      : options.globalTextFontColor,
+                    pointerEvents: 'none',
+                  }}
                 >
                   {item.valueFormatted}
                 </text>
