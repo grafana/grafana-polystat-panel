@@ -6,17 +6,17 @@ import { CompositeMetricItem } from './CompositeMetricItem';
 import { SelectableValue } from '@grafana/data';
 import { v4 as uuidv4 } from 'uuid';
 
-export const CompositeItem: React.FC<CompositeItemProps> = (options: CompositeItemProps) => {
-  const [composite, _setComposite] = useState(options.composite);
+export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItemProps) => {
+  const [composite, _setComposite] = useState(props.composite);
   const setComposite = (value: CompositeItemType) => {
     _setComposite(value);
-    options.setter(composite.order, value);
+    props.setter(composite.order, value);
   };
   const [visibleIcon] = useState<IconName>('eye');
   const [hiddenIcon] = useState<IconName>('eye-slash');
   const removeItem = () => {
     //alert('high');
-    options.remover(composite.order);
+    props.remover(composite.order);
     // call parent remove function
   };
 
@@ -27,14 +27,24 @@ export const CompositeItem: React.FC<CompositeItemProps> = (options: CompositeIt
   };
 
   const removeMetric = (index: number) => {
-    let allMetrics = [...options.composite.metrics];
+    let allMetrics = [...props.composite.metrics];
     allMetrics.splice(index, 1);
-    setComposite({ ...options.composite, metrics: allMetrics });
+    setComposite({ ...props.composite, metrics: allMetrics });
   };
+  const moveUp = () => {
+    props.moveUp(composite.order);
+  };
+  const moveDown = () => {
+    props.moveDown(composite.order);
+  };
+  const createDuplicate = () => {
+    props.createDuplicate(composite.order);
+  };
+
   const updateMetric = (index: number, v: SelectableValue) => {
-    const allMetrics = options.composite.metrics;
+    const allMetrics = props.composite.metrics;
     allMetrics[index].seriesMatch = { label: v.label, value: v.value };
-    setComposite({ ...options.composite, metrics: allMetrics });
+    setComposite({ ...props.composite, metrics: allMetrics });
   };
 
   const addMetric = () => {
@@ -59,7 +69,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (options: CompositeIt
   };
 
   return (
-    <Card heading="" key={`composite-card-${options.ID}`}>
+    <Card heading="" key={`composite-card-${props.ID}`}>
       <Card.Meta>
         <FieldSet>
           <Field label="Composite Name" description="Name or Regular Expression" disabled={!composite.showComposite}>
@@ -160,13 +170,15 @@ export const CompositeItem: React.FC<CompositeItemProps> = (options: CompositeIt
       </Card.Meta>
 
       <Card.SecondaryActions>
+        <IconButton key="moveUp" name="arrow-up" tooltip="Move Up" onClick={moveUp} />
+        <IconButton key="moveDown" name="arrow-down" tooltip="Move Down" onClick={moveDown} />
         <IconButton
           key="showComposite"
           name={composite.showComposite ? visibleIcon : hiddenIcon}
           tooltip="Hide/Show Composite"
           onClick={() => setComposite({ ...composite, showComposite: !composite.showComposite })}
         />
-        <IconButton key="copyComposite" name="copy" tooltip="Duplicate" />
+        <IconButton key="copyComposite" name="copy" tooltip="Duplicate" onClick={createDuplicate} />
         <IconButton
           key="deleteComposite"
           variant="destructive"

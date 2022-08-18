@@ -63,6 +63,9 @@ export interface CompositeItemProps {
   enabled: boolean;
   setter: any;
   remover: any;
+  moveUp: any;
+  moveDown: any;
+  createDuplicate: any;
 }
 
 export interface CompositeMetricItemProps {

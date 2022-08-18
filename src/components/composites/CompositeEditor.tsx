@@ -15,14 +15,7 @@ export interface CompositeEditorSettings {
 interface Props extends StandardEditorProps<string | string[] | null, CompositeEditorSettings> {}
 
 export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
-  const [settings, _setSettings] = useState(context.options.compositeConfig);
-  const setSettings = (v: any) => {
-    _setSettings(v);
-    // update the panel config
-    //  context.options.compositeConfig = v;
-  };
-
-  //const [tracker, _setTracker] = useState<CompositeItemTracker[]>([]);
+  const [settings, setSettings] = useState(context.options.compositeConfig);
   const [tracker, _setTracker] = useState((): CompositeItemTracker[] => {
     if (!settings.composites) {
       const empty: CompositeItemTracker[] = [];
@@ -67,9 +60,71 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
     return openStates;
   });
 
+  // generic move
+  const arrayMove = (arr: any, oldIndex: number, newIndex: number) => {
+    if (newIndex >= arr.length) {
+      var k = newIndex - arr.length + 1;
+      while (k--) {
+        arr.push(undefined);
+      }
+    }
+    arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+  };
+
+  const moveDown = (index: number) => {
+    if (index !== tracker.length - 1) {
+      arrayMove(tracker, index, index + 1);
+      // reorder
+      for (let i = 0; i < tracker.length; i++) {
+        tracker[i].order = i;
+        tracker[i].composite.order = i;
+      }
+      setTracker([...tracker]);
+    }
+  };
+
+  const moveUp = (index: number) => {
+    if (index > 0) {
+      arrayMove(tracker, index, index - 1);
+      // reorder
+      for (let i = 0; i < tracker.length; i++) {
+        tracker[i].order = i;
+        tracker[i].composite.order = i;
+      }
+      setTracker([...tracker]);
+    }
+  };
+
+  const createDuplicate = (index: number) => {
+    const original = tracker[index].composite;
+    const order = tracker.length;
+    const aComposite: CompositeItemType = {
+      name: `${original.name} Copy`,
+      order: order,
+      templatedName: original.templatedName,
+      isTemplated: original.isTemplated,
+      displayMode: original.displayMode,
+      enabled: original.enabled,
+      showName: original.showName,
+      showValue: original.showValue,
+      showComposite: original.showComposite,
+      showMembers: original.showMembers,
+      metrics: original.metrics,
+      clickThrough: original.clickThrough,
+      clickThroughOpenNewTab: original.clickThroughOpenNewTab,
+      clickThroughSanitize: original.clickThroughSanitize,
+    };
+    const aTracker: CompositeItemTracker = {
+      composite: aComposite,
+      order: order,
+      ID: uuidv4(),
+    };
+    setTracker([...tracker, aTracker]);
+    setIsOpen([...isOpen, true]);
+  };
+
   const updateComposite = (index: number, value: CompositeItemType) => {
     tracker[index].composite = value;
-    // works ... setTracker(tracker);
     setTracker([...tracker]);
   };
 
@@ -89,7 +144,6 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
       allComposites[i].order = i;
     }
     setTracker([...allComposites]);
-    // TODO: openers should be fixed too
   };
 
   const toggleOpener = (index: number) => {
@@ -164,6 +218,9 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
                 enabled={item.composite.enabled}
                 setter={updateComposite}
                 remover={removeComposite}
+                moveUp={moveUp}
+                moveDown={moveDown}
+                createDuplicate={createDuplicate}
               />
             </Collapse>
           );

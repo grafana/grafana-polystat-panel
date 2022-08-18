@@ -4,27 +4,17 @@ import { Input, Select, Field, IconButton, HorizontalGroup } from '@grafana/ui';
 import { CompositeMetricItemProps } from './types';
 import { SelectableValue } from '@grafana/data';
 
-export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options) => {
+export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) => {
   const [customOptions, setCustomOptions] = useState<Array<SelectableValue<string>>>([]);
 
-  // TODO: testing selection presets
-  const optionPresets: SelectableValue[] = [
-    { label: 'Basic option', value: 0 },
-    { label: 'Option with description', value: 1, description: 'this is a description' },
-    {
-      label: 'Option with description and image',
-      value: 2,
-      description: 'Longer description.',
-      imgUrl: 'https://image.fake',
-    },
-  ];
+  const optionPresets: SelectableValue[] = [];
 
   //console.log('Composite Metric Item');
   //console.log(options.metric);
   //console.log(options.metric.seriesMatch);
   async function copySelectedMetricToClipboard(index: number) {
-    if (options.metric.seriesMatch?.value) {
-      const aValue = options.metric.seriesMatch.value;
+    if (props.metric.seriesMatch?.value) {
+      const aValue = props.metric.seriesMatch.value;
       if ('clipboard' in navigator) {
         if (aValue) {
           return await navigator.clipboard.writeText(aValue);
@@ -38,7 +28,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
   }
 
   const updateMetric = (v: SelectableValue) => {
-    options.updateMetric(options.index, v);
+    props.updateMetric(props.index, v);
   };
 
   return (
@@ -48,23 +38,23 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
         variant="destructive"
         name="trash-alt"
         tooltip="Delete this metric"
-        onClick={() => options.removeMetric(options.index)}
+        onClick={() => props.removeMetric(props.index)}
       />
       <IconButton
         key="copyMetric"
         variant="secondary"
         name="copy"
         tooltip="Copy Metric/Regex"
-        onClick={() => copySelectedMetricToClipboard(options.index)}
+        onClick={() => copySelectedMetricToClipboard(props.index)}
       />
-      <Field label="Metric/RegEx" disabled={options.disabled}>
+      <Field label="Metric/RegEx" disabled={props.disabled}>
         <Select
           menuShouldPortal={true}
           width={24}
-          key={`cmi-index-${options.index}`}
+          key={`cmi-index-${props.index}`}
           allowCustomValue
           options={[...optionPresets, ...customOptions]}
-          value={options.metric.seriesMatch}
+          value={props.metric.seriesMatch}
           onCreateOption={(v) => {
             const customValue: SelectableValue = { value: v, label: v, description: 'custom regex' };
             setCustomOptions([...customOptions, customValue]);
@@ -75,8 +65,8 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
           }}
         />
       </Field>
-      <Field label="Alias" disabled={options.disabled}>
-        <Input value={options.metric.alias} placeholder="" />
+      <Field label="Alias" disabled={props.disabled}>
+        <Input value={props.metric.alias} placeholder="" />
       </Field>
     </HorizontalGroup>
   );
