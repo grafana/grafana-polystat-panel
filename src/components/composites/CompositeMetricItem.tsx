@@ -59,6 +59,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (options)
       />
       <Field label="Metric/RegEx" disabled={options.disabled}>
         <Select
+          menuShouldPortal={true}
           width={24}
           key={`cmi-index-${options.index}`}
           allowCustomValue

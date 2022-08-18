@@ -73,6 +73,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
           </Field>
           <Field label="Stat" description="The statistic to be displayed" disabled={!override.enabled}>
             <Select
+              menuShouldPortal={true}
               value={override.operatorName}
               onChange={(v) => {
                 setOverride({ ...override, operatorName: v });

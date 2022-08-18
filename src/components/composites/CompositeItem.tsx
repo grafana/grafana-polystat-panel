@@ -103,6 +103,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (options: CompositeIt
             disabled={!composite.showComposite}
           >
             <Select
+              menuShouldPortal={true}
               value={composite.displayMode}
               onChange={(v) => {
                 setComposite({ ...composite, displayMode: v });
