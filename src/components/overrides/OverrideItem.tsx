@@ -6,27 +6,26 @@ import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { OperatorOptions } from 'components/types';
 
-export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemProps) => {
-  const [override, _setOverride] = useState(options.override);
+export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
+  const [override, _setOverride] = useState(props.override);
   const setOverride = (value: OverrideItemType) => {
     _setOverride(value);
-    options.setter(override.order, value);
+    props.setter(override.order, value);
   };
   const [visibleIcon] = useState<IconName>('eye');
   const [hiddenIcon] = useState<IconName>('eye-slash');
-
   const removeItem = () => {
-    options.remover(override.order);
+    props.remover(override.order);
   };
 
   const moveUp = () => {
-    options.moveUp(override.order);
+    props.moveUp(override.order);
   };
   const moveDown = () => {
-    options.moveDown(override.order);
+    props.moveDown(override.order);
   };
   const createDuplicate = () => {
-    options.createDuplicate(override.order);
+    props.createDuplicate(override.order);
   };
 
   const setThresholds = (val: PolystatThreshold[]) => {
@@ -34,7 +33,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
   };
 
   return (
-    <Card heading="" key={`override-card-${options.ID}`}>
+    <Card heading="" key={`override-card-${props.ID}`}>
       <Card.Meta>
         <FieldSet>
           <Field

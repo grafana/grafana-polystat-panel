@@ -38,6 +38,7 @@ export const plugin = getPanelPluginOrFallback(
         [FieldConfigProperty.Mappings]: {},
       },
     })
+    .setSuggestionsSupplier(new PolystatDataSuggestionsSupplier())
     .setPanelOptions((builder) => {
       builder
         .addBooleanSwitch({
@@ -426,5 +427,4 @@ export const plugin = getPanelPluginOrFallback(
           category: ['Composites'],
         });
     })
-    .setSuggestionsSupplier(new PolystatDataSuggestionsSupplier())
 );
