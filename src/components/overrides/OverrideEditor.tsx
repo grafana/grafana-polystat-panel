@@ -63,16 +63,68 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
     setTracker([...tracker]);
   };
 
-  const createDuplicate = (index: number) => {};
+  const createDuplicate = (index: number) => {
+    const original = tracker[index].override;
+    const order = tracker.length;
+    const anOverride: OverrideItemType = {
+      label: `${original.label} Copy`,
+      enabled: original.enabled,
+      metricName: original.metricName,
+      alias: original.alias,
+      thresholds: original.thresholds,
+      prefix: original.prefix,
+      suffix: original.suffix,
+      clickThrough: original.clickThrough,
+      clickThroughOpenNewTab: original.clickThroughOpenNewTab,
+      clickThroughSanitize: original.clickThroughSanitize,
+      unitFormat: original.unitFormat,
+      scaledDecimals: original.scaledDecimals,
+      decimals: original.decimals,
+      colors: original.colors,
+      operatorName: original.operatorName,
+      order: order,
+    };
+    const aTracker: OverrideItemTracker = {
+      override: anOverride,
+      order: order,
+      ID: uuidv4(),
+    };
+    setTracker([...tracker, aTracker]);
+    setIsOpen([...isOpen, true]);
+  };
+
+  // generic move
+  const arrayMove = (arr: any, oldIndex: number, newIndex: number) => {
+    if (newIndex >= arr.length) {
+      var k = newIndex - arr.length + 1;
+      while (k--) {
+        arr.push(undefined);
+      }
+    }
+    arr.splice(newIndex, 0, arr.splice(oldIndex, 1)[0]);
+  };
 
   const moveDown = (index: number) => {
     if (index !== tracker.length - 1) {
+      arrayMove(tracker, index, index + 1);
+      // reorder
+      for (let i = 0; i < tracker.length; i++) {
+        tracker[i].order = i;
+        tracker[i].override.order = i;
+      }
+      setTracker([...tracker]);
     }
   };
 
   const moveUp = (index: number) => {
     if (index > 0) {
-      //const allOverrides = [...tracker];
+      arrayMove(tracker, index, index - 1);
+      // reorder
+      for (let i = 0; i < tracker.length; i++) {
+        tracker[i].order = i;
+        tracker[i].override.order = i;
+      }
+      setTracker([...tracker]);
     }
   };
 
@@ -89,9 +141,9 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
     // reorder
     for (let i = 0; i < allOverrides.length; i++) {
       allOverrides[i].order = i;
+      allOverrides[i].override.order = i;
     }
     setTracker([...allOverrides]);
-    // TODO: openers should be fixed too
   };
 
   const toggleOpener = (index: number) => {

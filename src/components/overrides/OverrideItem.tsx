@@ -14,13 +14,20 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
   };
   const [visibleIcon] = useState<IconName>('eye');
   const [hiddenIcon] = useState<IconName>('eye-slash');
+
   const removeItem = () => {
     options.remover(override.order);
   };
 
-  const moveUp = () => {};
-  const moveDown = () => {};
-  const createDuplicate = () => {};
+  const moveUp = () => {
+    options.moveUp(override.order);
+  };
+  const moveDown = () => {
+    options.moveDown(override.order);
+  };
+  const createDuplicate = () => {
+    options.createDuplicate(override.order);
+  };
 
   const setThresholds = (val: PolystatThreshold[]) => {
     setOverride({ ...override, thresholds: val });
