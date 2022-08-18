@@ -64,7 +64,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
               onChange={(e) => setOverride({ ...override, decimals: e.currentTarget.value })}
             />
           </Field>
-          <Field label="Stat" description="The statistic to be displayed">
+          <Field label="Stat" description="The statistic to be displayed" disabled={!override.enabled}>
             <Select
               value={override.operatorName}
               onChange={(v) => {
@@ -74,10 +74,17 @@ export const OverrideItem: React.FC<OverrideItemProps> = (options: OverrideItemP
             />
           </Field>
           <Field label="Unit Format" disabled={!override.enabled}>
-            <UnitPicker value={override.unitFormat} onChange={(val) => setOverride({ ...override, unitFormat: val })} />
+            {override.enabled ? (
+              <UnitPicker
+                value={override.unitFormat}
+                onChange={(val) => setOverride({ ...override, unitFormat: val })}
+              />
+            ) : (
+              <span>{override.unitFormat}</span>
+            )}
           </Field>
           <Field label="Thresholds" disabled={!override.enabled}>
-            <ThresholdsEditor thresholds={override.thresholds} setter={setThresholds} />
+            <ThresholdsEditor disabled={!override.enabled} thresholds={override.thresholds} setter={setThresholds} />
           </Field>
           <Field label="Prefix" description="Apply text to beginning of metric" disabled={!override.enabled}>
             <Input

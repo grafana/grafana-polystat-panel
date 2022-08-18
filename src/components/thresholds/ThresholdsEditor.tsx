@@ -8,6 +8,7 @@ import { DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX, DEFAULT_CRITICAL_COLOR
 interface Props {
   thresholds: PolystatThreshold[];
   setter: any;
+  disabled?: boolean;
 }
 export const ThresholdsEditor: React.FC<Props> = (options) => {
   const [tracker, _setTracker] = useState((): ThresholdItemTracker[] => {
@@ -107,13 +108,14 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
 
   return (
     <>
-      <Button fill="solid" variant="primary" icon="plus" onClick={addItem}>
+      <Button disabled={options.disabled} fill="solid" variant="primary" icon="plus" onClick={addItem}>
         Add Threshold
       </Button>
       {tracker &&
         tracker.map((tracker: ThresholdItemTracker, index: number) => {
           return (
             <ThresholdItem
+              disabled={options.disabled}
               key={`threshold-item-index-${tracker.ID}`}
               ID={tracker.ID}
               threshold={tracker.threshold}

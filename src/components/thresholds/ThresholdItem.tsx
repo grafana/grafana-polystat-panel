@@ -15,6 +15,7 @@ interface ThresholdItemProps {
   stateSetter: any;
   remover: any;
   index: number;
+  disabled: boolean;
 }
 
 export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdItemProps) => {
@@ -22,6 +23,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
 
   return (
     <Input
+      disabled={options.disabled}
       type="number"
       step="1.0"
       key={options.ID}
@@ -41,6 +43,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
       suffix={
         <>
           <Select
+            disabled={options.disabled}
             menuShouldPortal={true}
             value={options.threshold.state}
             onChange={(v) => {
@@ -49,6 +52,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
             options={ThresholdStates}
           />
           <IconButton
+            disabled={options.disabled}
             key="deleteThreshold"
             variant="destructive"
             name="trash-alt"
