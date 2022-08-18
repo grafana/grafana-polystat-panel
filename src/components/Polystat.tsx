@@ -136,7 +136,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       customShape = aHexbin.hexagon(radius);
       break;
   }
-  // @ts-ignore
+
+  /*
   const miscBin = (data: any): any => {
     for (let i = 0; i < data.length; i++) {
       data[i].x = data[i][0];
@@ -144,7 +145,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
     return data;
   };
-  // @ts-ignore
+  */
+
   const resolveClickThroughTarget = (d: any): string => {
     let clickThroughTarget = '_self';
     if (d.newTabEnabled === true) {
@@ -158,7 +160,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     const yValue = calculatedPoints[i][1];
     return { x: xValue, y: yValue };
   };
-  const ct1 = '_blank';
   // calculate the fontsize based on the shape and the text
   let activeLabelFontSize = options.globalFontSize;
   // font sizes are independent for label and values
@@ -307,19 +308,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <Gradients gradientId={gradientId} data={options.processedData} />
 
           {options.processedData.map((item, index) => {
-            //let shapeData = null;
-            //if (hasClick) {
-            //  shapeData = <a target={ct1} href={url1}> {drawShape(0, options.shape)} </a>
-            //} else {
-            //  shapeData = drawShape(0, options.shape);
-            //}
             const coords = getCoords(index);
+            const ctt = resolveClickThroughTarget(item);
             return (
               <>
                 {item.clickThrough.length > 0 ? (
-                  <a target={ct1} href={item.clickThrough}>
-                    {' '}
-                    {drawShape(index, options.globalShape)}{' '}
+                  <a target={ctt} href={item.clickThrough}>
+                    {drawShape(index, options.globalShape)}
                   </a>
                 ) : (
                   drawShape(index, options.globalShape)

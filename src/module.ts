@@ -371,6 +371,7 @@ export const plugin = getPanelPluginOrFallback(
         .addTextInput({
           name: 'Default Clickthrough',
           path: 'globalClickthrough',
+          description: 'URL to use when none are defined by overrides or composites',
           category: ['Global'],
           defaultValue: '',
         })
