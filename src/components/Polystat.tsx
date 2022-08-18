@@ -310,10 +310,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           {options.processedData.map((item, index) => {
             const coords = getCoords(index);
             const ctt = resolveClickThroughTarget(item);
+            const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             return (
               <>
-                {item.clickThrough.length > 0 ? (
-                  <a target={ctt} href={item.clickThrough}>
+                {useUrl.length > 0 ? (
+                  <a target={ctt} href={useUrl}>
                     {drawShape(index, options.globalShape)}
                   </a>
                 ) : (
