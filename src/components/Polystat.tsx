@@ -1,5 +1,4 @@
-// @ts-ignore
-import React, { useState, useEffect, MouseEvent, useRef, createRef, LegacyRef, SVGProps } from 'react';
+import React, { useState, useEffect, MouseEvent, createRef, useCallback } from 'react';
 
 import { useStyles } from '@grafana/ui';
 import { css } from '@emotion/css';
@@ -42,7 +41,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       setAnimationMetricIndexes(animationMetricIndexes);
     }
     //console.log(`done calling set Animation refs ${animationRefs.length}`);
-  }, [options.processedData.length]);
+  }, [options.processedData.length, animationRefs, animationMetricIndexes]);
 
   useEffect(() => {
     // add or remove refs
@@ -59,6 +58,36 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // add or remove refs
     setShowTooltips((tt) => Array(options.processedData.length).fill(false));
   }, [options.processedData.length]);
+
+  const animateComposite = useCallback(
+    async (item: PolystatModel, index: number) => {
+      while (true) {
+        //console.log(new Date().toLocaleString() + ` animate loop... ${item.name} index ${index}`);
+        await Sleep(2000);
+        let metricIndex = animationMetricIndexes[index];
+        //console.log(`animate... metricIndex ${metricIndex}`);
+        if (animationRefs.length > 0) {
+          if (animationRefs[index].current) {
+            animationRefs[index].current.innerHTML = formatCompositeValue(metricIndex, item);
+          }
+        }
+        metricIndex++;
+        metricIndex %= item.members.length;
+        animationMetricIndexes[index] = metricIndex;
+        setAnimationMetricIndexes(animationMetricIndexes);
+      }
+    },
+    [animationMetricIndexes, animationRefs]
+  );
+
+  useEffect(() => {
+    options.processedData.map((item, index) => {
+      if (item.isComposite) {
+        //console.log(`animating ${item.name}`);
+        animateComposite(item, index);
+      }
+    });
+  }, [options.processedData, animateComposite]);
 
   if (options.processedData.length === 0) {
     return <div style={messageStyleWarning}>No thresholds exceeded...</div>;
@@ -312,34 +341,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     return text;
   };
 
-  const animateComposite = async (item: PolystatModel, index: number) => {
-    while(true) {
-      //console.log(new Date().toLocaleString() + ` animate loop... ${item.name} index ${index}`);
-      await Sleep(2000);
-      let metricIndex = animationMetricIndexes[index];
-      //console.log(`animate... metricIndex ${metricIndex}`);
-      if (animationRefs.length > 0) {
-        if (animationRefs[index].current) {
-          animationRefs[index].current.innerHTML = formatCompositeValue(metricIndex, item);
-        }
-      }
-      metricIndex++
-      metricIndex %= item.members.length;
-      animationMetricIndexes[index] = metricIndex;
-      setAnimationMetricIndexes(animationMetricIndexes)
-    }
-  }
-
-  console.log("render...");
-  useEffect(() => {
-    options.processedData.map((item, index) => {
-      if (item.isComposite) {
-        console.log(`animating ${item.name}`);
-        animateComposite(item, index);
-      }
-    });
-  }, [options.processedData.length]);
-
   return (
     <div className={divStyles}>
       <svg
@@ -434,8 +435,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
 const Sleep = (ms: any) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
+};
 
 const buildTriggerCache = (item) => {
   let triggerCache = [];
@@ -455,7 +455,7 @@ const buildTriggerCache = (item) => {
   // sort it
   triggerCache = lodashOrderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
   return triggerCache;
-}
+};
 
 const formatCompositeValue = (frames: number, item: PolystatModel) => {
   // TODO: if just one value, could speed this up
@@ -489,7 +489,7 @@ const formatCompositeValue = (frames: number, item: PolystatModel) => {
     */
   }
   return content;
-}
+};
 
 const getAlignments = (
   shape: PolygonShapes,
