@@ -125,11 +125,12 @@ export const ApplyOverrides = (
         const decimals: number = +anOverride.decimals;
         const formatted = formatFunc(data[index].value, decimals, anOverride.scaledDecimals);
         data[index].valueFormatted = formatted.text;
+        // spaces are included with the formatFunc
         if (formatted.suffix) {
-          data[index].valueFormatted += ' ' + formatted.suffix;
+          data[index].valueFormatted += formatted.suffix;
         }
         if (formatted.prefix) {
-          data[index].valueFormatted = formatted.prefix + ' ' + data[index].valueFormatted;
+          data[index].valueFormatted = formatted.prefix + data[index].valueFormatted;
         }
         data[index].valueRounded = roundValue(data[index].value, decimals);
       }
