@@ -198,7 +198,7 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
           />
         </Field>
       </FieldSet>
-      <Button fill="solid" variant="primary" icon="plus" onClick={addItem}>
+      <Button fill="solid" variant="primary" icon="plus" disabled={!settings.enabled} onClick={addItem}>
         Add Composite
       </Button>
       {tracker &&

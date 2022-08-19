@@ -74,4 +74,5 @@ export interface CompositeMetricItemProps {
   disabled: boolean;
   removeMetric: any;
   updateMetric: any;
+  updateMetricAlias: any;
 }

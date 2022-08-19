@@ -47,6 +47,12 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
     setComposite({ ...props.composite, metrics: allMetrics });
   };
 
+  const updateMetricAlias = (index: number, alias: string) => {
+    const allMetrics = props.composite.metrics;
+    allMetrics[index].alias = alias;
+    setComposite({ ...props.composite, metrics: allMetrics });
+  };
+
   const addMetric = () => {
     const newMetric: CompositeMetric = {
       seriesMatch: {
@@ -144,8 +150,8 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, clickThroughOpenNewTab: !composite.clickThroughOpenNewTab })}
             />
           </Field>
-          <Field>
-            <Button key="addMetric" variant="primary" icon="plus" onClick={addMetric}>
+          <Field disabled={!composite.showComposite}>
+            <Button key="addMetric" variant="primary" icon="plus" disabled={!composite.showComposite} onClick={addMetric}>
               Add Metric
             </Button>
           </Field>
@@ -162,6 +168,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
                   index={index}
                   disabled={!composite.showComposite}
                   updateMetric={updateMetric}
+                  updateMetricAlias={updateMetricAlias}
                   removeMetric={removeMetric}
                 />
               );

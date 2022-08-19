@@ -30,6 +30,9 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
   const updateMetric = (v: SelectableValue) => {
     props.updateMetric(props.index, v);
   };
+  const updateMetricAlias = (alias: string) => {
+    props.updateMetricAlias(props.index, alias);
+  };
 
   return (
     <HorizontalGroup>
@@ -66,7 +69,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
         />
       </Field>
       <Field label="Alias" disabled={props.disabled}>
-        <Input value={props.metric.alias} placeholder="" />
+        <Input value={props.metric.alias} placeholder="" onChange={(e) => updateMetricAlias(e.currentTarget.value)} />
       </Field>
     </HorizontalGroup>
   );

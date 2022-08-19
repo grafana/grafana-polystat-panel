@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, { useState, useEffect, MouseEvent, useRef, createRef } from 'react';
+import React, { useState, useEffect, MouseEvent, useRef, createRef, LegacyRef, SVGProps } from 'react';
 
 import { useStyles } from '@grafana/ui';
 import { css } from '@emotion/css';
@@ -11,6 +11,7 @@ import { Gradients } from './gradients/Gradients';
 import { PolystatOptions, PolygonShapes, PolystatModel } from './types';
 import { LayoutManager } from './layout/layoutManager';
 import { getTextSizeForWidthAndHeight } from '../utils';
+import { orderBy as lodashOrderBy } from 'lodash';
 
 import { Tooltip } from './tooltips/Tooltip';
 
@@ -18,13 +19,30 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles(getWrapperStyles);
   const svgStyles = useStyles(getSVGStyles);
 
+  // used by tooltip
   const [elRefs, setElRefs] = React.useState([]);
+  // used to change/animate text in polygon
+  const [animationRefs, setAnimationRefs] = React.useState([]);
+  // tracks which metric to display during animation of a composite
+  const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([]);
+
   const messageStyleWarning = {
     color: 'yellow',
   };
   const messageStyleError = {
     color: 'red',
   };
+
+  useEffect(() => {
+    //console.log(`calling set Animation refs ${options.processedData.length}`);
+    for (let i = 0; i < options.processedData.length; i++) {
+      animationRefs.push(createRef());
+      setAnimationRefs(animationRefs);
+      animationMetricIndexes.push(0);
+      setAnimationMetricIndexes(animationMetricIndexes);
+    }
+    //console.log(`done calling set Animation refs ${animationRefs.length}`);
+  }, [options.processedData.length]);
 
   useEffect(() => {
     // add or remove refs
@@ -294,6 +312,34 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     return text;
   };
 
+  const animateComposite = async (item: PolystatModel, index: number) => {
+    while(true) {
+      //console.log(new Date().toLocaleString() + ` animate loop... ${item.name} index ${index}`);
+      await Sleep(2000);
+      let metricIndex = animationMetricIndexes[index];
+      //console.log(`animate... metricIndex ${metricIndex}`);
+      if (animationRefs.length > 0) {
+        if (animationRefs[index].current) {
+          animationRefs[index].current.innerHTML = formatCompositeValue(metricIndex, item);
+        }
+      }
+      metricIndex++
+      metricIndex %= item.members.length;
+      animationMetricIndexes[index] = metricIndex;
+      setAnimationMetricIndexes(animationMetricIndexes)
+    }
+  }
+
+  console.log("render...");
+  useEffect(() => {
+    options.processedData.map((item, index) => {
+      if (item.isComposite) {
+        console.log(`animating ${item.name}`);
+        animateComposite(item, index);
+      }
+    });
+  }, [options.processedData.length]);
+
   return (
     <div className={divStyles}>
       <svg
@@ -361,6 +407,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 </text>
 
                 <text
+                  ref={animationRefs[index]}
                   className={`valueLabel${index}`}
                   x={coords.x + alignments.labelValueAlignmentX}
                   y={coords.y + alignments.valueWithLabelTextAlignment}
@@ -374,7 +421,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     pointerEvents: 'none',
                   }}
                 >
-                  {item.valueFormatted}
+                  {item.isComposite ? formatCompositeValue(0, item) : item.valueFormatted}
                 </text>
               </>
             );
@@ -384,6 +431,65 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     </div>
   );
 };
+
+const Sleep = (ms: any) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+
+const buildTriggerCache = (item) => {
+  let triggerCache = [];
+  for (let i = 0; i < item.members.length; i++) {
+    const aMember = item.members[i];
+    if (aMember.thresholdLevel > 0) {
+      // add to list
+      const cachedMemberState = {
+        index: i,
+        name: aMember.name,
+        value: aMember.value,
+        thresholdLevel: aMember.thresholdLevel,
+      };
+      triggerCache.push(cachedMemberState);
+    }
+  }
+  // sort it
+  triggerCache = lodashOrderBy(triggerCache, ['thresholdLevel', 'value', 'name'], ['desc', 'desc', 'asc']);
+  return triggerCache;
+}
+
+const formatCompositeValue = (frames: number, item: PolystatModel) => {
+  // TODO: if just one value, could speed this up
+  let content = item.valueFormatted;
+  const len = item.members.length;
+  if (len > 0) {
+    let triggeredIndex = -1;
+    if (item.displayMode === 'all') {
+      triggeredIndex = frames % len;
+    } else {
+      if (typeof item.triggerCache === 'undefined') {
+        item.triggerCache = buildTriggerCache(item);
+      }
+      if (item.triggerCache.length > 0) {
+        const z = frames % item.triggerCache.length;
+        triggeredIndex = item.triggerCache[z].index;
+      }
+    }
+    // LEAK?
+    const aMember = Object.assign({}, item.members[triggeredIndex]);
+
+    // TODO: may not need the prefix/suffix here, just return the name + valueFormatted
+    content = aMember.name + ': ' + aMember.valueFormatted;
+    /*
+    if (aMember.prefix && aMember.prefix.length > 0) {
+      content = aMember.prefix + ' ' + content;
+    }
+    if (aMember.suffix && aMember.suffix.length > 0) {
+      content = content + ' ' + aMember.suffix;
+    }
+    */
+  }
+  return content;
+}
 
 const getAlignments = (
   shape: PolygonShapes,
@@ -467,7 +573,7 @@ const autoFontScaler = (
     if (subMetricCount > 0) {
       let counter = 0;
       while (counter < subMetricCount) {
-        const checkContent = data[i].members[counter].valueFormatted;
+        const checkContent = data[i].members[counter].displayName + ': ' + data[i].members[counter].valueFormatted;
         if (checkContent && checkContent.length > maxValue.length) {
           maxValue = checkContent;
         }
@@ -574,24 +680,6 @@ const getSVGStyles = (theme: GrafanaTheme) => css`
   align-items: center;
   justify-content: center;
   fill: transparent;
-`;
-
-// @ts-ignore
-const getTooltipStyles = (theme: GrafanaTheme) => css`
-  position: absolute;
-  width: max-content;
-  color: white;
-  height: auto;
-  padding: 10px;
-  background-color: black;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
-  z-index: 1020;
 `;
 
 // @ts-ignore

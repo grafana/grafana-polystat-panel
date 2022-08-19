@@ -24,7 +24,7 @@ const resolveCompositeTemplates = (
   const ret: CompositeItemType[] = [];
   //const sv: ScopedVars = {}; // TODO: where do these come from now?
   metricComposites.forEach((item: CompositeItemType) => {
-    const firstResolve = replaceVariables(item.name); // the ScopedVars should expand here
+    const firstResolve = replaceVariables(item.name); // th e ScopedVars should expand here
     const resolved = replaceVariables(firstResolve, {}, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
     //const resolved = getTemplateSrv()
     //  .replace(item.compositeName, sv, customFormatter)
@@ -167,11 +167,12 @@ export const ApplyComposites = (
       for (let index = 0; index < data.length; index++) {
         // match regex
         // seriesName may not be defined yet, skip
-        if (typeof aMetric.seriesName === 'undefined') {
+        if (typeof aMetric.seriesMatch.label === 'undefined') {
           continue;
         }
         // name may not be escaped, check both
-        let metricName = aMetric.seriesName;
+        let metricName = aMetric.seriesMatch.label;
+        // TODO: ??
         if (aMetric.seriesNameEscaped !== undefined) {
           metricName = aMetric.seriesNameEscaped;
         }

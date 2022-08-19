@@ -80,6 +80,7 @@ export interface PolystatModel {
   showValue: boolean;
   isComposite: boolean;
   members: PolystatModel[];
+  triggerCache?: any; // holds animation frame info
 }
 
 export enum PolygonShapes {
