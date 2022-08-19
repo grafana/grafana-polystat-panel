@@ -151,7 +151,13 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
             />
           </Field>
           <Field disabled={!composite.showComposite}>
-            <Button key="addMetric" variant="primary" icon="plus" disabled={!composite.showComposite} onClick={addMetric}>
+            <Button
+              key="addMetric"
+              variant="primary"
+              icon="plus"
+              disabled={!composite.showComposite}
+              onClick={addMetric}
+            >
               Add Metric
             </Button>
           </Field>
