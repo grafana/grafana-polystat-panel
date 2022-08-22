@@ -82,8 +82,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   useEffect(() => {
     options.processedData.map((item, index) => {
-      if (item.isComposite) {
-        //console.log(`animating ${item.name}`);
+      if (item.isComposite && item.showValue) {
         animateComposite(item, index);
       }
     });
@@ -396,15 +395,16 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     pointerEvents: 'none',
                   }}
                 >
-                  {getTextToDisplay(
-                    options.globalAutoScaleFonts,
-                    options.ellipseEnabled,
-                    options.ellipseCharacters,
-                    showEllipses,
-                    numOfChars,
-                    item.name,
-                    item.displayName
-                  )}
+                  {item.showName &&
+                    getTextToDisplay(
+                      options.globalAutoScaleFonts,
+                      options.ellipseEnabled,
+                      options.ellipseCharacters,
+                      showEllipses,
+                      numOfChars,
+                      item.name,
+                      item.displayName
+                    )}
                 </text>
 
                 <text
@@ -422,7 +422,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     pointerEvents: 'none',
                   }}
                 >
-                  {item.isComposite ? formatCompositeValue(0, item) : item.valueFormatted}
+                  {item.showValue && (item.isComposite ? formatCompositeValue(0, item) : item.valueFormatted)}
                 </text>
               </>
             );
