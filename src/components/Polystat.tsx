@@ -24,6 +24,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animationRefs, setAnimationRefs] = React.useState([]);
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([]);
+  const [animatedItems, setAnimatedItems] = React.useState([]);
 
   const messageStyleWarning = {
     color: 'yellow',
@@ -33,15 +34,21 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   useEffect(() => {
-    //console.log(`calling set Animation refs ${options.processedData.length}`);
-    for (let i = 0; i < options.processedData.length; i++) {
-      animationRefs.push(createRef());
-      setAnimationRefs(animationRefs);
-      animationMetricIndexes.push(0);
-      setAnimationMetricIndexes(animationMetricIndexes);
+    // clear animationRefs and set new ones
+    if (options.processedData.length > 0) {
+      console.log('creating refs...');
+      const newAnimationRefs = [];
+      const newAnimationMetricIndexes = [];
+      for (let i = 0; i < options.processedData.length; i++) {
+        newAnimationRefs.push(createRef());
+        newAnimationMetricIndexes.push(0);
+      }
+      if (newAnimationRefs.length > 0) {
+        setAnimationRefs(newAnimationRefs);
+        setAnimationMetricIndexes(newAnimationMetricIndexes);
+      }
     }
-    //console.log(`done calling set Animation refs ${animationRefs.length}`);
-  }, [options.processedData.length, animationRefs, animationMetricIndexes]);
+  }, [options.processedData.length]);
 
   useEffect(() => {
     // add or remove refs
@@ -59,34 +66,60 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     setShowTooltips((tt) => Array(options.processedData.length).fill(false));
   }, [options.processedData.length]);
 
-  const animateComposite = useCallback(
-    async (item: PolystatModel, index: number) => {
-      while (true) {
-        //console.log(new Date().toLocaleString() + ` animate loop... ${item.name} index ${index}`);
-        await Sleep(2000);
-        let metricIndex = animationMetricIndexes[index];
-        //console.log(`animate... metricIndex ${metricIndex}`);
-        if (animationRefs.length > 0) {
-          if (animationRefs[index].current) {
-            animationRefs[index].current.innerHTML = formatCompositeValue(metricIndex, item);
-          }
-        }
-        metricIndex++;
-        metricIndex %= item.members.length;
-        animationMetricIndexes[index] = metricIndex;
-        setAnimationMetricIndexes(animationMetricIndexes);
+  /*
+    This is the animation method that will cycle through the metrics for a composite
+   */
+  const animateComposite = useCallback(() => {
+    //console.log(new Date().toLocaleString() + ` animate loop...`);
+    for (let i = 0; i < animatedItems.length; i++) {
+      let index = animatedItems[i];
+      let metricIndex = animationMetricIndexes[index];
+      if (animationRefs.length > 0 && animationRefs[index].current) {
+            //console.log(`animating ref ${index}`);
+            const item = options.processedData[index];
+            const val = formatCompositeValue(metricIndex, item);
+            if (animationRefs[index].current.innerHTML !== null) {
+              animationRefs[index].current.innerHTML = val;
+            }
       }
-    },
-    [animationMetricIndexes, animationRefs]
-  );
+      metricIndex++;
+      metricIndex %= options.processedData[index].members.length;
+      animationMetricIndexes[index] = metricIndex;
+      setAnimationMetricIndexes(animationMetricIndexes);
+    }
+  }, [animationMetricIndexes, animationRefs, animatedItems, options.processedData]);
 
+  /*
+    Determine which items should be animated
+  */
   useEffect(() => {
+    let shouldAnimate = false;
+    const animate = [];
     options.processedData.map((item, index) => {
       if (item.isComposite && item.showValue) {
-        animateComposite(item, index);
+        shouldAnimate = true;
+        animate.push(index);
       }
     });
-  }, [options.processedData, animateComposite]);
+    setAnimatedItems(animate);
+    let tick: NodeJS.Timer;
+    if (shouldAnimate) {
+      console.log(`animation speed ${options.compositeConfig.animationSpeed}`);
+      //console.log(`tick started`);
+      let speed = parseInt(options.compositeConfig.animationSpeed, 10);
+      if (speed < 100) {
+        console.log(`speed in configuration is too fast, setting to 100ms`);
+        speed = 100;
+      }
+      tick = setInterval(animateComposite, speed);
+    }
+    return () => {
+      //console.log(`tick clear`);
+      clearInterval(tick);
+    };
+    // TODO: this is a hack to prevent re-rendering
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
   if (options.processedData.length === 0) {
     return <div style={messageStyleWarning}>No thresholds exceeded...</div>;
@@ -431,10 +464,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       </svg>
     </div>
   );
-};
-
-const Sleep = (ms: any) => {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 const buildTriggerCache = (item) => {
