@@ -149,7 +149,7 @@ export const ApplyComposites = (
   for (let i = 0; i < resolvedComposites.length; i++) {
     const matchedMetrics: number[] = [];
     const aComposite = resolvedComposites[i];
-    if (!aComposite.enabled) {
+    if (!aComposite.showComposite) {
       continue;
     }
     let currentWorstSeries = null;
