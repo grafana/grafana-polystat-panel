@@ -37,11 +37,11 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
   const setAnimationSpeed = (val: any) => {
     context.options.compositeConfig.animationSpeed = val;
     _setAnimationSpeed(val);
-  }
+  };
   const setCompositesEnabled = (val: any) => {
     context.options.compositeConfig.enabled = val;
     _setCompositesEnabled(val);
-  }
+  };
   const setTracker = (v: CompositeItemTracker[]) => {
     _setTracker(v);
     // update the panel config (only the composites themselves, not the tracker)

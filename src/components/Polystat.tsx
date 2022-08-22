@@ -75,12 +75,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
       if (animationRefs.length > 0 && animationRefs[index].current) {
-            //console.log(`animating ref ${index}`);
-            const item = options.processedData[index];
-            const val = formatCompositeValue(metricIndex, item);
-            if (animationRefs[index].current.innerHTML !== null) {
-              animationRefs[index].current.innerHTML = val;
-            }
+        //console.log(`animating ref ${index}`);
+        const item = options.processedData[index];
+        const val = formatCompositeValue(metricIndex, item);
+        if (animationRefs[index].current.innerHTML !== null) {
+          animationRefs[index].current.innerHTML = val;
+        }
       }
       metricIndex++;
       metricIndex %= options.processedData[index].members.length;
