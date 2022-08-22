@@ -32,6 +32,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
   const styles = useStyles(getComponentStyles);
   // each series is a converted to a model we can use
   const processedData = ProcessDataFrames(
+    options.compositeConfig.enabled,
     options.compositeConfig.composites,
     options.overrideConfig.overrides,
     data,

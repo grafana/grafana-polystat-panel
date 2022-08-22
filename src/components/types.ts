@@ -49,6 +49,7 @@ export interface PolystatOptions {
   compositeConfig: {
     animationSpeed: string;
     composites: CompositeItemType[];
+    enabled: boolean;
   };
   tooltipPrimarySortDirection: string;
   tooltipPrimarySortByField: string;

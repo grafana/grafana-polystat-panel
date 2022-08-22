@@ -39,6 +39,7 @@ import { GetMappedValue } from './valueMappingsWrapper';
  * @return  {DataFrame[]}                      [return description]
  */
 export function ProcessDataFrames(
+  compositesEnabled: boolean,
   composites: CompositeItemType[],
   overrides: OverrideItemType[],
   data: PanelData,
@@ -73,7 +74,9 @@ export function ProcessDataFrames(
   // applies overrides and global thresholds
   internalData = ApplyOverrides(overrides, internalData, globalFillColor, globalThresholds, replaceVariables);
   // composites
-  internalData = ApplyComposites(composites, internalData, replaceVariables);
+  if (compositesEnabled) {
+    internalData = ApplyComposites(composites, internalData, replaceVariables);
+  }
   // clickthroughs
   internalData = ApplyGlobalClickThrough(
     internalData,
