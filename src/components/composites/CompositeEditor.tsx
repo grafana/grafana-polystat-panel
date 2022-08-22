@@ -14,8 +14,10 @@ export interface CompositeEditorSettings {
 
 interface Props extends StandardEditorProps<string | string[] | null, CompositeEditorSettings> {}
 
-export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
-  const [settings, setSettings] = useState(context.options.compositeConfig);
+export const CompositeEditor: React.FC<Props> = ({ context }) => {
+  const [settings] = useState(context.options.compositeConfig);
+  const [animationSpeed, _setAnimationSpeed] = useState(context.options.compositeConfig.animationSpeed);
+  const [compositesEnabled, _setCompositesEnabled] = useState(context.options.compositeConfig.enabled);
   const [tracker, _setTracker] = useState((): CompositeItemTracker[] => {
     if (!settings.composites) {
       const empty: CompositeItemTracker[] = [];
@@ -32,6 +34,14 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
     return items;
   });
 
+  const setAnimationSpeed = (val: any) => {
+    context.options.compositeConfig.animationSpeed = val;
+    _setAnimationSpeed(val);
+  }
+  const setCompositesEnabled = (val: any) => {
+    context.options.compositeConfig.enabled = val;
+    _setCompositesEnabled(val);
+  }
   const setTracker = (v: CompositeItemTracker[]) => {
     _setTracker(v);
     // update the panel config (only the composites themselves, not the tracker)
@@ -186,15 +196,15 @@ export const CompositeEditor: React.FC<Props> = ({ item, context }) => {
         <Field label="Enable Composites" description="Enable/Disable Composites Globally">
           <Switch
             transparent={true}
-            value={settings.enabled}
-            onChange={() => setSettings({ ...settings, enabled: !settings.enabled })}
+            value={compositesEnabled}
+            onChange={() => setCompositesEnabled(!compositesEnabled)}
           />
         </Field>
         <Field label="Animation Speed (ms)" description="Animation Speed in milliseconds" disabled={!settings.enabled}>
           <Input
-            value={settings.animationSpeed}
+            value={animationSpeed}
             placeholder="500"
-            onChange={(e: any) => setSettings({ ...settings, animationSpeed: e.currentTarget.value })}
+            onChange={(e: any) => setAnimationSpeed(e.currentTarget.value)}
           />
         </Field>
       </FieldSet>
