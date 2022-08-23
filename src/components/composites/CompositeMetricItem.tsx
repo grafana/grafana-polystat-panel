@@ -9,9 +9,6 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
 
   const optionPresets: SelectableValue[] = [];
 
-  //console.log('Composite Metric Item');
-  //console.log(options.metric);
-  //console.log(options.metric.seriesMatch);
   async function copySelectedMetricToClipboard(index: number) {
     if (props.metric.seriesMatch?.value) {
       const aValue = props.metric.seriesMatch.value;

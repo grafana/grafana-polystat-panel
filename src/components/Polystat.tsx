@@ -36,7 +36,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   useEffect(() => {
     // clear animationRefs and set new ones
     if (options.processedData.length > 0) {
-      console.log('creating refs...');
       const newAnimationRefs = [];
       const newAnimationMetricIndexes = [];
       for (let i = 0; i < options.processedData.length; i++) {
@@ -104,12 +103,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     setAnimatedItems(animate);
     let tick: NodeJS.Timer;
     if (shouldAnimate) {
-      console.log(`animation speed ${options.compositeConfig.animationSpeed}`);
       //console.log(`tick started`);
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
-      if (speed < 100) {
-        console.log(`speed in configuration is too fast, setting to 100ms`);
-        speed = 100;
+      if (speed < 200) {
+        console.log(`speed in configuration is too fast, setting to 200ms`);
+        speed = 200;
       }
       tick = setInterval(animateComposite, speed);
     }
