@@ -500,21 +500,14 @@ const formatCompositeValue = (frames: number, item: PolystatModel) => {
       if (item.triggerCache.length > 0) {
         const z = frames % item.triggerCache.length;
         triggeredIndex = item.triggerCache[z].index;
+      } else {
+        // nothing triggered        //triggeredIndex = frames % len;
+        return '';
       }
     }
-    // LEAK?
+    // TODO: LEAK?
     const aMember = Object.assign({}, item.members[triggeredIndex]);
-
-    // TODO: may not need the prefix/suffix here, just return the name + valueFormatted
     content = aMember.name + ': ' + aMember.valueFormatted;
-    /*
-    if (aMember.prefix && aMember.prefix.length > 0) {
-      content = aMember.prefix + ' ' + content;
-    }
-    if (aMember.suffix && aMember.suffix.length > 0) {
-      content = content + ' ' + aMember.suffix;
-    }
-    */
   }
   return content;
 };
