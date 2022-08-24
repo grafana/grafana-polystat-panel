@@ -166,11 +166,11 @@ export const ApplyComposites = (
       for (let index = 0; index < data.length; index++) {
         // match regex
         // seriesName may not be defined yet, skip
-        if (typeof aMetric.seriesMatch.label === 'undefined') {
+        if (typeof aMetric.seriesMatch === 'undefined') {
           continue;
         }
         // name may not be escaped, check both
-        let metricName = aMetric.seriesMatch.label;
+        let metricName = aMetric.seriesMatch;
         // TODO: ??
         if (aMetric.seriesNameEscaped !== undefined) {
           metricName = aMetric.seriesNameEscaped;
