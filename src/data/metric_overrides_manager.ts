@@ -162,9 +162,8 @@ export const ApplyOverrides = (
         data[index].clickThrough = url;
         data[index].newTabEnabled = anOverride.clickThroughOpenNewTab;
         data[index].sanitizeURLEnabled = anOverride.clickThroughSanitize;
-        if (anOverride.clickThroughSanitize) {
-          data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
-        }
+        // provide both versions, what is displayed is determined later
+        data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
       }
     } else if (globalThresholds && globalThresholds.length) {
       const result = getThresholdLevelForValue(globalThresholds, data[index].value, globalFillColor);

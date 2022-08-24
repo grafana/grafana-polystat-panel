@@ -386,6 +386,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
           {options.processedData.map((item, index) => {
             const coords = getCoords(index);
+            // TODO: should resolve this during processing
             const ctt = resolveClickThroughTarget(item);
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             return (

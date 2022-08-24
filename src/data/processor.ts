@@ -134,9 +134,8 @@ const ApplyGlobalClickThrough = (
       data[index].clickThrough = processDefaultClickThrough(index, globalClickthrough, data);
       data[index].newTabEnabled = globalClickthroughNewTabEnabled;
       data[index].sanitizeURLEnabled = globalClickthroughSanitizedEnabled;
-      if (data[index].sanitizeURLEnabled) {
-        data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
-      }
+      // always provide both versions and overrides and composites can specify which one to use
+      data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
     }
   }
   return data;
