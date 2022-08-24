@@ -1,12 +1,11 @@
+import React from 'react';
+import { css } from 'emotion';
+import { orderBy as lodashOrderBy } from 'lodash';
 import { useStyles } from '@grafana/ui';
 import { GrafanaTheme, dateTimeFormatWithAbbrevation } from '@grafana/data';
-
 import Tippy from '@tippyjs/react';
-import { css } from 'emotion';
-import { PolystatModel } from '../types';
-import React from 'react';
 import { followCursor } from 'tippy.js';
-import { orderBy as lodashOrderBy } from 'lodash';
+import { PolystatModel, SortOptions } from '../types';
 
 interface Props {
   data: PolystatModel;
@@ -17,9 +16,10 @@ interface Props {
   renderTime: Date;
   showTime: boolean;
   primarySortByField: string;
-  primarySortDirection: any; // easier..
+  primarySortDirection: number; // easier..
   secondarySortByField: string;
-  secondarySortDirection: any; // easier..
+  secondarySortDirection: number; // easier..
+  displayMode: string;
 }
 
 export const Tooltip = ({
@@ -34,6 +34,7 @@ export const Tooltip = ({
   primarySortDirection,
   secondarySortByField,
   secondarySortDirection,
+  displayMode,
 }: Props) => {
   const styles = useStyles(getTooltipStyles);
 
@@ -51,13 +52,84 @@ export const Tooltip = ({
     );
   };
 
-  const getCompositeMetrics = () => {
-    const sortedMembers = lodashOrderBy(
-      data.members,
-      [primarySortByField, secondarySortByField],
-      [primarySortDirection, secondarySortDirection]
-    );
+  const multiSort = (
+    data: PolystatModel,
+    primarySortDirection: number,
+    primarySortByField: string,
+    secondarySortDirection: number,
+    secondarySortByField: string
+  ) => {
+    let sortSettings = getSortDirection(SortOptions[primarySortDirection].value);
+    const pUseLowercase = sortSettings.lowerCase;
+    const pDirection = sortSettings.direction as any;
+    sortSettings = getSortDirection(SortOptions[secondarySortDirection].value);
+    const sDirection = sortSettings.direction as any;
+    const sUseLowercase = sortSettings.lowerCase;
 
+    let pSortFunction = primarySortByField as any;
+    if (pUseLowercase) {
+      pSortFunction = (item) => {
+        let val = item[primarySortByField];
+        if (typeof val !== 'number') {
+          val = val.toLowerCase();
+        }
+        return val;
+      };
+    }
+    let sSortFunction = secondarySortByField as any;
+    if (sUseLowercase) {
+      sSortFunction = (item) => {
+        let val = item[secondarySortByField];
+        if (typeof val !== 'number') {
+          val = val.toLowerCase();
+        }
+        return val;
+      };
+    }
+    const sortedMembers = lodashOrderBy(data.members, [pSortFunction, sSortFunction], [pDirection, sDirection]);
+    return sortedMembers;
+  };
+
+  const getTriggeredCount = (data: PolystatModel) => {
+    let triggered = 0;
+    if (data.thresholdLevel !== 0) {
+      triggered++;
+    }
+    for (let j = 0; j < data.members.length; j++) {
+      if (data.members[j].thresholdLevel !== 0) {
+        triggered++;
+      }
+    }
+    return triggered;
+  };
+  const filterTriggered = (items: PolystatModel) => {
+    const triggerCount = getTriggeredCount(items);
+    if (triggerCount > 0) {
+      for (let i = 0; i < items.members.length; i++) {
+        if (items.members[i].thresholdLevel === 0) {
+          items.members.splice(i, 1);
+        }
+      }
+      return items;
+    } else {
+      return null;
+    }
+  };
+  const getCompositeMetrics = () => {
+    let dataToSort = data;
+    if (displayMode === 'triggered') {
+      dataToSort = filterTriggered(data);
+    }
+    if (dataToSort === null) {
+      return <></>;
+    }
+    const sortedMembers = multiSort(
+      dataToSort,
+      primarySortDirection,
+      primarySortByField,
+      secondarySortDirection,
+      secondarySortByField
+    );
     return sortedMembers.map((item: PolystatModel, index: number) => {
       return (
         <tr key={index} style={{ color: item.color }}>
@@ -153,4 +225,25 @@ const getTooltipStyles = (theme: GrafanaTheme) => {
       padding-left: 15px;
     `,
   };
+};
+
+const getSortDirection = (val: number) => {
+  switch (val) {
+    case 0:
+      return { direction: null, lowerCase: false };
+    case 1:
+      return { direction: 'asc', lowerCase: false };
+    case 2:
+      return { direction: 'desc', lowerCase: false };
+    case 3:
+      return { direction: 'asc', lowerCase: false };
+    case 4:
+      return { direction: 'desc', lowerCase: false };
+    case 5:
+      return { direction: 'asc', lowerCase: true };
+    case 6:
+      return { direction: 'desc', lowerCase: true };
+    default:
+      return { direction: 'asc', lowerCase: false };
+  }
 };

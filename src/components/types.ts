@@ -51,10 +51,11 @@ export interface PolystatOptions {
     composites: CompositeItemType[];
     enabled: boolean;
   };
-  tooltipPrimarySortDirection: string;
+  tooltipPrimarySortDirection: number;
   tooltipPrimarySortByField: string;
-  tooltipSecondarySortDirection: string;
+  tooltipSecondarySortDirection: number;
   tooltipSecondarySortByField: string;
+  tooltipDisplayMode: string;
 }
 
 export interface PolystatModel {
@@ -126,6 +127,8 @@ export const SortOptions = [
   { value: 5, label: 'Alphabetical (case-insensitive, asc)' },
   { value: 6, label: 'Alphabetical (case-insensitive, desc)' },
 ];
+
+export const SortOptionOperators = ['disabled', 'asc', 'desc', 'asc', 'desc', 'iasc', 'idesc'];
 
 export const SortByFieldOptions = [
   { value: 'name', label: 'Name' },

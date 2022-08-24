@@ -109,6 +109,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           tooltipPrimarySortByField={options.tooltipPrimarySortByField}
           tooltipSecondarySortDirection={options.tooltipSecondarySortDirection}
           tooltipSecondarySortByField={options.tooltipSecondarySortByField}
+          tooltipDisplayMode={options.tooltipDisplayMode}
         />
       </div>
     </div>

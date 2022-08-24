@@ -232,7 +232,7 @@ export const plugin = getPanelPluginOrFallback(
           name: 'Primary Sort Direction',
           description: 'Direction of sorting by the specified field',
           category: ['Tooltips'],
-          defaultValue: 2,
+          defaultValue: SortOptions[1].value,
           settings: {
             options: SortOptions,
           },
@@ -254,7 +254,7 @@ export const plugin = getPanelPluginOrFallback(
           name: 'Secondary Sort Direction',
           description: 'Direction of sorting by the specified field',
           category: ['Tooltips'],
-          defaultValue: 2,
+          defaultValue: SortOptions[1].value,
           settings: {
             options: SortOptions,
           },
