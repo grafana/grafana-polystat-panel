@@ -18,10 +18,12 @@ import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { GlobalThresholdEditor } from 'components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from 'components/suggestions';
+import { PolystatPanelChangedHandler } from './migrations';
 
 export const plugin = getPanelPluginOrFallback(
   'grafana-polystat-panel',
   new PanelPlugin<PolystatOptions>(PolystatPanel)
+    .setPanelChangeHandler(PolystatPanelChangedHandler)
     .useFieldConfig({
       disableStandardOptions: [
         FieldConfigProperty.Thresholds,
@@ -142,7 +144,7 @@ export const plugin = getPanelPluginOrFallback(
           name: 'Font Color',
           path: 'globalTextFontColor',
           category: ['Text'],
-          defaultValue: 'black', // TODO: fix this default to theme
+          defaultValue: '#000000',
           description: 'Font color to use when no overrides or thresholds apply to polygon',
           showIf: (c) => c.globalTextFontAutoColorEnabled !== true,
         })
