@@ -21,6 +21,8 @@
     "DATAPROXY",
     "deframer",
     "hexbin",
+    "iasc",
+    "idesc",
     "grafana",
     "logmin",
     "magn",

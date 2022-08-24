@@ -8,7 +8,9 @@ export const PolystatPanelChangedHandler = (
   prevOptions: any
 ) => {
   if (prevPluginId === 'grafana-polystat-panel' && prevOptions.angular) {
+    //@ts-ignore-next-line
     const angular = prevOptions.angular;
+    //@ts-ignore-next-line
     const overrides = [];
     let options: PolystatOptions = panel.options;
 
