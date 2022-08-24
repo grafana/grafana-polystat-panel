@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Input, Select, Field, IconButton, HorizontalGroup } from '@grafana/ui';
+import { Input, Field, IconButton, HorizontalGroup } from '@grafana/ui';
 import { CompositeMetricItemProps } from './types';
-import { SelectableValue } from '@grafana/data';
 
 export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) => {
-  const [customOptions, setCustomOptions] = useState<Array<SelectableValue<string>>>([]);
-
-  const optionPresets: SelectableValue[] = [];
-
   async function copySelectedMetricToClipboard(index: number) {
-    if (props.metric.seriesMatch?.value) {
-      const aValue = props.metric.seriesMatch.value;
+    if (props.metric.seriesMatch) {
+      const aValue = props.metric.seriesMatch;
       if ('clipboard' in navigator) {
         if (aValue) {
           return await navigator.clipboard.writeText(aValue);
@@ -24,7 +19,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
     }
   }
 
-  const updateMetric = (v: SelectableValue) => {
+  const updateMetric = (v: string) => {
     props.updateMetric(props.index, v);
   };
   const updateMetricAlias = (alias: string) => {
@@ -48,21 +43,11 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
         onClick={() => copySelectedMetricToClipboard(props.index)}
       />
       <Field label="Metric/RegEx" disabled={props.disabled}>
-        <Select
-          menuShouldPortal={true}
-          width={24}
+        <Input
           key={`cmi-index-${props.index}`}
-          allowCustomValue
-          options={[...optionPresets, ...customOptions]}
           value={props.metric.seriesMatch}
-          onCreateOption={(v) => {
-            const customValue: SelectableValue = { value: v, label: v, description: 'custom regex' };
-            setCustomOptions([...customOptions, customValue]);
-            updateMetric(customValue);
-          }}
-          onChange={(v) => {
-            updateMetric(v);
-          }}
+          placeholder=""
+          onChange={(e) => updateMetric(e.currentTarget.value)}
         />
       </Field>
       <Field label="Alias" disabled={props.disabled}>

@@ -27,7 +27,7 @@ export const DisplayModes: SelectableValue[] = [
 ];
 
 export interface CompositeMetric {
-  seriesMatch: SelectableValue;
+  seriesMatch: string;
   compositeMatch?: CompositeItemType[];
   alias?: string;
   ID?: string;

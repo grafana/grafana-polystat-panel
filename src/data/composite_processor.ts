@@ -60,8 +60,8 @@ const resolveMemberTemplates = (
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   members.forEach((member) => {
     // Resolve templates in series names
-    if (member.seriesMatch.label) {
-      const matchResult = member.seriesMatch.value.match(variableRegex);
+    if (member.seriesMatch) {
+      const matchResult = member.seriesMatch.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template) => {
           // if the template contains the composite template, replace it with the compositeName
@@ -71,10 +71,9 @@ const resolveMemberTemplates = (
           }
           const resolvedSeriesNames = [replaceVariables(template, {}, 'raw')];
           resolvedSeriesNames.forEach((seriesName) => {
-            const newName = member.seriesMatch.label.replace(matchResult, seriesName);
+            const newName = member.seriesMatch.replace(template, seriesName);
             const escapedName = escapeStringForRegex(seriesName);
-            const newSeriesNameEscaped = member.seriesMatch.label.replace(matchResult, escapedName);
-
+            const newSeriesNameEscaped = member.seriesMatch.replace(template, escapedName);
             ret.push({
               ...member,
               seriesName: newName,

@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { IconName, Button, Input, Select, Field, FieldSet, Switch, Card, IconButton } from '@grafana/ui';
 import { DisplayModes, CompositeItemProps, CompositeMetric, CompositeItemType } from './types';
 import { CompositeMetricItem } from './CompositeMetricItem';
-import { SelectableValue } from '@grafana/data';
 import { v4 as uuidv4 } from 'uuid';
 
 export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItemProps) => {
@@ -41,9 +40,9 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
     props.createDuplicate(composite.order);
   };
 
-  const updateMetric = (index: number, v: SelectableValue) => {
+  const updateMetric = (index: number, value: string) => {
     const allMetrics = props.composite.metrics;
-    allMetrics[index].seriesMatch = { label: v.label, value: v.value };
+    allMetrics[index].seriesMatch = value;
     setComposite({ ...props.composite, metrics: allMetrics });
   };
 
@@ -55,10 +54,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
 
   const addMetric = () => {
     const newMetric: CompositeMetric = {
-      seriesMatch: {
-        label: '',
-        value: '',
-      },
+      seriesMatch: '',
       ID: uuidv4(),
       order: 0,
     };
