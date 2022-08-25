@@ -13,7 +13,11 @@ import { OverrideEditor } from 'components/overrides/OverrideEditor';
 import { OverrideItemType } from 'components/overrides/types';
 import { getPanelPluginOrFallback } from 'grafana-plugin-support';
 import { PolystatPanel } from './components/PolystatPanel';
-import { GLOBAL_FILL_COLOR_RGBA, GLOBAL_BORDER_COLOR_RGBA } from 'components/defaults';
+import {
+  GLOBAL_FILL_COLOR_RGBA,
+  GLOBAL_BORDER_COLOR_RGBA,
+  GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
+} from 'components/defaults';
 import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { GlobalThresholdEditor } from 'components/thresholds/GlobalThresholdEditor';
@@ -140,14 +144,7 @@ export const plugin = getPanelPluginOrFallback(
           showIf: (c) => c.globalAutoScaleFonts !== true,
         })
         // font color
-        .addColorPicker({
-          name: 'Font Color',
-          path: 'globalTextFontColor',
-          category: ['Text'],
-          defaultValue: '#000000',
-          description: 'Font color to use when no overrides or thresholds apply to polygon',
-          showIf: (c) => c.globalTextFontAutoColorEnabled !== true,
-        })
+
         // auto set font color
         .addBooleanSwitch({
           name: 'Automate Font Color',
@@ -155,6 +152,14 @@ export const plugin = getPanelPluginOrFallback(
           defaultValue: true,
           category: ['Text'],
           description: 'Sets font color to match theme',
+        })
+        .addColorPicker({
+          name: 'Font Color',
+          path: 'globalTextFontColor',
+          category: ['Text'],
+          defaultValue: '#000000',
+          description: 'Font color to use for all text on polygon',
+          showIf: (c) => c.globalTextFontAutoColorEnabled !== true,
         })
 
         // ellipse enabled
@@ -227,7 +232,14 @@ export const plugin = getPanelPluginOrFallback(
             options: DisplayModes,
           },
         })
-
+        .addTextInput({
+          path: 'tooltipDisplayTextTriggeredEmpty',
+          name: 'Non Triggered State Text',
+          description:
+            'Text to be displayed by tooltip when there are no triggered thresholds and tooltip display mode is set to triggered',
+          defaultValue: GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
+          category: ['Tooltips'],
+        })
         // primary sort direction
         .addSelect({
           path: 'tooltipPrimarySortDirection',
@@ -284,6 +296,14 @@ export const plugin = getPanelPluginOrFallback(
           settings: {
             options: DisplayModes,
           },
+        })
+        .addTextInput({
+          path: 'globalDisplayTextTriggeredEmpty',
+          name: 'Non Triggered State Text',
+          description:
+            'Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered',
+          defaultValue: GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
+          category: ['Global'],
         })
 
         // show value

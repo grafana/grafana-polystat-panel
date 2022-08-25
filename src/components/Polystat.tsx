@@ -412,6 +412,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     secondarySortByField={options.tooltipSecondarySortByField}
                     secondarySortDirection={options.tooltipSecondarySortDirection}
                     displayMode={options.tooltipDisplayMode}
+                    tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
                   />
                 )}
                 <text

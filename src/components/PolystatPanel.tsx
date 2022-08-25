@@ -74,6 +74,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalOperator={options.globalOperator}
           globalDecimals={options.globalDecimals}
           globalDisplayMode={options.globalDisplayMode}
+          globalDisplayTextTriggeredEmpty={options.globalDisplayTextTriggeredEmpty}
           globalFontSize={options.globalFontSize}
           globalPolygonSize={options.globalPolygonSize}
           ellipseCharacters={options.ellipseCharacters}
@@ -110,6 +111,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           tooltipSecondarySortDirection={options.tooltipSecondarySortDirection}
           tooltipSecondarySortByField={options.tooltipSecondarySortByField}
           tooltipDisplayMode={options.tooltipDisplayMode}
+          tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
         />
       </div>
     </div>

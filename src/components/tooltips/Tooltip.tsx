@@ -16,10 +16,11 @@ interface Props {
   renderTime: Date;
   showTime: boolean;
   primarySortByField: string;
-  primarySortDirection: number; // easier..
+  primarySortDirection: number;
   secondarySortByField: string;
-  secondarySortDirection: number; // easier..
+  secondarySortDirection: number;
   displayMode: string;
+  tooltipDisplayTextTriggeredEmpty: string;
 }
 
 export const Tooltip = ({
@@ -35,6 +36,7 @@ export const Tooltip = ({
   secondarySortByField,
   secondarySortDirection,
   displayMode,
+  tooltipDisplayTextTriggeredEmpty,
 }: Props) => {
   const styles = useStyles(getTooltipStyles);
 
@@ -121,7 +123,7 @@ export const Tooltip = ({
       dataToSort = filterTriggered(data);
     }
     if (dataToSort === null) {
-      return <></>;
+      return <>{tooltipDisplayTextTriggeredEmpty}</>;
     }
     const sortedMembers = multiSort(
       dataToSort,

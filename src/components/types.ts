@@ -15,6 +15,7 @@ export interface PolystatOptions {
   globalClickthroughSanitizedEnabled: boolean;
   globalDecimals: number;
   globalDisplayMode: string;
+  globalDisplayTextTriggeredEmpty: string;
   globalFillColor: string;
   globalFontSize: number;
   globalGradientsEnabled: boolean;
@@ -56,6 +57,7 @@ export interface PolystatOptions {
   tooltipSecondarySortDirection: number;
   tooltipSecondarySortByField: string;
   tooltipDisplayMode: string;
+  tooltipDisplayTextTriggeredEmpty: string;
 }
 
 export interface PolystatModel {
