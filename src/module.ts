@@ -11,7 +11,6 @@ import {
 import { CompositeItemType } from './components/composites/types';
 import { OverrideEditor } from 'components/overrides/OverrideEditor';
 import { OverrideItemType } from 'components/overrides/types';
-import { getPanelPluginOrFallback } from 'grafana-plugin-support';
 import { PolystatPanel } from './components/PolystatPanel';
 import {
   GLOBAL_FILL_COLOR_RGBA,
@@ -22,12 +21,10 @@ import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { GlobalThresholdEditor } from 'components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from 'components/suggestions';
-import { PolystatPanelChangedHandler } from './migrations';
+import { PolystatPanelMigrationHandler } from './migrations';
 
-export const plugin = getPanelPluginOrFallback(
-  'grafana-polystat-panel',
-  new PanelPlugin<PolystatOptions>(PolystatPanel)
-    .setPanelChangeHandler(PolystatPanelChangedHandler)
+export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
+    .setMigrationHandler(PolystatPanelMigrationHandler)
     .useFieldConfig({
       disableStandardOptions: [
         FieldConfigProperty.Thresholds,
@@ -44,7 +41,6 @@ export const plugin = getPanelPluginOrFallback(
         [FieldConfigProperty.Mappings]: {},
       },
     })
-    .setSuggestionsSupplier(new PolystatDataSuggestionsSupplier())
     .setPanelOptions((builder) => {
       builder
         .addBooleanSwitch({
@@ -365,7 +361,7 @@ export const plugin = getPanelPluginOrFallback(
           path: 'globalOperator',
           description: 'Statistic to display',
           category: ['Global'],
-          defaultValue: OperatorOptions[0],
+          defaultValue: OperatorOptions[0].value,
           settings: {
             options: OperatorOptions,
           },
@@ -449,4 +445,4 @@ export const plugin = getPanelPluginOrFallback(
           category: ['Composites'],
         });
     })
-);
+    .setSuggestionsSupplier(new PolystatDataSuggestionsSupplier());

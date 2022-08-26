@@ -1,27 +1,21 @@
 import { PanelModel } from '@grafana/data';
-import { CompositeItemType } from 'components/composites/types';
-import { OverrideItemType } from 'components/overrides/types';
-import { PolystatOptions } from 'components/types';
+//import { CompositeItemType } from 'components/composites/types';
+//import { OverrideItemType } from 'components/overrides/types';
 
-import { PolystatPanelChangedHandler } from './migrations';
+import { PolystatPanelMigrationHandler, migrateDefaults, migrateComposites, migrateOverrides, AngularSavedComposites, AngularSavedOverrides } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
   it('only migrates old polystat', () => {
     const panel = {} as PanelModel;
-    const options = PolystatPanelChangedHandler(panel, 'some-panel-id', {});
+    const options = PolystatPanelMigrationHandler(panel);
     expect(options).toEqual({});
   });
 
   it('correctly converts top level config to new names', () => {
-    const panel = {
-      options: {
-        autoSizeColumns: false,
-        layoutNumColumns: '',
-      },
-    } as PanelModel;
 
     const oldPolystatOptions = {
-      angular: {
+      polystat: {
+        animationSpeed: 2500,
         columnAutoSize: true,
         columns: '6',
         defaultClickThrough: 'https://grafana.com',
@@ -65,47 +59,18 @@ describe('Polystat -> PolystatV2 migrations', () => {
         valueEnabled: true,
       },
     };
-    const options = PolystatPanelChangedHandler(panel, 'grafana-polystat-panel', oldPolystatOptions) as PolystatOptions;
+    const options = migrateDefaults(oldPolystatOptions.polystat);
     console.log('top level...');
     console.log(JSON.stringify(options, null, 2));
-    expect(options.layoutNumColumns).toEqual('6');
+    expect(options.layoutNumColumns).toEqual(6);
     expect(options.autoSizeColumns).toEqual(true);
     expect(options.globalClickthrough).toEqual('https://grafana.com');
-  });
-
-  it('correctly moves animation speed to compositeConfig', () => {
-    const panel = {
-      options: {
-        compositeConfig: {
-          composites: [] as CompositeItemType[],
-          enabled: true,
-          animationSpeed: '500',
-        },
-      },
-    } as PanelModel;
-
-    const oldPolystatOptions = {
-      angular: {
-        animationSpeed: 2500,
-      },
-    };
-    const options = PolystatPanelChangedHandler(panel, 'grafana-polystat-panel', oldPolystatOptions) as PolystatOptions;
-    console.log('animation...');
-    console.log(JSON.stringify(options, null, 2));
     expect(options.compositeConfig.animationSpeed).toEqual('2500');
   });
 
   it('correctly migrates overrides', () => {
-    const panel = {
-      options: {
-        overrideConfig: {
-          overrides: [] as OverrideItemType[],
-        },
-      },
-    } as PanelModel;
 
-    const oldPolystatOptions = {
-      angular: {
+    const oldPolystatOptions: AngularSavedOverrides = {
         savedOverrides: [
           {
             clickThrough: '',
@@ -170,15 +135,15 @@ describe('Polystat -> PolystatV2 migrations', () => {
             unitFormat: 'fahrenheit',
           },
         ],
-      },
     };
-    const options = PolystatPanelChangedHandler(panel, 'grafana-polystat-panel', oldPolystatOptions) as PolystatOptions;
+    const options = migrateOverrides(oldPolystatOptions);
     console.log('overrides...');
     console.log(JSON.stringify(options, null, 2));
     expect(options.overrideConfig.overrides[0].label).toEqual('OVERRIDE 1');
   });
 
   it('correctly migrates composites to compositeConfig', () => {
+    /*
     const panel = {
       options: {
         compositeConfig: {
@@ -188,10 +153,9 @@ describe('Polystat -> PolystatV2 migrations', () => {
         },
       },
     } as PanelModel;
+    */
 
-    const oldPolystatOptions = {
-      angular: {
-        animationSpeed: 2500,
+    const oldPolystatOptions: AngularSavedComposites = {
         savedComposites: [
           {
             animateMode: 'all',
@@ -234,12 +198,11 @@ describe('Polystat -> PolystatV2 migrations', () => {
             thresholdLevel: 0,
           },
         ],
-      },
     };
-    const options = PolystatPanelChangedHandler(panel, 'grafana-polystat-panel', oldPolystatOptions) as PolystatOptions;
+    const options = migrateComposites(oldPolystatOptions, '2222');
     console.log('composites...');
     console.log(JSON.stringify(options, null, 2));
-    expect(options.compositeConfig.animationSpeed).toEqual('2500');
+    expect(options.compositeConfig.animationSpeed).toEqual('2222');
   });
 });
 

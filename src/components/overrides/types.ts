@@ -1,4 +1,3 @@
-import { SelectableValue } from '@grafana/data';
 import { PolystatThreshold } from 'components/thresholds/types';
 
 export interface OverrideItemProps {
@@ -22,7 +21,7 @@ export interface OverrideItemType {
   decimals: string;
   scaledDecimals: number | null;
   enabled: boolean;
-  operatorName: SelectableValue; // avg/min/max etc
+  operatorName: string; // avg/min/max etc
   prefix: string;
   suffix: string;
   clickThrough: string | '';

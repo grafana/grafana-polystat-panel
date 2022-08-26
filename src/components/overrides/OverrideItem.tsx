@@ -5,15 +5,29 @@ import { OverrideItemProps, OverrideItemType } from './types';
 import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { OperatorOptions } from 'components/types';
+import { SelectableValue } from '@grafana/data';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
   const [override, _setOverride] = useState(props.override);
+
   const setOverride = (value: OverrideItemType) => {
     _setOverride(value);
     props.setter(override.order, value);
   };
   const [visibleIcon] = useState<IconName>('eye');
   const [hiddenIcon] = useState<IconName>('eye-slash');
+
+  const getOperator = (operatorName: string) => {
+    const keys = OperatorOptions.keys();
+    for (const aKey of keys) {
+      if (OperatorOptions[aKey].value === operatorName) {
+        return OperatorOptions[aKey];
+      }
+    }
+    // no match, return current by default
+    return OperatorOptions['current'];
+  }
+  const [operatorName, setOperatorName] = useState<SelectableValue<any>>(getOperator(props.override.operatorName));
   const removeItem = () => {
     props.remover(override.order);
   };
@@ -73,9 +87,10 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
           <Field label="Stat" description="The statistic to be displayed" disabled={!override.enabled}>
             <Select
               menuShouldPortal={true}
-              value={override.operatorName}
+              value={operatorName}
               onChange={(v) => {
-                setOverride({ ...override, operatorName: v });
+                setOperatorName(v);
+                setOverride({ ...override, operatorName: v.value });
               }}
               options={OperatorOptions}
             />

@@ -19,7 +19,7 @@ import {
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
-import { OperatorOptions, PolystatModel } from 'components/types';
+import { DisplayModes, OperatorOptions, PolystatModel } from 'components/types';
 import { GLOBAL_FILL_COLOR_RGBA } from 'components/defaults';
 import { GetDecimalsForValue, SortVariableValuesByField } from 'utils';
 import { ApplyComposites } from './composite_processor';
@@ -264,8 +264,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
 
   const model: PolystatModel = {
     seriesRaw: frame,
-    animateMode: 'all',
-    displayMode: 'all',
+    displayMode: DisplayModes[0].value,
     thresholdLevel: 0,
     value: operatorValue,
     valueFormatted: valueFormatted,
@@ -278,7 +277,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     suffix: '',
     color: GLOBAL_FILL_COLOR_RGBA,
     clickThrough: '',
-    operatorName: OperatorOptions[0],
+    operatorName: OperatorOptions[0].value,
     newTabEnabled: true,
     sanitizedURL: '',
     sanitizeURLEnabled: true,

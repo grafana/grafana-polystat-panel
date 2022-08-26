@@ -1,142 +1,341 @@
-import { FieldConfigSource, PanelModel, SelectableValue } from '@grafana/data';
-import { CompositeItemType, CompositeMetric, DisplayModes } from 'components/composites/types';
+import { PanelModel } from '@grafana/data';
+import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from 'components/overrides/types';
-
+import { DisplayModes, PolygonShapes } from 'components/types';
 import { PolystatOptions } from './components/types';
 
-export const PolystatPanelChangedHandler = (
-  panel: PanelModel<Partial<PolystatOptions>> | any,
-  prevPluginId: string,
-  prevOptions: any
-) => {
-  console.log('inside migration handler');
-  if (prevPluginId === 'grafana-polystat-panel' && prevOptions.angular) {
-    const angular = prevOptions.angular;
-    let options: PolystatOptions = panel.options;
-    // @ts-ignore
-    const fieldConfig: FieldConfigSource = panel.fieldConfig ?? { defaults: {}, overrides: [] };
-    if (angular.animationSpeed) {
-      options.compositeConfig.animationSpeed = angular.animationSpeed.toString();
+interface AngularPolystatOptions {
+  "animationSpeed": number,
+  "columnAutoSize": boolean,
+  "columns": string,
+  "defaultClickThrough": string,
+  "defaultClickThroughNewTab": boolean,
+  "defaultClickThroughSanitize": boolean,
+  "displayLimit": number,
+  "ellipseCharacters": number,
+  "ellipseEnabled": boolean,
+  "fontAutoColor": boolean,
+  "fontAutoScale": boolean,
+  "fontSize": number,
+  "globalDecimals": number,
+  "globalDisplayMode": string,
+  "globalDisplayTextTriggeredEmpty": string,
+  "globalOperatorName": string,
+  "globalUnitFormat": string,
+  "gradientEnabled": boolean,
+  "hexagonSortByDirection": number,
+  "hexagonSortByField": string,
+  "maxMetrics": number,
+  "polygonBorderColor": string,
+  "polygonBorderSize": number,
+  "polygonGlobalFillColor": string,
+  "radius": string,
+  "radiusAutoSize": boolean,
+  "regexPattern": string,
+  "rowAutoSize": boolean,
+  "rows": string,
+  "shape": string,
+  "tooltipDisplayMode": string,
+  "tooltipDisplayTextTriggeredEmpty": string,
+  "tooltipEnabled": boolean,
+  "tooltipFontSize": number,
+  "tooltipPrimarySortDirection": number,
+  "tooltipPrimarySortField": string,
+  "tooltipSecondarySortDirection": number,
+  "tooltipSecondarySortField": string,
+  "tooltipTimestampEnabled": boolean,
+  "valueEnabled": boolean
+};
+
+export interface AngularThreshold {
+    color: string,
+    state: number,
+    value: number,
+};
+
+export interface AngularOverride {
+  "clickThrough": string,
+  "colors": string[],
+  "decimals": number,
+  "enabled": true,
+  "label": string,
+  "metricName": string,
+  "newTabEnabled": boolean,
+  "operatorName": string,
+  "prefix": string,
+  "sanitizeURLEnabled": boolean,
+  "suffix": string,
+  "unitFormat": string,
+  "thresholds": AngularThreshold[]
+}
+export interface AngularSavedOverrides {
+  savedOverrides: AngularOverride[]
+};
+
+export interface CompositeMembers {
+    "seriesName": string
+};
+export interface CompositeItem {
+  "animateMode": string,
+  "clickThrough": string,
+  "compositeName": string,
+  "displayName": string,
+  "enabled": boolean,
+  "hideMembers": boolean,
+  "label": string,
+  "members": CompositeMembers[],
+  newTabEnabled: boolean,
+  sanitizeURLEnabled: boolean,
+  sanitizedURL: string,
+  showName: boolean,
+  showValue: boolean,
+  thresholdLevel: number,
+};
+
+export interface AngularSavedComposites {
+  savedComposites: CompositeItem[]
+};
+
+/**
+ * This is called when the panel is imported or reloaded
+ */
+export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>): Partial<PolystatOptions> => {
+  //console.log('inside migration handler');
+  if (!panel.options) {
+    // This happens on the first load or when migrating from angular
+    //console.log('inside migration handle - no panel options detected');
+
+    return {} as any;
+  }
+
+  const previousVersion = parseFloat(panel.pluginVersion || '6.1');
+  //console.log(`inside migration handler ${previousVersion}`);
+
+  //let options = panel.options as any;
+  //@ts-ignore
+  const newDefaults = migrateDefaults(panel.polystat);
+  let options = newDefaults;
+  //@ts-ignore
+  delete panel.polystat;
+  //@ts-ignore
+  const migratedOverrides = migrateOverrides(panel)
+  //@ts-ignore
+  const migratedComposites = migrateComposites(panel, newDefaults.compositeConfig.animationSpeed)
+  //console.log(JSON.stringify(newDefaults, null, 2));
+  options.compositeConfig = migratedComposites.compositeConfig;
+  options.overrideConfig = migratedOverrides.overrideConfig;
+  // merge defaults
+  //@ts-ignore
+  delete panel.savedComposites;
+  //@ts-ignore
+  delete panel.savedOverrides;
+  //@ts-ignore
+  delete panel.colors;
+
+  //console.log(JSON.stringify(options, null, 2));
+
+  return options;
+}
+
+// split into three parts
+// config normally found in "polystat" section
+// then "savedOverrides" and "savedComposites"
+// a "good" react config just has an "options" section
+export const migrateDefaults = (angular: AngularPolystatOptions) => {
+  let options: PolystatOptions = {
+    autoSizeColumns: false,
+    autoSizeRows: false,
+    autoSizePolygons: false,
+    ellipseCharacters: 0,
+    ellipseEnabled: false,
+    globalAutoScaleFonts: false,
+    globalClickthrough: '',
+    globalClickthroughNewTabEnabled: false,
+    globalClickthroughSanitizedEnabled: false,
+    globalDecimals: 0,
+    globalDisplayMode: '',
+    globalDisplayTextTriggeredEmpty: '',
+    globalFillColor: '',
+    globalFontSize: 0,
+    globalGradientsEnabled: false,
+    globalOperator: '',
+    globalPolygonBorderSize: 0,
+    globalPolygonBorderColor: '',
+    globalPolygonSize: 0,
+    globalRegexPattern: '',
+    globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
+    globalShowValueEnabled: false,
+    globalTextFontColor: '',
+    globalTextFontAutoColor: '',
+    globalTextFontAutoColorEnabled: false,
+    globalThresholdsConfig: [],
+    globalTooltipsEnabled: false,
+    globalTooltipsShowTimestampEnabled: false,
+    globalUnitFormat: '',
+    layoutDisplayLimit: 0,
+    layoutNumColumns: 0,
+    layoutNumRows: 0,
+    processedData: [],
+    panelHeight: undefined,
+    panelWidth: undefined,
+    panelId: 0,
+    radius: 0,
+    renderTime: undefined,
+    sortByField: '',
+    sortByDirection: 0,
+    overrideConfig: {
+      overrides: []
+    },
+    compositeConfig: {
+      animationSpeed: '',
+      composites: [],
+      enabled: false
+    },
+    tooltipPrimarySortDirection: 0,
+    tooltipPrimarySortByField: '',
+    tooltipSecondarySortDirection: 0,
+    tooltipSecondarySortByField: '',
+    tooltipDisplayMode: '',
+    tooltipDisplayTextTriggeredEmpty: ''
+  };
+
+  if (angular.animationSpeed) {
+    options.compositeConfig.animationSpeed = angular.animationSpeed.toString();
+  }
+  if (angular.columnAutoSize) {
+    options.autoSizeColumns = angular.columnAutoSize;
+  }
+  if (angular.columns) {
+    options.layoutNumColumns = parseInt(angular.columns, 10);
+  }
+  if (angular.defaultClickThrough) {
+    options.globalClickthrough = angular.defaultClickThrough;
+  }
+  if (angular.defaultClickThroughNewTab) {
+    options.globalClickthroughNewTabEnabled = angular.defaultClickThroughNewTab;
+  }
+  if (angular.defaultClickThroughSanitize) {
+    options.globalClickthroughSanitizedEnabled = angular.defaultClickThroughSanitize;
+  }
+  if (angular.displayLimit) {
+    options.layoutDisplayLimit = angular.displayLimit;
+  }
+  if (angular.ellipseCharacters) {
+    options.ellipseCharacters = angular.ellipseCharacters;
+  }
+  if (angular.ellipseEnabled) {
+    options.ellipseEnabled = angular.ellipseEnabled;
+  }
+  if (angular.fontAutoColor) {
+    options.globalTextFontAutoColorEnabled = angular.fontAutoColor;
+  }
+  if (angular.fontAutoScale) {
+    options.globalAutoScaleFonts = angular.fontAutoScale;
+  }
+  if (angular.fontSize) {
+    options.globalFontSize = angular.fontSize;
+  }
+  if (angular.globalDecimals) {
+    options.globalDecimals = angular.globalDecimals;
+  }
+  if (angular.globalDisplayMode) {
+    options.globalDisplayMode = angular.globalDisplayMode;
+  }
+  if (angular.globalDisplayTextTriggeredEmpty) {
+    options.globalDisplayTextTriggeredEmpty = angular.globalDisplayTextTriggeredEmpty;
+  }
+  // TODO: convert to v8 operators...
+  if (angular.globalOperatorName) {
+    options.globalOperator = angular.globalOperatorName;
+  }
+  if (angular.globalUnitFormat) {
+    options.globalUnitFormat = angular.globalUnitFormat;
+  }
+  if (angular.gradientEnabled) {
+    options.globalGradientsEnabled = angular.gradientEnabled;
+  }
+  if (angular.hexagonSortByDirection) {
+    options.sortByDirection = angular.hexagonSortByDirection;
+  }
+  if (angular.hexagonSortByField) {
+    options.sortByField = angular.hexagonSortByField;
+  }
+  // ignore, this was not used in the panel (duplicate of displayLimit)
+  //if (angular.maxMetrics) {
+  // options.layoutDisplayLimit = angular.maxMetrics;
+  //}
+  if (angular.polygonBorderColor) {
+    options.globalPolygonBorderColor = angular.polygonBorderColor;
+  }
+  if (angular.polygonBorderSize) {
+    options.globalPolygonBorderSize = angular.polygonBorderSize;
+  }
+  if (angular.polygonGlobalFillColor) {
+    options.globalFillColor = angular.polygonGlobalFillColor;
+  }
+  if (angular.radius) {
+    options.radius = parseFloat(angular.radius);
+  }
+  if (angular.radiusAutoSize) {
+    options.autoSizePolygons = angular.radiusAutoSize;
+  }
+  if (angular.regexPattern) {
+    options.globalRegexPattern = angular.regexPattern;
+  }
+  if (angular.rowAutoSize) {
+    options.autoSizeRows = angular.rowAutoSize;
+  }
+  if (angular.rows) {
+    options.layoutNumRows = parseInt(angular.rows, 10);
+  }
+  if (angular.shape) {
+    switch (angular.shape) {
+      case 'circle':
+        options.globalShape = PolygonShapes.CIRCLE;
+        break;
+      case 'square':
+        options.globalShape = PolygonShapes.SQUARE;
+        break;
+      case 'hexagon_pointed_top':
+      default:
+        options.globalShape = PolygonShapes.HEXAGON_POINTED_TOP;
     }
-    if (angular.columnAutoSize) {
-      options.autoSizeColumns = angular.columnAutoSize;
-    }
-    if (angular.columns) {
-      options.layoutNumColumns = angular.columns;
-    }
-    if (angular.defaultClickThrough) {
-      options.globalClickthrough = angular.defaultClickThrough;
-    }
-    if (angular.defaultClickThroughNewTab) {
-      options.globalClickthroughNewTabEnabled = angular.defaultClickThroughNewTab;
-    }
-    if (angular.defaultClickThroughSanitize) {
-      options.globalClickthroughSanitizedEnabled = angular.defaultClickThroughSanitize;
-    }
-    if (angular.displayLimit) {
-      options.layoutDisplayLimit = angular.displayLimit;
-    }
-    if (angular.ellipseCharacters) {
-      options.ellipseCharacters = angular.ellipseCharacters;
-    }
-    if (angular.ellipseEnabled) {
-      options.ellipseEnabled = angular.ellipseEnabled;
-    }
-    if (angular.fontAutoColor) {
-      options.globalTextFontAutoColor = angular.fontAutoColor;
-    }
-    if (angular.fontColor) {
-      options.globalTextFontColor = angular.fontColor;
-    }
-    if (angular.fontAutoScale) {
-      options.globalAutoScaleFonts = angular.fontAutoScale;
-    }
-    if (angular.fontSize) {
-      options.globalFontSize = angular.fontSize;
-    }
-    if (angular.globalDecimals) {
-      options.globalDecimals = angular.globalDecimals;
-    }
-    if (angular.globalDisplayMode) {
-      options.globalDisplayMode = angular.globalDisplayMode;
-    }
-    if (angular.globalDisplayTextTriggeredEmpty) {
-      options.globalDisplayTextTriggeredEmpty = angular.globalDisplayTextTriggeredEmpty;
-    }
-    // TODO: convert to v8 operators...
-    if (angular.globalOperatorName) {
-      options.globalOperator = angular.globalOperatorName;
-    }
-    if (angular.globalUnitFormat) {
-      options.globalUnitFormat = angular.globalUnitFormat;
-    }
-    if (angular.gradientEnabled) {
-      options.globalGradientsEnabled = angular.gradientEnabled;
-    }
-    if (angular.hexagonSortByDirection) {
-      options.sortByDirection = angular.hexagonSortByDirection;
-    }
-    if (angular.hexagonSortByField) {
-      options.sortByField = angular.hexagonSortByField;
-    }
-    // ignore, this was not used in the panel (duplicate of displayLimit)
-    //if (angular.maxMetrics) {
-    // options.layoutDisplayLimit = angular.maxMetrics;
-    //}
-    if (angular.polygonBorderColor) {
-      options.globalPolygonBorderColor = angular.polygonBorderColor;
-    }
-    if (angular.polygonBorderSize) {
-      options.globalPolygonBorderSize = angular.polygonBorderSize;
-    }
-    if (angular.polygonGlobalFillColor) {
-      options.globalFillColor = angular.polygonGlobalFillColor;
-    }
-    if (angular.radius) {
-      options.radius = angular.radius;
-    }
-    if (angular.radiusAutoSize) {
-      options.autoSizePolygons = angular.radiusAutoSize;
-    }
-    if (angular.regexPattern) {
-      options.globalRegexPattern = angular.regexPattern;
-    }
-    if (angular.rowAutoSize) {
-      options.autoSizeRows = angular.rowAutoSize;
-    }
-    if (angular.rows) {
-      options.layoutNumRows = angular.rows;
-    }
-    if (angular.shape) {
-      options.globalShape = angular.shape;
-    }
-    if (angular.tooltipDisplayMode) {
-      options.tooltipDisplayMode = angular.tooltipDisplayMode;
-    }
-    if (angular.tooltipDisplayTextTriggeredEmpty) {
-      options.tooltipDisplayTextTriggeredEmpty = angular.tooltipDisplayTextTriggeredEmpty;
-    }
-    if (angular.tooltipEnabled) {
-      options.globalTooltipsEnabled = angular.tooltipEnabled;
-    }
-    if (angular.tooltipPrimarySortDirection) {
-      options.tooltipPrimarySortDirection = angular.tooltipPrimarySortDirection;
-    }
-    if (angular.tooltipPrimarySortField) {
-      options.tooltipPrimarySortByField = angular.tooltipPrimarySortField;
-    }
-    if (angular.tooltipSecondarySortDirection) {
-      options.tooltipSecondarySortDirection = angular.tooltipSecondarySortDirection;
-    }
-    if (angular.tooltipSecondarySortField) {
-      options.tooltipSecondarySortByField = angular.tooltipSecondarySortField;
-    }
-    if (angular.tooltipTimestampEnabled) {
-      options.globalTooltipsShowTimestampEnabled = angular.tooltipTimestampEnabled;
-    }
-    if (angular.valueEnabled) {
-      options.globalShowValueEnabled = angular.valueEnabled;
-    }
+  }
+  if (angular.tooltipDisplayMode) {
+    options.tooltipDisplayMode = angular.tooltipDisplayMode;
+  }
+  if (angular.tooltipDisplayTextTriggeredEmpty) {
+    options.tooltipDisplayTextTriggeredEmpty = angular.tooltipDisplayTextTriggeredEmpty;
+  }
+  if (angular.tooltipEnabled) {
+    options.globalTooltipsEnabled = angular.tooltipEnabled;
+  }
+  if (angular.tooltipPrimarySortDirection) {
+    options.tooltipPrimarySortDirection = angular.tooltipPrimarySortDirection;
+  }
+  if (angular.tooltipPrimarySortField) {
+    options.tooltipPrimarySortByField = angular.tooltipPrimarySortField;
+  }
+  if (angular.tooltipSecondarySortDirection) {
+    options.tooltipSecondarySortDirection = angular.tooltipSecondarySortDirection;
+  }
+  if (angular.tooltipSecondarySortField) {
+    options.tooltipSecondarySortByField = angular.tooltipSecondarySortField;
+  }
+  if (angular.tooltipTimestampEnabled) {
+    options.globalTooltipsShowTimestampEnabled = angular.tooltipTimestampEnabled;
+  }
+  if (angular.valueEnabled) {
+    options.globalShowValueEnabled = angular.valueEnabled;
+  }
+
+  return options;
+}
+
+export const migrateOverrides = (angular: AngularSavedOverrides) => {
+  console.log('inside migrateOverrides');
+
+    let options = {} as any;
 
     options.overrideConfig = {
       overrides: [],
@@ -155,7 +354,7 @@ export const PolystatPanelChangedHandler = (
           decimals: '',
           scaledDecimals: 0,
           enabled: true,
-          operatorName: { label: 'avg', value: 'avg' } as SelectableValue,
+          operatorName: 'avg',
           prefix: '',
           suffix: '',
           clickThrough: '',
@@ -191,7 +390,7 @@ export const PolystatPanelChangedHandler = (
               anOverride.clickThroughOpenNewTab = v;
               break;
             case 'operatorName':
-              anOverride.operatorName = v;
+              anOverride.operatorName = convertOperators(v);
               break;
             case 'prefix':
               anOverride.prefix = v;
@@ -209,6 +408,10 @@ export const PolystatPanelChangedHandler = (
               "value": 78
               */
               anOverride.thresholds = v;
+              // cleanup
+              for (const threshold of anOverride.thresholds) {
+                delete threshold["$$hashKey"];
+              }
               break;
             case 'unitFormat':
               anOverride.unitFormat = v;
@@ -221,11 +424,22 @@ export const PolystatPanelChangedHandler = (
         order++;
       }
     }
+    return options;
+  }
+
+  export const convertOperators = (operator: string) => {
+    return "current";
+  }
+
+  export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
+    console.log('inside migrateComposites');
+
+    let options = {} as any;
     // Composites
     options.compositeConfig = {
       composites: [],
       enabled: true,
-      animationSpeed: '2500',
+      animationSpeed: animationSpeed,
     };
 
     if (angular.savedComposites?.length) {
@@ -236,7 +450,7 @@ export const PolystatPanelChangedHandler = (
           order: index,
           templatedName: '',
           isTemplated: false,
-          displayMode: DisplayModes[0],
+          displayMode: DisplayModes[0].value,
           enabled: true,
           showName: true,
           showValue: true,
@@ -255,7 +469,9 @@ export const PolystatPanelChangedHandler = (
             case '$$hashKey':
               break;
             case 'animateMode':
-              aComposite.displayMode = v;
+              if (v !== 'all') {
+                aComposite.displayMode = DisplayModes[1].value;
+              }
               break;
             case 'clickThrough':
               aComposite.clickThrough = v;
@@ -319,14 +535,9 @@ export const PolystatPanelChangedHandler = (
         options.compositeConfig.composites.push(aComposite);
       }
     }
-    // Mappings?
-    //const valuemap: ValueMap = { type: MappingType.ValueToText, options: {} };
-    //fieldConfig.defaults.mappings = [valuemap];
-
     return options;
-  }
-  return {};
 };
+
 
 /*
 

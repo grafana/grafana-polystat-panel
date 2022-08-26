@@ -39,7 +39,7 @@ export interface CompositeItemType {
   order: number;
   templatedName: string;
   isTemplated: boolean;
-  displayMode: SelectableValue;
+  displayMode: string;
   enabled: boolean;
   showName: boolean;
   showValue: boolean;

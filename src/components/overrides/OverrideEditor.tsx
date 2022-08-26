@@ -174,7 +174,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
         '#bf1b00', // "rgba(245, 54, 54, 1)",  // red
         '#4040a0', // "rgba(64, 64, 160, 1)",  // blue
       ],
-      operatorName: OperatorOptions[0],
+      operatorName: OperatorOptions[0].value,
       order: order,
     };
     const aTracker: OverrideItemTracker = {

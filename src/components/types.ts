@@ -61,7 +61,6 @@ export interface PolystatOptions {
 }
 
 export interface PolystatModel {
-  animateMode?: string;
   displayMode?: string;
   thresholdLevel?: number; // 0 = ok, 1 = warn, 2 = crit, 3 = unknown (same as sensu)
   value: number;
@@ -76,7 +75,7 @@ export interface PolystatModel {
   seriesRaw: DataFrame;
   color: string;
   clickThrough: string;
-  operatorName: SelectableValue;
+  operatorName: string;
   newTabEnabled: boolean;
   sanitizedURL: string;
   sanitizeURLEnabled: boolean;

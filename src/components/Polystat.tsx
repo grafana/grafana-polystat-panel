@@ -7,7 +7,7 @@ import { hexbin } from 'd3-hexbin';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
 
 import { Gradients } from './gradients/Gradients';
-import { PolystatOptions, PolygonShapes, PolystatModel } from './types';
+import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
 import { LayoutManager } from './layout/layoutManager';
 import { getTextSizeForWidthAndHeight } from '../utils';
 import { orderBy as lodashOrderBy } from 'lodash';
@@ -493,7 +493,7 @@ const formatCompositeValue = (frames: number, item: PolystatModel) => {
   const len = item.members.length;
   if (len > 0) {
     let triggeredIndex = -1;
-    if (item.displayMode === 'all') {
+    if (item.displayMode === DisplayModes[0].value) {
       triggeredIndex = frames % len;
     } else {
       if (typeof item.triggerCache === 'undefined') {

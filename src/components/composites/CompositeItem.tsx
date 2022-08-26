@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItemProps) => {
   const [composite, _setComposite] = useState(props.composite);
+  const [displayMode, setDisplayMode] = useState(DisplayModes[props.composite.displayMode]);
   const setComposite = (value: CompositeItemType) => {
     _setComposite(value);
     props.setter(composite.order, value);
@@ -116,9 +117,10 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           >
             <Select
               menuShouldPortal={true}
-              value={composite.displayMode}
+              value={displayMode}
               onChange={(v) => {
-                setComposite({ ...composite, displayMode: v });
+                setDisplayMode(v);
+                setComposite({ ...composite, displayMode: v.value });
               }}
               options={DisplayModes}
             />

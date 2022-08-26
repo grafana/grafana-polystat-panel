@@ -237,7 +237,7 @@ export const ApplyComposites = (
       // add the composite setting for showing the name/value to the new cloned model
       clone.showName = aComposite.showName;
       clone.showValue = aComposite.showValue;
-      clone.displayMode = aComposite.displayMode.value;
+      clone.displayMode = aComposite.displayMode;
       clone.newTabEnabled = aComposite.clickThroughOpenNewTab;
       clone.sanitizeURLEnabled = aComposite.clickThroughSanitize;
       // mark this series as a composite

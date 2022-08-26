@@ -46,7 +46,6 @@
     "@tippyjs/react": "^4.2.6",
     "d3-hexbin": "0.2.2",
     "emotion": "11.0.0",
-    "grafana-plugin-support": "0.4.0",
     "tinycolor2": "^1.4.2"
   },
   "engines": {

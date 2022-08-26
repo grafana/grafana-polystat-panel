@@ -174,7 +174,7 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
       templatedName: `Composite-${order}`,
       enabled: true,
       metrics: [] as CompositeMetric[],
-      displayMode: DisplayModes[0],
+      displayMode: DisplayModes[0].value,
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,
