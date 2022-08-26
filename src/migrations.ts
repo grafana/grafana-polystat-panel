@@ -447,6 +447,7 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
     for (const composite of angular.savedComposites) {
       let aComposite: CompositeItemType = {
         name: `COMPOSITE-${index}`,
+        label: `COMPOSITE-${index}`,
         order: index,
         templatedName: '',
         isTemplated: false,
@@ -490,7 +491,7 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
             aComposite.showMembers = !v;
             break;
           case 'label':
-            aComposite.name = v;
+            aComposite.label = v;
             break;
           case 'members':
             /*

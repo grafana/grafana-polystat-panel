@@ -110,6 +110,7 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
     const order = tracker.length;
     const aComposite: CompositeItemType = {
       name: `${original.name} Copy`,
+      label: `${original.name} Copy`,
       order: order,
       templatedName: original.templatedName,
       isTemplated: original.isTemplated,
@@ -166,6 +167,7 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
     const order = tracker.length;
     const aComposite: CompositeItemType = {
       name: `Composite-${order}`,
+      label: `Composite-${order}`,
       showName: true,
       showValue: true,
       showMembers: false,

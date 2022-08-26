@@ -1,5 +1,5 @@
-import React from 'react';
-import { GrafanaTheme } from '@grafana/data';
+import React, { useState } from 'react';
+import { GrafanaTheme, SelectableValue } from '@grafana/data';
 
 import { Input, ColorPicker, IconButton, useStyles, Select } from '@grafana/ui';
 import { css } from 'emotion';
@@ -20,6 +20,18 @@ interface ThresholdItemProps {
 
 export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdItemProps) => {
   const styles = useStyles(getThresholdStyles);
+  const getThreshold = (thresholdId: number) => {
+    const keys = ThresholdStates.keys();
+    for (const aKey of keys) {
+      if (ThresholdStates[aKey].value === thresholdId) {
+        return ThresholdStates[aKey];
+      }
+    }
+    // no match, return current by default
+    return ThresholdStates[0];
+  };
+
+  const [threshold, setThreshold] = useState<SelectableValue<any>>(getThreshold(options.threshold.state));
 
   return (
     <Input
@@ -45,9 +57,10 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
           <Select
             disabled={options.disabled}
             menuShouldPortal={true}
-            value={options.threshold.state}
+            value={threshold}
             onChange={(v) => {
-              options.stateSetter(options.index, v);
+              setThreshold(v);
+              options.stateSetter(options.index, v.value);
             }}
             options={ThresholdStates}
           />

@@ -92,10 +92,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     const order = tracker.length;
     const aThreshold: PolystatThreshold = {
       color: DEFAULT_OK_COLOR_HEX, // "rgba(50, 172, 45, 1)",  // green
-      state: {
-        value: 0,
-        label: 'ok',
-      },
+      state: 0,
       value: 0,
     };
     const aTracker: ThresholdItemTracker = {

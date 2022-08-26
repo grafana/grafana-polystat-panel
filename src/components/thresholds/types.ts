@@ -2,7 +2,7 @@ import { SelectableValue } from '@grafana/data';
 
 export interface PolystatThreshold {
   color: string;
-  state: SelectableValue;
+  state: number;
   value: number;
 }
 

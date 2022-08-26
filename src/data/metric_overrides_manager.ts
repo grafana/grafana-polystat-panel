@@ -100,7 +100,6 @@ export const ApplyOverrides = (
       // Use defaults or the specific threshold
       const thresholds =
         anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : globalThresholds;
-
       const result = getThresholdLevelForValue(thresholds, dataValue, globalFillColor);
       let useColor = result.color;
       if (typeof theme2.visualization !== 'undefined') {

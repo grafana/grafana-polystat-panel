@@ -101,7 +101,7 @@ function getThresholdLevelForValue(
   }
   const aThreshold = thresholds[thresholdCount - 1];
   if (value >= aThreshold.value) {
-    currentState = aThreshold.state.value;
+    currentState = aThreshold.state;
     currentColor = aThreshold.color;
   }
   // if there's one threshold, just return the result
@@ -113,15 +113,15 @@ function getThresholdLevelForValue(
     const upperThreshold = thresholds[i];
     const lowerThreshold = thresholds[i - 1];
     if (lowerThreshold.value <= value && value < upperThreshold.value) {
-      if (currentState < lowerThreshold.state.value) {
-        currentState = lowerThreshold.state.value;
+      if (currentState < lowerThreshold.state) {
+        currentState = lowerThreshold.state;
         currentColor = lowerThreshold.color;
       }
     }
   }
   // last check, if currentState is not set, and there is a lower threshold, use that value (inclusive range up to T1)
   if (currentState === -1) {
-    currentState = thresholds[0].state.value;
+    currentState = thresholds[0].state;
     currentColor = thresholds[0].color;
   }
   return { thresholdLevel: currentState, color: currentColor };

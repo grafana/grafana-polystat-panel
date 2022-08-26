@@ -1,6 +1,6 @@
 import { SelectableValue } from '@grafana/data';
 
-export interface CompositeEditorOptions {
+/*export interface CompositeEditorOptions {
   compositeName: string;
   displayName: string;
   members: CompositeMember[];
@@ -18,7 +18,7 @@ export interface CompositeEditorOptions {
   isTemplated: boolean;
   templatedName: string;
 }
-
+*/
 export interface CompositeMember {}
 
 export const DisplayModes: SelectableValue[] = [
@@ -36,6 +36,7 @@ export interface CompositeMetric {
 
 export interface CompositeItemType {
   name: string;
+  label: string;
   order: number;
   templatedName: string;
   isTemplated: boolean;
