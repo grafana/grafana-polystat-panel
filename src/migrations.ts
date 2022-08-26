@@ -108,7 +108,7 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
     return {} as any;
   }
 
-  const previousVersion = parseFloat(panel.pluginVersion || '6.1');
+  //const previousVersion = parseFloat(panel.pluginVersion || '6.1');
   //console.log(`inside migration handler ${previousVersion}`);
 
   //let options = panel.options as any;
