@@ -5,96 +5,96 @@ import { DisplayModes, PolygonShapes } from 'components/types';
 import { PolystatOptions } from './components/types';
 
 interface AngularPolystatOptions {
-  "animationSpeed": number,
-  "columnAutoSize": boolean,
-  "columns": string,
-  "defaultClickThrough": string,
-  "defaultClickThroughNewTab": boolean,
-  "defaultClickThroughSanitize": boolean,
-  "displayLimit": number,
-  "ellipseCharacters": number,
-  "ellipseEnabled": boolean,
-  "fontAutoColor": boolean,
-  "fontAutoScale": boolean,
-  "fontSize": number,
-  "globalDecimals": number,
-  "globalDisplayMode": string,
-  "globalDisplayTextTriggeredEmpty": string,
-  "globalOperatorName": string,
-  "globalUnitFormat": string,
-  "gradientEnabled": boolean,
-  "hexagonSortByDirection": number,
-  "hexagonSortByField": string,
-  "maxMetrics": number,
-  "polygonBorderColor": string,
-  "polygonBorderSize": number,
-  "polygonGlobalFillColor": string,
-  "radius": string,
-  "radiusAutoSize": boolean,
-  "regexPattern": string,
-  "rowAutoSize": boolean,
-  "rows": string,
-  "shape": string,
-  "tooltipDisplayMode": string,
-  "tooltipDisplayTextTriggeredEmpty": string,
-  "tooltipEnabled": boolean,
-  "tooltipFontSize": number,
-  "tooltipPrimarySortDirection": number,
-  "tooltipPrimarySortField": string,
-  "tooltipSecondarySortDirection": number,
-  "tooltipSecondarySortField": string,
-  "tooltipTimestampEnabled": boolean,
-  "valueEnabled": boolean
-};
+  animationSpeed: number;
+  columnAutoSize: boolean;
+  columns: string;
+  defaultClickThrough: string;
+  defaultClickThroughNewTab: boolean;
+  defaultClickThroughSanitize: boolean;
+  displayLimit: number;
+  ellipseCharacters: number;
+  ellipseEnabled: boolean;
+  fontAutoColor: boolean;
+  fontAutoScale: boolean;
+  fontSize: number;
+  globalDecimals: number;
+  globalDisplayMode: string;
+  globalDisplayTextTriggeredEmpty: string;
+  globalOperatorName: string;
+  globalUnitFormat: string;
+  gradientEnabled: boolean;
+  hexagonSortByDirection: number;
+  hexagonSortByField: string;
+  maxMetrics: number;
+  polygonBorderColor: string;
+  polygonBorderSize: number;
+  polygonGlobalFillColor: string;
+  radius: string;
+  radiusAutoSize: boolean;
+  regexPattern: string;
+  rowAutoSize: boolean;
+  rows: string;
+  shape: string;
+  tooltipDisplayMode: string;
+  tooltipDisplayTextTriggeredEmpty: string;
+  tooltipEnabled: boolean;
+  tooltipFontSize: number;
+  tooltipPrimarySortDirection: number;
+  tooltipPrimarySortField: string;
+  tooltipSecondarySortDirection: number;
+  tooltipSecondarySortField: string;
+  tooltipTimestampEnabled: boolean;
+  valueEnabled: boolean;
+}
 
 export interface AngularThreshold {
-    color: string,
-    state: number,
-    value: number,
-};
+  color: string;
+  state: number;
+  value: number;
+}
 
 export interface AngularOverride {
-  "clickThrough": string,
-  "colors": string[],
-  "decimals": number,
-  "enabled": true,
-  "label": string,
-  "metricName": string,
-  "newTabEnabled": boolean,
-  "operatorName": string,
-  "prefix": string,
-  "sanitizeURLEnabled": boolean,
-  "suffix": string,
-  "unitFormat": string,
-  "thresholds": AngularThreshold[]
+  clickThrough: string;
+  colors: string[];
+  decimals: number;
+  enabled: true;
+  label: string;
+  metricName: string;
+  newTabEnabled: boolean;
+  operatorName: string;
+  prefix: string;
+  sanitizeURLEnabled: boolean;
+  suffix: string;
+  unitFormat: string;
+  thresholds: AngularThreshold[];
 }
 export interface AngularSavedOverrides {
-  savedOverrides: AngularOverride[]
-};
+  savedOverrides: AngularOverride[];
+}
 
 export interface CompositeMembers {
-    "seriesName": string
-};
+  seriesName: string;
+}
 export interface CompositeItem {
-  "animateMode": string,
-  "clickThrough": string,
-  "compositeName": string,
-  "displayName": string,
-  "enabled": boolean,
-  "hideMembers": boolean,
-  "label": string,
-  "members": CompositeMembers[],
-  newTabEnabled: boolean,
-  sanitizeURLEnabled: boolean,
-  sanitizedURL: string,
-  showName: boolean,
-  showValue: boolean,
-  thresholdLevel: number,
-};
+  animateMode: string;
+  clickThrough: string;
+  compositeName: string;
+  displayName: string;
+  enabled: boolean;
+  hideMembers: boolean;
+  label: string;
+  members: CompositeMembers[];
+  newTabEnabled: boolean;
+  sanitizeURLEnabled: boolean;
+  sanitizedURL: string;
+  showName: boolean;
+  showValue: boolean;
+  thresholdLevel: number;
+}
 
 export interface AngularSavedComposites {
-  savedComposites: CompositeItem[]
-};
+  savedComposites: CompositeItem[];
+}
 
 /**
  * This is called when the panel is imported or reloaded
@@ -118,9 +118,9 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   //@ts-ignore
   delete panel.polystat;
   //@ts-ignore
-  const migratedOverrides = migrateOverrides(panel)
+  const migratedOverrides = migrateOverrides(panel);
   //@ts-ignore
-  const migratedComposites = migrateComposites(panel, newDefaults.compositeConfig.animationSpeed)
+  const migratedComposites = migrateComposites(panel, newDefaults.compositeConfig.animationSpeed);
   //console.log(JSON.stringify(newDefaults, null, 2));
   options.compositeConfig = migratedComposites.compositeConfig;
   options.overrideConfig = migratedOverrides.overrideConfig;
@@ -135,7 +135,7 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   //console.log(JSON.stringify(options, null, 2));
 
   return options;
-}
+};
 
 // split into three parts
 // config normally found in "polystat" section
@@ -184,19 +184,19 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     sortByField: '',
     sortByDirection: 0,
     overrideConfig: {
-      overrides: []
+      overrides: [],
     },
     compositeConfig: {
       animationSpeed: '',
       composites: [],
-      enabled: false
+      enabled: false,
     },
     tooltipPrimarySortDirection: 0,
     tooltipPrimarySortByField: '',
     tooltipSecondarySortDirection: 0,
     tooltipSecondarySortByField: '',
     tooltipDisplayMode: '',
-    tooltipDisplayTextTriggeredEmpty: ''
+    tooltipDisplayTextTriggeredEmpty: '',
   };
 
   if (angular.animationSpeed) {
@@ -330,214 +330,213 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   }
 
   return options;
-}
+};
 
 export const migrateOverrides = (angular: AngularSavedOverrides) => {
   console.log('inside migrateOverrides');
 
-    let options = {} as any;
+  let options = {} as any;
 
-    options.overrideConfig = {
-      overrides: [],
-    };
-    // Overrides
-    if (angular.savedOverrides?.length) {
-      let order = 0;
-      for (const seriesOverride of angular.savedOverrides) {
-        let anOverride: OverrideItemType = {
-          label: '',
-          metricName: '',
-          alias: '',
-          thresholds: [],
-          colors: [],
-          unitFormat: '',
-          decimals: '',
-          scaledDecimals: 0,
-          enabled: true,
-          operatorName: 'avg',
-          prefix: '',
-          suffix: '',
-          clickThrough: '',
-          clickThroughSanitize: true,
-          clickThroughOpenNewTab: true,
-          order: order,
-        };
-        for (const p of Object.keys(seriesOverride)) {
-          const v = seriesOverride[p];
-          switch (p) {
-            // Ignore
-            case '$$hashKey':
-              break;
-            case 'clickThrough':
-              anOverride.clickThrough = v;
-              break;
-            case 'colors':
-              anOverride.colors = v;
-              break;
-            case 'decimals':
-              anOverride.decimals = v;
-              break;
-            case 'enabled':
-              anOverride.enabled = v;
-              break;
-            case 'label':
-              anOverride.label = v;
-              break;
-            case 'metricName':
-              anOverride.metricName = v;
-              break;
-            case 'newTabEnabled':
-              anOverride.clickThroughOpenNewTab = v;
-              break;
-            case 'operatorName':
-              anOverride.operatorName = convertOperators(v);
-              break;
-            case 'prefix':
-              anOverride.prefix = v;
-              break;
-            case 'sanitizeURLEnabled':
-              anOverride.clickThroughSanitize = v;
-              break;
-            case 'suffix':
-              anOverride.suffix = v;
-              break;
-            case 'thresholds':
-              /*
+  options.overrideConfig = {
+    overrides: [],
+  };
+  // Overrides
+  if (angular.savedOverrides?.length) {
+    let order = 0;
+    for (const seriesOverride of angular.savedOverrides) {
+      let anOverride: OverrideItemType = {
+        label: '',
+        metricName: '',
+        alias: '',
+        thresholds: [],
+        colors: [],
+        unitFormat: '',
+        decimals: '',
+        scaledDecimals: 0,
+        enabled: true,
+        operatorName: 'avg',
+        prefix: '',
+        suffix: '',
+        clickThrough: '',
+        clickThroughSanitize: true,
+        clickThroughOpenNewTab: true,
+        order: order,
+      };
+      for (const p of Object.keys(seriesOverride)) {
+        const v = seriesOverride[p];
+        switch (p) {
+          // Ignore
+          case '$$hashKey':
+            break;
+          case 'clickThrough':
+            anOverride.clickThrough = v;
+            break;
+          case 'colors':
+            anOverride.colors = v;
+            break;
+          case 'decimals':
+            anOverride.decimals = v;
+            break;
+          case 'enabled':
+            anOverride.enabled = v;
+            break;
+          case 'label':
+            anOverride.label = v;
+            break;
+          case 'metricName':
+            anOverride.metricName = v;
+            break;
+          case 'newTabEnabled':
+            anOverride.clickThroughOpenNewTab = v;
+            break;
+          case 'operatorName':
+            anOverride.operatorName = convertOperators(v);
+            break;
+          case 'prefix':
+            anOverride.prefix = v;
+            break;
+          case 'sanitizeURLEnabled':
+            anOverride.clickThroughSanitize = v;
+            break;
+          case 'suffix':
+            anOverride.suffix = v;
+            break;
+          case 'thresholds':
+            /*
               "color": "#e5ac0e",
               "state": 1,
               "value": 78
               */
-              anOverride.thresholds = v;
-              // cleanup
-              for (const threshold of anOverride.thresholds) {
-                delete threshold["$$hashKey"];
-              }
-              break;
-            case 'unitFormat':
-              anOverride.unitFormat = v;
-              break;
-            default:
-              console.log('Ignore override migration:', p, v);
-          }
+            anOverride.thresholds = v;
+            // cleanup
+            for (const threshold of anOverride.thresholds) {
+              delete threshold['$$hashKey'];
+            }
+            break;
+          case 'unitFormat':
+            anOverride.unitFormat = v;
+            break;
+          default:
+            console.log('Ignore override migration:', p, v);
         }
-        options.overrideConfig.overrides.push(anOverride);
-        order++;
       }
+      options.overrideConfig.overrides.push(anOverride);
+      order++;
     }
-    return options;
   }
+  return options;
+};
 
-  export const convertOperators = (operator: string) => {
-    return "current";
-  }
+export const convertOperators = (operator: string) => {
+  return 'current';
+};
 
-  export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
-    console.log('inside migrateComposites');
+export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
+  console.log('inside migrateComposites');
 
-    let options = {} as any;
-    // Composites
-    options.compositeConfig = {
-      composites: [],
-      enabled: true,
-      animationSpeed: animationSpeed,
-    };
+  let options = {} as any;
+  // Composites
+  options.compositeConfig = {
+    composites: [],
+    enabled: true,
+    animationSpeed: animationSpeed,
+  };
 
-    if (angular.savedComposites?.length) {
-      let index = 0;
-      for (const composite of angular.savedComposites) {
-        let aComposite: CompositeItemType = {
-          name: `COMPOSITE-${index}`,
-          order: index,
-          templatedName: '',
-          isTemplated: false,
-          displayMode: DisplayModes[0].value,
-          enabled: true,
-          showName: true,
-          showValue: true,
-          showComposite: true,
-          showMembers: false,
-          metrics: [],
-          clickThrough: '',
-          clickThroughSanitize: true,
-          clickThroughOpenNewTab: true,
-        };
-        index++;
-        for (const p of Object.keys(composite)) {
-          const v = composite[p];
-          switch (p) {
-            // Ignore
-            case '$$hashKey':
-              break;
-            case 'animateMode':
-              if (v !== 'all') {
-                aComposite.displayMode = DisplayModes[1].value;
-              }
-              break;
-            case 'clickThrough':
-              aComposite.clickThrough = v;
-              break;
-            case 'compositeName':
-              aComposite.name = v;
-              break;
-            // Ignore
-            case 'displayName':
-              break;
-            case 'enabled':
-              // this is now .showComposite
-              aComposite.showComposite = v;
-              break;
-            case 'hideMembers':
-              aComposite.showMembers = !v;
-              break;
-            case 'label':
-              aComposite.name = v;
-              break;
-            case 'members':
-              /*
+  if (angular.savedComposites?.length) {
+    let index = 0;
+    for (const composite of angular.savedComposites) {
+      let aComposite: CompositeItemType = {
+        name: `COMPOSITE-${index}`,
+        order: index,
+        templatedName: '',
+        isTemplated: false,
+        displayMode: DisplayModes[0].value,
+        enabled: true,
+        showName: true,
+        showValue: true,
+        showComposite: true,
+        showMembers: false,
+        metrics: [],
+        clickThrough: '',
+        clickThroughSanitize: true,
+        clickThroughOpenNewTab: true,
+      };
+      index++;
+      for (const p of Object.keys(composite)) {
+        const v = composite[p];
+        switch (p) {
+          // Ignore
+          case '$$hashKey':
+            break;
+          case 'animateMode':
+            if (v !== 'all') {
+              aComposite.displayMode = DisplayModes[1].value;
+            }
+            break;
+          case 'clickThrough':
+            aComposite.clickThrough = v;
+            break;
+          case 'compositeName':
+            aComposite.name = v;
+            break;
+          // Ignore
+          case 'displayName':
+            break;
+          case 'enabled':
+            // this is now .showComposite
+            aComposite.showComposite = v;
+            break;
+          case 'hideMembers':
+            aComposite.showMembers = !v;
+            break;
+          case 'label':
+            aComposite.name = v;
+            break;
+          case 'members':
+            /*
               {
                 "$$hashKey": "object:150",
                 "seriesName": "/P2/"
               }
               */
-              let memberIndex = 0;
-              let members: CompositeMetric[] = [];
-              // not sure about this...
-              for (const aMember of Object.keys(v)) {
-                const x = v[aMember];
-                let member: CompositeMetric = {
-                  seriesMatch: x.seriesName,
-                  order: memberIndex,
-                };
-                members.push(member);
-                memberIndex++;
-              }
-              aComposite.metrics = members;
-              break;
-            case 'newTabEnabled':
-              aComposite.clickThroughOpenNewTab = v;
-              break;
-            case 'sanitizeURLEnabled':
-              aComposite.clickThroughSanitize = v;
-              break;
-            // Ignore
-            case 'sanitizedURL':
-              break;
-            case 'showName':
-              aComposite.showName = v;
-              break;
-            case 'showValue':
-              aComposite.showValue = v;
-              break;
-            default:
-              console.log('Ignore composite migration:', p, v);
-          }
+            let memberIndex = 0;
+            let members: CompositeMetric[] = [];
+            // not sure about this...
+            for (const aMember of Object.keys(v)) {
+              const x = v[aMember];
+              let member: CompositeMetric = {
+                seriesMatch: x.seriesName,
+                order: memberIndex,
+              };
+              members.push(member);
+              memberIndex++;
+            }
+            aComposite.metrics = members;
+            break;
+          case 'newTabEnabled':
+            aComposite.clickThroughOpenNewTab = v;
+            break;
+          case 'sanitizeURLEnabled':
+            aComposite.clickThroughSanitize = v;
+            break;
+          // Ignore
+          case 'sanitizedURL':
+            break;
+          case 'showName':
+            aComposite.showName = v;
+            break;
+          case 'showValue':
+            aComposite.showValue = v;
+            break;
+          default:
+            console.log('Ignore composite migration:', p, v);
         }
-        options.compositeConfig.composites.push(aComposite);
       }
+      options.compositeConfig.composites.push(aComposite);
     }
-    return options;
+  }
+  return options;
 };
-
 
 /*
 

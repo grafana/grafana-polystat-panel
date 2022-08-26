@@ -26,7 +26,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
     }
     // no match, return current by default
     return OperatorOptions['current'];
-  }
+  };
   const [operatorName, setOperatorName] = useState<SelectableValue<any>>(getOperator(props.override.operatorName));
   const removeItem = () => {
     props.remover(override.order);

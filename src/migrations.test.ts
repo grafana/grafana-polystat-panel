@@ -2,7 +2,14 @@ import { PanelModel } from '@grafana/data';
 //import { CompositeItemType } from 'components/composites/types';
 //import { OverrideItemType } from 'components/overrides/types';
 
-import { PolystatPanelMigrationHandler, migrateDefaults, migrateComposites, migrateOverrides, AngularSavedComposites, AngularSavedOverrides } from './migrations';
+import {
+  PolystatPanelMigrationHandler,
+  migrateDefaults,
+  migrateComposites,
+  migrateOverrides,
+  AngularSavedComposites,
+  AngularSavedOverrides,
+} from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
   it('only migrates old polystat', () => {
@@ -12,7 +19,6 @@ describe('Polystat -> PolystatV2 migrations', () => {
   });
 
   it('correctly converts top level config to new names', () => {
-
     const oldPolystatOptions = {
       polystat: {
         animationSpeed: 2500,
@@ -69,72 +75,71 @@ describe('Polystat -> PolystatV2 migrations', () => {
   });
 
   it('correctly migrates overrides', () => {
-
     const oldPolystatOptions: AngularSavedOverrides = {
-        savedOverrides: [
-          {
-            clickThrough: '',
-            colors: ['#299c46', '#e5ac0e', '#bf1b00', '#4040a0'],
-            decimals: 3,
-            enabled: true,
-            label: 'OVERRIDE 1',
-            metricName: '/.*TempInC.*/',
-            newTabEnabled: true,
-            operatorName: 'current',
-            prefix: '',
-            sanitizeURLEnabled: true,
-            suffix: '',
-            thresholds: [
-              {
-                color: '#299c46',
-                state: 0,
-                value: 0,
-              },
-              {
-                color: '#e5ac0e',
-                state: 1,
-                value: 25,
-              },
-              {
-                color: '#bf1b00',
-                state: 2,
-                value: 32,
-              },
-            ],
-            unitFormat: 'celsius',
-          },
-          {
-            clickThrough: '',
-            colors: ['#299c46', '#e5ac0e', '#bf1b00', '#4040a0'],
-            decimals: 3,
-            enabled: true,
-            label: 'OVERRIDE 2',
-            metricName: '/.*TempInF.*/',
-            newTabEnabled: true,
-            operatorName: 'current',
-            prefix: '',
-            sanitizeURLEnabled: true,
-            suffix: '',
-            thresholds: [
-              {
-                color: '#299c46',
-                state: 0,
-                value: 0,
-              },
-              {
-                color: '#e5ac0e',
-                state: 1,
-                value: 78,
-              },
-              {
-                color: '#bf1b00',
-                state: 2,
-                value: 82,
-              },
-            ],
-            unitFormat: 'fahrenheit',
-          },
-        ],
+      savedOverrides: [
+        {
+          clickThrough: '',
+          colors: ['#299c46', '#e5ac0e', '#bf1b00', '#4040a0'],
+          decimals: 3,
+          enabled: true,
+          label: 'OVERRIDE 1',
+          metricName: '/.*TempInC.*/',
+          newTabEnabled: true,
+          operatorName: 'current',
+          prefix: '',
+          sanitizeURLEnabled: true,
+          suffix: '',
+          thresholds: [
+            {
+              color: '#299c46',
+              state: 0,
+              value: 0,
+            },
+            {
+              color: '#e5ac0e',
+              state: 1,
+              value: 25,
+            },
+            {
+              color: '#bf1b00',
+              state: 2,
+              value: 32,
+            },
+          ],
+          unitFormat: 'celsius',
+        },
+        {
+          clickThrough: '',
+          colors: ['#299c46', '#e5ac0e', '#bf1b00', '#4040a0'],
+          decimals: 3,
+          enabled: true,
+          label: 'OVERRIDE 2',
+          metricName: '/.*TempInF.*/',
+          newTabEnabled: true,
+          operatorName: 'current',
+          prefix: '',
+          sanitizeURLEnabled: true,
+          suffix: '',
+          thresholds: [
+            {
+              color: '#299c46',
+              state: 0,
+              value: 0,
+            },
+            {
+              color: '#e5ac0e',
+              state: 1,
+              value: 78,
+            },
+            {
+              color: '#bf1b00',
+              state: 2,
+              value: 82,
+            },
+          ],
+          unitFormat: 'fahrenheit',
+        },
+      ],
     };
     const options = migrateOverrides(oldPolystatOptions);
     console.log('overrides...');
@@ -156,48 +161,48 @@ describe('Polystat -> PolystatV2 migrations', () => {
     */
 
     const oldPolystatOptions: AngularSavedComposites = {
-        savedComposites: [
-          {
-            animateMode: 'all',
-            clickThrough: '',
-            compositeName: 'P1',
-            displayName: '',
-            enabled: true,
-            hideMembers: true,
-            label: 'COMPOSITE 1',
-            members: [
-              {
-                seriesName: '/P1/',
-              },
-            ],
-            newTabEnabled: true,
-            sanitizeURLEnabled: true,
-            sanitizedURL: '',
-            showName: true,
-            showValue: true,
-            thresholdLevel: 0,
-          },
-          {
-            animateMode: 'all',
-            clickThrough: '',
-            compositeName: 'P2',
-            displayName: '',
-            enabled: true,
-            hideMembers: true,
-            label: 'COMPOSITE 2',
-            members: [
-              {
-                seriesName: '/P2/',
-              },
-            ],
-            newTabEnabled: true,
-            sanitizeURLEnabled: true,
-            sanitizedURL: '',
-            showName: true,
-            showValue: true,
-            thresholdLevel: 0,
-          },
-        ],
+      savedComposites: [
+        {
+          animateMode: 'all',
+          clickThrough: '',
+          compositeName: 'P1',
+          displayName: '',
+          enabled: true,
+          hideMembers: true,
+          label: 'COMPOSITE 1',
+          members: [
+            {
+              seriesName: '/P1/',
+            },
+          ],
+          newTabEnabled: true,
+          sanitizeURLEnabled: true,
+          sanitizedURL: '',
+          showName: true,
+          showValue: true,
+          thresholdLevel: 0,
+        },
+        {
+          animateMode: 'all',
+          clickThrough: '',
+          compositeName: 'P2',
+          displayName: '',
+          enabled: true,
+          hideMembers: true,
+          label: 'COMPOSITE 2',
+          members: [
+            {
+              seriesName: '/P2/',
+            },
+          ],
+          newTabEnabled: true,
+          sanitizeURLEnabled: true,
+          sanitizedURL: '',
+          showName: true,
+          showValue: true,
+          thresholdLevel: 0,
+        },
+      ],
     };
     const options = migrateComposites(oldPolystatOptions, '2222');
     console.log('composites...');
