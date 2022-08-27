@@ -1,3 +1,4 @@
+import { DEFAULT_CRITICAL_COLOR, DEFAULT_OK_COLOR, DEFAULT_WARNING_COLOR } from 'components/defaults';
 import React from 'react';
 
 import { Color } from './color';
@@ -26,11 +27,11 @@ export const Gradients: React.FC<Props> = (options) => {
     return gradients;
   };
   const colorGradients = createGradients(options.data);
-  const okColorStart = new Color(41, 156, 70); // '#299c46', // "rgba(50, 172, 45, 1)", // green
+  const okColorStart = DEFAULT_OK_COLOR; // '#299c46', // "rgba(50, 172, 45, 1)", // green
   const okColorEnd = okColorStart.Mul(pureLight, 0.7);
-  const warningColorStart = new Color(237, 129, 40); // #FFC837 // '#e5ac0e', // "rgba(237, 129, 40, 1)", // yellow
+  const warningColorStart = DEFAULT_WARNING_COLOR; // #FFC837 // '#e5ac0e', // "rgba(237, 129, 40, 1)", // yellow
   const warningColorEnd = warningColorStart.Mul(pureLight, 0.7);
-  const criticalColorStart = new Color(245, 54, 54); // #e52d27 // '#bf1b00', // "rgba(245, 54, 54, 1)", // red
+  const criticalColorStart = DEFAULT_CRITICAL_COLOR; // #e52d27 // '#bf1b00', // "rgba(245, 54, 54, 1)", // red
   const criticalColorEnd = criticalColorStart.Mul(pureLight, 0.7);
 
   const gradientId = options.gradientId;
