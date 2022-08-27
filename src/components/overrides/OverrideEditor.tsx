@@ -6,7 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { Button, Collapse } from '@grafana/ui';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { OperatorOptions } from 'components/types';
-import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_NO_THRESHOLD_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from 'components/defaults';
+import {
+  DEFAULT_CRITICAL_COLOR_HEX,
+  DEFAULT_NO_THRESHOLD_COLOR_HEX,
+  DEFAULT_OK_COLOR_HEX,
+  DEFAULT_WARNING_COLOR_HEX,
+} from 'components/defaults';
 
 export interface OverrideEditorSettings {
   overrides: OverrideItemType[];
@@ -170,10 +175,10 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
       scaledDecimals: null,
       decimals: '2',
       colors: [
-        DEFAULT_OK_COLOR_HEX, // "rgba(50, 172, 45, 1)",  // green
+        DEFAULT_OK_COLOR_HEX,
         DEFAULT_WARNING_COLOR_HEX,
-        DEFAULT_CRITICAL_COLOR_HEX, // "rgba(245, 54, 54, 1)",  // red
-        DEFAULT_NO_THRESHOLD_COLOR_HEX, // "rgba(64, 64, 160, 1)",  // blue
+        DEFAULT_CRITICAL_COLOR_HEX,
+        DEFAULT_NO_THRESHOLD_COLOR_HEX,
       ],
       operatorName: OperatorOptions[0].value,
       order: order,
