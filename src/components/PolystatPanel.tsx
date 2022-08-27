@@ -4,8 +4,7 @@ import { PanelProps, GrafanaTheme } from '@grafana/data';
 import { PolystatOptions, PolygonShapes, PolystatModel } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from 'emotion';
-// @ts-ignore
-import { useStyles, useTheme2 } from '@grafana/ui';
+import { useStyles } from '@grafana/ui';
 import { ProcessDataFrames } from 'data/processor';
 
 interface Props extends PanelProps<PolystatOptions> {}
