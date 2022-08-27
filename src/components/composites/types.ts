@@ -1,24 +1,5 @@
 import { SelectableValue } from '@grafana/data';
 
-/*export interface CompositeEditorOptions {
-  compositeName: string;
-  displayName: string;
-  members: CompositeMember[];
-  enabled: boolean;
-  hideMembers: boolean;
-  showName: boolean;
-  showValue: boolean;
-  animateMode: string;
-  thresholdLevel: number;
-  clickThrough: string;
-  newTabEnabled: boolean;
-  sanitizeURLEnabled: boolean;
-  sanitizedURL: string;
-  label: string;
-  isTemplated: boolean;
-  templatedName: string;
-}
-*/
 export interface CompositeMember {}
 
 export const DisplayModes: SelectableValue[] = [
