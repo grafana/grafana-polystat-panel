@@ -130,6 +130,7 @@ function getThresholdLevelForValue(
 function getValueByStatName(operatorName: string, data: any): number {
   let value = data.stats.avg;
   switch (operatorName) {
+    case 'mean':
     case 'avg':
       value = data.stats.mean;
       break;

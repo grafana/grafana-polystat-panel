@@ -24,7 +24,7 @@ import { GLOBAL_FILL_COLOR_RGBA } from 'components/defaults';
 import { GetDecimalsForValue, SortVariableValuesByField } from 'utils';
 import { ApplyComposites } from './composite_processor';
 import { CompositeItemType } from 'components/composites/types';
-import { ApplyOverrides } from './metric_overrides_manager';
+import { ApplyOverrides } from './override_processor';
 import { OverrideItemType } from 'components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';

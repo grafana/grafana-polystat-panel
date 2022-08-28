@@ -29,6 +29,7 @@
     "@grafana/runtime": "8.4.10",
     "@grafana/toolkit": "8.5.10",
     "@grafana/ui": "8.4.10",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/d3": "7.4.0",
     "@types/d3-hexbin": "0.2.3",
     "@types/jquery": "3.5.14",
@@ -38,7 +39,8 @@
     "@types/tinycolor2": "1.4.3",
     "cypress": "9.7.0",
     "jest-canvas-mock": "2.4.0",
-    "jshint": "2.13.5"
+    "jshint": "2.13.5",
+    "react-test-renderer": "^16.9.0"
   },
   "dependencies": {
     "@emotion/css": "11.1.3",
