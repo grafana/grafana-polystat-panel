@@ -31,6 +31,8 @@ export const DEFAULT_NO_THRESHOLD_COLOR_RGBA = GLOBAL_FILL_COLOR_RGBA;
 export const DEFAULT_NO_THRESHOLD_COLOR_HEX = GLOBAL_FILL_COLOR_HEX;
 export const DEFAULT_NO_THRESHOLD_COLOR = new Color(64, 64, 160);
 
+export const DEFAULT_NO_DATA_COLOR_HEX = '#808080'; // "grey"
+
 /**
  * Unit to apply to all metrics without overrides
  */

@@ -1,3 +1,4 @@
+import { DEFAULT_NO_DATA_COLOR_HEX } from 'components/defaults';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { PolystatModel } from '../components/types';
 
@@ -83,10 +84,9 @@ function getThresholdLevelForValue(
   value: number,
   defaultColor: string
 ): { thresholdLevel: number; color: string } {
-  const colorGrey = '#808080'; // "grey"
   let currentColor = defaultColor;
   if (value === null) {
-    return { thresholdLevel: 3, color: colorGrey }; // No Data
+    return { thresholdLevel: 3, color: DEFAULT_NO_DATA_COLOR_HEX }; // No Data
   }
   // assume UNKNOWN state
   let currentState = -1;
