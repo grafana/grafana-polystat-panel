@@ -20,7 +20,7 @@ export interface OverrideEditorSettings {
 
 interface Props extends StandardEditorProps<string | string[] | null, OverrideEditorSettings> {}
 
-export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
+export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => {
   const [settings] = useState(context.options.overrideConfig);
   const [tracker, _setTracker] = useState((): OverrideItemTracker[] => {
     if (!settings.overrides) {
@@ -218,6 +218,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context }) => {
                 moveDown={moveDown}
                 moveUp={moveUp}
                 createDuplicate={createDuplicate}
+                parentOnChange={onChange}
               />
             </Collapse>
           );

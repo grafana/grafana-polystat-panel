@@ -9,6 +9,7 @@ export interface OverrideItemProps {
   moveUp: any;
   moveDown: any;
   createDuplicate: any;
+  parentOnChange: any;
 }
 
 export interface OverrideItemType {
@@ -21,7 +22,7 @@ export interface OverrideItemType {
   decimals: string;
   scaledDecimals: number | null;
   enabled: boolean;
-  operatorName: string; // avg/min/max etc
+  operatorName: string; // mean/min/max etc
   prefix: string;
   suffix: string;
   clickThrough: string | '';

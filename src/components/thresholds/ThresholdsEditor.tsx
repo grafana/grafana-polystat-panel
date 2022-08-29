@@ -9,6 +9,7 @@ interface Props {
   thresholds: PolystatThreshold[];
   setter: any;
   disabled?: boolean;
+  parentOnChange: any;
 }
 export const ThresholdsEditor: React.FC<Props> = (options) => {
   const [tracker, _setTracker] = useState((): ThresholdItemTracker[] => {
@@ -42,11 +43,13 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     const allThresholds = [...tracker];
     const orderedThresholds = orderBy(allThresholds, ['threshold.value'], ['asc']);
     setTracker([...orderedThresholds]);
+    options.parentOnChange();
   };
 
   const updateThresholdColor = (index: number, color: string) => {
     tracker[index].threshold.color = color;
     setTracker([...tracker]);
+    options.parentOnChange();
   };
 
   const updateThresholdState = (index: number, state: any) => {
