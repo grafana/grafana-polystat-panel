@@ -104,19 +104,27 @@ export interface PolystatDiameters {
 }
 
 export const OperatorOptions: SelectableValue[] = [
-  { value: 'avg', label: 'Average (mean)' },
+  { value: 'mean', label: 'Mean (avg)' },
+  { value: 'sum', label: 'Sum' },
+  { value: 'min', label: 'Min' },
+  { value: 'max', label: 'Max' },
+  { value: 'last', label: 'Last' },
+  { value: 'lastNotNull', label: 'Last Not Null' },
+  { value: 'first', label: 'First' },
+  { value: 'firstNotNull', label: 'First Not Null' },
   { value: 'count', label: 'Count' },
-  { value: 'current', label: 'Current' },
+  { value: 'allIsNull', label: 'All Is Null (boolean)' },
+  { value: 'allIsZero', label: 'All Is Zero (boolean)' },
   { value: 'delta', label: 'Delta' },
   { value: 'diff', label: 'Difference' },
-  { value: 'first', label: 'First' },
-  { value: 'logmin', label: 'Log Min' },
-  { value: 'max', label: 'Max' },
-  { value: 'min', label: 'Min' },
-  { value: 'name', label: 'Name' },
+  { value: 'diffperc', label: 'Difference (Percent)' },
   { value: 'last_time', label: 'Time of Last Point' },
-  { value: 'time_step', label: 'Time Step' },
-  { value: 'total', label: 'Total' },
+  { value: 'logmin', label: 'Log Min' },
+  { value: 'name', label: 'Name' },
+  { value: 'nonNullCount', label: 'Non Null Count' },
+  { value: 'previousDeltaUp', label: 'Previous Delta Up' },
+  { value: 'range', label: 'Range' },
+  { value: 'step', label: 'Step' },
 ];
 
 export const SortOptions = [

@@ -8,7 +8,8 @@ import {
   getColorForTheme,
 } from '@grafana/data';
 import { useTheme, useTheme2 } from '@grafana/ui';
-import { getThresholdLevelForValue, getValueByStatName } from './threshold_processor';
+import { getThresholdLevelForValue } from './threshold_processor';
+import { GetValueByOperator } from './stats';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { PolystatModel } from '../components/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
@@ -95,8 +96,7 @@ export const ApplyOverrides = (
       const aSeries = data[index];
       // set the operators
       aSeries.operatorName = anOverride.operatorName;
-      const dataValue = getValueByStatName(aSeries.operatorName, aSeries);
-
+      const dataValue = GetValueByOperator(aSeries.name, aSeries, aSeries.operatorName, aSeries.stats);
       // Use defaults or the specific threshold
       const thresholds =
         anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : globalThresholds;

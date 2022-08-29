@@ -8,14 +8,12 @@ import {
   DataFrame,
   PanelData,
   getFieldDisplayName,
-  FieldCalcs,
   formattedValueToString,
   getValueFormat,
   stringToJsRegex,
   InterpolateFunction,
   FieldConfigSource,
   ScopedVars,
-  SelectableValue,
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
@@ -29,6 +27,7 @@ import { OverrideItemType } from 'components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { GetMappedValue } from './valueMappingsWrapper';
+import { GetValueByOperator } from './stats';
 
 /**
  * Converts dataframes to internal model
@@ -252,7 +251,9 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
   const standardCalcs = reduceField({ field: valueField, reducers: ['bogus'] });
   //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
   const valueFieldName = getFieldDisplayName(valueField, frame);
-  const operatorValue = getValueByOperator(valueFieldName, globalOperator, standardCalcs);
+  //const operatorValue = getValueByOperator(valueFieldName, globalOperator, standardCalcs);
+  const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
+
   //const y = x(operatorValue);
 
   let maxDecimals = 4;
@@ -287,53 +288,4 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     members: [],
   };
   return model;
-}
-
-function getValueByOperator(metricName: string, operatorName: string | SelectableValue, calcs: FieldCalcs) {
-  let value = calcs.avg;
-  switch (operatorName) {
-    case 'avg':
-      value = calcs.mean;
-      break;
-    case 'count':
-      value = calcs.count;
-      break;
-    case 'current':
-      value = calcs.last;
-      break;
-    case 'delta':
-      value = calcs.delta;
-      break;
-    case 'diff':
-      value = calcs.diff;
-      break;
-    case 'first':
-      value = calcs.first;
-      break;
-    case 'logmin':
-      value = calcs.logmin;
-      break;
-    case 'max':
-      value = calcs.max;
-      break;
-    case 'min':
-      value = calcs.min;
-      break;
-    case 'name':
-      value = metricName;
-      break;
-    case 'time_step':
-      value = calcs.step;
-      break;
-    case 'last_time':
-      value = 'ugh'; // TODO: pass in timestamp data.timestamp;
-      break;
-    case 'total':
-      value = calcs.sum;
-      break;
-    default:
-      value = calcs.mean;
-      break;
-  }
-  return value;
 }

@@ -1,7 +1,6 @@
 import { DEFAULT_NO_DATA_COLOR_HEX } from 'components/defaults';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { PolystatModel } from '../components/types';
-
 /*
 
 This supports ranged states
@@ -127,54 +126,4 @@ function getThresholdLevelForValue(
   return { thresholdLevel: currentState, color: currentColor };
 }
 
-function getValueByStatName(operatorName: string, data: any): number {
-  let value = data.stats.avg;
-  switch (operatorName) {
-    case 'mean':
-    case 'avg':
-      value = data.stats.mean;
-      break;
-    case 'count':
-      value = data.stats.count;
-      break;
-    case 'current':
-      value = data.stats.last;
-      break;
-    case 'delta':
-      value = data.stats.delta;
-      break;
-    case 'diff':
-      value = data.stats.diff;
-      break;
-    case 'first':
-      value = data.stats.first;
-      break;
-    case 'logmin':
-      value = data.stats.logmin;
-      break;
-    case 'max':
-      value = data.stats.max;
-      break;
-    case 'min':
-      value = data.stats.min;
-      break;
-    case 'name':
-      value = data.metricName;
-      break;
-    case 'time_step':
-      value = data.stats.timeStep;
-      break;
-    case 'last_time':
-      value = data.timestamp;
-      break;
-    case 'total':
-      value = data.stats.total;
-      break;
-    default:
-      value = data.stats.avg;
-      break;
-  }
-  return value;
-}
-
-export { getWorstSeries, getThresholdLevelForValue, getValueByStatName };
+export { getWorstSeries, getThresholdLevelForValue };
