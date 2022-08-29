@@ -52,7 +52,7 @@ export const GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY = 'OK';
 /**
  * Display average (mean) stat for metric
  */
-export const GLOBAL_OPERATOR_NAME = 'avg'; // mean
+export const GLOBAL_OPERATOR_NAME = 'mean'; // mean
 
 export const GLOBAL_OVERRIDE_COLORS = [
   DEFAULT_OK_COLOR_HEX,
