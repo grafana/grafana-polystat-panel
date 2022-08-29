@@ -244,9 +244,8 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   if (angular.globalDisplayTextTriggeredEmpty) {
     options.globalDisplayTextTriggeredEmpty = angular.globalDisplayTextTriggeredEmpty;
   }
-  // TODO: convert to v8 operators...
   if (angular.globalOperatorName) {
-    options.globalOperator = angular.globalOperatorName;
+    options.globalOperator = convertOperators(angular.globalOperatorName);
   }
   if (angular.globalUnitFormat) {
     options.globalUnitFormat = angular.globalUnitFormat;
@@ -428,7 +427,18 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
 };
 
 export const convertOperators = (operator: string) => {
-  return 'current';
+  switch (operator) {
+    case 'avg':
+      return 'mean';
+    case 'current':
+      return 'last'; // lastNotNull?
+    case 'time_step':
+      return 'step';
+    case 'total':
+      return 'sum';
+    default:
+      return operator;
+  }
 };
 
 export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
@@ -539,6 +549,27 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
   return options;
 };
 
+/**
+ * This is called when the panel changes from another panel
+ *
+ * not currently used
+ */
+export const PolystatPanelChangedHandler = (
+  panel: PanelModel<Partial<PolystatOptions>> | any,
+  prevPluginId: string,
+  prevOptions: any
+) => {
+  console.log('called PolystatPanelChangedHandler');
+
+  // Changing from angular polystat panel
+  if (prevPluginId === 'polystat' && prevOptions.angular) {
+    console.log('detected old panel');
+    const oldOpts = prevOptions.angular;
+    console.log(JSON.stringify(oldOpts));
+  }
+
+  return {};
+};
 /*
 
 This is the previous Angular Config
