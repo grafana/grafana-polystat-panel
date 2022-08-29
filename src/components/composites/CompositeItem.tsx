@@ -4,10 +4,21 @@ import { IconName, Button, Input, Select, Field, FieldSet, Switch, Card, IconBut
 import { DisplayModes, CompositeItemProps, CompositeMetric, CompositeItemType } from './types';
 import { CompositeMetricItem } from './CompositeMetricItem';
 import { v4 as uuidv4 } from 'uuid';
+import { SelectableValue } from '@grafana/data';
 
 export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItemProps) => {
   const [composite, _setComposite] = useState(props.composite);
-  const [displayMode, setDisplayMode] = useState(DisplayModes[props.composite.displayMode]);
+  const getDisplayMode = (displayMode: string) => {
+    const keys = DisplayModes.keys();
+    for (const aKey of keys) {
+      if (DisplayModes[aKey].value === displayMode) {
+        return DisplayModes[aKey];
+      }
+    }
+    // no match, return all by default
+    return DisplayModes[0];
+  };
+  const [displayMode, setDisplayMode] = useState<SelectableValue<any>>(getDisplayMode(props.composite.displayMode));
   const setComposite = (value: CompositeItemType) => {
     _setComposite(value);
     props.setter(composite.order, value);
