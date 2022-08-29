@@ -56,8 +56,9 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         description: 'Use specific number of columns',
         defaultValue: 8,
         settings: {
-          placeHolder: 'Auto',
+          placeHolder: '8',
           min: 1,
+          integer: true,
         },
         category: ['Layout'],
         showIf: (c) => c.autoSizeColumns !== true,
@@ -75,8 +76,9 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         description: 'Use specific number of rows',
         defaultValue: 8,
         settings: {
-          placeHolder: 'Auto',
+          placeHolder: '8',
           min: 1,
+          integer: true,
         },
         category: ['Layout'],
         showIf: (c) => c.autoSizeRows !== true,
@@ -88,6 +90,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: 100,
         settings: {
           min: 1,
+          integer: true,
         },
         category: ['Layout'],
       })
@@ -174,6 +177,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: 18,
         settings: {
           min: 0,
+          integer: true,
         },
         category: ['Text'],
         description: 'Default number of characters to display before showing ellipses',
@@ -374,6 +378,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: 2,
         settings: {
           min: 0,
+          integer: true,
         },
         category: ['Global'],
       })
