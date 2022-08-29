@@ -126,7 +126,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
   if (options.processedData.length === 0) {
-    return <div style={messageStyleWarning}>No thresholds exceeded...</div>;
+    return <div style={messageStyleWarning}>{options.globalDisplayTextTriggeredEmpty}</div>;
   }
   if (!options.autoSizeColumns && !options.autoSizeRows) {
     const limit = options.layoutNumColumns * options.layoutNumRows;
