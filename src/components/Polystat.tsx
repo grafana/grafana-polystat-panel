@@ -76,7 +76,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       if (animationRefs.length > 0 && animationRefs[index].current) {
         //console.log(`animating ref ${index}`);
         const item = options.processedData[index];
-        const val = formatCompositeValue(metricIndex, item);
+        const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
         if (animationRefs[index].current.innerHTML !== null) {
           animationRefs[index].current.innerHTML = val;
         }
@@ -86,7 +86,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       animationMetricIndexes[index] = metricIndex;
       setAnimationMetricIndexes(animationMetricIndexes);
     }
-  }, [animationMetricIndexes, animationRefs, animatedItems, options.processedData]);
+  }, [
+    animationMetricIndexes,
+    animationRefs,
+    animatedItems,
+    options.processedData,
+    options.globalDisplayTextTriggeredEmpty,
+  ]);
 
   /*
     Determine which items should be animated
@@ -456,7 +462,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     pointerEvents: 'none',
                   }}
                 >
-                  {item.showValue && (item.isComposite ? formatCompositeValue(0, item) : item.valueFormatted)}
+                  {item.showValue &&
+                    (item.isComposite
+                      ? formatCompositeValue(0, item, options.globalDisplayTextTriggeredEmpty)
+                      : item.valueFormatted)}
                 </text>
               </>
             );
@@ -487,7 +496,7 @@ const buildTriggerCache = (item) => {
   return triggerCache;
 };
 
-const formatCompositeValue = (frames: number, item: PolystatModel) => {
+const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
   // TODO: if just one value, could speed this up
   let content = item.valueFormatted;
   const len = item.members.length;
@@ -504,7 +513,7 @@ const formatCompositeValue = (frames: number, item: PolystatModel) => {
         triggeredIndex = item.triggerCache[z].index;
       } else {
         // nothing triggered        //triggeredIndex = frames % len;
-        return '';
+        return globalDisplayTextTriggeredEmpty;
       }
     }
     // TODO: LEAK?
