@@ -17,6 +17,8 @@ import { Tooltip } from './tooltips/Tooltip';
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles(getWrapperStyles);
   const svgStyles = useStyles(getSVGStyles);
+  const noTriggerTextStyles = useStyles(getNoTriggerTextStyles);
+  const errorMessageStyles = useStyles(getErrorMessageStyles);
 
   // used by tooltip
   const [elRefs, setElRefs] = React.useState([]);
@@ -25,13 +27,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([]);
   const [animatedItems, setAnimatedItems] = React.useState([]);
-
-  const messageStyleWarning = {
-    color: 'yellow',
-  };
-  const messageStyleError = {
-    color: 'red',
-  };
 
   useEffect(() => {
     // clear animationRefs and set new ones
@@ -126,13 +121,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
   if (options.processedData.length === 0) {
-    return <div style={messageStyleWarning}>{options.globalDisplayTextTriggeredEmpty}</div>;
+    return <div className={noTriggerTextStyles}>{options.globalDisplayTextTriggeredEmpty}</div>;
   }
   if (!options.autoSizeColumns && !options.autoSizeRows) {
     const limit = options.layoutNumColumns * options.layoutNumRows;
     if (limit < options.processedData.length) {
       return (
-        <div style={messageStyleError}>
+        <div className={errorMessageStyles}>
           Not enoughs rows and columns for data. There are {options.processedData.length} items to display, and only{' '}
           {limit} places allocated.{' '}
         </div>
@@ -140,19 +135,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   }
 
-  /*
-  const [lm] = useState(
-    new LayoutManager(
-      options.panelWidth,
-      options.panelHeight,
-      options.numColumns,
-      options.numRows,
-      options.displayLimit,
-      options.radiusAutoSize,
-      options.shape
-    )
-  );
-  */
   const lm = new LayoutManager(
     options.panelWidth,
     options.panelHeight,
@@ -698,6 +680,20 @@ const computeTextFontSize = (
     maxFont
   );
 };
+
+const getNoTriggerTextStyles = (theme: GrafanaTheme) => css`
+  font-size: ${theme.typography.size.lg};
+  text-align: center;
+  justify-content: center;
+  color: ${theme.colors.textStrong};
+`;
+
+const getErrorMessageStyles = (theme: GrafanaTheme) => css`
+  font-size: ${theme.typography.size.md};
+  text-align: center;
+  justify-content: center;
+  color: ${theme.palette.brandDanger};
+`;
 
 const getWrapperStyles = (theme: GrafanaTheme) => css`
   fill: transparent;
