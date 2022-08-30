@@ -44,10 +44,11 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
     v.forEach((element) => {
       allOverrides.push(element.override);
     });
-    context.options.overrideConfig = {
+    const overrideConfig = {
       overrides: allOverrides,
       enabled: settings.enabled,
     };
+    onChange(overrideConfig as any);
   };
 
   const [isOpen, setIsOpen] = useState((): boolean[] => {
@@ -218,7 +219,6 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
                 moveDown={moveDown}
                 moveUp={moveUp}
                 createDuplicate={createDuplicate}
-                parentOnChange={onChange}
               />
             </Collapse>
           );

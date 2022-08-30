@@ -9,7 +9,6 @@ export interface OverrideItemProps {
   moveUp: any;
   moveDown: any;
   createDuplicate: any;
-  parentOnChange: any;
 }
 
 export interface OverrideItemType {
