@@ -106,7 +106,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     if (shouldAnimate) {
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
       if (speed < 200 || isNaN(speed)) {
-        console.log(`speed in configuration is too fast, setting to 200ms`);
+        console.log(`WARNING: speed in configuration is too fast, setting to 200ms`);
         speed = 200;
       }
       tick = setInterval(animateComposite, speed);
