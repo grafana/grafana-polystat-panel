@@ -341,8 +341,6 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
 };
 
 export const migrateOverrides = (angular: AngularSavedOverrides) => {
-  console.log('inside migrateOverrides');
-
   let options = {} as any;
 
   options.overrideConfig = {
@@ -451,8 +449,6 @@ export const convertOperators = (operator: string) => {
 };
 
 export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
-  console.log('inside migrateComposites');
-
   let options = {} as any;
   // Composites
   options.compositeConfig = {
@@ -568,8 +564,6 @@ export const PolystatPanelChangedHandler = (
   prevPluginId: string,
   prevOptions: any
 ) => {
-  console.log('called PolystatPanelChangedHandler');
-
   // Changing from angular polystat panel
   if (prevPluginId === 'polystat' && prevOptions.angular) {
     console.log('detected old panel');
