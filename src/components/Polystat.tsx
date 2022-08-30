@@ -104,16 +104,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     setAnimatedItems(animate);
     let tick: NodeJS.Timer;
     if (shouldAnimate) {
-      //console.log(`tick started`);
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
-      if (speed < 200) {
+      if (speed < 200 || isNaN(speed)) {
         console.log(`speed in configuration is too fast, setting to 200ms`);
         speed = 200;
       }
       tick = setInterval(animateComposite, speed);
     }
     return () => {
-      //console.log(`tick clear`);
       clearInterval(tick);
     };
     // TODO: this is a hack to prevent re-rendering

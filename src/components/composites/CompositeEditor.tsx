@@ -14,7 +14,7 @@ export interface CompositeEditorSettings {
 
 interface Props extends StandardEditorProps<string | string[] | null, CompositeEditorSettings> {}
 
-export const CompositeEditor: React.FC<Props> = ({ context }) => {
+export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   const [settings] = useState(context.options.compositeConfig);
   const [animationSpeed, _setAnimationSpeed] = useState(context.options.compositeConfig.animationSpeed);
   const [compositesEnabled, _setCompositesEnabled] = useState(context.options.compositeConfig.enabled);
@@ -35,12 +35,16 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
   });
 
   const setAnimationSpeed = (val: any) => {
-    context.options.compositeConfig.animationSpeed = val;
+    //context.options.compositeConfig.animationSpeed = val;
     _setAnimationSpeed(val);
+    settings.animationSpeed = val;
+    onChange(settings);
   };
   const setCompositesEnabled = (val: any) => {
-    context.options.compositeConfig.enabled = val;
+    //context.options.compositeConfig.enabled = val;
     _setCompositesEnabled(val);
+    settings.enabled = val;
+    onChange(settings);
   };
   const setTracker = (v: CompositeItemTracker[]) => {
     _setTracker(v);
@@ -49,11 +53,12 @@ export const CompositeEditor: React.FC<Props> = ({ context }) => {
     v.forEach((element) => {
       allComposites.push(element.composite);
     });
-    context.options.compositeConfig = {
+    const compositeConfig = {
       composites: allComposites,
       animationSpeed: settings.animationSpeed,
       enabled: settings.enabled,
     };
+    onChange(compositeConfig as any);
   };
 
   // tracks composite card collapse state
