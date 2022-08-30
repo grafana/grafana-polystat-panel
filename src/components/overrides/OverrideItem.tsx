@@ -106,12 +106,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
             )}
           </Field>
           <Field label="Thresholds" disabled={!override.enabled}>
-            <ThresholdsEditor
-              parentOnChange={props.parentOnChange}
-              disabled={!override.enabled}
-              thresholds={override.thresholds}
-              setter={setThresholds}
-            />
+            <ThresholdsEditor disabled={!override.enabled} thresholds={override.thresholds} setter={setThresholds} />
           </Field>
           <Field label="Prefix" description="Apply text to beginning of metric" disabled={!override.enabled}>
             <Input

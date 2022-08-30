@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { orderBy } from 'lodash';
-import { Button } from '@grafana/ui';
+import { Button, useTheme, useTheme2 } from '@grafana/ui';
 import { v4 as uuidv4 } from 'uuid';
 import { PolystatThreshold, ThresholdItemTracker } from './types';
 import { ThresholdItem } from './ThresholdItem';
 import { DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX, DEFAULT_CRITICAL_COLOR_HEX } from '../defaults';
+import { getColorForTheme } from '@grafana/data';
 interface Props {
   thresholds: PolystatThreshold[];
   setter: any;
   disabled?: boolean;
-  parentOnChange: any;
 }
 export const ThresholdsEditor: React.FC<Props> = (options) => {
   const [tracker, _setTracker] = useState((): ThresholdItemTracker[] => {
@@ -27,6 +27,9 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     });
     return items;
   });
+  // v9 compatible
+  const theme2 = useTheme2();
+  const oldTheme = useTheme();
 
   const setTracker = (v: ThresholdItemTracker[]) => {
     _setTracker(v);
@@ -43,13 +46,17 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     const allThresholds = [...tracker];
     const orderedThresholds = orderBy(allThresholds, ['threshold.value'], ['asc']);
     setTracker([...orderedThresholds]);
-    options.parentOnChange();
   };
 
   const updateThresholdColor = (index: number, color: string) => {
-    tracker[index].threshold.color = color;
+    let useColor = color;
+    if (typeof theme2.visualization !== 'undefined') {
+      useColor = theme2.visualization.getColorByName(color);
+    } else {
+      useColor = getColorForTheme(color, oldTheme);
+    }
+    tracker[index].threshold.color = useColor;
     setTracker([...tracker]);
-    options.parentOnChange();
   };
 
   const updateThresholdState = (index: number, state: any) => {

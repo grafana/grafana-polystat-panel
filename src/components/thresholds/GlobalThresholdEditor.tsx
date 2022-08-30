@@ -13,12 +13,13 @@ export const GlobalThresholdEditor: React.FC<Props> = ({ context, onChange }) =>
   const [globalThresholds, setGlobalThresholds] = useState(context.options.globalThresholdsConfig);
   const setThresholds = (val: PolystatThreshold[]) => {
     setGlobalThresholds(val);
-    context.options.globalThresholdsConfig = val;
+    onChange(val as any);
   };
+
   return (
     <>
       <Field>
-        <ThresholdsEditor parentOnChange={onChange} thresholds={globalThresholds} setter={setThresholds} />
+        <ThresholdsEditor thresholds={globalThresholds} setter={setThresholds} />
       </Field>
     </>
   );
