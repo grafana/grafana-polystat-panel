@@ -151,7 +151,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // next the radius can be determined from actual rows and columns being used
   let radius = 0;
   if (!options.autoSizePolygons && options.globalPolygonSize) {
-    lm.setRadius(options.globalPolygonSize);
+    if (options.globalPolygonSize < 0 || isNaN(options.globalPolygonSize)) {
+      // force min size if below zero or NaN
+      options.globalPolygonSize = 50;
+      console.log(`WARNING: polygon size is manually set to an invalid value, forcing to 50px`);
+    } else {
+      lm.setRadius(options.globalPolygonSize);
+    }
     radius = options.globalPolygonSize;
   } else {
     radius = lm.generateRadius(options.globalShape);

@@ -206,7 +206,11 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     options.autoSizeColumns = angular.columnAutoSize;
   }
   if (angular.columns) {
-    options.layoutNumColumns = parseInt(angular.columns, 10);
+    let numColumns = parseInt(angular.columns, 10);
+    if (isNaN(numColumns) || numColumns < 1) {
+      numColumns = 8;
+    }
+    options.layoutNumColumns = numColumns;
   }
   if (angular.defaultClickThrough) {
     options.globalClickthrough = angular.defaultClickThrough;
@@ -259,10 +263,6 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   if (angular.hexagonSortByField) {
     options.sortByField = angular.hexagonSortByField;
   }
-  // ignore, this was not used in the panel (duplicate of displayLimit)
-  //if (angular.maxMetrics) {
-  // options.layoutDisplayLimit = angular.maxMetrics;
-  //}
   if (angular.polygonBorderColor) {
     options.globalPolygonBorderColor = angular.polygonBorderColor;
   }
@@ -273,7 +273,11 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     options.globalFillColor = angular.polygonGlobalFillColor;
   }
   if (angular.radius) {
-    options.radius = parseFloat(angular.radius);
+    let radius = parseFloat(angular.radius);
+    if (isNaN(radius) || radius < 0) {
+      radius = 0;
+    }
+    options.radius = radius;
   }
   if (angular.radiusAutoSize) {
     options.autoSizePolygons = angular.radiusAutoSize;
@@ -285,8 +289,13 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     options.autoSizeRows = angular.rowAutoSize;
   }
   if (angular.rows) {
-    options.layoutNumRows = parseInt(angular.rows, 10);
+    let numRows = parseInt(angular.rows, 10);
+    if (isNaN(numRows) || numRows < 1) {
+      numRows = 8;
+    }
+    options.layoutNumRows = numRows;
   }
+
   if (angular.shape) {
     switch (angular.shape) {
       case 'circle':

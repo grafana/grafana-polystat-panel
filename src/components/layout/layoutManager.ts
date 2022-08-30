@@ -27,11 +27,27 @@ export class LayoutManager {
   ) {
     this.width = width;
     this.height = height;
-    this.numColumns = numColumns;
-    this.numRows = numRows;
+    // check for less than 1 or NaN, force to 8
+    if (numColumns < 1 || isNaN(numColumns)) {
+      this.numColumns = 8;
+    } else {
+      this.numColumns = numColumns;
+    }
+    // check for less than 1 or NaN, force to 8
+    if (numRows < 1 || isNaN(numRows)) {
+      this.numRows = 8;
+    } else {
+      this.numRows = numRows;
+    }
+
     this.maxColumnsUsed = 0;
     this.maxRowsUsed = 0;
-    this.displayLimit = displayLimit;
+
+    if (displayLimit < 1 || isNaN(displayLimit)) {
+      this.displayLimit = 100;
+    } else {
+      this.displayLimit = displayLimit;
+    }
     this.shape = shape;
     this.radius = 0;
     this.autoSize = autoSize;
