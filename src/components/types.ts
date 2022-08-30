@@ -36,7 +36,7 @@ export interface PolystatOptions {
   layoutDisplayLimit: number;
   layoutNumColumns: number;
   layoutNumRows: number;
-  processedData: PolystatModel[] | null;
+  processedData?: PolystatModel[] | null;
   panelHeight: any;
   panelWidth: any;
   panelId: number;
