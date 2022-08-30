@@ -1,8 +1,8 @@
 import React, { useState, useEffect, MouseEvent, createRef, useCallback } from 'react';
 
-import { useStyles } from '@grafana/ui';
+import { useStyles2 } from '@grafana/ui';
 import { css } from '@emotion/css';
-import { GrafanaTheme } from '@grafana/data';
+import { GrafanaTheme2 } from '@grafana/data';
 import { hexbin } from 'd3-hexbin';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
 
@@ -15,10 +15,10 @@ import { orderBy as lodashOrderBy } from 'lodash';
 import { Tooltip } from './tooltips/Tooltip';
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
-  const divStyles = useStyles(getWrapperStyles);
-  const svgStyles = useStyles(getSVGStyles);
-  const noTriggerTextStyles = useStyles(getNoTriggerTextStyles);
-  const errorMessageStyles = useStyles(getErrorMessageStyles);
+  const divStyles = useStyles2(getWrapperStyles);
+  const svgStyles = useStyles2(getSVGStyles);
+  const noTriggerTextStyles = useStyles2(getNoTriggerTextStyles);
+  const errorMessageStyles = useStyles2(getErrorMessageStyles);
 
   // used by tooltip
   const [elRefs, setElRefs] = React.useState([]);
@@ -685,21 +685,21 @@ const computeTextFontSize = (
   );
 };
 
-const getNoTriggerTextStyles = (theme: GrafanaTheme) => css`
-  font-size: ${theme.typography.size.lg};
+const getNoTriggerTextStyles = (theme: GrafanaTheme2) => css`
+  font-size: ${theme.typography.h1.fontSize};
   text-align: center;
   justify-content: center;
-  color: ${theme.colors.textStrong};
+  color: ${theme.colors.success.shade};
 `;
 
-const getErrorMessageStyles = (theme: GrafanaTheme) => css`
-  font-size: ${theme.typography.size.md};
+const getErrorMessageStyles = (theme: GrafanaTheme2) => css`
+  font-size: ${theme.typography.h1.fontSize};
   text-align: center;
   justify-content: center;
-  color: ${theme.palette.brandDanger};
+  color: ${theme.colors.error.shade};
 `;
 
-const getWrapperStyles = (theme: GrafanaTheme) => css`
+const getWrapperStyles = (theme: GrafanaTheme2) => css`
   fill: transparent;
   display: flex;
   align-items: center;
@@ -707,7 +707,7 @@ const getWrapperStyles = (theme: GrafanaTheme) => css`
   justify-content: center;
 `;
 
-const getSVGStyles = (theme: GrafanaTheme) => css`
+const getSVGStyles = (theme: GrafanaTheme2) => css`
   text-align: center;
   align-items: center;
   justify-content: center;
@@ -715,7 +715,7 @@ const getSVGStyles = (theme: GrafanaTheme) => css`
 `;
 
 // @ts-ignore
-const getPolystatPanelQuadrantStyles = (theme: GrafanaTheme) => css`
+const getPolystatPanelQuadrantStyles = (theme: GrafanaTheme2) => css`
   position: absolute;
   color: white;
   height: auto;
