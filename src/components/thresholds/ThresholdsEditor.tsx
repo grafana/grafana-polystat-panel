@@ -62,8 +62,8 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
   const updateThresholdState = (index: number, state: any) => {
     tracker[index].threshold.state = state;
     // set the color if it is not a custom state
-    if (state.value < 3) {
-      tracker[index].threshold.color = colorForThresholdState(state.value);
+    if (state < 3) {
+      tracker[index].threshold.color = colorForThresholdState(state);
     }
     setTracker([...tracker]);
   };
