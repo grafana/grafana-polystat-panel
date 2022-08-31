@@ -1,12 +1,15 @@
 {
   "name": "grafana-polystat-panel",
-  "version": "1.2.11",
+  "version": "2.0.0",
   "description": "Grafana Polystat Panel",
   "scripts": {
     "build": "grafana-toolkit plugin:build",
     "test": "grafana-toolkit plugin:test",
     "dev": "grafana-toolkit plugin:dev",
-    "watch": "grafana-toolkit plugin:dev --watch"
+    "watch": "grafana-toolkit plugin:dev --watch",
+    "e2e": "CYPRESS_BASE_URL=http://localhost:3000 yarn grafana-e2e run",
+    "e2e-docker": "docker run --rm --add-host=host.docker.internal:host-gateway --volume $(pwd):/e2e --workdir /e2e --env='CYPRESS_HOST=host.docker.internal' --env='CYPRESS_BASE_URL=http://host.docker.internal:3000' --entrypoint '/bin/bash' cypress/included:9.5.1-node16.14.0-slim-chrome99-ff97 -c './node_modules/.bin/cypress install && yarn grafana-e2e run'",
+    "e2e-docker:update": "docker run --rm --add-host=host.docker.internal:host-gateway --volume $(pwd):/e2e --workdir /e2e --env='CYPRESS_HOST=host.docker.internal' --env='CYPRESS_BASE_URL=http://host.docker.internal:3000' --entrypoint '/bin/bash' cypress/included:9.5.1-node16.14.0-slim-chrome99-ff97 -c './node_modules/.bin/cypress install && yarn grafana-e2e run --update-screenshots'"
   },
   "repository": {
     "type": "git",
@@ -19,25 +22,35 @@
     "email": "plugins@grafana.com"
   },
   "devDependencies": {
-    "@babel/helper-validator-option": "^7.14.5",
-    "@grafana/data": "7.3.10",
-    "@grafana/toolkit": "8.4.7",
-    "@grafana/ui": "7.3.10",
-    "@types/d3": "5.7.2",
+    "@babel/helper-validator-option": "7.18.6",
+    "@grafana/data": "8.4.10",
+    "@grafana/e2e": "9.0.7",
+    "@grafana/e2e-selectors": "9.0.7",
+    "@grafana/runtime": "8.4.10",
+    "@grafana/toolkit": "8.5.10",
+    "@grafana/ui": "8.4.10",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/d3": "7.4.0",
     "@types/d3-hexbin": "0.2.3",
-    "@types/grafana": "github:CorpGlory/types-grafana.git",
-    "@types/lodash": "4.14.177",
-    "jest-canvas-mock": "2.3.1"
-  },
-  "engines": {
-    "node": ">= 16.14.0"
-  },
-  "jest": {
-    "moduleNameMapper": {
-      "grafana/app/core/utils/kbn": "<rootDir>/tests/__mocks__/app/core/utils/kbn.ts"
-    }
+    "@types/jquery": "3.5.14",
+    "@types/lodash": "4.14.182",
+    "@types/react": "17.0.30",
+    "@types/react-dom": "17.0.10",
+    "@types/tinycolor2": "1.4.3",
+    "cypress": "9.7.0",
+    "jest-canvas-mock": "2.4.0",
+    "jshint": "2.13.5",
+    "react-test-renderer": "^16.9.0"
   },
   "dependencies": {
-    "d3-hexbin": "0.2.2"
+    "@emotion/css": "11.1.3",
+    "@emotion/react": "11.1.5",
+    "@tippyjs/react": "^4.2.6",
+    "d3-hexbin": "0.2.2",
+    "emotion": "11.0.0",
+    "tinycolor2": "^1.4.2"
+  },
+  "engines": {
+    "node": ">= 16"
   }
 }

@@ -1,4 +1,7 @@
+cypress/report.json
+cypress/videos
 node_modules
 dist
 provisioning
+coverage
 .DS_Store
