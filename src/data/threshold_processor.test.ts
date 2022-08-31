@@ -2,7 +2,12 @@ import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getThresholdLevelForValue, getWorstSeries } from './threshold_processor';
-import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_NO_DATA_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from 'components/defaults';
+import {
+  DEFAULT_CRITICAL_COLOR_HEX,
+  DEFAULT_NO_DATA_COLOR_HEX,
+  DEFAULT_OK_COLOR_HEX,
+  DEFAULT_WARNING_COLOR_HEX,
+} from 'components/defaults';
 import { OverrideItemType } from 'components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 describe('Threshold Processor', () => {
