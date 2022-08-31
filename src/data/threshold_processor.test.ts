@@ -107,19 +107,19 @@ describe('Threshold Processor', () => {
     });
   });
   describe('Gets States for A-series', () => {
-    it('returns A-series with state OK', () => {
+    it('returns state OK', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 10, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(0);
       expect(aLevel.color).toBe('#299c46');
     });
-    it('returns A-series with state WARNING', () => {
+    it('returns state WARNING', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 21, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(1);
       expect(aLevel.color).toBe('#ed8128');
     });
-    it('returns A-series with state CRITICAL', () => {
+    it('returns state CRITICAL', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 40, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(2);
@@ -130,6 +130,16 @@ describe('Threshold Processor', () => {
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(3);
       expect(aLevel.color).toBe(DEFAULT_NO_DATA_COLOR_HEX);
+    });
+    it('returns -1 when there are no thresholds', () => {
+      const aLevel = getThresholdLevelForValue(undefined, 10, DEFAULT_OK_COLOR_HEX);
+      expect(aLevel.thresholdLevel).toBe(-1);
+      expect(aLevel.color).toBe(DEFAULT_OK_COLOR_HEX);
+    });
+    it('returns OK for single threshold', () => {
+      const aLevel = getThresholdLevelForValue([thresholds[0]], 11, DEFAULT_OK_COLOR_HEX);
+      expect(aLevel.thresholdLevel).toBe(0);
+      expect(aLevel.color).toBe(DEFAULT_OK_COLOR_HEX);
     });
   });
 });
