@@ -5,3 +5,4 @@ dist
 provisioning
 coverage
 .DS_Store
+.vscode/*.log
