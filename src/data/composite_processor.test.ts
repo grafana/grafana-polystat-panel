@@ -2,9 +2,14 @@ import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getWorstSeries } from './threshold_processor';
+import { CompositeItemType } from 'components/composites/types';
+import { ApplyComposites } from './composite_processor';
+
 describe('Composite Processor', () => {
   var modelA: PolystatModel;
   var modelB: PolystatModel;
+  var compositeA: CompositeItemType;
+
   beforeEach(() => {
     const time = new Date().getTime();
     const frameA = toDataFrame({
@@ -26,6 +31,29 @@ describe('Composite Processor', () => {
     // operator mean
     modelB = DataFrameToPolystat(frameB, 'mean');
     modelB.operatorName = 'mean';
+
+    compositeA = {
+      name: 'composite-a',
+      label: 'composite-a',
+      order: 0,
+      templatedName: 'composite-a',
+      isTemplated: false,
+      displayMode: 'all',
+      enabled: true,
+      showName: true,
+      showMembers: false,
+      showValue: true,
+      showComposite: true,
+      clickThrough: '',
+      clickThroughOpenNewTab: true,
+      clickThroughSanitize: true,
+      metrics: [
+        {
+          seriesMatch: '/series/',
+          order: 0,
+        },
+      ],
+    };
   });
 
   describe('Gets Worst Series A (no thresholds set)', () => {
@@ -33,6 +61,13 @@ describe('Composite Processor', () => {
       const worst = getWorstSeries(modelA, modelB);
       console.log(JSON.stringify(worst));
       expect(worst.name).toBe(modelA.name);
+    });
+  });
+  describe('Creates composite result', () => {
+    it('returns an applied composite', () => {
+      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      console.log(JSON.stringify(applied));
+      expect(applied.length).toBe(1);
     });
   });
 });
