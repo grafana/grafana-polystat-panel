@@ -76,6 +76,24 @@ describe('Threshold Processor', () => {
       console.log(JSON.stringify(worst));
       expect(worst.name).toBe(modelA.name);
     });
+    it('returns B-series when modelB.thresholdLevel is 2', () => {
+      modelA.thresholdLevel = 1;
+      modelB.thresholdLevel = 2;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
+    it('returns B-series when modelA.thresholdLevel is 3', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 1;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
+    it('returns A-series when modelA.thresholdLevel and modelB.thresholdLevel are 3', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 3;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('A-series');
+    });
   });
   describe('Gets States for A-series', () => {
     it('returns A-series with state OK', () => {
