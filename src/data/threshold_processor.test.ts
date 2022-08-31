@@ -2,7 +2,7 @@ import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getThresholdLevelForValue, getWorstSeries } from './threshold_processor';
-import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from 'components/defaults';
+import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_NO_DATA_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from 'components/defaults';
 import { OverrideItemType } from 'components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 describe('Threshold Processor', () => {
@@ -88,6 +88,12 @@ describe('Threshold Processor', () => {
       const worst = getWorstSeries(modelA, modelB);
       expect(worst.name).toBe('B-series');
     });
+    it('returns B-series when modelA.thresholdLevel is 3 and modelB.thresholdLevel is 2', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 2;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
     it('returns A-series when modelA.thresholdLevel and modelB.thresholdLevel are 3', () => {
       modelA.thresholdLevel = 3;
       modelB.thresholdLevel = 3;
@@ -113,6 +119,12 @@ describe('Threshold Processor', () => {
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(2);
       expect(aLevel.color).toBe('#f53636');
+    });
+    it('returns unknown for null data', () => {
+      const aLevel = getThresholdLevelForValue(thresholds, null, DEFAULT_OK_COLOR_HEX);
+      console.log(JSON.stringify(aLevel));
+      expect(aLevel.thresholdLevel).toBe(3);
+      expect(aLevel.color).toBe(DEFAULT_NO_DATA_COLOR_HEX);
     });
   });
 });
