@@ -1,5 +1,5 @@
 import { PolystatModel } from '../components/types';
-import { FieldType, toDataFrame } from '@grafana/data';
+import { FieldType, InterpolateFunction, ScopedVars, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getWorstSeries } from './threshold_processor';
 import { CompositeItemType } from 'components/composites/types';
@@ -65,7 +65,15 @@ describe('Composite Processor', () => {
   });
   describe('Creates composite result', () => {
     it('returns an applied composite', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      const replacer1: InterpolateFunction = (value: string, scopedVars?: ScopedVars, format?: string | Function) => {
+        scopedVars = {
+          serverA: { text: 'serverAText', value: 'serverAValue' },
+          serverB: { text: 'serverBText', value: 'serverBValue' },
+        };
+        return value;
+      };
+      const applied = ApplyComposites([compositeA], [modelA, modelB], replacer1);
+      //const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
       console.log(JSON.stringify(applied));
       expect(applied.length).toBe(1);
     });
