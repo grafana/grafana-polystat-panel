@@ -3,11 +3,11 @@ import React from 'react';
 
 import { Color } from './color';
 
-interface Props {
+export interface GradientProps {
   data: any;
   gradientId: string;
 }
-export const Gradients: React.FC<Props> = (options) => {
+export const Gradients: React.FC<GradientProps> = (options) => {
   const pureLight = new Color(255, 255, 255);
 
   const createGradients = (data: any): any => {
@@ -36,38 +36,40 @@ export const Gradients: React.FC<Props> = (options) => {
 
   const gradientId = options.gradientId;
   return (
-    <defs>
-      {colorGradients.map((aGradient: any, index: number) => {
-        return (
-          <linearGradient
-            key={index}
-            id={gradientId + '_linear_gradient_state_data_' + index}
-            x1={'30%'}
-            y1={'30%'}
-            x2={'70%'}
-            y2={'70%'}
-          >
-            <stop offset={'0%'} stopColor={aGradient.start} />
-            <stop offset={'100%'} stopColor={aGradient.end} />
-          </linearGradient>
-        );
-      })}
-      <linearGradient id={gradientId + '_linear_gradient_state_ok'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
-        <stop offset={'0%'} stopColor={okColorStart.asHex()} />
-        <stop offset={'100%'} stopColor={okColorEnd.asHex()} />
-      </linearGradient>
-      <linearGradient id={gradientId + '_linear_gradient_state_warning'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
-        <stop offset={'0%'} stopColor={warningColorStart.asHex()} />
-        <stop offset={'100%'} stopColor={warningColorEnd.asHex()} />
-      </linearGradient>
-      <linearGradient id={gradientId + '_linear_gradient-state_critical'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
-        <stop offset={'0%'} stopColor={criticalColorStart.asHex()} />
-        <stop offset={'100%'} stopColor={criticalColorEnd.asHex()} />
-      </linearGradient>
-      <linearGradient id={gradientId + '_linear_gradient_state_unknown'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
-        <stop offset={'0%'} stopColor={'#73808A'} />
-        <stop offset={'100%'} stopColor={'#73808A'} />
-      </linearGradient>
-    </defs>
+    <>
+      <defs>
+        {colorGradients.map((aGradient: any, index: number) => {
+          return (
+            <linearGradient
+              key={index}
+              id={gradientId + '_linear_gradient_state_data_' + index}
+              x1={'30%'}
+              y1={'30%'}
+              x2={'70%'}
+              y2={'70%'}
+            >
+              <stop offset={'0%'} stopColor={aGradient.start} />
+              <stop offset={'100%'} stopColor={aGradient.end} />
+            </linearGradient>
+          );
+        })}
+        <linearGradient id={gradientId + '_linear_gradient_state_ok'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
+          <stop offset={'0%'} stopColor={okColorStart.asHex()} />
+          <stop offset={'100%'} stopColor={okColorEnd.asHex()} />
+        </linearGradient>
+        <linearGradient id={gradientId + '_linear_gradient_state_warning'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
+          <stop offset={'0%'} stopColor={warningColorStart.asHex()} />
+          <stop offset={'100%'} stopColor={warningColorEnd.asHex()} />
+        </linearGradient>
+        <linearGradient id={gradientId + '_linear_gradient-state_critical'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
+          <stop offset={'0%'} stopColor={criticalColorStart.asHex()} />
+          <stop offset={'100%'} stopColor={criticalColorEnd.asHex()} />
+        </linearGradient>
+        <linearGradient id={gradientId + '_linear_gradient_state_unknown'} x1={'30%'} y1={'30%'} x2={'70%'} y2={'70%'}>
+          <stop offset={'0%'} stopColor={'#73808A'} />
+          <stop offset={'100%'} stopColor={'#73808A'} />
+        </linearGradient>
+      </defs>
+    </>
   );
 };

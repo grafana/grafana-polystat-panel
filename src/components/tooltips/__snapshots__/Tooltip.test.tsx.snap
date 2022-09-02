@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Tooltips Tooltip Generation returns tooltip for single metric 1`] = `
+<table
+  class="css-9iiucf"
+>
+  <thead>
+    <tr>
+      <th
+        class="css-rmdaym"
+      >
+        Name
+      </th>
+      <th
+        class="css-dp6ifn"
+      >
+        Value
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        2022-10-01 06:28:00 
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        A-series
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        210.00 MB/s
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;

@@ -29,6 +29,7 @@
     "@grafana/runtime": "8.4.10",
     "@grafana/toolkit": "8.5.10",
     "@grafana/ui": "8.4.10",
+    "@testing-library/react": "^12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/d3": "7.4.0",
     "@types/d3-hexbin": "0.2.3",
