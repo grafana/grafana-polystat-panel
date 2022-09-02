@@ -1,16 +1,16 @@
 import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
+import { FieldConfig, FieldType, toDataFrame } from '@grafana/data';
+
+import { CompositeItemType } from 'components/composites/types';
+import { PolystatModel } from 'components/types';
+import { ApplyComposites } from 'data/composite_processor';
+import { DataFrameToPolystat } from 'data/processor';
 
 import { Tooltip, TooltipProps } from './Tooltip';
-import { PolystatModel } from 'components/types';
-import { FieldConfig, FieldType, toDataFrame } from '@grafana/data';
-import { DataFrameToPolystat } from 'data/processor';
-import { CompositeItemType } from 'components/composites/types';
-import { ApplyComposites } from 'data/composite_processor';
 
 describe('Test Tooltips', () => {
   var compositeA: CompositeItemType;
-
   const aRef = createRef();
   const field: FieldConfig = {
     decimals: 2,
@@ -80,6 +80,85 @@ describe('Test Tooltips', () => {
         },
       ],
     };
+  });
+
+  describe('Tooltip Sorting', () => {
+    it('returns unsorted metrics', () => {
+      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      const props: TooltipProps = {
+        data: applied[0],
+        valueEnabled: true,
+        reference: aRef,
+        followMouse: false,
+        visible: true,
+        renderTime: new Date('01 October 2022 10:28 UTC'),
+        showTime: true,
+        primarySortByField: 'threshold',
+        primarySortDirection: 0,
+        secondarySortByField: 'value',
+        secondarySortDirection: 0,
+        displayMode: 'all',
+        tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+      };
+      render(<Tooltip reference={aRef} {...props} />);
+      const rows = screen.getAllByRole('row');
+      expect(rows.length).toBe(5);
+      expect(rows[0].innerHTML).toContain('composite-a');
+      expect(rows[2].innerHTML).toContain('2022-10-01 10:28:00');
+      expect(rows[3].innerHTML).toContain('A-series');
+      expect(rows[4].innerHTML).toContain('B-series');
+    });
+    it('returns primary sorted metrics: case sensitive ascending', () => {
+      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      const props: TooltipProps = {
+        data: applied[0],
+        valueEnabled: true,
+        reference: aRef,
+        followMouse: false,
+        visible: true,
+        renderTime: new Date('01 October 2022 10:28 UTC'),
+        showTime: true,
+        primarySortByField: 'name',
+        primarySortDirection: 1,
+        secondarySortByField: 'value',
+        secondarySortDirection: 0,
+        displayMode: 'all',
+        tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+      };
+      render(<Tooltip reference={aRef} {...props} />);
+      const rows = screen.getAllByRole('row');
+      expect(rows.length).toBe(5);
+      expect(rows[0].innerHTML).toContain('composite-a');
+      expect(rows[2].innerHTML).toContain('2022-10-01 10:28:00');
+      expect(rows[3].innerHTML).toContain('A-series');
+      expect(rows[4].innerHTML).toContain('B-series');
+    });
+
+    it('returns primary sorted metrics: case sensitive descending', () => {
+      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      const props: TooltipProps = {
+        data: applied[0],
+        valueEnabled: true,
+        reference: aRef,
+        followMouse: false,
+        visible: true,
+        renderTime: new Date('01 October 2022 10:28 UTC'),
+        showTime: true,
+        primarySortByField: 'name',
+        primarySortDirection: 2,
+        secondarySortByField: 'value',
+        secondarySortDirection: 0,
+        displayMode: 'all',
+        tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+      };
+      render(<Tooltip reference={aRef} {...props} />);
+      const rows = screen.getAllByRole('row');
+      expect(rows.length).toBe(5);
+      expect(rows[0].innerHTML).toContain('composite-a');
+      expect(rows[2].innerHTML).toContain('2022-10-01 10:28:00');
+      expect(rows[3].innerHTML).toContain('B-series');
+      expect(rows[4].innerHTML).toContain('A-series');
+    });
   });
 
   describe('Tooltip Generation', () => {
