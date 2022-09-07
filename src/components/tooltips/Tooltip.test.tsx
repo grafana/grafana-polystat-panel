@@ -285,7 +285,7 @@ describe('Test Tooltips', () => {
       modelC.thresholdLevel = 0;
       const applied = ApplyComposites([compositeB], [modelA, modelB, modelC], (val) => val);
       props.data = applied[0];
-      // the displayMode comes from the applied composite, im this case there is one triggered metric
+      // the displayMode comes from the applied composite, in this case there is one triggered metric
       props.displayMode = applied[0].displayMode;
       render(<Tooltip reference={aRef} {...props} />);
       const rows = screen.getAllByRole('row');
