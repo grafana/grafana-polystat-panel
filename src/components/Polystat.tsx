@@ -502,7 +502,6 @@ const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplay
         return globalDisplayTextTriggeredEmpty;
       }
     }
-    // TODO: LEAK?
     const aMember = Object.assign({}, item.members[triggeredIndex]);
     content = aMember.name + ': ' + aMember.valueFormatted;
   }
@@ -712,20 +711,4 @@ const getSVGStyles = (theme: GrafanaTheme2) => css`
   align-items: center;
   justify-content: center;
   fill: transparent;
-`;
-
-// @ts-ignore
-const getPolystatPanelQuadrantStyles = (theme: GrafanaTheme2) => css`
-  position: absolute;
-  color: white;
-  height: auto;
-  padding: 10px;
-  background-color: black;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  -webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  -moz-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
-  pointer-events: none;
 `;

@@ -7,28 +7,14 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 
-//@ts-ignore
-const upgradeComposites = (metricComposites: CompositeItemType[]) => {
-  for (let index = 0; index < metricComposites.length; index++) {
-    if (typeof metricComposites[index].name === 'undefined') {
-      metricComposites[index].name = 'COMPOSITE ' + (index + 1);
-    }
-  }
-  return metricComposites;
-};
-
 const resolveCompositeTemplates = (
   metricComposites: CompositeItemType[],
   replaceVariables: InterpolateFunction
 ): CompositeItemType[] => {
   const ret: CompositeItemType[] = [];
-  //const sv: ScopedVars = {}; // TODO: where do these come from now?
   metricComposites.forEach((item: CompositeItemType) => {
     const firstResolve = replaceVariables(item.name); // th e ScopedVars should expand here
     const resolved = replaceVariables(firstResolve, {}, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
-    //const resolved = getTemplateSrv()
-    //  .replace(item.compositeName, sv, customFormatter)
-    //  .split(CUSTOM_SPLIT_DELIMITER);
     resolved.forEach((newName: string) => {
       ret.push({
         ...item,
@@ -171,7 +157,6 @@ export const ApplyComposites = (
         }
         // name may not be escaped, check both
         let metricName = aMetric.seriesMatch;
-        // TODO: ??
         if (aMetric.seriesNameEscaped !== undefined) {
           metricName = aMetric.seriesNameEscaped;
         }
