@@ -17,7 +17,7 @@ import {
   casedModelB,
   casedModelC,
 } from '../../__mocks__/models/models';
-import { compositeA, compositeC } from '../../__mocks__/models/composites';
+import { compositeA, compositeB, compositeC } from '../../__mocks__/models/composites';
 
 describe('Test Tooltips', () => {
   const aRef = createRef();
@@ -278,6 +278,21 @@ describe('Test Tooltips', () => {
       props.data = applied[0];
       render(<Tooltip reference={aRef} {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
+    });
+    it('returns tooltip for composite metric with one triggered metric', () => {
+      modelA.thresholdLevel = 0;
+      modelB.thresholdLevel = 1;
+      modelC.thresholdLevel = 0;
+      const applied = ApplyComposites([compositeB], [modelA, modelB, modelC], (val) => val);
+      props.data = applied[0];
+      // the displayMode comes from the applied composite, im this case there is one triggered metric
+      props.displayMode = applied[0].displayMode;
+      render(<Tooltip reference={aRef} {...props} />);
+      const rows = screen.getAllByRole('row');
+      expect(rows.length).toBe(4);
+      expect(rows[0].innerHTML).toContain('composite-b');
+      expect(rows[2].innerHTML).toContain('2022-10-01 10:28:00');
+      expect(rows[3].innerHTML).toContain('B-series');
     });
   });
 });
