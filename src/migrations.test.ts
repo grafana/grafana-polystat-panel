@@ -1,4 +1,4 @@
-import { PanelModel } from '@grafana/data';
+import { PanelModel, RangeMap, ValueMap, SpecialValueMap } from '@grafana/data';
 //import { CompositeItemType } from 'components/composites/types';
 //import { OverrideItemType } from 'components/overrides/types';
 
@@ -9,6 +9,7 @@ import {
   migrateOverrides,
   AngularSavedComposites,
   AngularSavedOverrides,
+  migrateValueAndRangeMaps,
 } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
@@ -208,6 +209,50 @@ describe('Polystat -> PolystatV2 migrations', () => {
     console.log('composites...');
     console.log(JSON.stringify(options, null, 2));
     expect(options.compositeConfig.animationSpeed).toEqual('2222');
+  });
+
+  it('correctly migrates range and value maps', () => {
+    const aPanel = {
+      mappingType: 1,
+      valueMaps: [
+        {
+          op: '=',
+          text: 'N/A',
+          value: 'null',
+        },
+        {
+          op: '=',
+          text: 'Nominal',
+          value: '30.386',
+        },
+      ],
+      rangeMaps: [
+        {
+          from: 'null',
+          text: 'N/A',
+          to: 'null',
+        },
+        {
+          from: '30',
+          text: 'Nominal',
+          to: '40',
+        },
+      ],
+    };
+    const newMaps = migrateValueAndRangeMaps(aPanel);
+    console.log(JSON.stringify(newMaps, null, 2));
+    expect(newMaps.length).toEqual(3);
+    const aSpecialMap = newMaps[0] as SpecialValueMap;
+    expect(aSpecialMap.type).toEqual('special');
+    expect(aSpecialMap.options.result.text).toEqual('N/A');
+    const aValueMap = newMaps[1] as ValueMap;
+    expect(aValueMap.type).toEqual('value');
+    expect(aValueMap.options).toEqual({ '30.386': { text: 'Nominal' } });
+    const aRangeMap = newMaps[2] as RangeMap;
+    expect(aRangeMap.type).toEqual('range');
+    expect(aRangeMap.options.from).toEqual(30);
+    expect(aRangeMap.options.to).toEqual(40);
+    expect(aRangeMap.options.result.text).toEqual('Nominal');
   });
 });
 
