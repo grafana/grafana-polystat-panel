@@ -65,12 +65,17 @@ export function ProcessDataFrames(
     internalData.push(model);
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
-  // colors (done in global formatting for speed)
-  //ApplyGlobalColors(internalData, globalFillColor);
   // formatting can change colors due to value maps
   internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor);
-  // applies overrides and global thresholds
-  internalData = ApplyOverrides(overrides, internalData, globalFillColor, globalThresholds, replaceVariables);
+  // applies overrides and global thresholds (and mappings)
+  internalData = ApplyOverrides(
+    overrides,
+    internalData,
+    fieldConfig,
+    globalFillColor,
+    globalThresholds,
+    replaceVariables
+  );
   // composites
   if (compositesEnabled) {
     internalData = ApplyComposites(composites, internalData, replaceVariables);
