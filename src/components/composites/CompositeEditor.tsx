@@ -238,6 +238,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
                 moveUp={moveUp}
                 moveDown={moveDown}
                 createDuplicate={createDuplicate}
+                context={context}
               />
             </Collapse>
           );

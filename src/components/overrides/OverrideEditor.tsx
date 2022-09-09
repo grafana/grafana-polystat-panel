@@ -219,6 +219,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
                 moveDown={moveDown}
                 moveUp={moveUp}
                 createDuplicate={createDuplicate}
+                context={context}
               />
             </Collapse>
           );

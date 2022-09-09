@@ -48,6 +48,7 @@ export interface CompositeItemProps {
   moveUp: any;
   moveDown: any;
   createDuplicate: any;
+  context: any;
 }
 
 export interface CompositeMetricItemProps {
@@ -57,4 +58,5 @@ export interface CompositeMetricItemProps {
   removeMetric: any;
   updateMetric: any;
   updateMetricAlias: any;
+  context: any;
 }
