@@ -1,4 +1,4 @@
-import { PanelModel, convertOldAngularValueMappings } from '@grafana/data';
+import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from 'components/overrides/types';
 import { DisplayModes, PolygonShapes } from 'components/types';
@@ -147,6 +147,9 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   delete panel.colors;
 
   //console.log(JSON.stringify(options, null, 2));
+  // clean up undefined
+  Object.keys(panel).forEach((key) => (panel[key] === undefined ? delete panel[key] : {}));
+  Object.keys(options).forEach((key) => (options[key] === undefined ? delete options[key] : {}));
 
   return options;
 };
@@ -464,10 +467,16 @@ export const convertOperators = (operator: string) => {
 export const migrateValueAndRangeMaps = (panel: any) => {
   // value maps first
   panel.mappingType = 1;
-  const newValueMappings = convertOldAngularValueMappings(panel);
+  let newValueMappings: ValueMapping[] = [];
+  if (panel.valueMaps !== undefined) {
+    newValueMappings = convertOldAngularValueMappings(panel);
+  }
   // range maps second
   panel.mappingType = 2;
-  const newRangeMappings = convertOldAngularValueMappings(panel);
+  let newRangeMappings: ValueMapping[] = [];
+  if (panel.rangeMaps !== undefined) {
+    newRangeMappings = convertOldAngularValueMappings(panel);
+  }
   // append together
   const newMappings = newValueMappings.concat(newRangeMappings);
   // get uniques only

@@ -19,6 +19,134 @@ describe('Polystat -> PolystatV2 migrations', () => {
     expect(options).toEqual({});
   });
 
+  it('migrates old polystat config', () => {
+    const panel = {} as PanelModel;
+    panel.options = {};
+    //@ts-ignore
+    panel.polystat = {
+      animationSpeed: 2500,
+      columnAutoSize: true,
+      columns: '6',
+      defaultClickThrough: 'https://grafana.com',
+      defaultClickThroughNewTab: false,
+      defaultClickThroughSanitize: true,
+      displayLimit: 100,
+      ellipseCharacters: 18,
+      ellipseEnabled: false,
+      fontAutoColor: true,
+      fontAutoScale: true,
+      fontSize: 12,
+      fontType: 'Roboto',
+      globalDecimals: 2,
+      globalDisplayMode: 'all',
+      globalDisplayTextTriggeredEmpty: 'OK',
+      globalOperatorName: 'avg',
+      globalUnitFormat: 'short',
+      gradientEnabled: true,
+      hexagonSortByDirection: 1,
+      hexagonSortByField: 'name',
+      maxMetrics: 0,
+      polygonBorderColor: '#000000',
+      polygonBorderSize: 2,
+      polygonGlobalFillColor: '#0a55a1',
+      radius: '',
+      radiusAutoSize: true,
+      regexPattern: '',
+      rowAutoSize: true,
+      rows: '',
+      shape: 'square',
+      tooltipDisplayMode: 'all',
+      tooltipDisplayTextTriggeredEmpty: 'OK',
+      tooltipEnabled: true,
+      tooltipFontSize: 12,
+      tooltipFontType: 'Roboto',
+      tooltipPrimarySortDirection: 2,
+      tooltipPrimarySortField: 'thresholdLevel',
+      tooltipSecondarySortDirection: 2,
+      tooltipSecondarySortField: 'value',
+      tooltipTimestampEnabled: true,
+      valueEnabled: true,
+    };
+    const options = PolystatPanelMigrationHandler(panel);
+    expect(options).toMatchSnapshot();
+  });
+
+  it('migrates old polystat config with mappings', () => {
+    const panel = {
+      options: {},
+      mappingType: 1,
+      rangeMaps: [
+        {
+          from: 'null',
+          text: 'N/A',
+          to: 'null',
+        },
+      ],
+      valueMaps: [
+        {
+          op: '=',
+          text: 'N/A',
+          value: 'null',
+        },
+        {
+          op: '=',
+          text: 'Nominal',
+          value: '30.386',
+        },
+      ],
+    } as unknown as PanelModel;
+    //@ts-ignore
+    panel.polystat = {
+      animationSpeed: 2500,
+      columnAutoSize: true,
+      columns: '6',
+      defaultClickThrough: 'https://grafana.com',
+      defaultClickThroughNewTab: false,
+      defaultClickThroughSanitize: true,
+      displayLimit: 100,
+      ellipseCharacters: 18,
+      ellipseEnabled: false,
+      fontAutoColor: true,
+      fontAutoScale: true,
+      fontSize: 12,
+      fontType: 'Roboto',
+      globalDecimals: 2,
+      globalDisplayMode: 'all',
+      globalDisplayTextTriggeredEmpty: 'OK',
+      globalOperatorName: 'avg',
+      globalUnitFormat: 'short',
+      gradientEnabled: true,
+      hexagonSortByDirection: 1,
+      hexagonSortByField: 'name',
+      maxMetrics: 0,
+      polygonBorderColor: '#000000',
+      polygonBorderSize: 2,
+      polygonGlobalFillColor: '#0a55a1',
+      radius: '',
+      radiusAutoSize: true,
+      regexPattern: '',
+      rowAutoSize: true,
+      rows: '',
+      shape: 'square',
+      tooltipDisplayMode: 'all',
+      tooltipDisplayTextTriggeredEmpty: 'OK',
+      tooltipEnabled: true,
+      tooltipFontSize: 12,
+      tooltipFontType: 'Roboto',
+      tooltipPrimarySortDirection: 2,
+      tooltipPrimarySortField: 'thresholdLevel',
+      tooltipSecondarySortDirection: 2,
+      tooltipSecondarySortField: 'value',
+      tooltipTimestampEnabled: true,
+      valueEnabled: true,
+    };
+    const options = PolystatPanelMigrationHandler(panel);
+    expect(options).toMatchSnapshot();
+    expect(panel).toMatchSnapshot();
+    expect(panel.fieldConfig.defaults.mappings[0].options.result.text).toEqual('N/A');
+    expect(panel.fieldConfig.defaults.mappings[1].options).toEqual({ '30.386': { color: undefined, text: 'Nominal' } });
+  });
+
   it('correctly converts top level config to new names', () => {
     const oldPolystatOptions = {
       polystat: {

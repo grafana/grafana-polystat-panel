@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Polystat -> PolystatV2 migrations migrates old polystat config 1`] = `
+Object {
+  "autoSizeColumns": true,
+  "autoSizePolygons": true,
+  "autoSizeRows": true,
+  "compositeConfig": Object {
+    "animationSpeed": "2500",
+    "composites": Array [],
+    "enabled": true,
+  },
+  "ellipseCharacters": 18,
+  "ellipseEnabled": false,
+  "globalAutoScaleFonts": true,
+  "globalClickthrough": "https://grafana.com",
+  "globalClickthroughNewTabEnabled": false,
+  "globalClickthroughSanitizedEnabled": true,
+  "globalDecimals": 2,
+  "globalDisplayMode": "all",
+  "globalDisplayTextTriggeredEmpty": "OK",
+  "globalFillColor": "#0a55a1",
+  "globalFontSize": 12,
+  "globalGradientsEnabled": true,
+  "globalOperator": "mean",
+  "globalPolygonBorderColor": "#000000",
+  "globalPolygonBorderSize": 2,
+  "globalPolygonSize": 50,
+  "globalRegexPattern": "",
+  "globalShape": "square",
+  "globalShowValueEnabled": true,
+  "globalTextFontAutoColor": "#000000",
+  "globalTextFontAutoColorEnabled": true,
+  "globalTextFontColor": "",
+  "globalThresholdsConfig": Array [],
+  "globalTooltipsEnabled": true,
+  "globalTooltipsShowTimestampEnabled": true,
+  "globalUnitFormat": "short",
+  "layoutDisplayLimit": 100,
+  "layoutNumColumns": 6,
+  "layoutNumRows": 8,
+  "overrideConfig": Object {
+    "overrides": Array [],
+  },
+  "panelId": 0,
+  "radius": 100,
+  "sortByDirection": 1,
+  "sortByField": "name",
+  "tooltipDisplayMode": "all",
+  "tooltipDisplayTextTriggeredEmpty": "OK",
+  "tooltipPrimarySortByField": "thresholdLevel",
+  "tooltipPrimarySortDirection": 2,
+  "tooltipSecondarySortByField": "value",
+  "tooltipSecondarySortDirection": 2,
+}
+`;
+
+exports[`Polystat -> PolystatV2 migrations migrates old polystat config with mappings 1`] = `
+Object {
+  "autoSizeColumns": true,
+  "autoSizePolygons": true,
+  "autoSizeRows": true,
+  "compositeConfig": Object {
+    "animationSpeed": "2500",
+    "composites": Array [],
+    "enabled": true,
+  },
+  "ellipseCharacters": 18,
+  "ellipseEnabled": false,
+  "globalAutoScaleFonts": true,
+  "globalClickthrough": "https://grafana.com",
+  "globalClickthroughNewTabEnabled": false,
+  "globalClickthroughSanitizedEnabled": true,
+  "globalDecimals": 2,
+  "globalDisplayMode": "all",
+  "globalDisplayTextTriggeredEmpty": "OK",
+  "globalFillColor": "#0a55a1",
+  "globalFontSize": 12,
+  "globalGradientsEnabled": true,
+  "globalOperator": "mean",
+  "globalPolygonBorderColor": "#000000",
+  "globalPolygonBorderSize": 2,
+  "globalPolygonSize": 50,
+  "globalRegexPattern": "",
+  "globalShape": "square",
+  "globalShowValueEnabled": true,
+  "globalTextFontAutoColor": "#000000",
+  "globalTextFontAutoColorEnabled": true,
+  "globalTextFontColor": "",
+  "globalThresholdsConfig": Array [],
+  "globalTooltipsEnabled": true,
+  "globalTooltipsShowTimestampEnabled": true,
+  "globalUnitFormat": "short",
+  "layoutDisplayLimit": 100,
+  "layoutNumColumns": 6,
+  "layoutNumRows": 8,
+  "overrideConfig": Object {
+    "overrides": Array [],
+  },
+  "panelId": 0,
+  "radius": 100,
+  "sortByDirection": 1,
+  "sortByField": "name",
+  "tooltipDisplayMode": "all",
+  "tooltipDisplayTextTriggeredEmpty": "OK",
+  "tooltipPrimarySortByField": "thresholdLevel",
+  "tooltipPrimarySortDirection": 2,
+  "tooltipSecondarySortByField": "value",
+  "tooltipSecondarySortDirection": 2,
+}
+`;
+
+exports[`Polystat -> PolystatV2 migrations migrates old polystat config with mappings 2`] = `
+Object {
+  "fieldConfig": Object {
+    "defaults": Object {
+      "mappings": Array [
+        Object {
+          "options": Object {
+            "match": "null",
+            "result": Object {
+              "color": undefined,
+              "text": "N/A",
+            },
+          },
+          "type": "special",
+        },
+        Object {
+          "options": Object {
+            "30.386": Object {
+              "color": undefined,
+              "text": "Nominal",
+            },
+          },
+          "type": "value",
+        },
+      ],
+    },
+    "overrides": Array [],
+  },
+  "options": Object {},
+}
+`;
