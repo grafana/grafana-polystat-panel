@@ -1,7 +1,6 @@
 import React from 'react';
 import { PanelProps, GrafanaTheme } from '@grafana/data';
-// @ts-ignore
-import { PolystatOptions, PolygonShapes, PolystatModel } from './types';
+import { PolystatOptions } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from 'emotion';
 import { useStyles } from '@grafana/ui';

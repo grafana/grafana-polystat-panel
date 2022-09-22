@@ -2,7 +2,12 @@ import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getThresholdLevelForValue, getWorstSeries } from './threshold_processor';
-import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from 'components/defaults';
+import {
+  DEFAULT_CRITICAL_COLOR_HEX,
+  DEFAULT_NO_DATA_COLOR_HEX,
+  DEFAULT_OK_COLOR_HEX,
+  DEFAULT_WARNING_COLOR_HEX,
+} from 'components/defaults';
 import { OverrideItemType } from 'components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 describe('Threshold Processor', () => {
@@ -76,25 +81,65 @@ describe('Threshold Processor', () => {
       console.log(JSON.stringify(worst));
       expect(worst.name).toBe(modelA.name);
     });
+    it('returns B-series when modelB.thresholdLevel is 2', () => {
+      modelA.thresholdLevel = 1;
+      modelB.thresholdLevel = 2;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
+    it('returns B-series when modelA.thresholdLevel is 3', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 1;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
+    it('returns B-series when modelA.thresholdLevel is 3 and modelB.thresholdLevel is 2', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 2;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('B-series');
+    });
+    it('returns A-series when modelA.thresholdLevel and modelB.thresholdLevel are 3', () => {
+      modelA.thresholdLevel = 3;
+      modelB.thresholdLevel = 3;
+      const worst = getWorstSeries(modelA, modelB);
+      expect(worst.name).toBe('A-series');
+    });
   });
   describe('Gets States for A-series', () => {
-    it('returns A-series with state OK', () => {
+    it('returns state OK', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 10, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(0);
       expect(aLevel.color).toBe('#299c46');
     });
-    it('returns A-series with state WARNING', () => {
+    it('returns state WARNING', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 21, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(1);
       expect(aLevel.color).toBe('#ed8128');
     });
-    it('returns A-series with state CRITICAL', () => {
+    it('returns state CRITICAL', () => {
       const aLevel = getThresholdLevelForValue(thresholds, 40, DEFAULT_OK_COLOR_HEX);
       console.log(JSON.stringify(aLevel));
       expect(aLevel.thresholdLevel).toBe(2);
       expect(aLevel.color).toBe('#f53636');
+    });
+    it('returns unknown for null data', () => {
+      const aLevel = getThresholdLevelForValue(thresholds, null, DEFAULT_OK_COLOR_HEX);
+      console.log(JSON.stringify(aLevel));
+      expect(aLevel.thresholdLevel).toBe(3);
+      expect(aLevel.color).toBe(DEFAULT_NO_DATA_COLOR_HEX);
+    });
+    it('returns -1 when there are no thresholds', () => {
+      const aLevel = getThresholdLevelForValue(undefined, 10, DEFAULT_OK_COLOR_HEX);
+      expect(aLevel.thresholdLevel).toBe(-1);
+      expect(aLevel.color).toBe(DEFAULT_OK_COLOR_HEX);
+    });
+    it('returns OK for single threshold', () => {
+      const aLevel = getThresholdLevelForValue([thresholds[0]], 11, DEFAULT_OK_COLOR_HEX);
+      expect(aLevel.thresholdLevel).toBe(0);
+      expect(aLevel.color).toBe(DEFAULT_OK_COLOR_HEX);
     });
   });
 });

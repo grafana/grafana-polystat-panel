@@ -6,6 +6,7 @@ import {
   InterpolateFunction,
   textUtil,
   getColorForTheme,
+  FieldConfigSource,
 } from '@grafana/data';
 import { useTheme, useTheme2 } from '@grafana/ui';
 import { getThresholdLevelForValue } from './threshold_processor';
@@ -15,6 +16,7 @@ import { PolystatModel } from '../components/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
+import { GetMappedValue } from './valueMappingsWrapper';
 
 const roundValue = (num: number, decimals: number) => {
   if (num === null) {
@@ -78,6 +80,7 @@ export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): O
 export const ApplyOverrides = (
   overrides: OverrideItemType[],
   data: PolystatModel[],
+  fieldConfig: FieldConfigSource<any>,
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
   replaceVariables: InterpolateFunction
@@ -85,6 +88,13 @@ export const ApplyOverrides = (
   // v9 compatible
   const theme2 = useTheme2();
   const oldTheme = useTheme();
+  // determine real color
+  let realGlobalFillColor = '';
+  if (typeof theme2.visualization !== 'undefined') {
+    realGlobalFillColor = theme2.visualization.getColorByName(globalFillColor);
+  } else {
+    realGlobalFillColor = getColorForTheme(globalFillColor, oldTheme);
+  }
 
   if (!overrides) {
     return data;
@@ -113,25 +123,32 @@ export const ApplyOverrides = (
       data[index].thresholdLevel = result.thresholdLevel;
       // format it
       // TODO: fix me!
-      //const mappings = convertOldAngularValueMappings(this.$scope.ctrl.panel);
-      //const mappedValue = getMappedValue(mappings, data[index].value.toString());
-      // if (mappedValue && mappedValue.text !== '') {
-      //   data[index].valueFormatted = mappedValue.text;
-      // } else {
-      const formatFunc = getValueFormat(anOverride.unitFormat);
-      if (formatFunc) {
-        // put the value in quotes to escape "most" special characters
-        const decimals: number = +anOverride.decimals;
-        const formatted = formatFunc(data[index].value, decimals, anOverride.scaledDecimals);
-        data[index].valueFormatted = formatted.text;
-        // spaces are included with the formatFunc
-        if (formatted.suffix) {
-          data[index].valueFormatted += formatted.suffix;
+      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings, data[index].value);
+      if (mappedValue && mappedValue.text !== '') {
+        data[index].valueFormatted = mappedValue.text;
+        // set color also
+        if (mappedValue.color) {
+          let realColor = theme2.visualization.getColorByName(mappedValue.color);
+          data[index].color = realColor;
+        } else {
+          data[index].color = realGlobalFillColor;
         }
-        if (formatted.prefix) {
-          data[index].valueFormatted = formatted.prefix + data[index].valueFormatted;
+      } else {
+        const formatFunc = getValueFormat(anOverride.unitFormat);
+        if (formatFunc) {
+          // put the value in quotes to escape "most" special characters
+          const decimals: number = +anOverride.decimals;
+          const formatted = formatFunc(data[index].value, decimals, anOverride.scaledDecimals);
+          data[index].valueFormatted = formatted.text;
+          // spaces are included with the formatFunc
+          if (formatted.suffix) {
+            data[index].valueFormatted += formatted.suffix;
+          }
+          if (formatted.prefix) {
+            data[index].valueFormatted = formatted.prefix + data[index].valueFormatted;
+          }
+          data[index].valueRounded = roundValue(data[index].value, decimals);
         }
-        data[index].valueRounded = roundValue(data[index].value, decimals);
       }
       // add prefix/suffix to formatted value
       if (anOverride.prefix !== '') {

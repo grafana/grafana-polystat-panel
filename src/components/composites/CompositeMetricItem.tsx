@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { Input, Field, IconButton, HorizontalGroup } from '@grafana/ui';
+import { Input, Field, IconButton, HorizontalGroup, Cascader, CascaderOption } from '@grafana/ui';
 import { CompositeMetricItemProps } from './types';
 
 export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) => {
+  const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
+
   async function copySelectedMetricToClipboard(index: number) {
     if (props.metric.seriesMatch) {
       const aValue = props.metric.seriesMatch;
@@ -26,6 +28,20 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
     props.updateMetricAlias(props.index, alias);
   };
 
+  useEffect(() => {
+    if (props.context.data) {
+      const frames = props.context.data;
+      let hints: CascaderOption[] = [];
+      for (let i = 0; i < frames.length; i++) {
+        hints.push({
+          label: frames[i].name,
+          value: frames[i].name,
+        });
+      }
+      setMetricHints(hints);
+    }
+  }, [props.context.data]);
+
   return (
     <HorizontalGroup>
       <IconButton
@@ -42,15 +58,17 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
         tooltip="Copy Metric/Regex"
         onClick={() => copySelectedMetricToClipboard(props.index)}
       />
-      <Field label="Metric/RegEx" disabled={props.disabled}>
-        <Input
+      <Field label="Metric/RegEx" style={{ minWidth: '125px' }} disabled={props.disabled}>
+        <Cascader
           key={`cmi-index-${props.index}`}
-          value={props.metric.seriesMatch}
+          initialValue={props.metric.seriesMatch}
+          allowCustomValue
           placeholder=""
-          onChange={(e) => updateMetric(e.currentTarget.value)}
+          options={metricHints}
+          onSelect={(val: string) => updateMetric(val)}
         />
       </Field>
-      <Field label="Alias" disabled={props.disabled}>
+      <Field label="Alias" style={{ minWidth: '125px' }} disabled={props.disabled}>
         <Input value={props.metric.alias} placeholder="" onChange={(e) => updateMetricAlias(e.currentTarget.value)} />
       </Field>
     </HorizontalGroup>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { css } from 'emotion';
+import { css } from '@emotion/css';
 import { orderBy as lodashOrderBy } from 'lodash';
 import { useStyles } from '@grafana/ui';
 import { GrafanaTheme, dateTimeFormatWithAbbrevation } from '@grafana/data';
@@ -7,7 +7,7 @@ import Tippy from '@tippyjs/react';
 import { followCursor } from 'tippy.js';
 import { PolystatModel, SortOptions } from '../types';
 
-interface Props {
+export interface TooltipProps {
   data: PolystatModel;
   valueEnabled: boolean;
   followMouse?: boolean;
@@ -37,7 +37,7 @@ export const Tooltip = ({
   secondarySortDirection,
   displayMode,
   tooltipDisplayTextTriggeredEmpty,
-}: Props) => {
+}: TooltipProps) => {
   const styles = useStyles(getTooltipStyles);
 
   /* the name of the composite is shown at the top */
@@ -146,7 +146,7 @@ export const Tooltip = ({
     return (
       <table className={styles.tooltip}>
         <thead>
-          {getCompositeHeader()}
+          {data.isComposite && getCompositeHeader()}
           <tr>
             <th className={styles.tooltipNameHeading}>Name</th>
             {valueEnabled && <th className={styles.tooltipValueHeading}>Value</th>}

@@ -1,6 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { IconName, Input, Field, FieldSet, Switch, Card, IconButton, UnitPicker, Select } from '@grafana/ui';
+import {
+  IconName,
+  Input,
+  Field,
+  FieldSet,
+  Switch,
+  Card,
+  IconButton,
+  UnitPicker,
+  Select,
+  Cascader,
+  CascaderOption,
+} from '@grafana/ui';
 import { OverrideItemProps, OverrideItemType } from './types';
 import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
 import { PolystatThreshold } from 'components/thresholds/types';
@@ -8,6 +20,7 @@ import { OperatorOptions } from 'components/types';
 import { SelectableValue } from '@grafana/data';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
+  const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
   const [override, _setOverride] = useState(props.override);
 
   const setOverride = (value: OverrideItemType) => {
@@ -46,6 +59,20 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
     setOverride({ ...override, thresholds: val });
   };
 
+  useEffect(() => {
+    if (props.context.data) {
+      const frames = props.context.data;
+      let hints: CascaderOption[] = [];
+      for (let i = 0; i < frames.length; i++) {
+        hints.push({
+          label: frames[i].name,
+          value: frames[i].name,
+        });
+      }
+      setMetricHints(hints);
+    }
+  }, [props.context.data]);
+
   return (
     <Card heading="" key={`override-card-${props.ID}`}>
       <Card.Meta>
@@ -62,10 +89,12 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
             />
           </Field>
           <Field label="Metric/RegEx" disabled={!override.enabled}>
-            <Input
-              value={override.metricName}
+            <Cascader
+              initialValue={override.metricName}
+              allowCustomValue
               placeholder=""
-              onChange={(e) => setOverride({ ...override, metricName: e.currentTarget.value })}
+              options={metricHints}
+              onSelect={(val: string) => setOverride({ ...override, metricName: val })}
             />
           </Field>
           <Field label="Alias" disabled={!override.enabled}>

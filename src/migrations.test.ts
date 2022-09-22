@@ -1,4 +1,4 @@
-import { PanelModel } from '@grafana/data';
+import { PanelModel, RangeMap, ValueMap, SpecialValueMap } from '@grafana/data';
 //import { CompositeItemType } from 'components/composites/types';
 //import { OverrideItemType } from 'components/overrides/types';
 
@@ -9,6 +9,7 @@ import {
   migrateOverrides,
   AngularSavedComposites,
   AngularSavedOverrides,
+  migrateValueAndRangeMaps,
 } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
@@ -16,6 +17,134 @@ describe('Polystat -> PolystatV2 migrations', () => {
     const panel = {} as PanelModel;
     const options = PolystatPanelMigrationHandler(panel);
     expect(options).toEqual({});
+  });
+
+  it('migrates old polystat config', () => {
+    const panel = {} as PanelModel;
+    panel.options = {};
+    //@ts-ignore
+    panel.polystat = {
+      animationSpeed: 2500,
+      columnAutoSize: true,
+      columns: '6',
+      defaultClickThrough: 'https://grafana.com',
+      defaultClickThroughNewTab: false,
+      defaultClickThroughSanitize: true,
+      displayLimit: 100,
+      ellipseCharacters: 18,
+      ellipseEnabled: false,
+      fontAutoColor: true,
+      fontAutoScale: true,
+      fontSize: 12,
+      fontType: 'Roboto',
+      globalDecimals: 2,
+      globalDisplayMode: 'all',
+      globalDisplayTextTriggeredEmpty: 'OK',
+      globalOperatorName: 'avg',
+      globalUnitFormat: 'short',
+      gradientEnabled: true,
+      hexagonSortByDirection: 1,
+      hexagonSortByField: 'name',
+      maxMetrics: 0,
+      polygonBorderColor: '#000000',
+      polygonBorderSize: 2,
+      polygonGlobalFillColor: '#0a55a1',
+      radius: '',
+      radiusAutoSize: true,
+      regexPattern: '',
+      rowAutoSize: true,
+      rows: '',
+      shape: 'square',
+      tooltipDisplayMode: 'all',
+      tooltipDisplayTextTriggeredEmpty: 'OK',
+      tooltipEnabled: true,
+      tooltipFontSize: 12,
+      tooltipFontType: 'Roboto',
+      tooltipPrimarySortDirection: 2,
+      tooltipPrimarySortField: 'thresholdLevel',
+      tooltipSecondarySortDirection: 2,
+      tooltipSecondarySortField: 'value',
+      tooltipTimestampEnabled: true,
+      valueEnabled: true,
+    };
+    const options = PolystatPanelMigrationHandler(panel);
+    expect(options).toMatchSnapshot();
+  });
+
+  it('migrates old polystat config with mappings', () => {
+    const panel = {
+      options: {},
+      mappingType: 1,
+      rangeMaps: [
+        {
+          from: 'null',
+          text: 'N/A',
+          to: 'null',
+        },
+      ],
+      valueMaps: [
+        {
+          op: '=',
+          text: 'N/A',
+          value: 'null',
+        },
+        {
+          op: '=',
+          text: 'Nominal',
+          value: '30.386',
+        },
+      ],
+    } as unknown as PanelModel;
+    //@ts-ignore
+    panel.polystat = {
+      animationSpeed: 2500,
+      columnAutoSize: true,
+      columns: '6',
+      defaultClickThrough: 'https://grafana.com',
+      defaultClickThroughNewTab: false,
+      defaultClickThroughSanitize: true,
+      displayLimit: 100,
+      ellipseCharacters: 18,
+      ellipseEnabled: false,
+      fontAutoColor: true,
+      fontAutoScale: true,
+      fontSize: 12,
+      fontType: 'Roboto',
+      globalDecimals: 2,
+      globalDisplayMode: 'all',
+      globalDisplayTextTriggeredEmpty: 'OK',
+      globalOperatorName: 'avg',
+      globalUnitFormat: 'short',
+      gradientEnabled: true,
+      hexagonSortByDirection: 1,
+      hexagonSortByField: 'name',
+      maxMetrics: 0,
+      polygonBorderColor: '#000000',
+      polygonBorderSize: 2,
+      polygonGlobalFillColor: '#0a55a1',
+      radius: '',
+      radiusAutoSize: true,
+      regexPattern: '',
+      rowAutoSize: true,
+      rows: '',
+      shape: 'square',
+      tooltipDisplayMode: 'all',
+      tooltipDisplayTextTriggeredEmpty: 'OK',
+      tooltipEnabled: true,
+      tooltipFontSize: 12,
+      tooltipFontType: 'Roboto',
+      tooltipPrimarySortDirection: 2,
+      tooltipPrimarySortField: 'thresholdLevel',
+      tooltipSecondarySortDirection: 2,
+      tooltipSecondarySortField: 'value',
+      tooltipTimestampEnabled: true,
+      valueEnabled: true,
+    };
+    const options = PolystatPanelMigrationHandler(panel);
+    expect(options).toMatchSnapshot();
+    expect(panel).toMatchSnapshot();
+    expect(panel.fieldConfig.defaults.mappings[0].options.result.text).toEqual('N/A');
+    expect(panel.fieldConfig.defaults.mappings[1].options).toEqual({ '30.386': { color: undefined, text: 'Nominal' } });
   });
 
   it('correctly converts top level config to new names', () => {
@@ -208,6 +337,50 @@ describe('Polystat -> PolystatV2 migrations', () => {
     console.log('composites...');
     console.log(JSON.stringify(options, null, 2));
     expect(options.compositeConfig.animationSpeed).toEqual('2222');
+  });
+
+  it('correctly migrates range and value maps', () => {
+    const aPanel = {
+      mappingType: 1,
+      valueMaps: [
+        {
+          op: '=',
+          text: 'N/A',
+          value: 'null',
+        },
+        {
+          op: '=',
+          text: 'Nominal',
+          value: '30.386',
+        },
+      ],
+      rangeMaps: [
+        {
+          from: 'null',
+          text: 'N/A',
+          to: 'null',
+        },
+        {
+          from: '30',
+          text: 'Nominal',
+          to: '40',
+        },
+      ],
+    };
+    const newMaps = migrateValueAndRangeMaps(aPanel);
+    console.log(JSON.stringify(newMaps, null, 2));
+    expect(newMaps.length).toEqual(3);
+    const aSpecialMap = newMaps[0] as SpecialValueMap;
+    expect(aSpecialMap.type).toEqual('special');
+    expect(aSpecialMap.options.result.text).toEqual('N/A');
+    const aValueMap = newMaps[1] as ValueMap;
+    expect(aValueMap.type).toEqual('value');
+    expect(aValueMap.options).toEqual({ '30.386': { text: 'Nominal' } });
+    const aRangeMap = newMaps[2] as RangeMap;
+    expect(aRangeMap.type).toEqual('range');
+    expect(aRangeMap.options.from).toEqual(30);
+    expect(aRangeMap.options.to).toEqual(40);
+    expect(aRangeMap.options.result.text).toEqual('Nominal');
   });
 });
 

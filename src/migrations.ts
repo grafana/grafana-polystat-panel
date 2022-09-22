@@ -1,4 +1,4 @@
-import { PanelModel } from '@grafana/data';
+import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from 'components/overrides/types';
 import { DisplayModes, PolygonShapes } from 'components/types';
@@ -124,6 +124,20 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   //console.log(JSON.stringify(newDefaults, null, 2));
   options.compositeConfig = migratedComposites.compositeConfig;
   options.overrideConfig = migratedOverrides.overrideConfig;
+  // convert range and value maps
+  const newMaps = migrateValueAndRangeMaps(panel);
+  panel.fieldConfig = {
+    defaults: {
+      mappings: newMaps,
+    },
+    overrides: [],
+  };
+  //@ts-ignore
+  delete panel.mappingType;
+  //@ts-ignore
+  delete panel.rangeMaps;
+  //@ts-ignore
+  delete panel.valueMaps;
   // merge defaults
   //@ts-ignore
   delete panel.savedComposites;
@@ -133,6 +147,9 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   delete panel.colors;
 
   //console.log(JSON.stringify(options, null, 2));
+  // clean up undefined
+  Object.keys(panel).forEach((key) => (panel[key] === undefined ? delete panel[key] : {}));
+  Object.keys(options).forEach((key) => (options[key] === undefined ? delete options[key] : {}));
 
   return options;
 };
@@ -445,6 +462,26 @@ export const convertOperators = (operator: string) => {
     default:
       return operator;
   }
+};
+
+export const migrateValueAndRangeMaps = (panel: any) => {
+  // value maps first
+  panel.mappingType = 1;
+  let newValueMappings: ValueMapping[] = [];
+  if (panel.valueMaps !== undefined) {
+    newValueMappings = convertOldAngularValueMappings(panel);
+  }
+  // range maps second
+  panel.mappingType = 2;
+  let newRangeMappings: ValueMapping[] = [];
+  if (panel.rangeMaps !== undefined) {
+    newRangeMappings = convertOldAngularValueMappings(panel);
+  }
+  // append together
+  const newMappings = newValueMappings.concat(newRangeMappings);
+  // get uniques only
+  const uniques = [...new Map(newMappings.map((v) => [JSON.stringify(v), v])).values()];
+  return uniques;
 };
 
 export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {

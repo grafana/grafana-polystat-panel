@@ -185,6 +185,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
                   updateMetric={updateMetric}
                   updateMetricAlias={updateMetricAlias}
                   removeMetric={removeMetric}
+                  context={props.context}
                 />
               );
             })}

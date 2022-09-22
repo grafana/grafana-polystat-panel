@@ -1,6 +1,5 @@
 import { InsertTime } from './deframer';
-// @ts-ignore
-import { colors, useTheme2, convertOldAngularValueMappings, getStandardFieldConfigs } from '@grafana/ui';
+import { useTheme2 } from '@grafana/ui';
 import {
   FieldType,
   reduceField,
@@ -66,12 +65,17 @@ export function ProcessDataFrames(
     internalData.push(model);
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
-  // colors (done in global formatting for speed)
-  //ApplyGlobalColors(internalData, globalFillColor);
   // formatting can change colors due to value maps
   internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor);
-  // applies overrides and global thresholds
-  internalData = ApplyOverrides(overrides, internalData, globalFillColor, globalThresholds, replaceVariables);
+  // applies overrides and global thresholds (and mappings)
+  internalData = ApplyOverrides(
+    overrides,
+    internalData,
+    fieldConfig,
+    globalFillColor,
+    globalThresholds,
+    replaceVariables
+  );
   // composites
   if (compositesEnabled) {
     internalData = ApplyComposites(composites, internalData, replaceVariables);
@@ -236,7 +240,7 @@ const roundValue = (num: number, decimals: number) => {
 };
 
 export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): PolystatModel {
-  // @ts-ignore
+  /*
   const shortenValue = (value: string, length: number) => {
     if (value.length > length) {
       return value.substring(0, length).concat('...');
@@ -244,6 +248,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
       return value;
     }
   };
+  */
 
   // get the value field
   const valueField = frame.fields.find((field) => field.type === FieldType.number);
@@ -251,10 +256,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
   const standardCalcs = reduceField({ field: valueField, reducers: ['bogus'] });
   //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
   const valueFieldName = getFieldDisplayName(valueField, frame);
-  //const operatorValue = getValueByOperator(valueFieldName, globalOperator, standardCalcs);
   const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
-
-  //const y = x(operatorValue);
 
   let maxDecimals = 4;
   if (valueField.config.decimals !== undefined) {

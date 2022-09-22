@@ -1,5 +1,4 @@
-// @ts-ignore
-import { FieldConfigProperty, PanelPlugin, StandardOptionConfig } from '@grafana/data';
+import { FieldConfigProperty, PanelPlugin } from '@grafana/data';
 import {
   DisplayModes,
   OperatorOptions,

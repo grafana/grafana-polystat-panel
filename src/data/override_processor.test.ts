@@ -7,7 +7,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { ApplyOverrides, MatchOverride } from './override_processor';
 import { OverrideItemType } from 'components/overrides/types';
 import { PolystatModel } from '../components/types';
-import { FieldType, toDataFrame } from '@grafana/data';
+import { FieldConfigSource, FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 
 describe('Test Overrides', () => {
@@ -48,7 +48,13 @@ describe('Test Overrides', () => {
       expect(modified.label).toBe('OVERRIDE-0');
     });
     it('returns an overridden model', () => {
-      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], 'white', [], null));
+      const fieldConfig: FieldConfigSource<any> = {
+        defaults: {
+          mappings: [],
+        },
+        overrides: [],
+      };
+      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], null));
       expect(result.all.length).toBe(1);
       const x = result.all[0] as PolystatModel[];
       const modified = x[0] as PolystatModel;
