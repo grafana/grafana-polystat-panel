@@ -2,6 +2,14 @@
 
 ## Entries
 
+## v2.0.0
+
+- Plugin has been converted to React
+- Existing panels will auto-migrate to the new config schema
+- Feature parity with v1.2.11, including bug fixes
+- Documentation re-written to reflect the change to editors
+- Advanced examples are provided
+
 ## v1.2.11
 
 - Fixes valueMappings for v8.0.x and v9.x
