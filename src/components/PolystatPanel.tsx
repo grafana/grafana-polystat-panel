@@ -1,14 +1,14 @@
 import React from 'react';
-import { PanelProps, GrafanaTheme } from '@grafana/data';
+import { PanelProps, GrafanaTheme2 } from '@grafana/data';
 import { PolystatOptions } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from 'emotion';
-import { useStyles } from '@grafana/ui';
+import { getTheme, useStyles2 } from '@grafana/ui';
 import { ProcessDataFrames } from 'data/processor';
 
 interface Props extends PanelProps<PolystatOptions> {}
 
-const getComponentStyles = (theme: GrafanaTheme) => {
+const getComponentStyles = (theme: GrafanaTheme2) => {
   return {
     wrapper: css`
       position: relative;
@@ -27,7 +27,7 @@ const getComponentStyles = (theme: GrafanaTheme) => {
 };
 
 export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
-  const styles = useStyles(getComponentStyles);
+  const styles = useStyles2(getComponentStyles);
   // each series is a converted to a model we can use
   const processedData = ProcessDataFrames(
     options.compositeConfig.enabled,
@@ -49,6 +49,14 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.sortByDirection,
     options.sortByField
   );
+  let autoFontColor = '#000000'; // default to black
+  if (options.globalTextFontAutoColorEnabled) {
+    // check theme, use white font
+    const currentTheme = getTheme();
+    if (currentTheme.isLight) {
+      autoFontColor = currentTheme.palette.white;
+    }
+  }
   const renderTime = new Date();
   return (
     <div
@@ -80,7 +88,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalFillColor={options.globalFillColor}
           globalRegexPattern={options.globalRegexPattern}
           globalGradientsEnabled={options.globalGradientsEnabled}
-          globalTextFontAutoColor={options.globalTextFontAutoColor}
+          globalTextFontAutoColor={autoFontColor}
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}
           globalTextFontColor={options.globalTextFontColor}
           globalThresholdsConfig={options.globalThresholdsConfig}
