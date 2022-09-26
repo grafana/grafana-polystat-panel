@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { GrafanaTheme, SelectableValue } from '@grafana/data';
+import { GrafanaTheme2, SelectableValue } from '@grafana/data';
 
-import { Input, ColorPicker, IconButton, useStyles, Select } from '@grafana/ui';
+import { Input, ColorPicker, IconButton, useStyles2, Select } from '@grafana/ui';
 import { css } from 'emotion';
 
 import { PolystatThreshold, ThresholdStates } from './types';
@@ -19,7 +19,7 @@ interface ThresholdItemProps {
 }
 
 export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdItemProps) => {
-  const styles = useStyles(getThresholdStyles);
+  const styles = useStyles2(getThresholdStyles);
   const getThreshold = (thresholdId: number) => {
     const keys = ThresholdStates.keys();
     for (const aKey of keys) {
@@ -78,14 +78,14 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
   );
 };
 
-const getThresholdStyles = (theme: GrafanaTheme) => {
+const getThresholdStyles = (theme: GrafanaTheme2) => {
   return {
     inputPrefix: css`
       display: flex;
       align-items: center;
     `,
     colorPicker: css`
-      padding: 0 ${theme.spacing.sm};
+      padding: 0 ${theme.spacing(1)};
     `,
   };
 };
