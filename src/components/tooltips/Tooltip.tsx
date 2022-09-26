@@ -1,8 +1,8 @@
 import React from 'react';
 import { css } from '@emotion/css';
 import { orderBy as lodashOrderBy } from 'lodash';
-import { useStyles } from '@grafana/ui';
-import { GrafanaTheme, dateTimeFormatWithAbbrevation } from '@grafana/data';
+import { useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2, dateTimeFormatWithAbbrevation } from '@grafana/data';
 import Tippy from '@tippyjs/react';
 import { followCursor } from 'tippy.js';
 import { PolystatModel, SortOptions } from '../types';
@@ -38,7 +38,7 @@ export const Tooltip = ({
   displayMode,
   tooltipDisplayTextTriggeredEmpty,
 }: TooltipProps) => {
-  const styles = useStyles(getTooltipStyles);
+  const styles = useStyles2(getTooltipStyles);
 
   /* the name of the composite is shown at the top */
   const getCompositeHeader = () => {
@@ -144,7 +144,7 @@ export const Tooltip = ({
 
   const generateContent = () => {
     return (
-      <table className={styles.tooltip}>
+      <table className={styles.tooltipTable}>
         <thead>
           {data.isComposite && getCompositeHeader()}
           <tr>
@@ -184,40 +184,41 @@ export const Tooltip = ({
       animation={false}
       className={styles.root}
       placement="auto"
+      maxWidth={500}
     />
   );
 };
 
-const getTooltipStyles = (theme: GrafanaTheme) => {
+const getTooltipStyles = (theme: GrafanaTheme2) => {
   return {
     root: css`
-      max-width: 500px;
-      border-radius: ${theme.border.radius.sm};
-      background-color: ${theme.colors.bg2};
-      padding: ${theme.spacing.sm};
-      box-shadow: 0px 0px 2px ${theme.colors.dropdownShadow};
+      border-radius: ${theme.shape.borderRadius(1)};
+      background-color: ${theme.colors.background.primary};
+      box-shadow: ${theme.shadows.z2};
+      padding: ${theme.spacing(1)};
+
     `,
-    tooltip: css`
+    tooltipTable: css`
       width: 100%;
-      color: ${theme.colors.textHeading};
+      color: ${theme.colors.text.primary};
       height: auto;
       padding: 10px;
     `,
     tooltipTime: css`
       text-align: center;
-      color: ${theme.colors.textHeading};
+      color: ${theme.colors.text.primary};
     `,
     tooltipNameHeading: css`
       text-align: left;
-      color: ${theme.colors.textHeading};
+      color: ${theme.colors.text.primary};
     `,
     tooltipValueHeading: css`
       text-align: right;
-      color: ${theme.colors.textHeading};
+      color: ${theme.colors.text.primary};
     `,
     tooltipCompositeHeading: css`
       text-align: center;
-      color: ${theme.colors.textHeading};
+      color: ${theme.colors.text.primary};
     `,
     tooltipName: css`
       text-align: left;
