@@ -196,7 +196,6 @@ const getTooltipStyles = (theme: GrafanaTheme2) => {
       background-color: ${theme.colors.background.primary};
       box-shadow: ${theme.shadows.z2};
       padding: ${theme.spacing(1)};
-
     `,
     tooltipTable: css`
       width: 100%;

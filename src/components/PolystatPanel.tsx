@@ -49,10 +49,10 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.sortByDirection,
     options.sortByField
   );
+  const currentTheme = useTheme2();
   let autoFontColor = '#000000'; // default to black
   if (options.globalTextFontAutoColorEnabled) {
     // use primary text color for theme
-    const currentTheme = useTheme2();
     autoFontColor = currentTheme.colors.text.primary;
   }
   const renderTime = new Date();
