@@ -3,7 +3,7 @@ import { PanelProps, GrafanaTheme2 } from '@grafana/data';
 import { PolystatOptions } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from 'emotion';
-import { getTheme, useStyles2 } from '@grafana/ui';
+import { useStyles2, useTheme2 } from '@grafana/ui';
 import { ProcessDataFrames } from 'data/processor';
 
 interface Props extends PanelProps<PolystatOptions> {}
@@ -51,11 +51,9 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
   );
   let autoFontColor = '#000000'; // default to black
   if (options.globalTextFontAutoColorEnabled) {
-    // check theme, use white font
-    const currentTheme = getTheme();
-    if (currentTheme.isLight) {
-      autoFontColor = currentTheme.palette.white;
-    }
+    // use primary text color for theme
+    const currentTheme = useTheme2();
+    autoFontColor = currentTheme.colors.text.primary;
   }
   const renderTime = new Date();
   return (
