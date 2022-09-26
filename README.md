@@ -18,23 +18,23 @@ This plugin supports autoscaling for best-fit sizing of each polygon to the pane
 
 ### All visible
 
-![Scaled3](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-scaled3.png)
+![polystat-v2-agent-all-visible](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-all-visible.png)
 
 ### Scaled down
 
-![Scaled1](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-scaled1.png)
+![polystat-v2-agent-scaled-down](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-scaled-down.png)
 
 ### Scaled down with tooltip
 
-![Scaled2](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-scaled2.png)
+![polystat-v2-agent-scaled-down-tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-scaled-down-tooltip.png)
 
 ## Options
 
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-all.png)
+![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-all.png)
 
 ### Layout
 
-![Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-layout.png)
+![Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-layout.png)
 
 Specify the desired number of columns and rows, or select Autosize to allow the plugin to calculate a "best fit" for the size of the panel.
 
@@ -53,30 +53,30 @@ Set a limit on number of hexagons to be displayed, set to 0 for no limit.
 
 ### Sizing
 
-![Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-sizing.png)
+![Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-sizing.png)
 
 Set the size of the polygon to a fixed size, or select auto-size for "best fit".
 
 ### Sorting
 
-![Sorting](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-sorting.png)
+![Sorting](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-sorting.png)
 
 ### Tooltips
 
-![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-tooltips.png)
+![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-tooltips.png)
 
 Set the font to be used for Tooltips
 
 ### Global
 
-![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-global.png)
+![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-global.png)
 
 #### Display
 
 Show all
 Show triggered
 
-![Show all example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-show-all-example.png)
+![Show all example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-show-all-example.png)
 
 ### Global Aliasing
 
@@ -87,11 +87,11 @@ Foo-A, values 1,2,3
 Bar-B, values 4,5,6
 Misc, values 7,8,9
 
-![Before Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/regex-alias-before.png)
+![Before Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-before.png)
 
 Adding the regular expression: `/(Foo|Bar)/`, will display:
 
-![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/regex-alias-after.png)
+![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-after.png)
 
 Specify a regular expression to pick a portion of matching metric names.
 
@@ -111,27 +111,27 @@ Display the metric value
 
 ## Overrides
 
-![Overrides without Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-overrides-no-thresholds.png)
+![Overrides without Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-no-thresholds.png)
 
-![Overrides with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-overrides-all.png)
+![Overrides with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-all.png)
 
-![Overrides Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-overrides-gpu0-rendered.png)
+![Overrides Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-gpu0-rendered.png)
 
 ## Composites
 
-![Composites with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-composites-all.png)
+![Composites with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-all.png)
 
-![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-composites-with-tooltip.png)
+![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-with-tooltip.png)
 
 ### Animation
 
-![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-options-animation.png)
+![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-animation.png)
 
 #### Animate Composites
 
 Animate hexagon to display metrics if there are composites
 
-![Animation Example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-composites-animated.png)
+![Animation Example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-animated.png)
 
 #### Speed
 
@@ -219,17 +219,17 @@ The "worst" state is returned after checking every threshold range
 Hovering over a hexagon shows the metrics that comprise the displayed state.
 For composites this will expand members of the composite.
 
-![Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-tooltip.png)
+![Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-tooltip.png)
 
 #### State with composites
 
 This shows creation of composites, where you select which metrics comprise the composite.
 
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-composite-example1.png)
+![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composite-example1.png)
 
 This shows composites configured for GPU 0,1,2,3, and non-grouped metrics from GPU4-7.
 
-![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/master/src/img/screenshots/polystat-gpu-state-composites.png)
+![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-gpu-state-composites.png)
 
 ### Templating
 
