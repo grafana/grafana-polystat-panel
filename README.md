@@ -30,13 +30,15 @@ This plugin supports autoscaling for best-fit sizing of each polygon to the pane
 
 ## Options
 
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-all.png)
+This panel provides a large number of customization options, and are searchable from the menu.
 
 ### Layout
 
-![Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-layout.png)
+By default the plugin with automatically size the polygons to be displayed using a "best fit" calculation based on the size of the panel.
 
-Specify the desired number of columns and rows, or select Autosize to allow the plugin to calculate a "best fit" for the size of the panel.
+![Auto Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-options-layout.png)
+
+Alternatively, you can specify both the number of columnns and rows manually, or automated only one of them.
 
 #### Columns
 
@@ -45,38 +47,210 @@ Max # of columns to create
 #### Rows
 
 Max # rows to create
-NOTE: if both columns and rows are set, only rows*columns will be displayed, generally one or none should be set.
+NOTE: if both columns and rows are set, only `rows*columns` will be displayed, generally one or none should be set.
+
+![Manual Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-layout-manual.png)
+
+If there are not enough columns and rows to dispay all of the data, a warning will be displayed.
+
+![Manual Layout Warning](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-layout-warning.png)
 
 #### Display Limit
 
-Set a limit on number of hexagons to be displayed, set to 0 for no limit.
+Sets a limit for the number of polygons to be displayed. Set this to `0` for no limit (the default value is 100).
 
 ### Sizing
 
-![Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-sizing.png)
+The size of the polygon by default is calculated for a best-fit, but it can be manually set if needed.
 
-Set the size of the polygon to a fixed size, or select auto-size for "best fit".
+This section also provides an option to set a border on each polygon (the default value is 2 pixels).
+
+![Polygon Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-sizing-auto.png)
+
+Deselect the auto-size option to manually set a size.
+
+![Polygon Border Sizing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-sizing-manual.png)
+
+The size of the border for each polygon can be set in this section. The color used can be found in the "Global" section.
+
+### Text
+
+The plugin will attempt to display as much text as possible with the largest font possible across all polygons.
+Both the color and the font size can be manually set.
+
+![Polygon Auto Text Font Size](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-auto-all.png)
+
+Uncheck "Auto Scale Fonts" to manually enter a font size.
+
+![Polygon Manual Text Font Size](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-manual-fontsize.png)
+
+Uncheck "Automate Font Color" to manually set the font color.  The automated option uses the current theme to pick a color, which may not be suitable for all cases.
+
+![Polygon Text Manual Font Color](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-manual-font-color.png)
+
+Manually Set Font Color with color picker
+
+![Polygon Text Font Manual Color Picker](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-font-color-picker.png)
 
 ### Sorting
 
-![Sorting](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-sorting.png)
+The order (left to right) of the displayed polygons can be set with the sort options.
+
+![Sort Settings](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-sorting.png)
+
+The following directions are supported:
+
+![Sorting Directions](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-sorting-directions.png)
+
+And the following fields:
+
+![Sorting Fields](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/polystat-v2-sorting-fields.png)
 
 ### Tooltips
 
-![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-tooltips.png)
+![Tooltips](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-all.png)
 
-Set the font to be used for Tooltips
+#### Enable/Disable Tooltip
+
+Toggles displaying tooltips for the panel
+
+#### Show Timestamp
+
+Toggles display of the timestamp at the bottom of the tooltip
+
+#### Display mode
+
+You can choose to display only metrics that have triggered a threshold in the tooltip, or display all metrics. This is useful when there are many metrics rolled up into a composite.
+
+![Tooltip Display Modes](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-display-modes.png)
+
+#### Tooltip - Non Triggered State Text
+
+When there are no threshold violations, this text will be displayed in the tooltip instead of the metric value.  Leave blank if you want to show the value.
+
+#### Tooltip Sorting
+
+The following settings are used by *composites* when there are multiple metrics to be displayed.
+
+Tooltips have a wider set of sort options to aid in displaying important data "at the top" of the tooltip. You can specify a field and direction to first sort by, plus a secondary field and direction.  You can also disable sorting if needed.
+
+![Tooltip Sort Directions](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-sort-directions.png)
+
+| Sort Direction                        |                                          |
+|---------------------------------------|------------------------------------------|
+| Disabled                              | No sorting is performed                  |
+| Alphabetical (asc)                    | Ascending Alphabetical                   |
+| Alphabetical (desc)                   | Descending Alphabetical                  |
+| Numerical (asc)                       | Numerical Ascending                      |
+| Numerical (descending)                | Numerical Descending                     |
+| Alphabetical (case insensitive, asc)  | Case Insensitive Ascending Alphabetical  |
+| Alphabetical (case insensitive, desc) | Case Insensitive Descending Alphabetical |
+
+##### Primary Sorting
+
+###### Primary Sort Direction (see above table)
+
+The type of sort to be applied to the tooltip metrics.
+
+###### Primary Sort By Field
+
+Which field to sort by
+
+![Tooltip Sort By Field](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-primary-sortby-field.png)
+
+| Sort By Field   |                                        |
+|-----------------|----------------------------------------|
+| Name            | name of the field - after all aliasing |
+| Threshold Level | from lowest to highest                 |
+| Value           | raw value                              |
+
+##### Secondary Sorting
+
+The secondary sorting works in the same manner as primary sorting, but can be in a different direction using a different field/threshold/value. This is applied *after* primary sorting is performed.
+
+###### Secondary Sort Direction (see above table)
+
+###### Secondary Sort By Field
 
 ### Global
 
-![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-global.png)
+The following settings are available in the Global section, and are detailed below.
 
-#### Display
+![Global](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-all.png)
 
-Show all
-Show triggered
+#### Display Mode
 
-![Show all example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-show-all-example.png)
+You can choose to display only metrics that have triggered a threshold or display all metrics.
+
+| Display Mode |                                                        |
+|--------------|--------------------------------------------------------|
+| All          | All polygons are displayed                             |
+| Triggered    | Only polygons with a threshold triggered are displayed |
+
+#### Global - Non Triggered State Text
+
+Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered.
+
+#### Show Value
+
+Show the value of the metric along with the name
+
+#### Shape
+
+Currently there are three shapes that can be selected, and each use a best fit method to maximize size to the panel.
+
+![Polygon Shapes](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-shapes.png)
+
+Hexagon Pointed Top
+![Polygon Hexagon Pointed Top](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-hexagon-pointed-top.png)
+
+Circle
+![Polygon Circle](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-circle.png)
+
+Square
+![Polygon Square](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-square.png)
+
+#### Use Color Gradients
+
+This option will apply a shaded color instead of a uniform color.
+
+#### Global Fill Color
+
+This is the color used when there are no thresholds that apply to the metric or composite.
+
+#### Global Border Color
+
+The color of the border for each polygon can be set, and is used along with the size setting above.
+
+#### Unit
+
+All of the unit types are available in this selector and will be applied to the value displayed.
+
+#### Stat
+
+Select which statistic to display for the value.  The full set of statistics that Grafana provides are available.
+
+#### Decimals
+
+This limits the number of decimals displayed.
+
+#### Global Thresholds
+
+This set of thresholds are applied to all metrics that do not have a matching override.
+
+See the section [thresholds](#thresholds) below for details on how thresholds are evaluated.
+
+#### Global Clickthrough
+
+This clickthrough URL will be applied to all polygons that do not have an override or composite with a clickthrough specified.
+
+##### Clickthrough - Sanitize Url
+
+Normally this is enabled, and is intended to prevent malicious data entry.
+
+##### Clickthrough - Open in new tab
+
+When checked, this will cause a new tab to be opened when you click on a polygon.  For drill-down dashboards, disabling this is recommended.
 
 ### Global Aliasing
 
@@ -94,20 +268,6 @@ Adding the regular expression: `/(Foo|Bar)/`, will display:
 ![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-after.png)
 
 Specify a regular expression to pick a portion of matching metric names.
-
-### Actions
-
-#### Click Through
-
-Click through to use when none are defined for a hexagon.
-
-#### Show Metric Name
-
-Display the metric in the hexagon
-
-#### Show Metric Value
-
-Display the metric value
 
 ## Overrides
 
