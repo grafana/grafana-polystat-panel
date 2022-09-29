@@ -644,6 +644,7 @@ This plugin relies on `@grafana/toolkit`, typical build sequence:
 yarn install
 yarn build
 ```
+
 The code will be parsed then copied into "dist" if "tslint" passes without errors.
 
 For development, you can run:
