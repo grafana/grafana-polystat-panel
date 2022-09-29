@@ -39,25 +39,26 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   overrides.forEach((override) => {
     // Resolve templates in series names
-    const matchResult = override.metricName.match(variableRegex);
-    if (matchResult && matchResult.length > 0) {
-      matchResult.forEach((template: any) => {
-        const templateVars: ScopedVars = {};
-
-        const resolvedSeriesNames = getTemplateSrv()
-          .replace(template, templateVars, customFormatter)
-          .split(CUSTOM_SPLIT_DELIMITER);
-        resolvedSeriesNames.forEach((seriesName) => {
-          const newName = override.metricName.replace(template, seriesName);
-          ret.push({
-            ...override,
-            metricName: newName,
+    if (override.metricName) {
+      const matchResult = override.metricName.match(variableRegex);
+      if (matchResult && matchResult.length > 0) {
+        matchResult.forEach((template: any) => {
+          const templateVars: ScopedVars = {};
+          const resolvedSeriesNames = getTemplateSrv()
+            .replace(template, templateVars, customFormatter)
+            .split(CUSTOM_SPLIT_DELIMITER);
+          resolvedSeriesNames.forEach((seriesName) => {
+            const newName = override.metricName.replace(template, seriesName);
+            ret.push({
+              ...override,
+              metricName: newName,
+            });
           });
         });
-      });
-    } else {
-      // does not match template, but can match a simple regex
-      ret.push(override);
+      } else {
+        // does not match template, but can match a simple regex
+        ret.push(override);
+      }
     }
   });
 

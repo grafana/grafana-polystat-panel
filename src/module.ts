@@ -444,7 +444,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: {
           composites: [] as CompositeItemType[],
           enabled: true,
-          animationSpeed: '500',
+          animationSpeed: '1500',
         },
         category: ['Composites'],
       });
