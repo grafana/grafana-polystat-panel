@@ -8,7 +8,7 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5c5cd1076777c637b931/test_coverage)](https://codeclimate.com/github/grafana/grafana-polystat-panel/test_coverage)
 [![Build Status](https://drone.grafana.net/api/badges/grafana/grafana-polystat-panel/status.svg)](https://drone.grafana.net/grafana/grafana-polystat-panel)
 
-This panel plugin provides a [D3-based](http://www.d3js.org) multistat panel for [Grafana](https://grafana.com/) 8.4+.
+This panel plugin provides a [D3-based](http://www.d3js.org) multi-stat panel for [Grafana](https://grafana.com/) 8.4+.
 
 A hexagon is created for each metric received, with the ability to group metrics into a composite metric, and display the triggered state of the composite.
 
@@ -38,7 +38,7 @@ By default the plugin with automatically size the polygons to be displayed using
 
 ![Auto Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-options-layout.png)
 
-Alternatively, you can specify both the number of columnns and rows manually, or automated only one of them.
+Alternatively, you can specify both the number of columns and rows manually, or automated only one of them.
 
 #### Columns
 
@@ -51,7 +51,7 @@ NOTE: if both columns and rows are set, only `rows*columns` will be displayed, g
 
 ![Manual Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-layout-manual.png)
 
-If there are not enough columns and rows to dispay all of the data, a warning will be displayed.
+If there are not enough columns and rows to display all of the data, a warning will be displayed.
 
 ![Manual Layout Warning](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-layout-warning.png)
 
@@ -238,7 +238,7 @@ This limits the number of decimals displayed.
 
 This set of thresholds are applied to all metrics that do not have a matching override.
 
-See the section [thresholds](#thresholds) below for details on how thresholds are evaluated.
+See the section [thresholds](#thresholds-details) below for details on how thresholds are evaluated.
 
 #### Global Clickthrough
 
@@ -271,33 +271,248 @@ Specify a regular expression to pick a portion of matching metric names.
 
 ## Overrides
 
-![Overrides without Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-no-thresholds.png)
+Overrides are used to apply additional rendering options for metrics, including custom thresholds and clickthroughs.
 
-![Overrides with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-all.png)
+This is an example override that sets the unit for metrics that match a regular expression:
 
-![Overrides Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-gpu0-rendered.png)
+![Override without Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-overrides-no-thresholds.png)
+
+The same override with thresholds added:
+
+![Override with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-all.png)
+
+The final result of the above override with thresholds applied:
+
+![Override with Thresholds Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-overrides-rendered-thresholds.png)
+
+### Label
+
+New in V2 is the ability to name overrides to find them easier when there are many being created. The label is not rendered on the polygon.
+
+### Metric
+
+The panel will provide "hints" for metric names, and allow you to enter a regular expression to match multiple metrics.
+
+### Decimals (limit)
+
+Sets the maximum number of decimals to be displayed. Leave this empty to show all decimals.
+
+### Statistic to Display (Stat)
+
+This lets you specify a different statistic to use for the matching metric, and will replace the global statistic.
+As with the global setting, the full set of statistics Grafana provides are available.
+
+### Unit Formatting
+
+All of the unit types are available in this selector and will be applied to the value displayed.
+A suffix is typically added by the formatter to indicate the unit like "B/sec" or symbols for temperatures, percentages, and similar.
+
+### Thresholds
+
+An override can specify a set of thresholds that are to be applied to the matching metric, and will replace any global threshold settings.
+
+See the section [thresholds](#thresholds-details) below for details on how thresholds are evaluated.
+
+### Prefix
+
+Text in this field will be prepended to the rendered metric.
+
+### Suffix
+
+Text in this field will be appended to the rendered metric after any unit text is applied.
+
+### Clickthrough URL
+
+Use this to specify an URL to go to when the polygon is clicked on. Regular expression capture groups and template variables are available to form the URL.
+
+#### Example using capture groups
+
+For example, if we have multiple metrics like this:
+
+```TEXT
+hera_memutil
+plex_memutil
+```
+
+And a regular expression for the override:
+
+```REGEX
+/(.*)_mem/
+```
+
+The capture group `$1` can be used in the url:
+
+```TEXT
+/dashboard/detail-dash?var-HOSTNAME=$1
+```
+
+The url will end up being:
+
+`https://myserver/dashboard/detail-dash?var-HOSTNAME=hera`
+
+For more examples using template variables and regular expression capture groups see [this section on templating](#templating)
+
+#### Sanitize URL
+
+Normally this is enabled, and is intended to prevent malicious data entry.
+
+#### New Tab Click
+
+When checked, this will cause a new tab to be opened when you click on the polygon.
+For drill-down dashboards, disabling this is recommended.
+
+### Bottom Menu
+
+There is a menu at the bottom right side of the override that provides additional controls.
+
+![Override Menu](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-override-bottom-menu.png)
+
+#### Ordering
+
+Up and Down arrows allow you move the override so you can force a different evaluation priority or simply to group similar overrides together.
+
+#### Hide/Show
+
+Use the "eye" icon to enable/disable the override.
+
+#### Duplicate
+
+This button will make a copy of the current override and append it to the end of the list.  It will have a new name with "Copy" at the end.
+
+#### Delete
+
+This button will delete the override completely.
 
 ## Composites
 
-![Composites with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-all.png)
+Composites allow you to combine multiple metrics into a single representation that reflects the "worst" state of the metrics combined.
+This is useful as a roll-up view of more complex systems being monitored.
 
-![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-with-tooltip.png)
+When there are multiple metrics to be displayed by a composite, the polygon will cycle through each of them depending on the composite configuration.
 
-### Animation
+![Composites Options All](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composites-all.png)
 
-![Animation](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-options-animation.png)
+This is what two composites look like once they are rendered:
 
-#### Animate Composites
+![Composite Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composite-rendered.png)
 
-Animate hexagon to display metrics if there are composites
+This is the tooltip that is displayed when hovering over the composite:
 
-![Animation Example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composites-animated.png)
+![Composite Rendered with Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composite-with-tooltip.png)
 
-#### Speed
+### Animation Example
 
-Speed of animation in milliseconds
+When there are multiple metrics the rendered polygon will cycle through each of them based on the composite settings.
 
-## Thresholds
+Here's an example of two composites and their animation sequence:
+
+![Animation Example](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composite-animated.gif)
+
+### Global Settings for Composites
+
+There are two global settings that apply to all composites.
+
+#### Enable Composites
+
+A toggle is provided to quickly disable all composites from being rendered.  Additionally each composite has a hide icon to toggle its visibility.
+
+#### Animation Speed (ms)
+
+This setting controls how fast the animation cycle occurs (in milliseconds).
+
+### Composite Settings
+
+#### Composite Name
+
+Sets the name of the composite to be rendered. This accepts a regular expression along with template variables.
+
+Capture groups are also supported which allows you to simplify the name displayed using the alias option.
+
+#### Show Name (composite)
+
+This setting will hide/show the name on the displayed polygon.
+
+#### Show Value (composite)
+
+This setting will hide/show the values on the displayed polygon.
+
+#### Show Members
+
+When this is enabled, the composite is shown along with all of the metrics. Typically this is disabled and just the composite is displayed.
+
+#### Display Mode (composite)
+
+This will override the global display mode for just this composite.
+As with the global setting, you can choose to display only metrics that have triggered a threshold or display all metrics.
+
+| Display Mode |                                                        |
+|--------------|--------------------------------------------------------|
+| All          | All metrics are displayed                              |
+| Triggered    | Only metrics with a threshold triggered are displayed  |
+
+### Clickthrough URL (composite)
+
+Use this to specify an URL to go to when the polygon is clicked on. Regular expression capture groups and template variables are available to form the URL.
+See the overrides section for details on [advanced usage](#clickthrough-url).
+
+#### Sanitize URL (composite)
+
+Normally this is enabled, and is intended to prevent malicious data entry.
+
+#### New Tab Click (composite)
+
+When checked, this will cause a new tab to be opened when you click on the polygon.
+For drill-down dashboards, disabling this is recommended.
+
+### Bottom Menu (composite)
+
+There is a menu at the bottom right side of the composite that provides additional controls.
+
+![Composite Bottom Menu](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composite-bottom-menu.png)
+
+#### Ordering (composite)
+
+Up and Down arrows allow you move the composite for easier grouping.
+
+#### Hide/Show (composite)
+
+Use the "eye" icon to enable/disable the composite.
+
+#### Duplicate (composite)
+
+This button will make a copy of the current composite and append it to the end of the list.  It will have a new name with "Copy" at the end.
+
+#### Delete (composite)
+
+This button will delete the composite completely.
+
+### Adding Metrics to a Composite
+
+The "Add Metric" button is used to append to the list of metrics to be included in the composite.
+
+![Composite Add Metric](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-composite-add-metric.png)
+
+#### Metric/Regex (composite)
+
+The editor provides a list of metrics returned by your queries and also accepts a regular expression that may also include template variables.
+
+NOTE: Template variables are expanded first, then the regex is applied to further filter which metrics are included in the composite.
+
+#### Alias (composite)
+
+If this has any content, it will be used instead of the metric name.
+
+Capture groups from the metric name plus template variables are available to construct a new name to be displayed.
+
+Using template variables, capture groups, and composite variables are detailed in [section below](#composite-metric-variables)
+
+## Value Mappings
+
+This is a built-in option in Grafana and behaves in the same manner as documented [here.](https://grafana.com/docs/grafana/latest/panels/configure-value-mappings/)
+
+NOTE: Color assignments are ignored, only threshold colors are applied.
+
+## Thresholds Details
 
 This plugin supports "ranged" states.
 
@@ -370,27 +585,6 @@ Example 3: (bounded)
 
 The "worst" state is returned after checking every threshold range
 
-## Time Range
-
-### Additional Screenshots
-
-#### Tooltip
-
-Hovering over a hexagon shows the metrics that comprise the displayed state.
-For composites this will expand members of the composite.
-
-![Tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-tooltip.png)
-
-#### State with composites
-
-This shows creation of composites, where you select which metrics comprise the composite.
-
-![State with Composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-composite-example1.png)
-
-This shows composites configured for GPU 0,1,2,3, and non-grouped metrics from GPU4-7.
-
-![State with partial composites](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-gpu-state-composites.png)
-
 ### Templating
 
 #### Using Dashboard Template Variables
@@ -440,7 +634,7 @@ The names and values of a composite polygon can be referenced using the followin
 * Metric Name: `${__cell_name_n}`
 * Metric Value: `${__cell_n}`
 * Metric Raw Value: `${__cell_n:raw}` syntax.
-   By default values are URI encoded. Use this syntax to *disable* encoding
+  By default values are URI encoded. Use this syntax to *disable* encoding
 
 ## Building
 
@@ -450,14 +644,13 @@ This plugin relies on `@grafana/toolkit`, typical build sequence:
 yarn install
 yarn build
 ```
+The code will be parsed then copied into "dist" if "tslint" passes without errors.
 
 For development, you can run:
 
 ```BASH
-yarn watch
+yarn dev
 ```
-
-The code will be parsed then copied into "dist" if "jslint" passes without errors.
 
 ### Docker Support
 
