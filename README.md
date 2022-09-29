@@ -104,7 +104,7 @@ The following directions are supported:
 
 And the following fields:
 
-![Sorting Fields](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/polystat-v2-sorting-fields.png)
+![Sorting Fields](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-sorting-fields.png)
 
 ### Tooltips
 
@@ -202,12 +202,15 @@ Currently there are three shapes that can be selected, and each use a best fit m
 ![Polygon Shapes](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-shapes.png)
 
 Hexagon Pointed Top
+
 ![Polygon Hexagon Pointed Top](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-hexagon-pointed-top.png)
 
 Circle
+
 ![Polygon Circle](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-circle.png)
 
 Square
+
 ![Polygon Square](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-square.png)
 
 #### Use Color Gradients
@@ -279,7 +282,7 @@ This is an example override that sets the unit for metrics that match a regular 
 
 The same override with thresholds added:
 
-![Override with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-overrides-all.png)
+![Override with Thresholds](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-overrides-with-thresholds.png)
 
 The final result of the above override with thresholds applied:
 
