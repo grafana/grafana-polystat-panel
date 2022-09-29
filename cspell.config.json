@@ -22,6 +22,7 @@
     "DATAPROXY",
     "deframer",
     "diffperc",
+    "drilldown",
     "grafana",
     "hexbin",
     "iasc",
@@ -38,7 +39,9 @@
     "unicons",
     "uuidv",
     "valuemap",
+    "varname",
     "verdana",
     "workdir"
-  ]
+  ],
+  "enabled": true
 }
