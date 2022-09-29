@@ -97,7 +97,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onSelect={(val: string) => setOverride({ ...override, metricName: val })}
             />
           </Field>
-          <Field label="Alias" disabled={!override.enabled}>
+          <Field label="Alias" disabled={!override.enabled} hidden={true}>
             <Input
               value={override.alias}
               placeholder=""
