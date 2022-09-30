@@ -1,5 +1,5 @@
 import { FieldCalcs } from '@grafana/data';
-import { PolystatModel } from 'components/types';
+import { PolystatModel } from '../components/types';
 
 export function GetValueByOperator(metricName: string, data: PolystatModel, operatorName: string, calcs: FieldCalcs) {
   switch (operatorName) {

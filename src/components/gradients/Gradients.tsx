@@ -1,4 +1,4 @@
-import { DEFAULT_CRITICAL_COLOR, DEFAULT_OK_COLOR, DEFAULT_WARNING_COLOR } from 'components/defaults';
+import { DEFAULT_CRITICAL_COLOR, DEFAULT_OK_COLOR, DEFAULT_WARNING_COLOR } from '../../components/defaults';
 import React from 'react';
 
 import { Color } from './color';

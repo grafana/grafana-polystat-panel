@@ -3,7 +3,7 @@ import { StandardEditorProps } from '@grafana/data';
 import { Field } from '@grafana/ui';
 
 import { PolystatThreshold } from './types';
-import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
+import { ThresholdsEditor } from './ThresholdsEditor';
 
 export interface GlobalThresholdEditorSettings {}
 

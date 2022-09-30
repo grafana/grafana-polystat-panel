@@ -14,9 +14,9 @@ import {
   CascaderOption,
 } from '@grafana/ui';
 import { OverrideItemProps, OverrideItemType } from './types';
-import { ThresholdsEditor } from 'components/thresholds/ThresholdsEditor';
-import { PolystatThreshold } from 'components/thresholds/types';
-import { OperatorOptions } from 'components/types';
+import { ThresholdsEditor } from '../../components/thresholds/ThresholdsEditor';
+import { PolystatThreshold } from '../../components/thresholds/types';
+import { OperatorOptions } from '../../components/types';
 import { SelectableValue } from '@grafana/data';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
