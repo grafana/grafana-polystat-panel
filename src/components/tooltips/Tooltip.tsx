@@ -8,7 +8,7 @@ import { followCursor } from 'tippy.js';
 import { PolystatModel, SortOptions } from '../types';
 
 export interface TooltipProps {
-  data: PolystatModel;
+  data: PolystatModel | undefined;
   valueEnabled: boolean;
   followMouse?: boolean;
   reference: any;
@@ -70,7 +70,7 @@ export const Tooltip = ({
 
     let pSortFunction = primarySortByField as any;
     if (pUseLowercase) {
-      pSortFunction = (item) => {
+      pSortFunction = (item: any) => {
         let val = item[primarySortByField];
         if (typeof val !== 'number') {
           val = val.toLowerCase();
@@ -80,7 +80,7 @@ export const Tooltip = ({
     }
     let sSortFunction = secondarySortByField as any;
     if (sUseLowercase) {
-      sSortFunction = (item) => {
+      sSortFunction = (item: any) => {
         let val = item[secondarySortByField];
         if (typeof val !== 'number') {
           val = val.toLowerCase();
