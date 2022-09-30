@@ -4,14 +4,14 @@ import { OverrideItem } from './OverrideItem';
 import { OverrideItemType, OverrideItemTracker } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { Button, Collapse } from '@grafana/ui';
-import { PolystatThreshold } from 'components/thresholds/types';
-import { OperatorOptions } from 'components/types';
+import { PolystatThreshold } from '../../components/thresholds/types';
+import { OperatorOptions } from '../../components/types';
 import {
   DEFAULT_CRITICAL_COLOR_HEX,
   DEFAULT_NO_THRESHOLD_COLOR_HEX,
   DEFAULT_OK_COLOR_HEX,
   DEFAULT_WARNING_COLOR_HEX,
-} from 'components/defaults';
+} from '../../components/defaults';
 
 export interface OverrideEditorSettings {
   overrides: OverrideItemType[];
@@ -164,7 +164,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
     const anOverride: OverrideItemType = {
       label: `Override-${order}`,
       enabled: true,
-      metricName: null,
+      metricName: '',
       alias: '',
       thresholds: [] as PolystatThreshold[],
       prefix: '',
