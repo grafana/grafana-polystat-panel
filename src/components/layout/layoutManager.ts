@@ -97,8 +97,12 @@ export class LayoutManager {
       this.width / ((this.numColumns + 0.5) * this.SQRT3),
       this.height / ((this.numRows + 1 / 3) * 1.5),
     ]);
-    hexRadius = hexRadius - polygonBorderSize;
-    return this.truncateFloat(hexRadius);
+    if (hexRadius !== undefined) {
+      hexRadius = hexRadius - polygonBorderSize;
+      return this.truncateFloat(hexRadius);
+    }
+    // default to a reasonable value (should not happen though)
+    return 40;
   }
 
   /**
@@ -253,7 +257,7 @@ export class LayoutManager {
 
   // Builds the placeholder polygons needed to represent each metric
   generatePoints(data: any, displayLimit: number, shape: PolygonShapes): any {
-    const points = [];
+    const points = [] as any;
     if (typeof data === 'undefined') {
       return points;
     }
@@ -289,7 +293,7 @@ export class LayoutManager {
   }
 
   generateUniformPoints(data: any, displayLimit: number): any {
-    const points = [];
+    const points = [] as any;
     if (typeof data === 'undefined') {
       return points;
     }
@@ -366,8 +370,11 @@ export class LayoutManager {
     if (value === Infinity || isNaN(value)) {
       return 0;
     }
-    const with2Decimals = value.toString().match(/^-?\d+(?:\.\d{0,2})?/)[0];
-    return Number(with2Decimals);
+    const matches = value.toString().match(/^-?\d+(?:\.\d{0,2})?/);
+    if (matches !== null && matches.length > 0) {
+      return Number(matches[0]);
+    }
+    return 0;
   }
 
   getOffsets(shape: PolygonShapes, dataSize: number): any {
@@ -388,7 +395,7 @@ export class LayoutManager {
       this.width / ((this.numColumns + 0.5) * this.SQRT3),
       this.height / ((this.numRows + 1 / 3) * 1.5),
     ]);
-    hexRadius = this.truncateFloat(hexRadius);
+    hexRadius = this.truncateFloat(hexRadius as number);
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
 
