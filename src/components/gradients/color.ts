@@ -23,21 +23,21 @@ export class Color {
     return 'rgb(' + this.r + ',' + this.g + ',' + this.b + ')';
   }
 
-  blendWith(col, a) {
+  blendWith(col: Color, a: number) {
     const r = Math.round(col.r * (1 - a) + this.r * a);
     const g = Math.round(col.g * (1 - a) + this.g * a);
     const b = Math.round(col.b * (1 - a) + this.b * a);
     return new Color(r, g, b);
   }
 
-  Mul(col, a) {
+  Mul(col: Color, a: number) {
     const r = Math.round((col.r / 255) * this.r * a);
     const g = Math.round((col.g / 255) * this.g * a);
     const b = Math.round((col.b / 255) * this.b * a);
     return new Color(r, g, b);
   }
 
-  RGBToHex(rgb) {
+  RGBToHex(rgb: any) {
     let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
     rgb = rgb.substr(4).split(')')[0].split(sep);
     // Convert %s to 0–255
@@ -69,7 +69,7 @@ export class Color {
     return '#' + hex + a;
   }
 
-  fromHex(hex) {
+  fromHex(hex: string) {
     // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
     hex = hex.substring(1, 7);
     const bigint = parseInt(hex, 16);
