@@ -1,4 +1,4 @@
-import { DEFAULT_NO_DATA_COLOR_HEX } from 'components/defaults';
+import { DEFAULT_NO_DATA_COLOR_HEX } from '../components/defaults';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { PolystatModel } from '../components/types';
 /*
@@ -59,6 +59,10 @@ function getWorstSeries(series1: PolystatModel, series2: PolystatModel): any {
   const series1ThresholdLevel = series1.thresholdLevel;
   const series2ThresholdLevel = series2.thresholdLevel;
 
+  if (series1ThresholdLevel === undefined || series2ThresholdLevel === undefined) {
+    return worstSeries;
+  }
+
   // State 3 is Unknown and is not be worse than CRITICAL (state 2)
   if (series2ThresholdLevel > series1ThresholdLevel) {
     // series2 has higher threshold violation
@@ -79,8 +83,8 @@ function getWorstSeries(series1: PolystatModel, series2: PolystatModel): any {
 }
 
 function getThresholdLevelForValue(
-  thresholds: PolystatThreshold[],
-  value: number,
+  thresholds: PolystatThreshold[] | undefined,
+  value: number | null,
   defaultColor: string
 ): { thresholdLevel: number; color: string } {
   let currentColor = defaultColor;
