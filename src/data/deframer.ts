@@ -1,4 +1,4 @@
-import { DataFrame, Field, FieldType, ArrayVector, Labels } from '@grafana/data';
+import { DataFrame, Field, FieldType, FieldConfig, ArrayVector, Labels } from '@grafana/data';
 import { cloneDeep as lodashCloneDeep } from 'lodash';
 
 // Inserts a "Time" field into each dataframe if it is missing
@@ -48,12 +48,12 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
     if (!hasTimestamp) {
       const z = new ArrayVector();
       z.add(timeToInsert);
-
+      const fc: FieldConfig = {};
       const timeField: Field = {
         name: 'Time',
         type: FieldType.time,
         values: z,
-        config: null,
+        config: fc,
       };
       // insert it
       newFrame.fields.push(timeField);
@@ -115,6 +115,8 @@ function getLabelValues(frame: DataFrame, indexes: any[], rowNum: number) {
     let aField = frame.fields[indexValue];
     if (aField.type !== FieldType.number) {
       let value = getValueOfField(aField, rowNum);
+      // TODO: fix this...
+      // @ts-ignore
       labelAndValue[aField.name] = value;
     }
   }

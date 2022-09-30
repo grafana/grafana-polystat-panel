@@ -37,8 +37,8 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
         return OperatorOptions[aKey];
       }
     }
-    // no match, return last by default
-    return OperatorOptions['last'];
+    // no match, return last not null by default
+    return OperatorOptions[5];
   };
   const [operatorName, setOperatorName] = useState<SelectableValue<any>>(getOperator(props.override.operatorName));
   const removeItem = () => {
@@ -128,7 +128,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
             {override.enabled ? (
               <UnitPicker
                 value={override.unitFormat}
-                onChange={(val) => setOverride({ ...override, unitFormat: val })}
+                onChange={(val: any) => setOverride({ ...override, unitFormat: val })}
               />
             ) : (
               <span>{override.unitFormat}</span>

@@ -21,12 +21,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const errorMessageStyles = useStyles2(getErrorMessageStyles);
 
   // used by tooltip
-  const [elRefs, setElRefs] = React.useState([]);
+  const [elRefs, setElRefs] = React.useState([] as any);
   // used to change/animate text in polygon
-  const [animationRefs, setAnimationRefs] = React.useState([]);
+  const [animationRefs, setAnimationRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
-  const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([]);
-  const [animatedItems, setAnimatedItems] = React.useState([]);
+  const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
+  const [animatedItems, setAnimatedItems] = React.useState([] as any);
 
   useEffect(() => {
     // clear animationRefs and set new ones
@@ -46,19 +46,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   useEffect(() => {
     // add or remove refs
-    setElRefs((elRefs) =>
+    setElRefs((elRefs: any) =>
       Array(options.processedData!.length)
         .fill(0)
         .map((_, i) => elRefs[i] || createRef())
     );
   }, [options.processedData]);
 
-  const [showTooltips, setShowTooltips] = useState([]);
+  const [showTooltips, setShowTooltips] = useState([] as any);
 
   useEffect(() => {
     // add or remove refs
-    setShowTooltips((tt) => Array(options.processedData.length).fill(false));
-  }, [options.processedData.length]);
+    setShowTooltips((tt: any) => Array(options.processedData!.length).fill(false));
+  }, [options.processedData]);
 
   /*
     This is the animation method that will cycle through the metrics for a composite
@@ -70,14 +70,18 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       let metricIndex = animationMetricIndexes[index];
       if (animationRefs.length > 0 && animationRefs[index].current) {
         //console.log(`animating ref ${index}`);
-        const item = options.processedData[index];
-        const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
-        if (animationRefs[index].current.innerHTML !== null) {
-          animationRefs[index].current.innerHTML = val;
+        if (options.processedData) {
+          const item = options.processedData[index];
+          const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
+          if (animationRefs[index].current.innerHTML !== null) {
+            animationRefs[index].current.innerHTML = val;
+          }
         }
       }
       metricIndex++;
-      metricIndex %= options.processedData[index].members.length;
+      if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
+        metricIndex %= options.processedData[index].members.length;
+      }
       animationMetricIndexes[index] = metricIndex;
       setAnimationMetricIndexes(animationMetricIndexes);
     }
@@ -94,8 +98,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   */
   useEffect(() => {
     let shouldAnimate = false;
-    const animate = [];
-    options.processedData.map((item, index) => {
+    const animate = [] as any;
+    options.processedData!.map((item, index) => {
       if (item.isComposite && item.showValue) {
         shouldAnimate = true;
         animate.push(index);
@@ -118,15 +122,15 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
-  if (options.processedData.length === 0) {
+  if (options.processedData && options.processedData.length === 0) {
     return <div className={noTriggerTextStyles}>{options.globalDisplayTextTriggeredEmpty}</div>;
   }
   if (!options.autoSizeColumns && !options.autoSizeRows) {
     const limit = options.layoutNumColumns * options.layoutNumRows;
-    if (limit < options.processedData.length) {
+    if (limit < options.processedData!.length) {
       return (
         <div className={errorMessageStyles}>
-          Not enoughs rows and columns for data. There are {options.processedData.length} items to display, and only{' '}
+          Not enoughs rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
           {limit} places allocated.{' '}
         </div>
       );
@@ -145,7 +149,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
   // determine how many rows and columns are going to be generated
-  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData.length);
+  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData!.length);
   // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
   lm.generateActualColumnAndRowUsage(options.processedData, options.layoutDisplayLimit);
   // next the radius can be determined from actual rows and columns being used
@@ -173,7 +177,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       [options.panelWidth, options.panelHeight],
     ]);
   const { diameterX, diameterY } = lm.getDiameters();
-  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.processedData.length);
+  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.processedData!.length);
 
   // compute text area size (used to calculate the fontsize)
   const textAreaWidth = diameterX;
@@ -190,8 +194,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // square and circle do not use this
   const symbol = d3symbol().size(innerArea);
 
-  let customShape = null;
-  switch (options.globalShape as any) {
+  let customShape: any;
+  switch (options.globalShape) {
     case PolygonShapes.HEXAGON_POINTED_TOP:
       customShape = aHexbin.hexagon(radius);
       break;
@@ -237,7 +241,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let numOfChars = options.ellipseCharacters;
 
   if (options.globalAutoScaleFonts) {
-    const result = autoFontScaler(textAreaWidth, textAreaHeight, options.globalShowValueEnabled, options.processedData);
+    const result = autoFontScaler(
+      textAreaWidth,
+      textAreaHeight,
+      options.globalShowValueEnabled,
+      options.processedData!
+    );
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
     showEllipses = result.showEllipses;
@@ -277,7 +286,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   const drawShape = (index: number, shape: PolygonShapes) => {
-    let fillColor = options.processedData[index].color;
+    let fillColor = options.processedData![index].color;
     if (options.globalGradientsEnabled) {
       // TODO: safari needs the location.href
       fillColor = `url(#${gradientId}_linear_gradient_state_data_${index})`;
@@ -376,7 +385,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         <g transform={`translate(${margin.left},${margin.top})`}>
           <Gradients gradientId={gradientId} data={options.processedData} />
 
-          {options.processedData.map((item, index) => {
+          {options.processedData!.map((item, index) => {
             const coords = getCoords(index);
             // TODO: should resolve this during processing
             const ctt = resolveClickThroughTarget(item);
@@ -392,8 +401,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 )}
                 {options.globalTooltipsEnabled && (
                   <Tooltip
-                    data={options.processedData[index]}
-                    renderTime={options.renderTime}
+                    data={options.processedData![index]}
+                    renderTime={options.renderTime!}
                     showTime={options.globalTooltipsShowTimestampEnabled}
                     valueEnabled={options.globalShowValueEnabled}
                     visible={showTooltips[index]}
