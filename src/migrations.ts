@@ -1,8 +1,7 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
-import { OverrideItemType } from 'components/overrides/types';
-import { DisplayModes, PolygonShapes } from 'components/types';
-import { PolystatOptions } from './components/types';
+import { OverrideItemType } from './components/overrides/types';
+import { DisplayModes, PolygonShapes, PolystatOptions } from './components/types';
 
 interface AngularPolystatOptions {
   animationSpeed: number;
@@ -146,9 +145,10 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
   //@ts-ignore
   delete panel.colors;
 
-  //console.log(JSON.stringify(options, null, 2));
   // clean up undefined
+  // @ts-ignore
   Object.keys(panel).forEach((key) => (panel[key] === undefined ? delete panel[key] : {}));
+  // @ts-ignore
   Object.keys(options).forEach((key) => (options[key] === undefined ? delete options[key] : {}));
 
   return options;
@@ -385,6 +385,7 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
         order: order,
       };
       for (const p of Object.keys(seriesOverride)) {
+        // @ts-ignore
         const v = seriesOverride[p];
         switch (p) {
           // Ignore
@@ -432,6 +433,7 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
             anOverride.thresholds = v;
             // cleanup
             for (const threshold of anOverride.thresholds) {
+              // @ts-ignore
               delete threshold['$$hashKey'];
             }
             break;
@@ -515,6 +517,7 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
       };
       index++;
       for (const p of Object.keys(composite)) {
+        // @ts-ignore
         const v = composite[p];
         switch (p) {
           // Ignore
