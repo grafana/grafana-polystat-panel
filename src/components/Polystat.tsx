@@ -30,10 +30,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   useEffect(() => {
     // clear animationRefs and set new ones
-    if (options.processedData.length > 0) {
+    if (options.processedData!.length > 0) {
       const newAnimationRefs = [];
       const newAnimationMetricIndexes = [];
-      for (let i = 0; i < options.processedData.length; i++) {
+      for (let i = 0; i < options.processedData!.length; i++) {
         newAnimationRefs.push(createRef());
         newAnimationMetricIndexes.push(0);
       }
@@ -42,16 +42,16 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         setAnimationMetricIndexes(newAnimationMetricIndexes);
       }
     }
-  }, [options.processedData.length]);
+  }, [options.processedData]);
 
   useEffect(() => {
     // add or remove refs
     setElRefs((elRefs) =>
-      Array(options.processedData.length)
+      Array(options.processedData!.length)
         .fill(0)
         .map((_, i) => elRefs[i] || createRef())
     );
-  }, [options.processedData.length]);
+  }, [options.processedData]);
 
   const [showTooltips, setShowTooltips] = useState([]);
 
@@ -462,7 +462,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 };
 
-const buildTriggerCache = (item) => {
+const buildTriggerCache = (item: any) => {
   let triggerCache = [];
   for (let i = 0; i < item.members.length; i++) {
     const aMember = item.members[i];
