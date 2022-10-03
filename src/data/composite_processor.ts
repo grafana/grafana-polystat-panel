@@ -4,7 +4,7 @@ import { getWorstSeries } from './threshold_processor';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { stringToJsRegex, escapeStringForRegex, ScopedVars, InterpolateFunction, textUtil } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
-import { CompositeItemType, CompositeMetric } from 'components/composites/types';
+import { CompositeItemType, CompositeMetric } from '../components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 
 const resolveCompositeTemplates = (
@@ -103,7 +103,6 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
     timestamp: item.timestamp,
     prefix: item.prefix,
     suffix: item.suffix,
-    seriesRaw: undefined,
     color: item.color,
     clickThrough: item.clickThrough,
     operatorName: item.operatorName,

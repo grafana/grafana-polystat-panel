@@ -1,6 +1,6 @@
 import { sortBy as lodashSortBy, toLower as lodashToLower, isNumber as lodashIsNumber } from 'lodash';
 
-function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaledDecimals } {
+function GetDecimalsForValue(value: any, panelDecimals: any): { decimals: number; scaledDecimals: any } {
   if (lodashIsNumber(panelDecimals)) {
     return { decimals: panelDecimals, scaledDecimals: null };
   }
@@ -53,7 +53,7 @@ function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaled
  * @param {minFontPx} the smallest acceptable font size in pixels
  * @param {maxFontPx} the largest acceptable font size in pixels
  */
-function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontPx) {
+function getTextSizeForWidth(text: string, font: any, width: number, minFontPx: number, maxFontPx: number) {
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
   if (w <= width) {
@@ -124,9 +124,12 @@ function getTextWidth(text: string, font: string) {
   // re-use canvas object for better performance
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  context.font = font;
-  const metrics = context.measureText(text);
-  return metrics.width;
+  if (context) {
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  }
+  return 40; // unknown due to context failure
 }
 
 function RGBToHex(text: string) {
@@ -158,7 +161,7 @@ function getTextOrValue(o: any) {
   }
 }
 
-function SortVariableValuesByField(options, sortField: string, sortOrder: number) {
+function SortVariableValuesByField(options: any, sortField: string, sortOrder: number) {
   if (sortOrder === 0) {
     return options;
   }

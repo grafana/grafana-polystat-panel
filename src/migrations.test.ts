@@ -143,7 +143,9 @@ describe('Polystat -> PolystatV2 migrations', () => {
     const options = PolystatPanelMigrationHandler(panel);
     expect(options).toMatchSnapshot();
     expect(panel).toMatchSnapshot();
+    // @ts-ignore
     expect(panel.fieldConfig.defaults.mappings[0].options.result.text).toEqual('N/A');
+    // @ts-ignore
     expect(panel.fieldConfig.defaults.mappings[1].options).toEqual({ '30.386': { color: undefined, text: 'Nominal' } });
   });
 

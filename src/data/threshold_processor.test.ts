@@ -7,9 +7,9 @@ import {
   DEFAULT_NO_DATA_COLOR_HEX,
   DEFAULT_OK_COLOR_HEX,
   DEFAULT_WARNING_COLOR_HEX,
-} from 'components/defaults';
-import { OverrideItemType } from 'components/overrides/types';
-import { PolystatThreshold } from 'components/thresholds/types';
+} from '../components/defaults';
+import { OverrideItemType } from '../components/overrides/types';
+import { PolystatThreshold } from '../components/thresholds/types';
 describe('Threshold Processor', () => {
   var modelA: PolystatModel;
   var modelB: PolystatModel;

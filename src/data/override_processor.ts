@@ -65,7 +65,7 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
   return ret;
 };
 
-export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): OverrideItemType => {
+export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): OverrideItemType | null => {
   const resolvedOverrides = resolveOverrideTemplates(overrides);
   for (let index = 0; index < resolvedOverrides.length; index++) {
     const anOverride = resolvedOverrides[index];
@@ -75,7 +75,7 @@ export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): O
       return resolvedOverrides[index];
     }
   }
-  return undefined;
+  return null;
 };
 
 export const ApplyOverrides = (
@@ -84,7 +84,7 @@ export const ApplyOverrides = (
   fieldConfig: FieldConfigSource<any>,
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
-  replaceVariables: InterpolateFunction
+  replaceVariables: InterpolateFunction | null
 ) => {
   // v9 compatible
   const theme2 = useTheme2();
@@ -124,7 +124,7 @@ export const ApplyOverrides = (
       data[index].thresholdLevel = result.thresholdLevel;
       // format it
       // TODO: fix me!
-      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings, data[index].value);
+      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
         // set color also
@@ -148,7 +148,7 @@ export const ApplyOverrides = (
           if (formatted.prefix) {
             data[index].valueFormatted = formatted.prefix + data[index].valueFormatted;
           }
-          data[index].valueRounded = roundValue(data[index].value, decimals);
+          data[index].valueRounded = roundValue(data[index].value, decimals) || data[index].value;
         }
       }
       // add prefix/suffix to formatted value
@@ -168,9 +168,11 @@ export const ApplyOverrides = (
         const regex = stringToJsRegex(anOverride.metricName);
         const matches = regex.exec(data[index].name);
         const templateVars: ScopedVars = {};
-        matches.forEach((name: string, i: number) => {
-          templateVars[i] = { text: i, value: name };
-        });
+        if (matches && matches.length > 0) {
+          matches.forEach((name: string, i: number) => {
+            templateVars[i] = { text: i, value: name };
+          });
+        }
         let url = getTemplateSrv().replace(anOverride.clickThrough, templateVars);
         // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
         url = ClickThroughTransformer.transformSingleMetric(index, url, data);

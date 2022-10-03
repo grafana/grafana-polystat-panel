@@ -8,18 +8,18 @@ import {
   SortOptions,
 } from './components/types';
 import { CompositeItemType } from './components/composites/types';
-import { OverrideEditor } from 'components/overrides/OverrideEditor';
-import { OverrideItemType } from 'components/overrides/types';
+import { OverrideEditor } from './components/overrides/OverrideEditor';
+import { OverrideItemType } from './components/overrides/types';
 import { PolystatPanel } from './components/PolystatPanel';
 import {
   GLOBAL_FILL_COLOR_RGBA,
   GLOBAL_BORDER_COLOR_RGBA,
   GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
-} from 'components/defaults';
+} from './components/defaults';
 import { CompositeEditor } from './components/composites/CompositeEditor';
-import { PolystatThreshold } from 'components/thresholds/types';
-import { GlobalThresholdEditor } from 'components/thresholds/GlobalThresholdEditor';
-import { PolystatDataSuggestionsSupplier } from 'components/suggestions';
+import { PolystatThreshold } from './components/thresholds/types';
+import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
+import { PolystatDataSuggestionsSupplier } from './components/suggestions';
 import { PolystatPanelMigrationHandler } from './migrations';
 
 export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)

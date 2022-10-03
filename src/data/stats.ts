@@ -1,7 +1,12 @@
 import { FieldCalcs } from '@grafana/data';
-import { PolystatModel } from 'components/types';
+import { PolystatModel } from '../components/types';
 
-export function GetValueByOperator(metricName: string, data: PolystatModel, operatorName: string, calcs: FieldCalcs) {
+export function GetValueByOperator(
+  metricName: string,
+  data: PolystatModel | null,
+  operatorName: string,
+  calcs: FieldCalcs
+) {
   switch (operatorName) {
     case 'name':
       return metricName;

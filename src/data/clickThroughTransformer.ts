@@ -39,9 +39,9 @@ class ClickThroughTransformer {
   static transformNthMetric(url: string, data: PolystatModel[]) {
     while (url.match(this.nthCellName)) {
       const matched = url.match(this.nthCellName);
-      if (matched.length >= 2) {
+      if (matched && matched.length >= 2) {
         // get the capture number
-        const captureIndex = matched[1];
+        const captureIndex = matched[1] as unknown as number;
         const nthName = data[captureIndex].name;
         // replace with series name
         url = url.replace(this.nthCellName, nthName);
@@ -49,9 +49,9 @@ class ClickThroughTransformer {
     }
     while (url.match(this.nthCellValue)) {
       const matched = url.match(this.nthCellValue);
-      if (matched.length >= 2) {
+      if (matched && matched.length >= 2) {
         // get the capture number
-        const captureIndex = matched[1];
+        const captureIndex = matched[1] as unknown as number;
         const nthValue = data[captureIndex].valueFormatted;
         // replace with formatted value encoded
         url = url.replace(this.nthCellValue, encodeURIComponent(nthValue));
@@ -59,9 +59,9 @@ class ClickThroughTransformer {
     }
     while (url.match(this.nthCellRawValue)) {
       const matched = url.match(this.nthCellRawValue);
-      if (matched.length >= 2) {
+      if (matched && matched.length >= 2) {
         // get the capture number
-        const captureIndex = matched[1];
+        const captureIndex = matched[1] as unknown as number;
         const nthValue = data[captureIndex].value;
         // replace with raw value
         url = url.replace(this.nthCellRawValue, nthValue.toString());

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { GrafanaTheme2, SelectableValue } from '@grafana/data';
-
 import { Input, ColorPicker, IconButton, useStyles2, Select } from '@grafana/ui';
-import { css } from 'emotion';
+import { css } from '@emotion/css';
 
 import { PolystatThreshold, ThresholdStates } from './types';
 

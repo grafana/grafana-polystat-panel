@@ -2,9 +2,9 @@ import React from 'react';
 import { PanelProps, GrafanaTheme2 } from '@grafana/data';
 import { PolystatOptions } from './types';
 import { Polystat } from './Polystat';
-import { css, cx } from 'emotion';
+import { css, cx } from '@emotion/css';
 import { useStyles2, useTheme2 } from '@grafana/ui';
-import { ProcessDataFrames } from 'data/processor';
+import { ProcessDataFrames } from '../data/processor';
 
 interface Props extends PanelProps<PolystatOptions> {}
 

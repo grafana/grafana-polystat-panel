@@ -41,7 +41,7 @@ export interface PolystatOptions {
   panelWidth: any;
   panelId: number;
   radius: number | null;
-  renderTime: Date;
+  renderTime?: Date;
   sortByField: string;
   sortByDirection: number;
   overrideConfig: {
@@ -72,7 +72,7 @@ export interface PolystatModel {
   timestamp: number;
   prefix: string;
   suffix: string;
-  seriesRaw: DataFrame;
+  seriesRaw?: DataFrame;
   color: string;
   clickThrough: string;
   operatorName: string;

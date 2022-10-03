@@ -1,8 +1,8 @@
 import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { SortOptions } from 'components/types';
-import { ApplyComposites } from 'data/composite_processor';
+import { SortOptions } from '../../components/types';
+import { ApplyComposites } from '../../data/composite_processor';
 
 import { Tooltip, TooltipProps } from './Tooltip';
 
@@ -65,7 +65,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-a');
@@ -91,7 +91,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-a');
@@ -118,7 +118,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-a');
@@ -146,7 +146,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-numerical');
@@ -174,7 +174,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-numerical');
@@ -201,7 +201,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-a');
@@ -228,7 +228,7 @@ describe('Test Tooltips', () => {
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(6);
       expect(rows[0].innerHTML).toContain('composite-a');
@@ -258,25 +258,25 @@ describe('Test Tooltips', () => {
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
       };
 
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with one metric', () => {
       const applied = ApplyComposites([compositeA], [modelA], (val) => val);
       props.data = applied[0];
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with two metrics', () => {
       const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
       props.data = applied[0];
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with three metrics', () => {
       const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val);
       props.data = applied[0];
-      render(<Tooltip reference={aRef} {...props} />);
+      render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with one triggered metric', () => {
@@ -286,8 +286,10 @@ describe('Test Tooltips', () => {
       const applied = ApplyComposites([compositeB], [modelA, modelB, modelC], (val) => val);
       props.data = applied[0];
       // the displayMode comes from the applied composite, in this case there is one triggered metric
-      props.displayMode = applied[0].displayMode;
-      render(<Tooltip reference={aRef} {...props} />);
+      if (applied[0].displayMode) {
+        props.displayMode = applied[0].displayMode;
+      }
+      render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
       expect(rows.length).toBe(4);
       expect(rows[0].innerHTML).toContain('composite-b');

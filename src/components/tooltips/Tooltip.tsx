@@ -8,7 +8,7 @@ import { followCursor } from 'tippy.js';
 import { PolystatModel, SortOptions } from '../types';
 
 export interface TooltipProps {
-  data: PolystatModel;
+  data: PolystatModel | undefined;
   valueEnabled: boolean;
   followMouse?: boolean;
   reference: any;
@@ -41,14 +41,14 @@ export const Tooltip = ({
   const styles = useStyles2(getTooltipStyles);
 
   /* the name of the composite is shown at the top */
-  const getCompositeHeader = () => {
-    if (data.members.length === 0) {
+  const getCompositeHeader = (data: PolystatModel | null) => {
+    if (data && data.members && data.members.length === 0) {
       return '';
     }
     return (
       <tr>
         <th className={styles.tooltipCompositeHeading} colSpan={2}>
-          {data.displayName}
+          {data!.displayName}
         </th>
       </tr>
     );
@@ -70,7 +70,7 @@ export const Tooltip = ({
 
     let pSortFunction = primarySortByField as any;
     if (pUseLowercase) {
-      pSortFunction = (item) => {
+      pSortFunction = (item: any) => {
         let val = item[primarySortByField];
         if (typeof val !== 'number') {
           val = val.toLowerCase();
@@ -80,7 +80,7 @@ export const Tooltip = ({
     }
     let sSortFunction = secondarySortByField as any;
     if (sUseLowercase) {
-      sSortFunction = (item) => {
+      sSortFunction = (item: any) => {
         let val = item[secondarySortByField];
         if (typeof val !== 'number') {
           val = val.toLowerCase();
@@ -117,9 +117,9 @@ export const Tooltip = ({
       return null;
     }
   };
-  const getCompositeMetrics = () => {
+  const getCompositeMetrics = (data: PolystatModel | null) => {
     let dataToSort = data;
-    if (displayMode === 'triggered') {
+    if (dataToSort && data && displayMode === 'triggered') {
       dataToSort = filterTriggered(data);
     }
     if (dataToSort === null) {
@@ -146,7 +146,7 @@ export const Tooltip = ({
     return (
       <table className={styles.tooltipTable}>
         <thead>
-          {data.isComposite && getCompositeHeader()}
+          {data && data.isComposite && getCompositeHeader(data)}
           <tr>
             <th className={styles.tooltipNameHeading}>Name</th>
             {valueEnabled && <th className={styles.tooltipValueHeading}>Value</th>}
@@ -162,12 +162,12 @@ export const Tooltip = ({
           )}
         </tfoot>
         <tbody>
-          {data.isComposite ? (
-            getCompositeMetrics()
+          {data && data.isComposite ? (
+            getCompositeMetrics(data)
           ) : (
-            <tr style={{ color: data.color }}>
-              <td className={styles.tooltipName}>{data.displayName}</td>
-              {valueEnabled && <td className={styles.tooltipValue}>{data.valueFormatted}</td>}
+            <tr style={{ color: data!.color }}>
+              <td className={styles.tooltipName}>{data!.displayName}</td>
+              {valueEnabled && <td className={styles.tooltipValue}>{data!.valueFormatted}</td>}
             </tr>
           )}
         </tbody>

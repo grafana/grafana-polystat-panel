@@ -16,14 +16,14 @@ import {
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
-import { DisplayModes, OperatorOptions, PolystatModel } from 'components/types';
-import { GLOBAL_FILL_COLOR_RGBA } from 'components/defaults';
-import { GetDecimalsForValue, SortVariableValuesByField } from 'utils';
+import { DisplayModes, OperatorOptions, PolystatModel } from '../components/types';
+import { GLOBAL_FILL_COLOR_RGBA } from '../components/defaults';
+import { GetDecimalsForValue, SortVariableValuesByField } from '../utils';
 import { ApplyComposites } from './composite_processor';
 import { CompositeItemType } from 'components/composites/types';
 import { ApplyOverrides } from './override_processor';
-import { OverrideItemType } from 'components/overrides/types';
-import { PolystatThreshold } from 'components/thresholds/types';
+import { OverrideItemType } from '../components/overrides/types';
+import { PolystatThreshold } from '../components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { GetMappedValue } from './valueMappingsWrapper';
 import { GetValueByOperator } from './stats';
@@ -168,7 +168,7 @@ const ApplyGlobalFormatting = (
   for (let index = 0; index < data.length; index++) {
     // Check for mapped value, if nothing set, format value
     if (data[index].value !== null) {
-      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings, data[index].value);
+      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
         // set color also
@@ -189,7 +189,10 @@ const ApplyGlobalFormatting = (
           if (formatted.prefix) {
             data[index].valueFormatted = `{$formatted.prefix} ${data[index].valueFormatted}`;
           }
-          data[index].valueRounded = roundValue(data[index].value, result.decimals);
+          const valueRounded = roundValue(data[index].value, result.decimals);
+          if (valueRounded !== null) {
+            data[index].valueRounded = valueRounded;
+          }
         }
         data[index].color = realGlobalFillColor;
       }
@@ -253,16 +256,16 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
   // get the value field
   const valueField = frame.fields.find((field) => field.type === FieldType.number);
   // using a bogus reducer returns the "standard" calcs
-  const standardCalcs = reduceField({ field: valueField, reducers: ['bogus'] });
+  const standardCalcs = reduceField({ field: valueField!, reducers: ['bogus'] });
   //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
-  const valueFieldName = getFieldDisplayName(valueField, frame);
+  const valueFieldName = getFieldDisplayName(valueField!, frame);
   const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
 
   let maxDecimals = 4;
-  if (valueField.config.decimals !== undefined) {
-    maxDecimals = valueField.config.decimals;
+  if (valueField!.config.decimals !== undefined && valueField!.config.decimals !== null) {
+    maxDecimals = valueField!.config.decimals;
   }
-  const result = getValueFormat(valueField.config.unit)(operatorValue, maxDecimals, undefined, undefined);
+  const result = getValueFormat(valueField!.config.unit)(operatorValue, maxDecimals, undefined, undefined);
   const valueFormatted = formattedValueToString(result);
 
   const model: PolystatModel = {
@@ -271,7 +274,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     thresholdLevel: 0,
     value: operatorValue,
     valueFormatted: valueFormatted,
-    valueRounded: roundValue(operatorValue, maxDecimals),
+    valueRounded: roundValue(operatorValue, maxDecimals) || operatorValue,
     stats: standardCalcs,
     name: valueFieldName, // aSeries.name,
     displayName: valueFieldName, // aSeries.name,

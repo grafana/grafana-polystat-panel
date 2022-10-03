@@ -122,7 +122,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
         tracker.map((tracker: ThresholdItemTracker, index: number) => {
           return (
             <ThresholdItem
-              disabled={options.disabled}
+              disabled={options.disabled || false}
               key={`threshold-item-index-${tracker.ID}`}
               ID={tracker.ID}
               threshold={tracker.threshold}

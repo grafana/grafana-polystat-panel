@@ -44,7 +44,7 @@ describe('Main Processor', () => {
       };
       for (const statKey of Object.keys(staticStats)) {
         const modelStat = modelA.stats[statKey];
-        const staticStat = staticStats[statKey];
+        const staticStat = staticStats[statKey as keyof typeof staticStats];
         //console.log(`stat ${stat} static ${staticStat} computed ${convertedStat}`);
         expect(modelStat).toEqual(staticStat);
       }
