@@ -22,31 +22,39 @@
         }],
         "screenshots": [{
             "name": "Showcase",
-            "path": "img/screenshots/polystat-composite-example1.png"
+            "path": "img/screenshots/polystat-v2-agent-all-visible.png"
         }, {
             "name": "Animation",
-            "path": "img/screenshots/polystat-animate1.gif"
+            "path": "img/screenshots/polystat-v2-composite-animated.gif"
         }, {
             "name": "Options",
-            "path": "img/screenshots/polystat-options-all.png"
+            "path": "img/screenshots/polystat-v2-global-all.png"
+        }, {
+            "name": "Hexagons",
+            "path": "img/screenshots/polystat-v2-shape-hexagon-pointed-top.png"
+        }, {
+            "name": "Squares",
+            "path": "img/screenshots/polystat-v2-shape-square.png"
+        }, {
+            "name": "Circles",
+            "path": "img/screenshots/polystat-v2-shape-circle.png"
         }, {
             "name": "Overrides",
-            "path": "img/screenshots/polystat-overrides-all.png"
+            "path": "img/screenshots/polystat-v2-overrides-with-thresholds.png"
         }, {
             "name": "Tooltips",
-            "path": "img/screenshots/polystat-tooltip.png"
-        }
-        ,{
+            "path": "img/screenshots/polystat-v2-tooltips-all.png"
+        }, {
             "name": "Composites",
-            "path": "img/screenshots/polystat-composites-all.png"
+            "path": "img/screenshots/polystat-v2-composite-with-tooltip.png"
         }],
         "version": "%VERSION%",
         "updated": "%TODAY%"
     },
 
     "dependencies": {
-        "grafanaVersion": "7.3.0",
-        "grafanaDependency": ">=7.3.0",
+        "grafanaVersion": "8.4.x",
+        "grafanaDependency": ">=8.4.10",
         "plugins": []
     }
 }

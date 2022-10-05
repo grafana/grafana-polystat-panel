@@ -1,7 +1,7 @@
-import _ from 'lodash';
+import { sortBy as lodashSortBy, toLower as lodashToLower, isNumber as lodashIsNumber } from 'lodash';
 
-function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaledDecimals } {
-  if (_.isNumber(panelDecimals)) {
+function GetDecimalsForValue(value: any, panelDecimals: any): { decimals: number; scaledDecimals: any } {
+  if (lodashIsNumber(panelDecimals)) {
     return { decimals: panelDecimals, scaledDecimals: null };
   }
 
@@ -53,7 +53,7 @@ function GetDecimalsForValue(value: any, panelDecimals: any): { decimals; scaled
  * @param {minFontPx} the smallest acceptable font size in pixels
  * @param {maxFontPx} the largest acceptable font size in pixels
  */
-function getTextSizeForWidth(text: string, font: any, width, minFontPx, maxFontPx) {
+function getTextSizeForWidth(text: string, font: any, width: number, minFontPx: number, maxFontPx: number) {
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
   if (w <= width) {
@@ -124,9 +124,12 @@ function getTextWidth(text: string, font: string) {
   // re-use canvas object for better performance
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  context.font = font;
-  const metrics = context.measureText(text);
-  return metrics.width;
+  if (context) {
+    context.font = font;
+    const metrics = context.measureText(text);
+    return metrics.width;
+  }
+  return 40; // unknown due to context failure
 }
 
 function RGBToHex(text: string) {
@@ -158,7 +161,7 @@ function getTextOrValue(o: any) {
   }
 }
 
-function SortVariableValuesByField(options, sortField: string, sortOrder: number) {
+function SortVariableValuesByField(options: any, sortField: string, sortOrder: number) {
   if (sortOrder === 0) {
     return options;
   }
@@ -167,10 +170,10 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
 
   switch (sortType) {
     case 1: // Alphabetical Case Sensitive
-      options = _.sortBy(options, sortField);
+      options = lodashSortBy(options, sortField);
       break;
     case 2: // Numerical with sub-match
-      options = _.sortBy(options, (item) => {
+      options = lodashSortBy(options, (item) => {
         // if the content of the field to sort by is textual, check if there is a numerical area to sort by
         if (isNaN(item[sortField])) {
           const matchField = item[sortField];
@@ -186,10 +189,10 @@ function SortVariableValuesByField(options, sortField: string, sortOrder: number
       });
       break;
     case 3: // Alphabetical Case Insensitive
-      options = _.sortBy(options, (item) => {
+      options = lodashSortBy(options, (item) => {
         const itemContent = item[sortField];
         if (isNaN(itemContent)) {
-          return _.toLower(item[sortField]);
+          return lodashToLower(item[sortField]);
         } else {
           return itemContent;
         }

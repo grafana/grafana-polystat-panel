@@ -1,15 +1,23 @@
 version: "3"
 services:
   grafana:
-    #image: grafana/grafana:latest
-    #image: grafana/grafana:9.0.0
-    image: grafana/grafana:7.3.10
+    #image: grafana/grafana:8.2.7
+    #image: grafana/grafana:8.3.11
+    image: grafana/grafana:8.4.11
+    #image: grafana/grafana:8.5.11
+    #image: grafana/grafana:9.0.8
+    #image: grafana/grafana:9.1.2
     ports:
-      - "3000:3000"
+      - 3000:3000
     volumes:
-      - ./:/var/lib/grafana/plugins/grafana-polystat-panel
+      - ./dist:/var/lib/grafana/plugins/grafana-polystat-panel
       - ./provisioning:/etc/grafana/provisioning
     environment:
-      - TERM=linux
-      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-polystat-panel
-    #  - GF_INSTALL_PLUGINS=grafana-polystat-panel
+      #GF_AUTH_ANONYMOUS_ENABLED: 1
+      #GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_DATAPROXY_LOGGING: 1
+      GF_LIVE_ALLOWED_ORIGINS: '*'
+      GF_LOG_LEVEL: debug
+      GF_LOG_FILTERS: alerting.scheduler:info
+      TERM: linux
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: grafana-polystat-panel
