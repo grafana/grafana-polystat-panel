@@ -33,8 +33,9 @@ export async function getEntries(): Promise<Record<string, string>> {
     return modules.reduce((result, module) => {
       const pluginPath = path.resolve(path.dirname(module), parent);
       const pluginName = path.basename(pluginPath);
+      const entryName = plugins.length > 1 ? `${pluginName}/module` : 'module';
   
-      result[`${pluginName}/module`] = path.join(parent, module);
+      result[entryName] = path.join(parent, module);
       return result;
     }, result);
   }, {});

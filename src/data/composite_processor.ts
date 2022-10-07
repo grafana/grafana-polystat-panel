@@ -13,13 +13,18 @@ const resolveCompositeTemplates = (
 ): CompositeItemType[] => {
   const ret: CompositeItemType[] = [];
   metricComposites.forEach((item: CompositeItemType) => {
-    const firstResolve = replaceVariables(item.name); // th e ScopedVars should expand here
-    const resolved = replaceVariables(firstResolve, {}, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
+    const resolved = replaceVariables(item.name, undefined, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
+    // if the composite name has template syntax, mark it as isTemplated true
+    const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
+    const matchResult = item.name.match(variableRegex);
+    if (matchResult && matchResult.length > 0) {
+      item.isTemplated = true;
+    }
     resolved.forEach((newName: string) => {
       ret.push({
         ...item,
         name: newName,
-        isTemplated: true,
+        isTemplated: item.isTemplated,
         templatedName: item.name,
       });
     });
@@ -49,23 +54,30 @@ const resolveMemberTemplates = (
     if (member.seriesMatch) {
       const matchResult = member.seriesMatch.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
-        matchResult.forEach((template) => {
+        matchResult.forEach((aMatch) => {
           // if the template contains the composite template, replace it with the compositeName
-          if (isTemplated && template.includes(templatedName)) {
+          if (isTemplated && aMatch.includes(templatedName)) {
             // replace it
-            template = template.replace(templatedName, compositeName);
-          }
-          const resolvedSeriesNames = [replaceVariables(template, {}, 'raw')];
-          resolvedSeriesNames.forEach((seriesName) => {
-            const newName = member.seriesMatch.replace(template, seriesName);
-            const escapedName = escapeStringForRegex(seriesName);
-            const newSeriesNameEscaped = member.seriesMatch.replace(template, escapedName);
+            const compositeExpanded = member.seriesMatch.replace(templatedName, compositeName);
+            const compositeExpandedEscaped = escapeStringForRegex(compositeExpanded);
             ret.push({
               ...member,
-              seriesName: newName,
-              seriesNameEscaped: newSeriesNameEscaped,
+              seriesName: compositeExpanded,
+              seriesNameEscaped: compositeExpandedEscaped,
             });
-          });
+          } else {
+            const resolvedSeriesNames = [replaceVariables(aMatch, undefined, 'raw')];
+            resolvedSeriesNames.forEach((seriesName) => {
+              const newName = member.seriesMatch.replace(aMatch, seriesName);
+              const escapedName = escapeStringForRegex(seriesName);
+              const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
+              ret.push({
+                ...member,
+                seriesName: newName,
+                seriesNameEscaped: newNameEscaped,
+              });
+            });
+          }
         });
       } else {
         ret.push(member);
@@ -126,6 +138,7 @@ export const ApplyComposites = (
     return data;
   }
   const filteredMetrics: number[] = [];
+  const keepMetrics: number[] = [];
   const clonedComposites: PolystatModel[] = [];
   // the composite Name can be a template variable
   // the composite should only match specific metrics or expanded templated metrics that use the composite name
@@ -173,6 +186,8 @@ export const ApplyComposites = (
           // only hide if requested
           if (!aComposite.showMembers) {
             filteredMetrics.push(index);
+          } else {
+            keepMetrics.push(index);
           }
           if (aComposite.clickThrough && aComposite.clickThrough.length > 0) {
             // process template variables
@@ -231,6 +246,15 @@ export const ApplyComposites = (
   }
   // now merge the clonedComposites into data
   Array.prototype.push.apply(data, clonedComposites);
+  // remove the keepMetrics from the filteredMetrics list
+  // these have been marked by at least one composite to be displayed
+  for (let i = 0; i < keepMetrics.length; i++) {
+    const keptMetric = keepMetrics[i];
+    const location = filteredMetrics.indexOf(keptMetric);
+    if (location >= 0) {
+      filteredMetrics.splice(location, 1);
+    }
+  }
   // sort by value descending
   filteredMetrics.sort((a, b) => {
     return b - a;
