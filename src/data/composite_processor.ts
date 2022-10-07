@@ -59,21 +59,22 @@ const resolveMemberTemplates = (
           if (isTemplated && aMatch.includes(templatedName)) {
             // replace it
             const compositeExpanded = member.seriesMatch.replace(templatedName, compositeName);
+            const compositeExpandedEscaped = escapeStringForRegex(compositeExpanded);
             ret.push({
               ...member,
               seriesName: compositeExpanded,
-              seriesNameEscaped: compositeExpanded,
+              seriesNameEscaped: compositeExpandedEscaped,
             });
           } else {
             const resolvedSeriesNames = [replaceVariables(aMatch, undefined, 'raw')];
             resolvedSeriesNames.forEach((seriesName) => {
               const newName = member.seriesMatch.replace(aMatch, seriesName);
               const escapedName = escapeStringForRegex(seriesName);
-              const newSeriesNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
+              const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
               ret.push({
                 ...member,
                 seriesName: newName,
-                seriesNameEscaped: newSeriesNameEscaped,
+                seriesNameEscaped: newNameEscaped,
               });
             });
           }
