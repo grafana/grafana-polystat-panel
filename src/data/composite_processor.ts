@@ -13,7 +13,7 @@ const resolveCompositeTemplates = (
 ): CompositeItemType[] => {
   const ret: CompositeItemType[] = [];
   metricComposites.forEach((item: CompositeItemType) => {
-    const resolved = replaceVariables(item.name, undefined, customFormatter).split('#️⃣🔠🆗🆗🔠#️⃣');
+    const resolved = replaceVariables(item.name, undefined, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
     // if the composite name has template syntax, mark it as isTemplated true
     const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
     const matchResult = item.name.match(variableRegex);
