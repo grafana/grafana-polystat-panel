@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.0.1
+
+- Fixes ability to use template variables inside composite names
+- Fixes hide/show composite member metrics when they overlap in multiple composites
+
 ## v2.0.0
 
 - Plugin has been converted to React
