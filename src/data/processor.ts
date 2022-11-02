@@ -118,7 +118,7 @@ const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) =>
               extractedTxt += extractedTxt.length > 0 ? ' ' + value.toString() : value.toString();
             }
           });
-          data[i].name = extractedTxt;
+          data[i].displayName = extractedTxt;
         }
       }
     }

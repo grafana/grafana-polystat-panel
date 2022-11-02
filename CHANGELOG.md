@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v2.0.2
+
+- Fix for issue #240
+  - Global regex will now correctly modify the display name
+  - Using transformations for metric data also works (Rename by regex and others)
+
 ## v2.0.1
 
 - Fixes ability to use template variables inside composite names
