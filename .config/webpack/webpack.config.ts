@@ -45,6 +45,7 @@ const config = async (env): Promise<Configuration> => ({
     'react-redux',
     'redux',
     'rxjs',
+    'react-router',
     'react-router-dom',
     'd3',
     'angular',
@@ -59,7 +60,7 @@ const config = async (env): Promise<Configuration> => ({
       const stripPrefix = (request) => request.substr(prefix.length);
 
       if (hasPrefix(request)) {
-        return callback(null, stripPrefix(request));
+        return callback(undefined, stripPrefix(request));
       }
 
       callback();
@@ -91,34 +92,45 @@ const config = async (env): Promise<Configuration> => ({
         },
       },
       {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
+      },
+      {
+        exclude: /(node_modules)/,
+        test: /\.s[ac]ss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
         test: /\.(png|jpe?g|gif|svg)$/,
-        use: [
-          {
-            loader: 'asset/resource',
-            options: {
-              outputPath: '/',
-              name: Boolean(env.production) ? '[path][hash].[ext]' : '[path][name].[ext]',
-            },
-          },
-        ],
+        type: 'asset/resource',
+        generator: {
+          // Keep publicPath relative for host.com/grafana/ deployments
+          publicPath: `public/plugins/${getPluginId()}/img/`,
+          outputPath: 'img/',
+          filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
+        },
       },
       {
         test: /\.(woff|woff2|eot|ttf|otf)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'asset/resource',
-        options: {
+        type: 'asset/resource',
+        generator: {
           // Keep publicPath relative for host.com/grafana/ deployments
           publicPath: `public/plugins/${getPluginId()}/fonts`,
-          outputPath: 'fonts',
-          name: Boolean(env.production) ? '[hash].[ext]' : '[name].[ext]',
+          outputPath: 'fonts/',
+          filename: Boolean(env.production) ? '[hash][ext]' : '[name][ext]',
         },
       },
     ],
   },
 
   output: {
-    clean: true,
+    clean: {
+      keep: /gpx_.*/,
+    },
     filename: '[name].js',
-    libraryTarget: 'amd',
+    library: {
+      type: 'amd',
+    },
     path: path.resolve(process.cwd(), DIST_DIR),
     publicPath: '/',
   },
@@ -178,6 +190,8 @@ const config = async (env): Promise<Configuration> => ({
 
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    // handle resolving "rootDir" paths
+    modules: [path.resolve(process.cwd(), 'src'), 'node_modules'],
     unsafeCache: true,
   },
 });
