@@ -109,12 +109,12 @@ We need to update the `scripts` in the `package.json` to use the extended Webpac
 
 **Update for `build`:**
 ```diff
--"build": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -c ./.config/webpack/webpack.config.ts --env production",
-+"build": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -c ./webpack.config.ts --env production",
+-"build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
++"build": "webpack -c ./webpack.config.ts --env production",
 ```
 
 **Update for `dev`:**
 ```diff
--"dev": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -w -c ./.config/webpack/webpack.config.ts --env development",
-+"dev": "TS_NODE_PROJECT=\"./.config/webpack/tsconfig.webpack.json\" webpack -w -c ./webpack.config.ts --env development",
+-"dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
++"dev": "webpack -w -c ./webpack.config.ts --env development",
 ```
