@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.0.3
+
+- Fix for Issue #241 (Global Threshold Migration)
+
 ## v2.0.2
 
 - Fix for issue #240
