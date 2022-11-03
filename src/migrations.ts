@@ -1,8 +1,9 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from './components/overrides/types';
-import { DisplayModes, PolygonShapes, PolystatOptions } from './components/types';
+import { PolystatThreshold } from './components/thresholds/types';
 
+import { DisplayModes, PolygonShapes, PolystatOptions } from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -20,6 +21,7 @@ interface AngularPolystatOptions {
   globalDisplayMode: string;
   globalDisplayTextTriggeredEmpty: string;
   globalOperatorName: string;
+  globalThresholds: AngularThreshold[];
   globalUnitFormat: string;
   gradientEnabled: boolean;
   hexagonSortByDirection: number;
@@ -267,6 +269,18 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   if (angular.globalOperatorName) {
     options.globalOperator = convertOperators(angular.globalOperatorName);
   }
+  if (angular.globalThresholds) {
+    options.globalThresholdsConfig = [];
+    for (const threshold of angular.globalThresholds) {
+      const migratedThreshold: PolystatThreshold = {
+        value: threshold.value,
+        state: threshold.state,
+        color: threshold.color,
+      };
+      options.globalThresholdsConfig.push(migratedThreshold);
+    }
+  }
+
   if (angular.globalUnitFormat) {
     options.globalUnitFormat = angular.globalUnitFormat;
   }
@@ -430,11 +444,14 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
               "state": 1,
               "value": 78
               */
-            anOverride.thresholds = v;
-            // cleanup
-            for (const threshold of anOverride.thresholds) {
-              // @ts-ignore
-              delete threshold['$$hashKey'];
+            anOverride.thresholds = [];
+            for (const threshold of v) {
+              const migratedThreshold: PolystatThreshold = {
+                value: threshold.value,
+                state: threshold.state,
+                color: threshold.color,
+              };
+              anOverride.thresholds.push(migratedThreshold);
             }
             break;
           case 'unitFormat':
