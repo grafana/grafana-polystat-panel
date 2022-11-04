@@ -169,6 +169,7 @@ describe('Polystat -> PolystatV2 migrations', () => {
         globalDisplayMode: 'all',
         globalDisplayTextTriggeredEmpty: 'OK',
         globalOperatorName: 'avg',
+        globalThresholds: [],
         globalUnitFormat: 'short',
         gradientEnabled: true,
         hexagonSortByDirection: 1,
@@ -203,6 +204,78 @@ describe('Polystat -> PolystatV2 migrations', () => {
     expect(options.autoSizeColumns).toEqual(true);
     expect(options.globalClickthrough).toEqual('https://grafana.com');
     expect(options.compositeConfig.animationSpeed).toEqual('2500');
+  });
+
+  it('correctly migrates global thresholds', () => {
+    const oldPolystatOptions = {
+      polystat: {
+        animationSpeed: 2500,
+        columnAutoSize: true,
+        columns: '6',
+        defaultClickThrough: 'https://grafana.com',
+        defaultClickThroughNewTab: false,
+        defaultClickThroughSanitize: true,
+        displayLimit: 100,
+        ellipseCharacters: 18,
+        ellipseEnabled: false,
+        fontAutoColor: true,
+        fontAutoScale: true,
+        fontSize: 12,
+        fontType: 'Roboto',
+        globalDecimals: 2,
+        globalDisplayMode: 'all',
+        globalDisplayTextTriggeredEmpty: 'OK',
+        globalOperatorName: 'avg',
+        globalThresholds: [
+          {
+            value: 0,
+            state: 0,
+            color: '#299c46',
+          },
+          {
+            value: 60,
+            state: 1,
+            color: '#ED8128',
+          },
+          {
+            value: 70,
+            state: 2,
+            color: '#d44a3a',
+          },
+        ],
+        globalUnitFormat: 'short',
+        gradientEnabled: true,
+        hexagonSortByDirection: 1,
+        hexagonSortByField: 'name',
+        maxMetrics: 0,
+        polygonBorderColor: '#000000',
+        polygonBorderSize: 2,
+        polygonGlobalFillColor: '#0a55a1',
+        radius: '',
+        radiusAutoSize: true,
+        regexPattern: '',
+        rowAutoSize: true,
+        rows: '',
+        shape: 'square',
+        tooltipDisplayMode: 'all',
+        tooltipDisplayTextTriggeredEmpty: 'OK',
+        tooltipEnabled: true,
+        tooltipFontSize: 12,
+        tooltipFontType: 'Roboto',
+        tooltipPrimarySortDirection: 2,
+        tooltipPrimarySortField: 'thresholdLevel',
+        tooltipSecondarySortDirection: 2,
+        tooltipSecondarySortField: 'value',
+        tooltipTimestampEnabled: true,
+        valueEnabled: true,
+      },
+    };
+    const options = migrateDefaults(oldPolystatOptions.polystat);
+    console.log('global thresholds...');
+    expect(options.globalThresholdsConfig.length).toEqual(3);
+    expect(options.globalThresholdsConfig[0].color).toEqual('#299c46');
+    expect(options.globalThresholdsConfig[1].color).toEqual('#ED8128');
+    expect(options.globalThresholdsConfig[2].color).toEqual('#d44a3a');
   });
 
   it('correctly migrates overrides', () => {
@@ -274,8 +347,9 @@ describe('Polystat -> PolystatV2 migrations', () => {
     };
     const options = migrateOverrides(oldPolystatOptions);
     console.log('overrides...');
-    console.log(JSON.stringify(options, null, 2));
+    console.log(JSON.stringify(options.overrideConfig, null, 2));
     expect(options.overrideConfig.overrides[0].label).toEqual('OVERRIDE 1');
+    expect(options.overrideConfig.overrides[0].thresholds[0].color).toEqual('#299c46');
   });
 
   it('correctly migrates composites to compositeConfig', () => {
