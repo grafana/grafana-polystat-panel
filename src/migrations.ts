@@ -184,7 +184,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalRegexPattern: '',
     globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
     globalShowValueEnabled: true,
-    globalTextFontColor: '',
+    globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
     globalTextFontAutoColorEnabled: false,
     globalThresholdsConfig: [],
