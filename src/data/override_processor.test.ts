@@ -38,7 +38,7 @@ describe('Test Overrides', () => {
         { name: 'A-series', type: FieldType.number, values: [200, 210, 220] },
       ],
     });
-    modelA = DataFrameToPolystat(frameA, 'mean');
+    modelA = DataFrameToPolystat(frameA, 'mean')[0];
   });
   describe('Override affects model', () => {
     it('returns an override match', () => {

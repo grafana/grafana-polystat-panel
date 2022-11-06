@@ -15,7 +15,7 @@ const frameA = toDataFrame({
     { name: 'A-series02', type: FieldType.number, values: [200, 210, 220], config: field },
   ],
 });
-export const modelA: PolystatModel = DataFrameToPolystat(frameA, 'mean');
+export const modelA: PolystatModel = DataFrameToPolystat(frameA, 'mean')[0];
 //
 const frameB = toDataFrame({
   fields: [
@@ -24,14 +24,14 @@ const frameB = toDataFrame({
   ],
 });
 //
-export const modelB: PolystatModel = DataFrameToPolystat(frameB, 'mean');
+export const modelB: PolystatModel = DataFrameToPolystat(frameB, 'mean')[0];
 const frameC = toDataFrame({
   fields: [
     { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
     { name: 'C-series01', type: FieldType.number, values: [333, 444, 555] },
   ],
 });
-export const modelC: PolystatModel = DataFrameToPolystat(frameC, 'mean');
+export const modelC: PolystatModel = DataFrameToPolystat(frameC, 'mean')[0];
 
 /*
   Numerical Metric Names
@@ -42,7 +42,7 @@ const numericalFrameA = toDataFrame({
     { name: '02', type: FieldType.number, values: [200, 210, 220], config: field },
   ],
 });
-export const numericalModelA: PolystatModel = DataFrameToPolystat(numericalFrameA, 'mean');
+export const numericalModelA: PolystatModel = DataFrameToPolystat(numericalFrameA, 'mean')[0];
 
 const numericalFrameB = toDataFrame({
   fields: [
@@ -50,7 +50,7 @@ const numericalFrameB = toDataFrame({
     { name: '03', type: FieldType.number, values: [500, 510, 520] },
   ],
 });
-export const numericalModelB: PolystatModel = DataFrameToPolystat(numericalFrameB, 'mean');
+export const numericalModelB: PolystatModel = DataFrameToPolystat(numericalFrameB, 'mean')[0];
 
 const numericalFrameC = toDataFrame({
   fields: [
@@ -58,7 +58,7 @@ const numericalFrameC = toDataFrame({
     { name: '01', type: FieldType.number, values: [333, 444, 555] },
   ],
 });
-export const numericalModelC: PolystatModel = DataFrameToPolystat(numericalFrameC, 'mean');
+export const numericalModelC: PolystatModel = DataFrameToPolystat(numericalFrameC, 'mean')[0];
 
 /*
   Numerical Metric Names
@@ -69,7 +69,7 @@ const casedFrameA = toDataFrame({
     { name: 'series-a1', type: FieldType.number, values: [200, 210, 220], config: field },
   ],
 });
-export const casedModelA: PolystatModel = DataFrameToPolystat(casedFrameA, 'mean');
+export const casedModelA: PolystatModel = DataFrameToPolystat(casedFrameA, 'mean')[0];
 
 const casedFrameB = toDataFrame({
   fields: [
@@ -77,7 +77,7 @@ const casedFrameB = toDataFrame({
     { name: 'series-a3', type: FieldType.number, values: [500, 510, 520] },
   ],
 });
-export const casedModelB: PolystatModel = DataFrameToPolystat(casedFrameB, 'mean');
+export const casedModelB: PolystatModel = DataFrameToPolystat(casedFrameB, 'mean')[0];
 
 const casedFrameC = toDataFrame({
   fields: [
@@ -85,4 +85,4 @@ const casedFrameC = toDataFrame({
     { name: 'series-A2', type: FieldType.number, values: [333, 444, 555] },
   ],
 });
-export const casedModelC: PolystatModel = DataFrameToPolystat(casedFrameC, 'mean');
+export const casedModelC: PolystatModel = DataFrameToPolystat(casedFrameC, 'mean')[0];

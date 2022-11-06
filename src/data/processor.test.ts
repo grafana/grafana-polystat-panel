@@ -13,7 +13,7 @@ describe('Main Processor', () => {
       ],
     });
     // operator mean
-    modelA = DataFrameToPolystat(frameA, 'mean');
+    modelA = DataFrameToPolystat(frameA, 'mean')[0];
     modelA.operatorName = 'mean';
   });
 

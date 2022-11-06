@@ -24,7 +24,7 @@ describe('ClickThroughTransformer', () => {
       ],
     });
     // operator mean
-    modelA = DataFrameToPolystat(frameA, 'mean');
+    modelA = DataFrameToPolystat(frameA, 'mean')[0];
     modelA.operatorName = 'mean';
     modelA.clickThrough = '/dashboard/test?orgId=1&var-CUSTOM=${__cell_name}';
     models.push(modelA);
@@ -35,7 +35,7 @@ describe('ClickThroughTransformer', () => {
       ],
     });
     // operator mean
-    modelB = DataFrameToPolystat(frameB, 'mean');
+    modelB = DataFrameToPolystat(frameB, 'mean')[0];
     modelB.operatorName = 'mean';
     modelB.clickThrough = '/dashboard/test?orgId=1&var-CUSTOM=${__cell_name}';
     models.push(modelB);

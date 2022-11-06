@@ -19,7 +19,7 @@ describe('Composite Processor', () => {
       ],
     });
     // operator mean
-    modelA = DataFrameToPolystat(frameA, 'mean');
+    modelA = DataFrameToPolystat(frameA, 'mean')[0];
     modelA.operatorName = 'mean';
 
     const frameB = toDataFrame({
@@ -29,7 +29,7 @@ describe('Composite Processor', () => {
       ],
     });
     // operator mean
-    modelB = DataFrameToPolystat(frameB, 'mean');
+    modelB = DataFrameToPolystat(frameB, 'mean')[0];
     modelB.operatorName = 'mean';
 
     compositeA = {
