@@ -72,7 +72,6 @@ export interface PolystatModel {
   timestamp: number;
   prefix: string;
   suffix: string;
-  seriesRaw?: DataFrame;
   color: string;
   clickThrough: string;
   operatorName: string;

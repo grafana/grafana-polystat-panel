@@ -278,7 +278,6 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     const valueFormatted = formattedValueToString(result);
 
     const model: PolystatModel = {
-      seriesRaw: frame,
       displayMode: DisplayModes[0].value,
       thresholdLevel: 0,
       value: operatorValue,
