@@ -1,4 +1,4 @@
-import { DataFrame, SelectableValue } from '@grafana/data';
+import { SelectableValue } from '@grafana/data';
 import { CompositeItemType } from 'components/composites/types';
 import { OverrideItemType } from './overrides/types';
 import { PolystatThreshold } from './thresholds/types';
