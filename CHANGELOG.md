@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v2.0.4
+
+- Fix for Issue #242 (wide data conversion)
+    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model did not handle this scenario.
+    This is seen with CSV Content and other datasources.  This fix will detect wide data received in this format and convert as expected.
+
 ## v2.0.3
 
 - Fix for Issue #241 (Global Threshold Migration)
