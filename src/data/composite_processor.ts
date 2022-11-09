@@ -55,29 +55,22 @@ const resolveMemberTemplates = (
       const matchResult = member.seriesMatch.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((aMatch) => {
-          // if the template contains the composite template, replace it with the compositeName
           if (isTemplated && aMatch.includes(templatedName)) {
-            // replace it
-            const compositeExpanded = member.seriesMatch.replace(templatedName, compositeName);
-            const compositeExpandedEscaped = escapeStringForRegex(compositeExpanded);
-            ret.push({
-              ...member,
-              seriesName: compositeExpanded,
-              seriesNameEscaped: compositeExpandedEscaped,
-            });
-          } else {
-            const resolvedSeriesNames = [replaceVariables(aMatch, undefined, 'raw')];
-            resolvedSeriesNames.forEach((seriesName) => {
-              const newName = member.seriesMatch.replace(aMatch, seriesName);
-              const escapedName = escapeStringForRegex(seriesName);
-              const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
-              ret.push({
-                ...member,
-                seriesName: newName,
-                seriesNameEscaped: newNameEscaped,
-              });
-            });
+            aMatch = aMatch.replace(templatedName, compositeName);
           }
+          // expand the templatedName (append compositeName to the variables first)
+          const templateVars: ScopedVars = {
+            compositeName: { text: 'compositeName', value: compositeName },
+          };
+          const resolvedSeriesName = replaceVariables(aMatch, templateVars, 'raw');
+          const newName = member.seriesMatch.replace(aMatch, resolvedSeriesName);
+          const escapedName = escapeStringForRegex(resolvedSeriesName);
+          const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
+          ret.push({
+            ...member,
+            seriesName: newName,
+            seriesNameEscaped: newNameEscaped,
+          });
         });
       } else {
         ret.push(member);
