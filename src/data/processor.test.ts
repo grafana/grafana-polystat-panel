@@ -1,6 +1,6 @@
 import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
-import { DataFrameToPolystat } from './processor';
+import { DataFrameToPolystat, ApplyGlobalRegexPattern } from './processor';
 
 describe('Main Processor', () => {
   var modelA: PolystatModel;
@@ -16,6 +16,7 @@ describe('Main Processor', () => {
     // operator mean
     modelA = DataFrameToPolystat(frameA, 'mean')[0];
     modelA.operatorName = 'mean';
+    modelA.clickThrough = 'https://grafana.com';
 
     // wide
     const frameB = toDataFrame({
@@ -28,6 +29,7 @@ describe('Main Processor', () => {
     // operator mean
     modelA = DataFrameToPolystat(frameA, 'mean')[0];
     models = DataFrameToPolystat(frameB, 'mean');
+    models[0].clickThrough = 'https://grafana.com/frameB';
   });
 
   describe('With single result', () => {
@@ -96,6 +98,14 @@ describe('Main Processor', () => {
       }
       console.log(JSON.stringify(models[0], null, 2));
       console.log(JSON.stringify(models[1], null, 2));
+    });
+  });
+  describe('Test ApplyGlobalRegexPattern', () => {
+    it('returns polystat model with -series removed from names', () => {
+      const processed = ApplyGlobalRegexPattern(models, '/(.*)-series/');
+      console.log(JSON.stringify(processed, null, 2));
+      expect(processed[0].displayName).toEqual('A');
+      expect(processed[1].displayName).toEqual('B');
     });
   });
 });

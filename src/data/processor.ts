@@ -105,7 +105,7 @@ export function ProcessDataFrames(
  *
  * @return  {DataFrame[]}                [return description]
  */
-const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) => {
+export const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) => {
   for (let i = 0; i < data.length; i++) {
     if (regexPattern !== '') {
       const regexVal = stringToJsRegex(regexPattern);
@@ -129,7 +129,7 @@ const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) =>
   return data;
 };
 
-const ApplyGlobalClickThrough = (
+export const ApplyGlobalClickThrough = (
   data: PolystatModel[],
   globalClickthrough: string,
   globalClickthroughNewTabEnabled: boolean,
@@ -158,7 +158,7 @@ const processDefaultClickThrough = (index: number, globalClickthrough: string, d
   return url;
 };
 
-const ApplyGlobalFormatting = (
+export const ApplyGlobalFormatting = (
   data: PolystatModel[],
   fieldConfig: FieldConfigSource<any>,
   globalUnitFormat: string,
