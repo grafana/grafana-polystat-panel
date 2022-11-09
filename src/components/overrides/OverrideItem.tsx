@@ -17,7 +17,7 @@ import { OverrideItemProps, OverrideItemType } from './types';
 import { ThresholdsEditor } from '../../components/thresholds/ThresholdsEditor';
 import { PolystatThreshold } from '../../components/thresholds/types';
 import { OperatorOptions } from '../../components/types';
-import { SelectableValue } from '@grafana/data';
+import { FieldType, SelectableValue } from '@grafana/data';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
   const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
@@ -64,10 +64,15 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
       const frames = props.context.data;
       let hints: CascaderOption[] = [];
       for (let i = 0; i < frames.length; i++) {
-        hints.push({
-          label: frames[i].name,
-          value: frames[i].name,
-        });
+        // iterate over fields, get all number types and provide as hints
+        for (const aField of frames[i].fields) {
+          if (aField.type === FieldType.number) {
+            hints.push({
+              label: aField.name,
+              value: aField.name,
+            });
+          }
+        }
       }
       setMetricHints(hints);
     }
