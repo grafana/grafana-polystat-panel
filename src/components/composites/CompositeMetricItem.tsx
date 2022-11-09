@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { Input, Field, IconButton, HorizontalGroup, Cascader, CascaderOption } from '@grafana/ui';
 import { CompositeMetricItemProps } from './types';
+import { FieldType } from '@grafana/data';
 
 export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) => {
   const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
@@ -33,10 +34,15 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
       const frames = props.context.data;
       let hints: CascaderOption[] = [];
       for (let i = 0; i < frames.length; i++) {
-        hints.push({
-          label: frames[i].name,
-          value: frames[i].name,
-        });
+        // iterate over fields, get all number types and provide as hints
+        for (const aField of frames[i].fields) {
+          if (aField.type === FieldType.number) {
+            hints.push({
+              label: aField.name,
+              value: aField.name,
+            });
+          }
+        }
       }
       setMetricHints(hints);
     }
