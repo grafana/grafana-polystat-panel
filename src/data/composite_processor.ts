@@ -7,7 +7,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { CompositeItemType, CompositeMetric } from '../components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 
-const resolveCompositeTemplates = (
+export const resolveCompositeTemplates = (
   metricComposites: CompositeItemType[],
   replaceVariables: InterpolateFunction
 ): CompositeItemType[] => {
@@ -33,14 +33,14 @@ const resolveCompositeTemplates = (
   return ret;
 };
 
-const customFormatter = (value: any) => {
+export const customFormatter = (value: any) => {
   if (Object.prototype.toString.call(value) === '[object Array]') {
     return value.join(CUSTOM_SPLIT_DELIMITER);
   }
   return value;
 };
 
-const resolveMemberTemplates = (
+export const resolveMemberTemplates = (
   compositeName: string,
   isTemplated: boolean,
   templatedName: string,
