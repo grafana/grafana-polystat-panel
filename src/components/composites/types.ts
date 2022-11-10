@@ -19,7 +19,6 @@ export interface CompositeItemType {
   name: string;
   label: string;
   order: number;
-  templatedName: string;
   isTemplated: boolean;
   displayMode: string;
   enabled: boolean;

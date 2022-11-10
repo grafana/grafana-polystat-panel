@@ -25,7 +25,6 @@ export const resolveCompositeTemplates = (
         ...item,
         name: newName,
         isTemplated: item.isTemplated,
-        templatedName: item.name,
       });
     });
   });
@@ -42,8 +41,6 @@ export const customFormatter = (value: any) => {
 
 export const resolveMemberTemplates = (
   compositeName: string,
-  isTemplated: boolean,
-  templatedName: string,
   members: CompositeMetric[],
   replaceVariables: InterpolateFunction
 ): any[] => {
@@ -55,9 +52,6 @@ export const resolveMemberTemplates = (
       const matchResult = member.seriesMatch.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((aMatch) => {
-          if (isTemplated && aMatch.includes(templatedName)) {
-            aMatch = aMatch.replace(templatedName, compositeName);
-          }
           // expand the templatedName (append compositeName to the variables first)
           const templateVars: ScopedVars = {
             compositeName: { text: 'compositeName', value: compositeName },
@@ -144,13 +138,7 @@ export const ApplyComposites = (
     }
     let currentWorstSeries = null;
     // this should filter the members that are matches for the composite name
-    const templatedMembers = resolveMemberTemplates(
-      aComposite.name,
-      aComposite.isTemplated,
-      aComposite.templatedName,
-      aComposite.metrics,
-      replaceVariables
-    );
+    const templatedMembers = resolveMemberTemplates(aComposite.name, aComposite.metrics, replaceVariables);
     for (let j = 0; j < templatedMembers.length; j++) {
       const aMetric = templatedMembers[j];
       // look for the matches to the pattern in the data

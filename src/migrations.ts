@@ -519,7 +519,6 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
         name: `COMPOSITE-${index}`,
         label: `COMPOSITE-${index}`,
         order: index,
-        templatedName: '',
         isTemplated: false,
         displayMode: DisplayModes[0].value,
         enabled: true,

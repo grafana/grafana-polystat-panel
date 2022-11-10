@@ -62,7 +62,6 @@ describe('Composite Processor', () => {
     compositeA = {
       name: 'composite-a',
       label: 'composite-a',
-      templatedName: '$project_name',
       order: 0,
       isTemplated: false,
       displayMode: 'all',
@@ -85,7 +84,6 @@ describe('Composite Processor', () => {
     templatedComposite = {
       name: '$project_name',
       label: 'Templated Composite',
-      templatedName: '$project_name',
       order: 0,
       isTemplated: true,
       displayMode: 'all',
@@ -142,8 +140,6 @@ describe('Composite Processor', () => {
       expect(composites[0].name).toEqual('ProjectA');
       const templatedMembers = resolveMemberTemplates(
         composites[0].name,
-        composites[0].isTemplated,
-        composites[0].templatedName,
         composites[0].metrics,
         getTemplateSrv().replace
       );
