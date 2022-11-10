@@ -182,7 +182,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
         </FieldSet>
       </Card.Meta>
 
-      <Card.SecondaryActions>
+      <Card.Actions>
         <IconButton key="moveUp" name="arrow-up" tooltip="Move Up" onClick={moveUp} />
         <IconButton key="moveDown" name="arrow-down" tooltip="Move Down" onClick={moveDown} />
         <IconButton
@@ -199,7 +199,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
           tooltip="Delete Override"
           onClick={removeItem}
         />
-      </Card.SecondaryActions>
+      </Card.Actions>
     </Card>
   );
 };
