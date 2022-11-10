@@ -191,8 +191,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
             })}
         </FieldSet>
       </Card.Meta>
-
-      <Card.SecondaryActions>
+      <Card.Actions>
         <IconButton key="moveUp" name="arrow-up" tooltip="Move Up" onClick={moveUp} />
         <IconButton key="moveDown" name="arrow-down" tooltip="Move Down" onClick={moveDown} />
         <IconButton
@@ -209,7 +208,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           tooltip="Delete Composite"
           onClick={removeItem}
         />
-      </Card.SecondaryActions>
+      </Card.Actions>
     </Card>
   );
 };
