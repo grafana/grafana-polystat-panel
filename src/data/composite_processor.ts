@@ -7,7 +7,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { CompositeItemType, CompositeMetric } from '../components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 
-const resolveCompositeTemplates = (
+export const resolveCompositeTemplates = (
   metricComposites: CompositeItemType[],
   replaceVariables: InterpolateFunction
 ): CompositeItemType[] => {
@@ -25,7 +25,6 @@ const resolveCompositeTemplates = (
         ...item,
         name: newName,
         isTemplated: item.isTemplated,
-        templatedName: item.name,
       });
     });
   });
@@ -33,17 +32,15 @@ const resolveCompositeTemplates = (
   return ret;
 };
 
-const customFormatter = (value: any) => {
+export const customFormatter = (value: any) => {
   if (Object.prototype.toString.call(value) === '[object Array]') {
     return value.join(CUSTOM_SPLIT_DELIMITER);
   }
   return value;
 };
 
-const resolveMemberTemplates = (
+export const resolveMemberTemplates = (
   compositeName: string,
-  isTemplated: boolean,
-  templatedName: string,
   members: CompositeMetric[],
   replaceVariables: InterpolateFunction
 ): any[] => {
@@ -55,29 +52,19 @@ const resolveMemberTemplates = (
       const matchResult = member.seriesMatch.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((aMatch) => {
-          // if the template contains the composite template, replace it with the compositeName
-          if (isTemplated && aMatch.includes(templatedName)) {
-            // replace it
-            const compositeExpanded = member.seriesMatch.replace(templatedName, compositeName);
-            const compositeExpandedEscaped = escapeStringForRegex(compositeExpanded);
-            ret.push({
-              ...member,
-              seriesName: compositeExpanded,
-              seriesNameEscaped: compositeExpandedEscaped,
-            });
-          } else {
-            const resolvedSeriesNames = [replaceVariables(aMatch, undefined, 'raw')];
-            resolvedSeriesNames.forEach((seriesName) => {
-              const newName = member.seriesMatch.replace(aMatch, seriesName);
-              const escapedName = escapeStringForRegex(seriesName);
-              const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
-              ret.push({
-                ...member,
-                seriesName: newName,
-                seriesNameEscaped: newNameEscaped,
-              });
-            });
-          }
+          // expand the templatedName (append compositeName to the variables first)
+          const templateVars: ScopedVars = {
+            compositeName: { text: 'compositeName', value: compositeName },
+          };
+          const resolvedSeriesName = replaceVariables(aMatch, templateVars, 'raw');
+          const newName = member.seriesMatch.replace(aMatch, resolvedSeriesName);
+          const escapedName = escapeStringForRegex(resolvedSeriesName);
+          const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
+          ret.push({
+            ...member,
+            seriesName: newName,
+            seriesNameEscaped: newNameEscaped,
+          });
         });
       } else {
         ret.push(member);
@@ -151,13 +138,7 @@ export const ApplyComposites = (
     }
     let currentWorstSeries = null;
     // this should filter the members that are matches for the composite name
-    const templatedMembers = resolveMemberTemplates(
-      aComposite.name,
-      aComposite.isTemplated,
-      aComposite.templatedName,
-      aComposite.metrics,
-      replaceVariables
-    );
+    const templatedMembers = resolveMemberTemplates(aComposite.name, aComposite.metrics, replaceVariables);
     for (let j = 0; j < templatedMembers.length; j++) {
       const aMetric = templatedMembers[j];
       // look for the matches to the pattern in the data

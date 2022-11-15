@@ -2,6 +2,18 @@
 
 ## Entries
 
+## v2.0.4
+
+- Fix for Issue #242 (wide data conversion)
+    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model did not handle this scenario.
+    This is seen with CSV Content and other datasources.  This fix will detect wide data received in this format and convert as expected.
+- Fix for Issue #247 (composite template variables)
+    Advanced use of template variables in composites were not functioning as intended. Composites can once again use template variables as the composite name, and reference the composite name inside the list of member metrics.
+- Metric Hints in composites and overrides are now displaying correctly
+- Override Editor buttons are now left aligned for easier access and visibility
+- Composite Editor buttons are also left aligned, and are now visible
+- Composite Editor metrics should be easier to see and alias
+
 ## v2.0.3
 
 - Fix for Issue #241 (Global Threshold Migration)

@@ -1,6 +1,7 @@
 import { InsertTime } from './deframer';
 import { useTheme2 } from '@grafana/ui';
 import {
+  Field,
   FieldType,
   reduceField,
   textUtil,
@@ -61,8 +62,10 @@ export function ProcessDataFrames(
   let internalData = [] as PolystatModel[];
   // just one for now...
   processedData.map((item) => {
-    const model = DataFrameToPolystat(item, globalOperator);
-    internalData.push(model);
+    const models = DataFrameToPolystat(item, globalOperator);
+    for (const aModel of models) {
+      internalData.push(aModel);
+    }
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
   // formatting can change colors due to value maps
@@ -102,7 +105,7 @@ export function ProcessDataFrames(
  *
  * @return  {DataFrame[]}                [return description]
  */
-const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) => {
+export const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) => {
   for (let i = 0; i < data.length; i++) {
     if (regexPattern !== '') {
       const regexVal = stringToJsRegex(regexPattern);
@@ -126,7 +129,7 @@ const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) =>
   return data;
 };
 
-const ApplyGlobalClickThrough = (
+export const ApplyGlobalClickThrough = (
   data: PolystatModel[],
   globalClickthrough: string,
   globalClickthroughNewTabEnabled: boolean,
@@ -155,7 +158,7 @@ const processDefaultClickThrough = (index: number, globalClickthrough: string, d
   return url;
 };
 
-const ApplyGlobalFormatting = (
+export const ApplyGlobalFormatting = (
   data: PolystatModel[],
   fieldConfig: FieldConfigSource<any>,
   globalUnitFormat: string,
@@ -242,7 +245,7 @@ const roundValue = (num: number, decimals: number) => {
   return Math.round(parseFloat(formatted)) / n;
 };
 
-export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): PolystatModel {
+export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): PolystatModel[] {
   /*
   const shortenValue = (value: string, length: number) => {
     if (value.length > length) {
@@ -252,45 +255,52 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     }
   };
   */
+  const valueFields: Field[] = [];
 
-  // get the value field
-  const valueField = frame.fields.find((field) => field.type === FieldType.number);
-  // using a bogus reducer returns the "standard" calcs
-  const standardCalcs = reduceField({ field: valueField!, reducers: ['bogus'] });
-  //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
-  const valueFieldName = getFieldDisplayName(valueField!, frame);
-  const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
-
-  let maxDecimals = 4;
-  if (valueField!.config.decimals !== undefined && valueField!.config.decimals !== null) {
-    maxDecimals = valueField!.config.decimals;
+  for (const aField of frame.fields) {
+    if (aField.type === FieldType.number) {
+      valueFields.push(aField);
+    }
   }
-  const result = getValueFormat(valueField!.config.unit)(operatorValue, maxDecimals, undefined, undefined);
-  const valueFormatted = formattedValueToString(result);
+  const models: PolystatModel[] = [];
 
-  const model: PolystatModel = {
-    seriesRaw: frame,
-    displayMode: DisplayModes[0].value,
-    thresholdLevel: 0,
-    value: operatorValue,
-    valueFormatted: valueFormatted,
-    valueRounded: roundValue(operatorValue, maxDecimals) || operatorValue,
-    stats: standardCalcs,
-    name: valueFieldName, // aSeries.name,
-    displayName: valueFieldName, // aSeries.name,
-    timestamp: 0,
-    prefix: '',
-    suffix: '',
-    color: GLOBAL_FILL_COLOR_RGBA,
-    clickThrough: '',
-    operatorName: OperatorOptions[0].value,
-    newTabEnabled: true,
-    sanitizedURL: '',
-    sanitizeURLEnabled: true,
-    showName: true,
-    showValue: true,
-    isComposite: false,
-    members: [],
-  };
-  return model;
+  for (const valueField of valueFields) {
+    const standardCalcs = reduceField({ field: valueField!, reducers: ['bogus'] });
+    //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
+    const valueFieldName = getFieldDisplayName(valueField!, frame);
+    const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
+
+    let maxDecimals = 4;
+    if (valueField!.config.decimals !== undefined && valueField!.config.decimals !== null) {
+      maxDecimals = valueField!.config.decimals;
+    }
+    const result = getValueFormat(valueField!.config.unit)(operatorValue, maxDecimals, undefined, undefined);
+    const valueFormatted = formattedValueToString(result);
+
+    const model: PolystatModel = {
+      displayMode: DisplayModes[0].value,
+      thresholdLevel: 0,
+      value: operatorValue,
+      valueFormatted: valueFormatted,
+      valueRounded: roundValue(operatorValue, maxDecimals) || operatorValue,
+      stats: standardCalcs,
+      name: valueFieldName, // aSeries.name,
+      displayName: valueFieldName, // aSeries.name,
+      timestamp: 0,
+      prefix: '',
+      suffix: '',
+      color: GLOBAL_FILL_COLOR_RGBA,
+      clickThrough: '',
+      operatorName: OperatorOptions[0].value,
+      newTabEnabled: true,
+      sanitizedURL: '',
+      sanitizeURLEnabled: true,
+      showName: true,
+      showValue: true,
+      isComposite: false,
+      members: [],
+    };
+    models.push(model);
+  }
+  return models;
 }
