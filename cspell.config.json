@@ -23,6 +23,7 @@
     "deframer",
     "diffperc",
     "drilldown",
+    "esversion",
     "grafana",
     "hexbin",
     "iasc",
