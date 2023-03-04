@@ -1,13 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Polystat -> PolystatV2 migrations migrates old polystat config 1`] = `
-Object {
+{
   "autoSizeColumns": true,
   "autoSizePolygons": true,
   "autoSizeRows": true,
-  "compositeConfig": Object {
+  "compositeConfig": {
     "animationSpeed": "2500",
-    "composites": Array [],
+    "composites": [],
     "enabled": true,
   },
   "ellipseCharacters": 18,
@@ -32,15 +32,15 @@ Object {
   "globalTextFontAutoColor": "#000000",
   "globalTextFontAutoColorEnabled": true,
   "globalTextFontColor": "#000000",
-  "globalThresholdsConfig": Array [],
+  "globalThresholdsConfig": [],
   "globalTooltipsEnabled": true,
   "globalTooltipsShowTimestampEnabled": true,
   "globalUnitFormat": "short",
   "layoutDisplayLimit": 100,
   "layoutNumColumns": 6,
   "layoutNumRows": 8,
-  "overrideConfig": Object {
-    "overrides": Array [],
+  "overrideConfig": {
+    "overrides": [],
   },
   "panelId": 0,
   "radius": 100,
@@ -56,13 +56,13 @@ Object {
 `;
 
 exports[`Polystat -> PolystatV2 migrations migrates old polystat config with mappings 1`] = `
-Object {
+{
   "autoSizeColumns": true,
   "autoSizePolygons": true,
   "autoSizeRows": true,
-  "compositeConfig": Object {
+  "compositeConfig": {
     "animationSpeed": "2500",
-    "composites": Array [],
+    "composites": [],
     "enabled": true,
   },
   "ellipseCharacters": 18,
@@ -87,15 +87,15 @@ Object {
   "globalTextFontAutoColor": "#000000",
   "globalTextFontAutoColorEnabled": true,
   "globalTextFontColor": "#000000",
-  "globalThresholdsConfig": Array [],
+  "globalThresholdsConfig": [],
   "globalTooltipsEnabled": true,
   "globalTooltipsShowTimestampEnabled": true,
   "globalUnitFormat": "short",
   "layoutDisplayLimit": 100,
   "layoutNumColumns": 6,
   "layoutNumRows": 8,
-  "overrideConfig": Object {
-    "overrides": Array [],
+  "overrideConfig": {
+    "overrides": [],
   },
   "panelId": 0,
   "radius": 100,
@@ -111,23 +111,23 @@ Object {
 `;
 
 exports[`Polystat -> PolystatV2 migrations migrates old polystat config with mappings 2`] = `
-Object {
-  "fieldConfig": Object {
-    "defaults": Object {
-      "mappings": Array [
-        Object {
-          "options": Object {
+{
+  "fieldConfig": {
+    "defaults": {
+      "mappings": [
+        {
+          "options": {
             "match": "null",
-            "result": Object {
+            "result": {
               "color": undefined,
               "text": "N/A",
             },
           },
           "type": "special",
         },
-        Object {
-          "options": Object {
-            "30.386": Object {
+        {
+          "options": {
+            "30.386": {
               "color": undefined,
               "text": "Nominal",
             },
@@ -136,8 +136,8 @@ Object {
         },
       ],
     },
-    "overrides": Array [],
+    "overrides": [],
   },
-  "options": Object {},
+  "options": {},
 }
 `;
