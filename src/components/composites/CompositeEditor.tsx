@@ -78,7 +78,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   // generic move
   const arrayMove = (arr: any, oldIndex: number, newIndex: number) => {
     if (newIndex >= arr.length) {
-      var k = newIndex - arr.length + 1;
+      let k = newIndex - arr.length + 1;
       while (k--) {
         arr.push(undefined);
       }

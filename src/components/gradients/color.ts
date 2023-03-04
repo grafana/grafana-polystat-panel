@@ -1,7 +1,7 @@
 /*
- Generic class to provide gradient colors
+  Generic class to provide gradient colors
 
- Based on https://codepen.io/anon/pen/wWxGkr
+  Based on https://codepen.io/anon/pen/wWxGkr
 
 */
 export class Color {
@@ -58,13 +58,11 @@ export class Color {
         (parseInt(rgb[3], 10) | (1 << 8)).toString(16).slice(1)
       : orig;
 
-    var a;
+    let a = '1';
     if (alpha !== '') {
       const alphaVal = parseFloat(alpha);
       // multiply before convert to HEX
       a = ((alphaVal * 255) | (1 << 8)).toString(16).slice(1);
-    } else {
-      a = 1;
     }
     return '#' + hex + a;
   }
