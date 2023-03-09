@@ -26,6 +26,7 @@ export interface PolystatOptions {
   globalRegexPattern: string;
   globalShape: PolygonShapes;
   globalShowValueEnabled: boolean;
+  globalShowTooltipColumnHeadersEnabled: boolean;
   globalTextFontColor: string;
   globalTextFontAutoColor: string;
   globalTextFontAutoColorEnabled: boolean;

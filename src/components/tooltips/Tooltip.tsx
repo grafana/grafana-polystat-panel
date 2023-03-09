@@ -10,6 +10,7 @@ import { PolystatModel, SortOptions } from '../types';
 export interface TooltipProps {
   data: PolystatModel | undefined;
   valueEnabled: boolean;
+  tooltipColumnHeadersEnabled: boolean;
   followMouse?: boolean;
   reference: any;
   visible: boolean;
@@ -28,6 +29,7 @@ export const Tooltip = ({
   renderTime,
   showTime,
   valueEnabled,
+  tooltipColumnHeadersEnabled,
   reference,
   visible,
   followMouse,
@@ -148,8 +150,8 @@ export const Tooltip = ({
         <thead>
           {data && data.isComposite && getCompositeHeader(data)}
           <tr>
-            <th className={styles.tooltipNameHeading}>Name</th>
-            {valueEnabled && <th className={styles.tooltipValueHeading}>Value</th>}
+            {tooltipColumnHeadersEnabled && <th className={styles.tooltipNameHeading}>Name</th>}
+            {tooltipColumnHeadersEnabled && valueEnabled && <th className={styles.tooltipValueHeading}>Value</th>}
           </tr>
         </thead>
         <tfoot>

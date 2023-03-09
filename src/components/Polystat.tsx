@@ -405,6 +405,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     renderTime={options.renderTime!}
                     showTime={options.globalTooltipsShowTimestampEnabled}
                     valueEnabled={options.globalShowValueEnabled}
+                    tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
                     visible={showTooltips[index]}
                     followMouse={true}
                     reference={elRefs[index]}

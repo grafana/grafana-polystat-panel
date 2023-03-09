@@ -305,6 +305,15 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Global'],
       })
 
+      // show name
+      .addBooleanSwitch({
+        name: 'Show Column Headers',
+        path: 'globalShowTooltipColumnHeadersEnabled',
+        defaultValue: true,
+        category: ['Global'],
+        description: 'Show Column headers on tooltip'
+      })
+
       // show value
       .addBooleanSwitch({
         name: 'Show Value',
