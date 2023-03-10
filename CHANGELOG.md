@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.0.5
+
+- Default to inter font
+
 ## v2.0.4
 
 - Fix for Issue #242 (wide data conversion)
