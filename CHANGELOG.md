@@ -5,7 +5,6 @@
 ## v2.0.5
 
 - Fix for Issue #249, bug in migrations when upgrading plugin
-- Sanitizing animations
 
 ## v2.0.4
 
