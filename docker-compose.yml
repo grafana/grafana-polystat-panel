@@ -19,6 +19,6 @@ services:
       GF_DATAPROXY_LOGGING: 1
       GF_LIVE_ALLOWED_ORIGINS: '*'
       GF_LOG_LEVEL: debug
-      GF_LOG_FILTERS: alerting.scheduler:info
+      GF_LOG_FILTERS: alerting.scheduler:info,ngalert.scheduler:info,ngalert.state.manager:info,provisioning.dashboard:info
       TERM: linux
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: grafana-polystat-panel
