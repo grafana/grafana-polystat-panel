@@ -5,6 +5,7 @@
 ## v2.0.5
 
 - Fix for Issue #249, bug in migrations when upgrading plugin
+- Fix for low-risk XSS in composite animations
 
 ## v2.0.4
 
