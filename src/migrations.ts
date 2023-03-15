@@ -101,18 +101,16 @@ export interface AngularSavedComposites {
  * This is called when the panel is imported or reloaded
  */
 export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>): Partial<PolystatOptions> => {
-  //console.log('inside migration handler');
-  if (!panel.options) {
-    // This happens on the first load or when migrating from angular
-    //console.log('inside migration handle - no panel options detected');
-
-    return {} as any;
+  //@ts-ignore
+  if (!panel.polystat) {
+    // not angular, just return the options if currently set
+    if (!panel.options) {
+      // This happens on the first load or when migrating from angular
+      return {} as any;
+    }
+    // have settings, return them unchanged
+    return panel.options;
   }
-
-  //const previousVersion = parseFloat(panel.pluginVersion || '6.1');
-  //console.log(`inside migration handler ${previousVersion}`);
-
-  //let options = panel.options as any;
   //@ts-ignore
   const newDefaults = migrateDefaults(panel.polystat);
   let options = newDefaults;
@@ -218,7 +216,9 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   };
 
   if (angular.animationSpeed) {
-    options.compositeConfig.animationSpeed = angular.animationSpeed.toString();
+    if (options.compositeConfig) {
+      options.compositeConfig.animationSpeed = angular.animationSpeed.toString();
+    }
   }
   if (angular.columnAutoSize) {
     options.autoSizeColumns = angular.columnAutoSize;
