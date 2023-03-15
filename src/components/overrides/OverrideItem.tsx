@@ -63,16 +63,24 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
     if (props.context.data) {
       const frames = props.context.data;
       let hints: CascaderOption[] = [];
+      let metricHints = new Set<string>();
       for (let i = 0; i < frames.length; i++) {
         // iterate over fields, get all number types and provide as hints
         for (const aField of frames[i].fields) {
           if (aField.type === FieldType.number) {
-            hints.push({
-              label: aField.name,
-              value: aField.name,
-            });
+            let hintValue = aField.name;
+            if (aField.labels['__name__']) {
+              hintValue = aField.labels['__name__'];
+            }
+            metricHints.add(hintValue);
           }
         }
+      }
+      for (const metricName of metricHints) {
+        hints.push({
+          label: metricName,
+          value: metricName,
+        });
       }
       setMetricHints(hints);
     }
