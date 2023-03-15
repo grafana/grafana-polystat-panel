@@ -2,7 +2,7 @@ import React, { useState, useEffect, MouseEvent, createRef, useCallback } from '
 
 import { useStyles2 } from '@grafana/ui';
 import { css } from '@emotion/css';
-import { GrafanaTheme2 } from '@grafana/data';
+import { GrafanaTheme2, textUtil } from '@grafana/data';
 import { hexbin } from 'd3-hexbin';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
 
@@ -514,7 +514,7 @@ const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplay
     const aMember = Object.assign({}, item.members[triggeredIndex]);
     content = aMember.name + ': ' + aMember.valueFormatted;
   }
-  return content;
+  return textUtil.sanitize(content);
 };
 
 const getAlignments = (
