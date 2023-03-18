@@ -9,7 +9,6 @@
   - Tooltips also can have separate fonts
 - Adds option to toggle tooltip columns (Issue #259), PR #260
 
-
 ## v2.0.5
 
 - Fix for Issue #249, bug in migrations when upgrading plugin
