@@ -126,6 +126,17 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         category: ['Sizing'],
       })
+      // font selection
+      .addSelect({
+        path: 'globalTextFontFamily',
+        name: 'Font Family',
+        description: 'Font used for rendered text',
+        category: ['Text'],
+        defaultValue: GLOBAL_TEXT_FONT_FAMILY,
+        settings: {
+          options: FontFamilyOptions,
+        },
+      })
       .addBooleanSwitch({
         name: 'Auto Scale Fonts',
         path: 'globalAutoScaleFonts',
@@ -144,20 +155,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         description: 'Default font size to use when Auto is disabled',
         showIf: (c) => c.globalAutoScaleFonts !== true,
       })
-      // font selection
-      .addSelect({
-        path: 'globalTextFontFamily',
-        name: 'Font Family',
-        description: 'Font used for rendered text',
-        category: ['Text'],
-        defaultValue: GLOBAL_TEXT_FONT_FAMILY,
-        settings: {
-          options: FontFamilyOptions,
-        },
-      })
-
       // font color
-
       // auto set font color
       .addBooleanSwitch({
         name: 'Automate Font Color',
