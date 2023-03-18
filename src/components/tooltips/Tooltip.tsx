@@ -148,7 +148,7 @@ export const Tooltip = ({
 
   const generateContent = () => {
     return (
-      <table className={styles.tooltipTable}>
+      <table style={{ fontFamily: tooltipFontFamily }} className={styles.tooltipTable}>
         <thead>
           {data && data.isComposite && getCompositeHeader(data)}
           <tr>
