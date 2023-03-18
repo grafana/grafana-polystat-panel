@@ -245,6 +245,14 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Tooltips'],
         description: 'Show timestamp at bottom of tooltip',
       })
+      // show tooltip column headers
+      .addBooleanSwitch({
+        name: 'Show Column Headers',
+        path: 'globalShowTooltipColumnHeadersEnabled',
+        defaultValue: true,
+        category: ['Tooltips'],
+        description: 'Show Column headers on tooltip'
+      })
       // display modes
       .addSelect({
         path: 'tooltipDisplayMode',
@@ -328,15 +336,6 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           'Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered',
         defaultValue: GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
         category: ['Global'],
-      })
-
-      // show name
-      .addBooleanSwitch({
-        name: 'Show Column Headers',
-        path: 'globalShowTooltipColumnHeadersEnabled',
-        defaultValue: true,
-        category: ['Global'],
-        description: 'Show Column headers on tooltip'
       })
 
       // show value
