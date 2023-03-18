@@ -28,6 +28,7 @@ describe('Test Tooltips', () => {
     props = {
       data: undefined,
       valueEnabled: true,
+      tooltipColumnHeadersEnabled: true,
       reference: aRef,
       followMouse: false,
       visible: true,
@@ -54,6 +55,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -81,6 +83,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -109,6 +112,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -138,6 +142,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: internalData[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -167,6 +172,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: internalData[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -195,6 +201,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -223,6 +230,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,
@@ -253,6 +261,7 @@ describe('Test Tooltips', () => {
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
+        tooltipColumnHeadersEnabled: true,
         reference: aRef,
         followMouse: false,
         visible: true,

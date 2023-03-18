@@ -112,6 +112,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalPolygonBorderColor={options.globalPolygonBorderColor}
           globalPolygonBorderSize={options.globalPolygonBorderSize}
           globalShowValueEnabled={options.globalShowValueEnabled}
+          globalShowTooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
           tooltipPrimarySortDirection={options.tooltipPrimarySortDirection}
           tooltipPrimarySortByField={options.tooltipPrimarySortByField}
           tooltipSecondarySortDirection={options.tooltipSecondarySortDirection}
