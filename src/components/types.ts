@@ -161,6 +161,7 @@ export enum FontFamilies {
   HELVETICA = 'Helvetica',
   HELVETICA_NEUE = 'Helvetica Neue',
   INTER = 'Inter',
+  ROBOTO = 'Roboto',
   ROBOTO_MONO = 'Roboto Mono',
 }
 
@@ -169,5 +170,6 @@ export const FontFamilyOptions = [
   { value: FontFamilies.HELVETICA, label: 'Helvetica' },
   { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
   { value: FontFamilies.INTER, label: 'Inter' },
+  { value: FontFamilies.ROBOTO, label: 'Roboto' },
   { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
 ];

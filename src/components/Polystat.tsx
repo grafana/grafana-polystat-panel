@@ -242,6 +242,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   if (options.globalAutoScaleFonts) {
     const result = autoFontScaler(
+      options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
       options.globalShowValueEnabled,
@@ -569,6 +570,7 @@ const getAlignments = (
 };
 
 const autoFontScaler = (
+  fontFamily: string,
   textAreaWidth: number,
   textAreaHeight: number,
   valueEnabled: boolean,
@@ -613,6 +615,7 @@ const autoFontScaler = (
   // if it is too small, hide everything
   let activeLabelFontSize = computeTextFontSize(
     maxLabel,
+    fontFamily,
     minFont,
     maxFont,
     maxLinesToDisplay,
@@ -621,6 +624,7 @@ const autoFontScaler = (
   );
   let activeValueFontSize = computeTextFontSize(
     maxValue,
+    fontFamily,
     minFont,
     maxFont,
     maxLinesToDisplay,
@@ -634,6 +638,7 @@ const autoFontScaler = (
     maxLabel = maxLabel.substring(0, numOfChars + 2);
     activeLabelFontSize = computeTextFontSize(
       maxLabel,
+      fontFamily,
       minFont,
       maxFont,
       maxLinesToDisplay,
@@ -645,6 +650,7 @@ const autoFontScaler = (
       maxLabel = maxLabel.substring(0, numOfChars + 2);
       activeLabelFontSize = computeTextFontSize(
         maxLabel,
+        fontFamily,
         minFont,
         maxFont,
         maxLinesToDisplay,
@@ -656,6 +662,7 @@ const autoFontScaler = (
         maxLabel = maxLabel.substring(0, numOfChars + 2);
         activeLabelFontSize = computeTextFontSize(
           maxLabel,
+          fontFamily,
           minFont,
           maxFont,
           maxLinesToDisplay,
@@ -678,6 +685,7 @@ const autoFontScaler = (
 
 const computeTextFontSize = (
   text: string,
+  font: string,
   minFont: number,
   maxFont: number,
   linesToDisplay: number,
@@ -686,7 +694,7 @@ const computeTextFontSize = (
 ): number => {
   return getTextSizeForWidthAndHeight(
     text,
-    '?px sans-serif', // use sans-serif for sizing
+    `?px ${font}`,
     textAreaWidth,
     textAreaHeight / linesToDisplay, // multiple lines of text
     minFont,
