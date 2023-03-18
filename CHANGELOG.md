@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.0.6
+
+- Add Font Selector for rendered text. The new default is Arial, and migrations will auto-switch to this new font.
+
 ## v2.0.5
 
 - Fix for Issue #249, bug in migrations when upgrading plugin

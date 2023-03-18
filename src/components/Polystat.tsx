@@ -414,6 +414,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     secondarySortDirection={options.tooltipSecondarySortDirection}
                     displayMode={options.tooltipDisplayMode}
                     tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
+                    tooltipFontFamily={options.globalTooltipsFontFamily}
                   />
                 )}
                 <text
@@ -421,7 +422,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   x={coords.x + alignments.labelTextAlignmentX}
                   y={coords.y + alignments.labelWithValueTextAlignment}
                   textAnchor="middle"
-                  fontFamily="Roboto"
+                  fontFamily={options.globalTextFontFamily}
                   fontSize={activeLabelFontSize + 'px'}
                   style={{
                     fill: options.globalTextFontAutoColorEnabled
@@ -448,7 +449,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   x={coords.x + alignments.labelValueAlignmentX}
                   y={coords.y + alignments.valueWithLabelTextAlignment}
                   textAnchor="middle"
-                  fontFamily="Roboto"
+                  fontFamily={options.globalTextFontFamily}
                   fontSize={activeValueFontSize + 'px'}
                   style={{
                     fill: options.globalTextFontAutoColorEnabled

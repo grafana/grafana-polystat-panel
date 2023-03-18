@@ -1,5 +1,5 @@
 import { Color } from './gradients/color';
-
+import { FontFamilies } from './types';
 /**
  * Color to use when rendering without any thresholds/overrides
  */
@@ -60,3 +60,6 @@ export const GLOBAL_OVERRIDE_COLORS = [
   DEFAULT_CRITICAL_COLOR_HEX,
   DEFAULT_NO_THRESHOLD_COLOR_HEX,
 ];
+
+export const GLOBAL_TEXT_FONT_FAMILY = FontFamilies.INTER;
+export const GLOBAL_TOOLTIP_FONT_FAMILY = FontFamilies.INTER;

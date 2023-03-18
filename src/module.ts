@@ -1,6 +1,7 @@
 import { FieldConfigProperty, PanelPlugin } from '@grafana/data';
 import {
   DisplayModes,
+  FontFamilyOptions,
   OperatorOptions,
   PolygonNamedShapes,
   PolystatOptions,
@@ -15,6 +16,8 @@ import {
   GLOBAL_FILL_COLOR_RGBA,
   GLOBAL_BORDER_COLOR_RGBA,
   GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
+  GLOBAL_TEXT_FONT_FAMILY,
+  GLOBAL_TOOLTIP_FONT_FAMILY,
 } from './components/defaults';
 import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from './components/thresholds/types';
@@ -141,6 +144,18 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         description: 'Default font size to use when Auto is disabled',
         showIf: (c) => c.globalAutoScaleFonts !== true,
       })
+      // font selection
+      .addSelect({
+        path: 'globalTextFontFamily',
+        name: 'Font Family',
+        description: 'Font used for rendered text',
+        category: ['Text'],
+        defaultValue: GLOBAL_TEXT_FONT_FAMILY,
+        settings: {
+          options: FontFamilyOptions,
+        },
+      })
+
       // font color
 
       // auto set font color
@@ -212,6 +227,16 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: true,
         category: ['Tooltips'],
         description: 'Provides tooltips for each polygon',
+      })
+      .addSelect({
+        path: 'globalTooltipsFontFamily',
+        name: 'Font Family',
+        description: 'Font used for tooltip text',
+        category: ['Tooltips'],
+        defaultValue: GLOBAL_TOOLTIP_FONT_FAMILY,
+        settings: {
+          options: FontFamilyOptions,
+        },
       })
       .addBooleanSwitch({
         name: 'Show timestamp',

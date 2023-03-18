@@ -21,6 +21,7 @@ export interface TooltipProps {
   secondarySortDirection: number;
   displayMode: string;
   tooltipDisplayTextTriggeredEmpty: string;
+  tooltipFontFamily: string;
 }
 
 export const Tooltip = ({
@@ -37,6 +38,7 @@ export const Tooltip = ({
   secondarySortDirection,
   displayMode,
   tooltipDisplayTextTriggeredEmpty,
+  tooltipFontFamily,
 }: TooltipProps) => {
   const styles = useStyles2(getTooltipStyles);
 
