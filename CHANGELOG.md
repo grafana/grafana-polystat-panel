@@ -4,7 +4,11 @@
 
 ## v2.0.6
 
-- Add Font Selector for rendered text. The new default is Arial, and migrations will auto-switch to this new font.
+- Add Font Selector for rendered text. The new default is Inter, and migrations will auto-switch to this new font.
+  - Additional fonts are available, and the auto-scalar will adjust for differences
+  - Tooltips also can have separate fonts
+- Adds option to toggle tooltip columns (Issue #259), PR #260
+
 
 ## v2.0.5
 
