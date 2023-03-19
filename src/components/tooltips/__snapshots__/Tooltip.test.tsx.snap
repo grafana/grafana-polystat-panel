@@ -3,6 +3,7 @@
 exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with one metric 1`] = `
 <table
   class="css-9iiucf"
+  style="font-family: Inter;"
 >
   <thead>
     <tr>
@@ -58,6 +59,7 @@ exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric w
 exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with three metrics 1`] = `
 <table
   class="css-9iiucf"
+  style="font-family: Inter;"
 >
   <thead>
     <tr>
@@ -141,6 +143,7 @@ exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric w
 exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with two metrics 1`] = `
 <table
   class="css-9iiucf"
+  style="font-family: Inter;"
 >
   <thead>
     <tr>
@@ -210,6 +213,7 @@ exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric w
 exports[`Test Tooltips Tooltip Generation returns tooltip for single metric 1`] = `
 <table
   class="css-9iiucf"
+  style="font-family: Inter;"
 >
   <thead>
     <tr>

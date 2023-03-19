@@ -188,11 +188,11 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
     globalTextFontAutoColorEnabled: false,
-    globalTextFontFamily: FontFamilies.ARIAL,
+    globalTextFontFamily: FontFamilies.INTER,
     globalThresholdsConfig: [],
     globalTooltipsEnabled: true,
     globalTooltipsShowTimestampEnabled: true,
-    globalTooltipsFontFamily: FontFamilies.ARIAL,
+    globalTooltipsFontFamily: FontFamilies.INTER,
     globalUnitFormat: '',
     layoutDisplayLimit: 100,
     layoutNumColumns: 8,
@@ -264,9 +264,9 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   }
   if (angular.fontType) {
     options.globalTextFontFamily = angular.fontType;
-    // switch to Arial
+    // switch to Inter
     if (options.globalTextFontFamily === 'Roboto') {
-      options.globalTextFontFamily = FontFamilies.ARIAL;
+      options.globalTextFontFamily = FontFamilies.INTER;
     }
   }
   if (angular.globalDecimals) {

@@ -40,7 +40,7 @@ describe('Test Tooltips', () => {
       secondarySortDirection: 0,
       displayMode: 'all',
       tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-      tooltipFontFamily: FontFamilies.ARIAL,
+      tooltipFontFamily: FontFamilies.INTER,
     };
   });
 
@@ -67,7 +67,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -95,7 +95,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -124,7 +124,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -154,7 +154,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -184,7 +184,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -213,7 +213,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -242,7 +242,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -273,7 +273,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
-        tooltipFontFamily: FontFamilies.ARIAL,
+        tooltipFontFamily: FontFamilies.INTER,
       };
 
       render(<Tooltip {...props} />);
