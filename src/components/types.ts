@@ -171,6 +171,12 @@ export const FontFamilyOptions = [
   { value: FontFamilies.HELVETICA, label: 'Helvetica' },
   { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
   { value: FontFamilies.INTER, label: 'Inter' },
+  { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
+];
+export const FontFamilyOptionsLegacy = [
+  { value: FontFamilies.ARIAL, label: 'Arial' },
+  { value: FontFamilies.HELVETICA, label: 'Helvetica' },
+  { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
   { value: FontFamilies.ROBOTO, label: 'Roboto' },
   { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
 ];

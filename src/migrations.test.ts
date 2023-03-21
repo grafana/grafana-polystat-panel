@@ -1,6 +1,5 @@
 import { PanelModel, RangeMap, ValueMap, SpecialValueMap } from '@grafana/data';
-//import { CompositeItemType } from 'components/composites/types';
-//import { OverrideItemType } from 'components/overrides/types';
+import { config } from "@grafana/runtime";
 
 import {
   PolystatPanelMigrationHandler,
@@ -10,6 +9,7 @@ import {
   AngularSavedComposites,
   AngularSavedOverrides,
   migrateValueAndRangeMaps,
+  hasRobotoFont,
 } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
@@ -457,5 +457,20 @@ describe('Polystat -> PolystatV2 migrations', () => {
     expect(aRangeMap.options.from).toEqual(30);
     expect(aRangeMap.options.to).toEqual(40);
     expect(aRangeMap.options.result.text).toEqual('Nominal');
+  });
+  it('checks if roboto is available to runtime', () => {
+    const versions = new Map<string, boolean>([
+      ["8.4.11", true],
+      ["8.5.21", true],
+      ["9.1.0", true],
+      ["9.2.0", true],
+      ["9.3.0", true],
+      ["9.4.0", false],
+      ["9.4.3", false],
+    ]);
+    for (let [key, value] of versions) {
+      config.buildInfo.version = key;
+      expect(hasRobotoFont()).toEqual(value);
+    }
   });
 });

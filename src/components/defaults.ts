@@ -63,3 +63,5 @@ export const GLOBAL_OVERRIDE_COLORS = [
 
 export const GLOBAL_TEXT_FONT_FAMILY = FontFamilies.INTER;
 export const GLOBAL_TOOLTIP_FONT_FAMILY = FontFamilies.INTER;
+export const GLOBAL_TEXT_FONT_FAMILY_LEGACY = FontFamilies.ROBOTO;
+export const GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY = FontFamilies.ROBOTO;

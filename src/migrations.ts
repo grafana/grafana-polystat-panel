@@ -1,4 +1,6 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
+import { config } from "@grafana/runtime";
+import { satisfies, coerce } from "semver";
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
@@ -262,12 +264,9 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   if (angular.fontSize) {
     options.globalFontSize = angular.fontSize;
   }
-  if (angular.fontType) {
-    options.globalTextFontFamily = angular.fontType;
-    // switch to Inter
-    if (options.globalTextFontFamily === 'Roboto') {
-      options.globalTextFontFamily = FontFamilies.INTER;
-    }
+  options.globalTextFontFamily = FontFamilies.INTER;
+  if (hasRobotoFont()) {
+    options.globalTextFontFamily = FontFamilies.ROBOTO;
   }
   if (angular.globalDecimals) {
     options.globalDecimals = angular.globalDecimals;
@@ -375,8 +374,9 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   if (angular.tooltipTimestampEnabled) {
     options.globalTooltipsShowTimestampEnabled = angular.tooltipTimestampEnabled;
   }
-  if (angular.tooltipFontType) {
-    options.globalTooltipsFontFamily = angular.tooltipFontType;
+  options.globalTooltipsFontFamily = FontFamilies.INTER;
+  if (hasRobotoFont()) {
+    options.globalTooltipsFontFamily = FontFamilies.ROBOTO;
   }
   if (angular.valueEnabled) {
     options.globalShowValueEnabled = angular.valueEnabled;
@@ -642,4 +642,15 @@ export const PolystatPanelChangedHandler = (
   }
 
   return {};
+};
+
+// Roboto font was removed Dec 1, 2022, and releases after that date should not attempt to use it
+export const hasRobotoFont = () => {
+  const version = coerce(config.buildInfo.version);
+  if (version !== null) {
+    if (satisfies(version, "<9.4.0")) {
+      return true;
+    }
+  }
+  return false;
 };

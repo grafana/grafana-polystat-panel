@@ -2,6 +2,7 @@ import { FieldConfigProperty, PanelPlugin } from '@grafana/data';
 import {
   DisplayModes,
   FontFamilyOptions,
+  FontFamilyOptionsLegacy,
   OperatorOptions,
   PolygonNamedShapes,
   PolystatOptions,
@@ -18,12 +19,14 @@ import {
   GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
   GLOBAL_TEXT_FONT_FAMILY,
   GLOBAL_TOOLTIP_FONT_FAMILY,
+  GLOBAL_TEXT_FONT_FAMILY_LEGACY,
+  GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY,
 } from './components/defaults';
 import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from './components/suggestions';
-import { PolystatPanelMigrationHandler } from './migrations';
+import { hasRobotoFont, PolystatPanelMigrationHandler } from './migrations';
 
 export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
   .setMigrationHandler(PolystatPanelMigrationHandler)
@@ -136,6 +139,18 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptions,
         },
+        showIf: () => hasRobotoFont() === false,
+      })
+      .addSelect({
+        path: 'globalTextFontFamily',
+        name: 'Font Family',
+        description: 'Font used for rendered text',
+        category: ['Text'],
+        defaultValue: GLOBAL_TEXT_FONT_FAMILY_LEGACY,
+        settings: {
+          options: FontFamilyOptionsLegacy,
+        },
+        showIf: () => hasRobotoFont() === true,
       })
       .addBooleanSwitch({
         name: 'Auto Scale Fonts',
@@ -235,6 +250,18 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptions,
         },
+        showIf: () => hasRobotoFont() === false,
+      })
+      .addSelect({
+        path: 'globalTooltipsFontFamily',
+        name: 'Font Family',
+        description: 'Font used for tooltip text',
+        category: ['Tooltips'],
+        defaultValue: GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY,
+        settings: {
+          options: FontFamilyOptionsLegacy,
+        },
+        showIf: () => hasRobotoFont() === true,
       })
       .addBooleanSwitch({
         name: 'Show timestamp',
