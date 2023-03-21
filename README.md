@@ -76,13 +76,22 @@ The size of the border for each polygon can be set in this section. The color us
 ### Text
 
 The plugin will attempt to display as much text as possible with the largest font possible across all polygons.
-Both the color and the font size can be manually set.
+The color, font size, and font family can be manually set.
+
+#### Font Family
+
+You can also set the font family to be used for the rendered text.
+Currently the default is `Inter`, and migrations will convert from `Roboto` to `Inter`
+
+#### Auto Scale Fonts
 
 ![Polygon Auto Text Font Size](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-auto-all.png)
 
 Uncheck "Auto Scale Fonts" to manually enter a font size.
 
 ![Polygon Manual Text Font Size](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-text-manual-fontsize.png)
+
+#### Automate Font Color
 
 Uncheck "Automate Font Color" to manually set the font color.  The automated option uses the current theme to pick a color, which may not be suitable for all cases.
 
@@ -113,6 +122,10 @@ And the following fields:
 #### Enable/Disable Tooltip
 
 Toggles displaying tooltips for the panel
+
+#### Tooltip Font Family
+
+Sets the font family to be used in tooltips.
 
 #### Show Timestamp
 
@@ -641,7 +654,7 @@ The names and values of a composite polygon can be referenced using the followin
 
 ## Building
 
-This plugin relies on `@grafana/toolkit`, typical build sequence:
+This plugin relies on [Plugin Tools](https://github.com/grafana/plugin-tools), typical build sequence:
 
 ```BASH
 yarn install

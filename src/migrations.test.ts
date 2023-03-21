@@ -1,6 +1,5 @@
 import { PanelModel, RangeMap, ValueMap, SpecialValueMap } from '@grafana/data';
-//import { CompositeItemType } from 'components/composites/types';
-//import { OverrideItemType } from 'components/overrides/types';
+import { config } from "@grafana/runtime";
 
 import {
   PolystatPanelMigrationHandler,
@@ -10,6 +9,7 @@ import {
   AngularSavedComposites,
   AngularSavedOverrides,
   migrateValueAndRangeMaps,
+  hasRobotoFont,
 } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
@@ -458,47 +458,19 @@ describe('Polystat -> PolystatV2 migrations', () => {
     expect(aRangeMap.options.to).toEqual(40);
     expect(aRangeMap.options.result.text).toEqual('Nominal');
   });
+  it('checks if roboto is available to runtime', () => {
+    const versions = new Map<string, boolean>([
+      ["8.4.11", true],
+      ["8.5.21", true],
+      ["9.1.0", true],
+      ["9.2.0", true],
+      ["9.3.0", true],
+      ["9.4.0", false],
+      ["9.4.3", false],
+    ]);
+    for (let [key, value] of versions) {
+      config.buildInfo.version = key;
+      expect(hasRobotoFont()).toEqual(value);
+    }
+  });
 });
-
-/*
-        "defaultClickThrough": "",
-        "defaultClickThroughNewTab": false,
-        "defaultClickThroughSanitize": false,
-        "displayLimit": 100,
-        "ellipseCharacters": 18,
-        "ellipseEnabled": false,
-        "fontAutoColor": true,
-        "fontAutoScale": true,
-        "fontSize": 12,
-        "fontType": "Roboto",
-        "globalDecimals": 2,
-        "globalDisplayMode": "all",
-        "globalDisplayTextTriggeredEmpty": "OK",
-        "globalOperatorName": "avg",
-        "globalUnitFormat": "short",
-        "gradientEnabled": true,
-        "hexagonSortByDirection": 1,
-        "hexagonSortByField": "name",
-        "maxMetrics": 0,
-        "polygonBorderColor": "#000000",
-        "polygonBorderSize": 2,
-        "polygonGlobalFillColor": "#0a55a1",
-        "radius": "",
-        "radiusAutoSize": true,
-        "regexPattern": "",
-        "rowAutoSize": true,
-        "rows": "",
-        "shape": "square",
-        "tooltipDisplayMode": "all",
-        "tooltipDisplayTextTriggeredEmpty": "OK",
-        "tooltipEnabled": true,
-        "tooltipFontSize": 12,
-        "tooltipFontType": "Roboto",
-        "tooltipPrimarySortDirection": 2,
-        "tooltipPrimarySortField": "thresholdLevel",
-        "tooltipSecondarySortDirection": 2,
-        "tooltipSecondarySortField": "value",
-        "tooltipTimestampEnabled": true,
-        "valueEnabled": true
-      },
-*/

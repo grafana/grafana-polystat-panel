@@ -1,9 +1,11 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
+import { config } from "@grafana/runtime";
+import { satisfies, coerce } from "semver";
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
 
-import { DisplayModes, PolygonShapes, PolystatOptions } from './components/types';
+import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions } from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -17,6 +19,7 @@ interface AngularPolystatOptions {
   fontAutoColor: boolean;
   fontAutoScale: boolean;
   fontSize: number;
+  fontType: string,
   globalDecimals: number;
   globalDisplayMode: string;
   globalDisplayTextTriggeredEmpty: string;
@@ -40,6 +43,7 @@ interface AngularPolystatOptions {
   tooltipDisplayTextTriggeredEmpty: string;
   tooltipEnabled: boolean;
   tooltipFontSize: number;
+  tooltipFontType: string,
   tooltipPrimarySortDirection: number;
   tooltipPrimarySortField: string;
   tooltipSecondarySortDirection: number;
@@ -186,9 +190,11 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
     globalTextFontAutoColorEnabled: false,
+    globalTextFontFamily: FontFamilies.INTER,
     globalThresholdsConfig: [],
     globalTooltipsEnabled: true,
     globalTooltipsShowTimestampEnabled: true,
+    globalTooltipsFontFamily: FontFamilies.INTER,
     globalUnitFormat: '',
     layoutDisplayLimit: 100,
     layoutNumColumns: 8,
@@ -257,6 +263,10 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   }
   if (angular.fontSize) {
     options.globalFontSize = angular.fontSize;
+  }
+  options.globalTextFontFamily = FontFamilies.INTER;
+  if (hasRobotoFont()) {
+    options.globalTextFontFamily = FontFamilies.ROBOTO;
   }
   if (angular.globalDecimals) {
     options.globalDecimals = angular.globalDecimals;
@@ -363,6 +373,10 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
   }
   if (angular.tooltipTimestampEnabled) {
     options.globalTooltipsShowTimestampEnabled = angular.tooltipTimestampEnabled;
+  }
+  options.globalTooltipsFontFamily = FontFamilies.INTER;
+  if (hasRobotoFont()) {
+    options.globalTooltipsFontFamily = FontFamilies.ROBOTO;
   }
   if (angular.valueEnabled) {
     options.globalShowValueEnabled = angular.valueEnabled;
@@ -629,98 +643,14 @@ export const PolystatPanelChangedHandler = (
 
   return {};
 };
-/*
 
-This is the previous Angular Config
-
-polystat": {
-    "animationSpeed": 2500,
-    "columnAutoSize": true,
-    "columns": "",
-    "defaultClickThrough": "",
-    "defaultClickThroughNewTab": false,
-    "defaultClickThroughSanitize": false,
-    "displayLimit": 100,
-    "ellipseCharacters": 18,
-    "ellipseEnabled": false,
-    "fontAutoColor": true,
-    "fontAutoScale": true,
-    "fontSize": 12,
-    "fontType": "Roboto",
-    "globalDecimals": 2,
-    "globalDisplayMode": "all",
-    "globalDisplayTextTriggeredEmpty": "OK",
-    "globalOperatorName": "avg",
-    "globalUnitFormat": "short",
-    "gradientEnabled": true,
-    "hexagonSortByDirection": 1,
-    "hexagonSortByField": "name",
-    "maxMetrics": 0,
-    "polygonBorderColor": "#000000",
-    "polygonBorderSize": 2,
-    "polygonGlobalFillColor": "#0a55a1",
-    "radius": "",
-    "radiusAutoSize": true,
-    "regexPattern": "",
-    "rowAutoSize": true,
-    "rows": "",
-    "shape": "square",
-    "tooltipDisplayMode": "all",
-    "tooltipDisplayTextTriggeredEmpty": "OK",
-    "tooltipEnabled": true,
-    "tooltipFontSize": 12,
-    "tooltipFontType": "Roboto",
-    "tooltipPrimarySortDirection": 2,
-    "tooltipPrimarySortField": "thresholdLevel",
-    "tooltipSecondarySortDirection": 2,
-    "tooltipSecondarySortField": "value",
-    "tooltipTimestampEnabled": true,
-    "valueEnabled": true
-},
-"savedComposites": [
-    {
-      "$$hashKey": "object:91",
-      "animateMode": "all",
-      "clickThrough": "",
-      "compositeName": "P1",
-      "displayName": "",
-      "enabled": true,
-      "hideMembers": true,
-      "label": "COMPOSITE 1",
-      "members": [
-        {
-          "$$hashKey": "object:105",
-          "seriesName": "/P1/"
-        }
-      ],
-      "newTabEnabled": true,
-      "sanitizeURLEnabled": true,
-      "sanitizedURL": "",
-      "showName": true,
-      "showValue": true,
-      "thresholdLevel": 0
-    },
-  ],
-  "savedOverrides": [
-    {
-      "$$hashKey": "object:114",
-      "clickThrough": "",
-      "colors": [
-        "#299c46",
-        "#e5ac0e",
-        "#bf1b00",
-        "#4040a0"
-      ],
-      "decimals": 3,
-      "enabled": true,
-      "label": "OVERRIDE 1",
-      "metricName": "/TempInC/",
-      "newTabEnabled": true,
-      "operatorName": "current",
-      "prefix": "",
-      "sanitizeURLEnabled": true,
-      "suffix": "",
-      "unitFormat": "celsius"
+// Roboto font was removed Dec 1, 2022, and releases after that date should not attempt to use it
+export const hasRobotoFont = () => {
+  const version = coerce(config.buildInfo.version);
+  if (version !== null) {
+    if (satisfies(version, "<9.4.0")) {
+      return true;
     }
-  ],
-*/
+  }
+  return false;
+};

@@ -1,6 +1,8 @@
 import { FieldConfigProperty, PanelPlugin } from '@grafana/data';
 import {
   DisplayModes,
+  FontFamilyOptions,
+  FontFamilyOptionsLegacy,
   OperatorOptions,
   PolygonNamedShapes,
   PolystatOptions,
@@ -15,12 +17,16 @@ import {
   GLOBAL_FILL_COLOR_RGBA,
   GLOBAL_BORDER_COLOR_RGBA,
   GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
+  GLOBAL_TEXT_FONT_FAMILY,
+  GLOBAL_TOOLTIP_FONT_FAMILY,
+  GLOBAL_TEXT_FONT_FAMILY_LEGACY,
+  GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY,
 } from './components/defaults';
 import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from './components/suggestions';
-import { PolystatPanelMigrationHandler } from './migrations';
+import { hasRobotoFont, PolystatPanelMigrationHandler } from './migrations';
 
 export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
   .setMigrationHandler(PolystatPanelMigrationHandler)
@@ -123,6 +129,29 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         category: ['Sizing'],
       })
+      // font selection
+      .addSelect({
+        path: 'globalTextFontFamily',
+        name: 'Font Family',
+        description: 'Font used for rendered text',
+        category: ['Text'],
+        defaultValue: GLOBAL_TEXT_FONT_FAMILY,
+        settings: {
+          options: FontFamilyOptions,
+        },
+        showIf: () => hasRobotoFont() === false,
+      })
+      .addSelect({
+        path: 'globalTextFontFamily',
+        name: 'Font Family',
+        description: 'Font used for rendered text',
+        category: ['Text'],
+        defaultValue: GLOBAL_TEXT_FONT_FAMILY_LEGACY,
+        settings: {
+          options: FontFamilyOptionsLegacy,
+        },
+        showIf: () => hasRobotoFont() === true,
+      })
       .addBooleanSwitch({
         name: 'Auto Scale Fonts',
         path: 'globalAutoScaleFonts',
@@ -142,7 +171,6 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         showIf: (c) => c.globalAutoScaleFonts !== true,
       })
       // font color
-
       // auto set font color
       .addBooleanSwitch({
         name: 'Automate Font Color',
@@ -213,12 +241,42 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Tooltips'],
         description: 'Provides tooltips for each polygon',
       })
+      .addSelect({
+        path: 'globalTooltipsFontFamily',
+        name: 'Font Family',
+        description: 'Font used for tooltip text',
+        category: ['Tooltips'],
+        defaultValue: GLOBAL_TOOLTIP_FONT_FAMILY,
+        settings: {
+          options: FontFamilyOptions,
+        },
+        showIf: () => hasRobotoFont() === false,
+      })
+      .addSelect({
+        path: 'globalTooltipsFontFamily',
+        name: 'Font Family',
+        description: 'Font used for tooltip text',
+        category: ['Tooltips'],
+        defaultValue: GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY,
+        settings: {
+          options: FontFamilyOptionsLegacy,
+        },
+        showIf: () => hasRobotoFont() === true,
+      })
       .addBooleanSwitch({
         name: 'Show timestamp',
         path: 'globalTooltipsShowTimestampEnabled',
         defaultValue: true,
         category: ['Tooltips'],
         description: 'Show timestamp at bottom of tooltip',
+      })
+      // show tooltip column headers
+      .addBooleanSwitch({
+        name: 'Show Column Headers',
+        path: 'globalShowTooltipColumnHeadersEnabled',
+        defaultValue: true,
+        category: ['Tooltips'],
+        description: 'Show Column headers on tooltip'
       })
       // display modes
       .addSelect({
@@ -303,15 +361,6 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           'Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered',
         defaultValue: GLOBAL_DISPLAY_TEXT_TRIGGERED_EMPTY,
         category: ['Global'],
-      })
-
-      // show name
-      .addBooleanSwitch({
-        name: 'Show Column Headers',
-        path: 'globalShowTooltipColumnHeadersEnabled',
-        defaultValue: true,
-        category: ['Global'],
-        description: 'Show Column headers on tooltip'
       })
 
       // show value

@@ -27,12 +27,14 @@ export interface PolystatOptions {
   globalShape: PolygonShapes;
   globalShowValueEnabled: boolean;
   globalShowTooltipColumnHeadersEnabled: boolean;
-  globalTextFontColor: string;
   globalTextFontAutoColor: string;
   globalTextFontAutoColorEnabled: boolean;
+  globalTextFontColor: string;
+  globalTextFontFamily: string;
   globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
   globalTooltipsShowTimestampEnabled: boolean;
+  globalTooltipsFontFamily: string,
   globalUnitFormat: string;
   layoutDisplayLimit: number;
   layoutNumColumns: number;
@@ -153,4 +155,28 @@ export const DisplayModes = [
 export const AnimationModes = [
   { value: 'all', text: 'Show All' },
   { value: 'triggered', text: 'Show Triggered' },
+];
+
+export enum FontFamilies {
+  ARIAL = 'Arial',
+  HELVETICA = 'Helvetica',
+  HELVETICA_NEUE = 'Helvetica Neue',
+  INTER = 'Inter',
+  ROBOTO = 'Roboto',
+  ROBOTO_MONO = 'Roboto Mono',
+}
+
+export const FontFamilyOptions = [
+  { value: FontFamilies.ARIAL, label: 'Arial' },
+  { value: FontFamilies.HELVETICA, label: 'Helvetica' },
+  { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
+  { value: FontFamilies.INTER, label: 'Inter' },
+  { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
+];
+export const FontFamilyOptionsLegacy = [
+  { value: FontFamilies.ARIAL, label: 'Arial' },
+  { value: FontFamilies.HELVETICA, label: 'Helvetica' },
+  { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
+  { value: FontFamilies.ROBOTO, label: 'Roboto' },
+  { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
 ];

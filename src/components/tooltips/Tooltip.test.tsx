@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { SortOptions } from '../../components/types';
+import { FontFamilies, SortOptions } from '../../components/types';
 import { ApplyComposites } from '../../data/composite_processor';
 
 import { Tooltip, TooltipProps } from './Tooltip';
@@ -21,8 +21,8 @@ import { compositeA, compositeB, compositeC } from '../../__mocks__/models/compo
 
 describe('Test Tooltips', () => {
   const aRef = createRef();
-  var renderTime: Date;
-  var props: TooltipProps;
+  let renderTime: Date;
+  let props: TooltipProps;
   beforeAll(() => {
     renderTime = new Date('01 October 2022 10:28 UTC');
     props = {
@@ -40,6 +40,7 @@ describe('Test Tooltips', () => {
       secondarySortDirection: 0,
       displayMode: 'all',
       tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+      tooltipFontFamily: FontFamilies.INTER,
     };
   });
 
@@ -66,6 +67,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -93,6 +95,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -121,6 +124,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -150,6 +154,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -179,6 +184,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -207,6 +213,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -235,6 +242,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
       render(<Tooltip {...props} />);
       const rows = screen.getAllByRole('row');
@@ -265,6 +273,7 @@ describe('Test Tooltips', () => {
         secondarySortDirection: SortOptions[0].value,
         displayMode: 'all',
         tooltipDisplayTextTriggeredEmpty: 'EMPTY',
+        tooltipFontFamily: FontFamilies.INTER,
       };
 
       render(<Tooltip {...props} />);
