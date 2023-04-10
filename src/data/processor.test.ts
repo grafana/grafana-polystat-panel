@@ -3,8 +3,8 @@ import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat, ApplyGlobalRegexPattern } from './processor';
 
 describe('Main Processor', () => {
-  var modelA: PolystatModel;
-  var models: PolystatModel[];
+  let modelA: PolystatModel;
+  let models: PolystatModel[];
   beforeEach(() => {
     const time = new Date().getTime();
     const frameA = toDataFrame({

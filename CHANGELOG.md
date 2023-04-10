@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.0.7
+
+- Fixes metric hint errors when using overrides and composites
+
 ## v2.0.6
 
 - Add Font Selector for rendered text. The new default is Inter, and migrations will auto-switch to this new font.

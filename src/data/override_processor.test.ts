@@ -11,8 +11,8 @@ import { FieldConfigSource, FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 
 describe('Test Overrides', () => {
-  var modelA: PolystatModel;
-  var overrideA: OverrideItemType = {
+  let modelA: PolystatModel;
+  let overrideA: OverrideItemType = {
     label: 'OVERRIDE-0',
     metricName: '/A/',
     alias: '',
