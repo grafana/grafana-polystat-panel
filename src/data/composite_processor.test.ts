@@ -32,10 +32,10 @@ jest.mock('@grafana/runtime', () => {
 });
 
 describe('Composite Processor', () => {
-  var modelA: PolystatModel;
-  var modelB: PolystatModel;
-  var compositeA: CompositeItemType;
-  var templatedComposite: CompositeItemType;
+  let modelA: PolystatModel;
+  let modelB: PolystatModel;
+  let compositeA: CompositeItemType;
+  let templatedComposite: CompositeItemType;
 
   beforeEach(() => {
     const time = new Date().getTime();
