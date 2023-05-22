@@ -2,13 +2,15 @@ import { DataFrame, FieldType, toDataFrame } from '@grafana/data';
 import { getMetricHints } from './metric_hints';
 
 describe('Test Metric Hints', () => {
-  let frame1: DataFrame;
-  let frame2: DataFrame;
+  let wideFrame: DataFrame;
+  let narrowFrame: DataFrame;
+  let frameCW: DataFrame;
   let time: number;
 
   beforeEach(() => {
     time = new Date().getTime();
-    frame1 = toDataFrame({
+
+    wideFrame = toDataFrame({
       fields: [
         { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
         { name: 'A-series', type: FieldType.number, values: [200, 210, 220] },
@@ -21,7 +23,7 @@ describe('Test Metric Hints', () => {
       ],
     });
 
-    frame2 = toDataFrame({
+    narrowFrame = toDataFrame({
       fields: [
         { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
         {
@@ -33,12 +35,31 @@ describe('Test Metric Hints', () => {
       ],
     });
 
+    // sample cloudwatch dataframe
+    frameCW = toDataFrame({
+      name: '5XXError',
+      fields: [
+        { name: 'Time', type: FieldType.time, values: [time, time + 1, time + 2] },
+        {
+          name: 'Value',
+          type: 'number',
+          typeInfo: { frame: 'float64', nullable: true },
+          labels: {},
+          config: {
+            displayNameFromDS: '5XXError',
+            links: [],
+          },
+          values: [1.1, 2.2, 3.3],
+        },
+      ],
+    });
+
   });
 
 
   describe('Metric Hints', () => {
     it('returns set of hint from labels', () => {
-      const hints = getMetricHints([frame1, frame2]);
+      const hints = getMetricHints([wideFrame, narrowFrame]);
       expect(hints.size).toEqual(3);
       let val = [...hints][0];
       expect(val).toEqual('A-series');
@@ -48,10 +69,16 @@ describe('Test Metric Hints', () => {
       expect(val).toEqual('C-series');
     });
     it('returns hints no labels', () => {
-      const hints = getMetricHints([frame2]);
+      const hints = getMetricHints([narrowFrame]);
       expect(hints.size).toEqual(1);
       let val = [...hints][0];
       expect(val).toEqual('C-series');
+    });
+    it('returns hints from CW frame', () => {
+      const hints = getMetricHints([frameCW]);
+      expect(hints.size).toEqual(1);
+      let val = [...hints][0];
+      expect(val).toEqual('5XXError');
     });
 
   });
