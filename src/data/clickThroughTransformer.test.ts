@@ -8,9 +8,9 @@ import { PolystatModel } from '../components/types';
 import { DataFrameToPolystat } from './processor';
 
 describe('ClickThroughTransformer', () => {
-  var modelA: PolystatModel;
-  var modelB: PolystatModel;
-  var models: PolystatModel[] = [];
+  let modelA: PolystatModel;
+  let modelB: PolystatModel;
+  let models: PolystatModel[] = [];
   const field: FieldConfig = {
     decimals: 2,
     unit: 'MBs',
