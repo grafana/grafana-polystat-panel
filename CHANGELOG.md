@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.0.8
+
+- Adds support for additional metric hints depending on the structure of the frames received.
+
 ## v2.0.7
 
 - Fixes metric hint errors when using overrides and composites
