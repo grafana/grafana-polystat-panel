@@ -11,11 +11,11 @@ import {
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from '../components/thresholds/types';
 describe('Threshold Processor', () => {
-  var modelA: PolystatModel;
-  var modelB: PolystatModel;
-  var thresholds: PolystatThreshold[];
+  let modelA: PolystatModel;
+  let modelB: PolystatModel;
+  let thresholds: PolystatThreshold[];
   //@ts-ignore
-  var overrideA: OverrideItemType;
+  let overrideA: OverrideItemType;
   beforeEach(() => {
     const time = new Date().getTime();
     const frameA = toDataFrame({

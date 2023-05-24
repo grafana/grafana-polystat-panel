@@ -7,6 +7,7 @@ import { FieldType, toDataFrame } from '@grafana/data';
 
 describe('Test CompositeMetricItem', () => {
   const time = new Date().getTime();
+
   const frameA = toDataFrame({
     fields: [
       { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
@@ -25,14 +26,14 @@ describe('Test CompositeMetricItem', () => {
     removeMetric: undefined,
     updateMetric: undefined,
     updateMetricAlias: undefined,
-    context: { data : [frameA] },
+    context: { data: [frameA] },
   };
   beforeEach(() => { });
 
   describe('Metric Hints', () => {
     it('returns set of hint from labels', () => {
       const { container } = render(
-          <CompositeMetricItem {...props} />
+        <CompositeMetricItem {...props} />
       );
       console.log(container.innerHTML);
       expect(container.innerHTML).toMatchSnapshot();
