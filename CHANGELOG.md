@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.0.9
+
+- Fixes multi-select templated composite bug
+- Enhances metric hints for composites and overrides to cover more dataframe options
+
 ## v2.0.8
 
 - Adds support for additional metric hints depending on the structure of the frames received.
