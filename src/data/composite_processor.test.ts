@@ -22,7 +22,7 @@ jest.mock('@grafana/runtime', () => {
           s = s.replace('$project_name', 'ProjectA');
         }
         if (s.includes('$compositeName')) {
-          s = s.replace('$compositeName', 'CompositeA');
+          s = s.replace('$compositeName', 'ProjectA');
         }
         return s;
       },
@@ -121,7 +121,6 @@ describe('Composite Processor', () => {
         return value;
       };
       const applied = ApplyComposites([compositeA], [modelA, modelB], replacer1);
-      //const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
       console.log(JSON.stringify(applied));
       expect(applied.length).toBe(1);
     });
@@ -144,7 +143,7 @@ describe('Composite Processor', () => {
         getTemplateSrv().replace
       );
       console.log(JSON.stringify(templatedMembers));
-      expect(templatedMembers[0].seriesName).toEqual('/API - CompositeA/');
+      expect(templatedMembers[0].seriesName).toEqual('/API - ProjectA/');
     });
   });
   describe('Custom Formatter returns expected data', () => {

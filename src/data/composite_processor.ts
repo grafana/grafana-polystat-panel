@@ -56,15 +56,23 @@ export const resolveMemberTemplates = (
           const templateVars: ScopedVars = {
             compositeName: { text: 'compositeName', value: compositeName },
           };
-          const resolvedSeriesName = replaceVariables(aMatch, templateVars, 'raw');
-          const newName = member.seriesMatch.replace(aMatch, resolvedSeriesName);
-          const escapedName = escapeStringForRegex(resolvedSeriesName);
-          const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
-          ret.push({
-            ...member,
-            seriesName: newName,
-            seriesNameEscaped: newNameEscaped,
-          });
+          // template variables can be multi-select, or "all", iterate over each match
+          const resolvedSeriesNames = replaceVariables(aMatch, templateVars, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
+          // iterate over the array of names
+          if (resolvedSeriesNames && resolvedSeriesNames.length) {
+            resolvedSeriesNames.forEach((aName) => {
+              if (aName.includes(compositeName)) {
+                const newName = member.seriesMatch.replace(aMatch, aName);
+                const escapedName = escapeStringForRegex(aName);
+                const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
+                ret.push({
+                  ...member,
+                  seriesName: newName,
+                  seriesNameEscaped: newNameEscaped,
+                });
+              }
+            });
+          }
         });
       } else {
         ret.push(member);
