@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v2.1.0
+
+- Fixes tooltips being left behind when mousing out of panel in G10
+- Switched to react-tooltips vs tippyjs and leveraging UI Portal component
+- Performance improved due to dynamic generation of tooltips vs pre-creation
+
 ## v2.0.9
 
 - Fixes multi-select templated composite bug
