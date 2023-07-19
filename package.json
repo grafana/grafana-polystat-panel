@@ -103,5 +103,8 @@
   "engines": {
     "node": ">= 16"
   },
+  "resolutions": {
+    "@types/react": "17.0.30"
+  },
   "packageManager": "yarn@1.22.19"
 }

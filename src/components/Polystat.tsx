@@ -415,35 +415,35 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       </svg>
       {options.globalTooltipsEnabled && (
         <Portal>
-        <ReactTooltip
-          id="polystat-tooltip"
-          float={true}
-          variant='dark' // Use theme
-          opacity={1} // TODO: make this configurable
-          clickable={false} // TODO: make this configurable, extend with per-line clickthrough
-          render={({ content, activeAnchor }) => {
-            // generate tooltip for item
-            if (content) {
-              const contentIndex = parseInt(content, 10);
-              return (
-                <Tooltip
-                  data={options.processedData![contentIndex]}
-                  renderTime={options.renderTime!}
-                  showTime={options.globalTooltipsShowTimestampEnabled}
-                  valueEnabled={options.globalShowValueEnabled}
-                  tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
-                  primarySortByField={options.tooltipPrimarySortByField}
-                  primarySortDirection={options.tooltipPrimarySortDirection}
-                  secondarySortByField={options.tooltipSecondarySortByField}
-                  secondarySortDirection={options.tooltipSecondarySortDirection}
-                  displayMode={options.tooltipDisplayMode}
-                  tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
-                  tooltipFontFamily={options.globalTooltipsFontFamily}
-                />
-              )
-            }
-            return (<></>)
-          }}/>
+          <ReactTooltip
+            id="polystat-tooltip"
+            float={true}
+            variant='dark' // Use theme
+            opacity={1} // TODO: make this configurable
+            clickable={false} // TODO: make this configurable, extend with per-line clickthrough
+            render={({ content, activeAnchor }) => {
+              // generate tooltip for item
+              if (content) {
+                const contentIndex = parseInt(content, 10);
+                return (
+                  <Tooltip
+                    data={options.processedData![contentIndex]}
+                    renderTime={options.renderTime!}
+                    showTime={options.globalTooltipsShowTimestampEnabled}
+                    valueEnabled={options.globalShowValueEnabled}
+                    tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
+                    primarySortByField={options.tooltipPrimarySortByField}
+                    primarySortDirection={options.tooltipPrimarySortDirection}
+                    secondarySortByField={options.tooltipSecondarySortByField}
+                    secondarySortDirection={options.tooltipSecondarySortDirection}
+                    displayMode={options.tooltipDisplayMode}
+                    tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
+                    tooltipFontFamily={options.globalTooltipsFontFamily}
+                  />
+                )
+              }
+              return (<></>)
+            }} />
         </Portal>
 
       )}
