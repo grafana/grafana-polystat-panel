@@ -1,7 +1,7 @@
-import React, { useState, useEffect, MouseEvent, createRef, useCallback } from 'react';
+import React, { useEffect, createRef, useCallback } from 'react';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
-import { useStyles2 } from '@grafana/ui';
+import { useStyles2, Portal } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, textUtil } from '@grafana/data';
 import { hexbin } from 'd3-hexbin';
@@ -414,12 +414,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         </g>
       </svg>
       {options.globalTooltipsEnabled && (
+        <Portal>
         <ReactTooltip
           id="polystat-tooltip"
           float={true}
           variant='dark' // Use theme
-          opacity={0.95} // TODO: make this configurable
-          clickable={true} // TODO: make this configurable, extend with per-line clickthrough
+          opacity={1} // TODO: make this configurable
+          clickable={false} // TODO: make this configurable, extend with per-line clickthrough
           render={({ content, activeAnchor }) => {
             // generate tooltip for item
             if (content) {
@@ -442,8 +443,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
               )
             }
             return (<></>)
-          }}
-        />
+          }}/>
+        </Portal>
+
       )}
     </div>
   );

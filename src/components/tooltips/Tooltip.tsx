@@ -3,9 +3,7 @@ import { css } from '@emotion/css';
 import { orderBy as lodashOrderBy } from 'lodash';
 import { useStyles2 } from '@grafana/ui';
 import { GrafanaTheme2, dateTimeFormatWithAbbrevation } from '@grafana/data';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { PolystatModel, SortOptions } from '../types';
-import { zIndex } from '@grafana/data/themes/zIndex';
 
 export interface TooltipProps {
   data: PolystatModel | undefined;
