@@ -7,6 +7,7 @@
 - Fixes tooltips being left behind when mousing out of panel in G10
 - Switched to react-tooltips vs tippyjs and leveraging UI Portal component
 - Performance improved due to dynamic generation of tooltips vs pre-creation
+- Tooltip now follows theme
 
 ## v2.0.9
 
