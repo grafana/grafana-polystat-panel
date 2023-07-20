@@ -1,7 +1,7 @@
 import React, { useEffect, createRef, useCallback } from 'react';
-import { Tooltip as ReactTooltip } from 'react-tooltip';
+import { Tooltip as ReactTooltip, VariantType } from 'react-tooltip';
 
-import { useStyles2, Portal } from '@grafana/ui';
+import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, textUtil } from '@grafana/data';
 import { hexbin } from 'd3-hexbin';
@@ -21,7 +21,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const svgPathStyles = useStyles2(getSVGPathStyles);
   const noTriggerTextStyles = useStyles2(getNoTriggerTextStyles);
   const errorMessageStyles = useStyles2(getErrorMessageStyles);
-
+  const tooltipTheme = useTheme2().isDark ? 'dark' : 'light';
   // used to change/animate text in polygon
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
@@ -416,9 +416,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       {options.globalTooltipsEnabled && (
         <Portal>
           <ReactTooltip
+            style={{
+              boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
+            }}
             id="polystat-tooltip"
+            place={'bottom'} // TODO: make this configurable
             float={true}
-            variant='dark' // Use theme
+            variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
             opacity={1} // TODO: make this configurable
             clickable={false} // TODO: make this configurable, extend with per-line clickthrough
             render={({ content, activeAnchor }) => {
