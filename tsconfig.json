@@ -1,3 +1,6 @@
 {
+  "compilerOptions": {
+    "noUnusedLocals": false
+  },
   "extends": "./.config/tsconfig.json"
 }

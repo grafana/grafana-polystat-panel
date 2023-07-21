@@ -1,6 +1,7 @@
-import React, { useState, useEffect, MouseEvent, createRef, useCallback } from 'react';
+import React, { useEffect, createRef, useCallback } from 'react';
+import { Tooltip as ReactTooltip, VariantType } from 'react-tooltip';
 
-import { useStyles2 } from '@grafana/ui';
+import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { css } from '@emotion/css';
 import { GrafanaTheme2, textUtil } from '@grafana/data';
 import { hexbin } from 'd3-hexbin';
@@ -17,11 +18,10 @@ import { Tooltip } from './tooltips/Tooltip';
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
   const svgStyles = useStyles2(getSVGStyles);
+  const svgPathStyles = useStyles2(getSVGPathStyles);
   const noTriggerTextStyles = useStyles2(getNoTriggerTextStyles);
   const errorMessageStyles = useStyles2(getErrorMessageStyles);
-
-  // used by tooltip
-  const [elRefs, setElRefs] = React.useState([] as any);
+  const tooltipTheme = useTheme2().isDark ? 'dark' : 'light';
   // used to change/animate text in polygon
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
@@ -42,22 +42,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         setAnimationMetricIndexes(newAnimationMetricIndexes);
       }
     }
-  }, [options.processedData]);
-
-  useEffect(() => {
-    // add or remove refs
-    setElRefs((elRefs: any) =>
-      Array(options.processedData!.length)
-        .fill(0)
-        .map((_, i) => elRefs[i] || createRef())
-    );
-  }, [options.processedData]);
-
-  const [showTooltips, setShowTooltips] = useState([] as any);
-
-  useEffect(() => {
-    // add or remove refs
-    setShowTooltips((tt: any) => Array(options.processedData!.length).fill(false));
   }, [options.processedData]);
 
   /*
@@ -210,16 +194,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       break;
   }
 
-  /*
-  const miscBin = (data: any): any => {
-    for (let i = 0; i < data.length; i++) {
-      data[i].x = data[i][0];
-      data[i].y = data[i][1];
-    }
-    return data;
-  };
-  */
-
   const resolveClickThroughTarget = (d: any): string => {
     let clickThroughTarget = '_self';
     if (d.newTabEnabled === true) {
@@ -233,6 +207,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     const yValue = calculatedPoints[i][1];
     return { x: xValue, y: yValue };
   };
+
   // calculate the fontsize based on the shape and the text
   let activeLabelFontSize = options.globalFontSize;
   // font sizes are independent for label and values
@@ -265,27 +240,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // this MUST be unique for gradients to work properly
   const gradientId = `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString();
 
-  const handleTooltipShow = (e: MouseEvent<SVGPathElement>, index: number) => {
-    e.preventDefault();
-    // Do something
-    let newState = [...showTooltips];
-    newState[index] = true;
-    setShowTooltips(newState);
-  };
-
-  const handleTooltipHide = (e: MouseEvent<SVGPathElement>, index: number) => {
-    e.preventDefault();
-    // Do something
-    let newState = [...showTooltips];
-    newState[index] = false;
-    setShowTooltips(newState);
-  };
-
-  const handleTooltipMove = (e: MouseEvent<SVGPathElement>, index: number) => {
-    e.preventDefault();
-    // Do something
-  };
-
   const drawShape = (index: number, shape: PolygonShapes) => {
     let fillColor = options.processedData![index].color;
     if (options.globalGradientsEnabled) {
@@ -294,59 +248,65 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
     const useRadius = lm.generateRadius(options.globalShape);
     const coords = getCoords(index);
+
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return (
           <path
-            ref={elRefs[index]}
+            data-tooltip-id='polystat-tooltip'
+            data-tooltip-content={index}
+            data-tooltip-position-strategy='fixed'
+            className={svgPathStyles}
+            key="polystat-tooltip"
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
             stroke={options.globalPolygonBorderColor}
             strokeWidth={options.globalPolygonBorderSize + 'px'}
-            onMouseMove={(e) => handleTooltipMove(e, index)}
-            onMouseOver={(e) => handleTooltipShow(e, index)}
-            onMouseOut={(e) => handleTooltipHide(e, index)}
           />
         );
       case PolygonShapes.CIRCLE:
         return (
           <circle
-            className="circle"
+            data-tooltip-id="polystat-tooltip"
+            data-tooltip-content={index}
+            data-tooltip-position-strategy='fixed'
+            key="polystat-tooltip"
+            className={svgPathStyles}
             cx={coords.x}
             cy={coords.y}
             r={useRadius}
             fill={fillColor}
-            onMouseMove={(e) => handleTooltipMove(e, index)}
-            onMouseOver={(e) => handleTooltipShow(e, index)}
-            onMouseOut={(e) => handleTooltipHide(e, index)}
           />
         );
       case PolygonShapes.SQUARE:
         return (
           <rect
-            className="rect"
+            data-tooltip-id="polystat-tooltip"
+            data-tooltip-content={index}
+            data-tooltip-position-strategy='fixed'
+            key="polystat-tooltip"
+            className={svgPathStyles}
             x={coords.x}
             y={coords.y}
             height={useRadius * 2}
             width={useRadius * 2}
             fill={fillColor}
-            onMouseMove={(e) => handleTooltipMove(e, index)}
-            onMouseOver={(e) => handleTooltipShow(e, index)}
-            onMouseOut={(e) => handleTooltipHide(e, index)}
           />
         );
       default:
         return (
           <path
+            data-tooltip-id="polystat-tooltip"
+            data-tooltip-content={index}
+            data-tooltip-position-strategy='fixed'
+            className={svgPathStyles}
+            key="polystat-tooltip"
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
             stroke={options.globalPolygonBorderColor}
             strokeWidth={options.globalPolygonBorderSize + 'px'}
-            onMouseMove={(e) => handleTooltipMove(e, index)}
-            onMouseOver={(e) => handleTooltipShow(e, index)}
-            onMouseOut={(e) => handleTooltipHide(e, index)}
           />
         );
     }
@@ -383,6 +343,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox={`${xoffset},${yoffset},${options.panelWidth},${options.panelHeight}`}
       >
+
         <g transform={`translate(${margin.left},${margin.top})`}>
           <Gradients gradientId={gradientId} data={options.processedData} />
 
@@ -399,25 +360,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   </a>
                 ) : (
                   drawShape(index, options.globalShape)
-                )}
-                {options.globalTooltipsEnabled && (
-                  <Tooltip
-                    data={options.processedData![index]}
-                    renderTime={options.renderTime!}
-                    showTime={options.globalTooltipsShowTimestampEnabled}
-                    valueEnabled={options.globalShowValueEnabled}
-                    tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
-                    visible={showTooltips[index]}
-                    followMouse={true}
-                    reference={elRefs[index]}
-                    primarySortByField={options.tooltipPrimarySortByField}
-                    primarySortDirection={options.tooltipPrimarySortDirection}
-                    secondarySortByField={options.tooltipSecondarySortByField}
-                    secondarySortDirection={options.tooltipSecondarySortDirection}
-                    displayMode={options.tooltipDisplayMode}
-                    tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
-                    tooltipFontFamily={options.globalTooltipsFontFamily}
-                  />
                 )}
                 <text
                   className="toplabel"
@@ -465,14 +407,60 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                       ? formatCompositeValue(0, item, options.globalDisplayTextTriggeredEmpty)
                       : item.valueFormatted)}
                 </text>
+
               </>
             );
           })}
         </g>
       </svg>
+      {options.globalTooltipsEnabled && (
+        <Portal>
+          <ReactTooltip
+            style={{
+              boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
+            }}
+            id="polystat-tooltip"
+            place={'bottom'} // TODO: make this configurable
+            float={true}
+            variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
+            opacity={1} // TODO: make this configurable
+            clickable={false} // TODO: make this configurable, extend with per-line clickthrough
+            render={({ content, activeAnchor }) => {
+              // generate tooltip for item
+              if (content) {
+                const contentIndex = parseInt(content, 10);
+                return (
+                  <Tooltip
+                    data={options.processedData![contentIndex]}
+                    renderTime={options.renderTime!}
+                    showTime={options.globalTooltipsShowTimestampEnabled}
+                    valueEnabled={options.globalShowValueEnabled}
+                    tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
+                    primarySortByField={options.tooltipPrimarySortByField}
+                    primarySortDirection={options.tooltipPrimarySortDirection}
+                    secondarySortByField={options.tooltipSecondarySortByField}
+                    secondarySortDirection={options.tooltipSecondarySortDirection}
+                    displayMode={options.tooltipDisplayMode}
+                    tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
+                    tooltipFontFamily={options.globalTooltipsFontFamily}
+                  />
+                )
+              }
+              return (<></>)
+            }} />
+        </Portal>
+
+      )}
     </div>
   );
 };
+
+/*
+              The element #{content} is currently not active.
+              <br />
+              Relevant attribute: {activeAnchor?.getAttribute('data-some-relevant-attr') || 'not set'}
+            </span>
+*/
 
 const buildTriggerCache = (item: any) => {
   let triggerCache = [];
@@ -730,4 +718,8 @@ const getSVGStyles = (theme: GrafanaTheme2) => css`
   align-items: center;
   justify-content: center;
   fill: transparent;
+`;
+
+const getSVGPathStyles = (theme: GrafanaTheme2) => css`
+  outline: none !important;
 `;

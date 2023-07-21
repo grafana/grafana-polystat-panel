@@ -3,17 +3,12 @@ import { css } from '@emotion/css';
 import { orderBy as lodashOrderBy } from 'lodash';
 import { useStyles2 } from '@grafana/ui';
 import { GrafanaTheme2, dateTimeFormatWithAbbrevation } from '@grafana/data';
-import Tippy from '@tippyjs/react';
-import { followCursor } from 'tippy.js';
 import { PolystatModel, SortOptions } from '../types';
 
 export interface TooltipProps {
   data: PolystatModel | undefined;
   valueEnabled: boolean;
   tooltipColumnHeadersEnabled: boolean;
-  followMouse?: boolean;
-  reference: any;
-  visible: boolean;
   renderTime: Date;
   showTime: boolean;
   primarySortByField: string;
@@ -31,9 +26,6 @@ export const Tooltip = ({
   showTime,
   valueEnabled,
   tooltipColumnHeadersEnabled,
-  reference,
-  visible,
-  followMouse,
   primarySortByField,
   primarySortDirection,
   secondarySortByField,
@@ -178,19 +170,9 @@ export const Tooltip = ({
       </table>
     );
   };
-  return (
-    <Tippy
-      ref={reference}
-      visible={visible}
-      content={generateContent()}
-      followCursor={!!followMouse}
-      plugins={[followCursor]}
-      animation={false}
-      className={styles.root}
-      placement="auto"
-      maxWidth={500}
-    />
-  );
+
+  // Generate content
+  return generateContent();
 };
 
 const getTooltipStyles = (theme: GrafanaTheme2) => {
