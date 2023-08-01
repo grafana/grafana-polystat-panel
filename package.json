@@ -88,7 +88,7 @@
   "dependencies": {
     "@emotion/css": "11.7.1",
     "@emotion/react": "11.7.1",
-    "@grafana/data": "8.4.11",
+    "@grafana/data": "10.0.3",
     "@grafana/runtime": "8.4.11",
     "@grafana/ui": "8.4.11",
     "d3-hexbin": "0.2.2",
