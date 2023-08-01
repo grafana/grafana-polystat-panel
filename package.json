@@ -89,7 +89,7 @@
     "@emotion/css": "11.7.1",
     "@emotion/react": "11.7.1",
     "@grafana/data": "8.4.11",
-    "@grafana/runtime": "8.4.11",
+    "@grafana/runtime": "10.0.3",
     "@grafana/ui": "8.4.11",
     "d3-hexbin": "0.2.2",
     "emotion": "11.0.0",
