@@ -12,9 +12,12 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
   for (let i = 0; i < data.length; i++) {
     const frame = data[i];
     //const flattened = this.flattenLabels(frame, 0);
-    const newFrame = lodashCloneDeep(frame);
-    // clear the fields
-    newFrame.fields = [];
+    const newFrame: DataFrame = {
+      ...frame,
+      meta: lodashCloneDeep(frame.meta),
+      fields: [], // clear the fields
+    };
+    
     //const labels = this.getLabelsOfFrame(frame);
     const hasTimestamp = frameHasTimestamp(frame);
     // rebuild a new frame with labels on the numerical fields
