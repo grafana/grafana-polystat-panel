@@ -1,5 +1,4 @@
 import { DataFrame, Field, FieldType, FieldConfig, ArrayVector, Labels } from '@grafana/data';
-import { cloneDeep as lodashCloneDeep } from 'lodash';
 
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"
@@ -13,7 +12,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
     //const flattened = this.flattenLabels(frame, 0);
     const newFrame: DataFrame = {
       ...frame,
-      meta: lodashCloneDeep(frame.meta),
+      meta: {...frame.meta},
       fields: [], // clear the fields
     };
     
@@ -30,14 +29,11 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
           for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
             // only create a new field when the rowValue is not null
             if (aFieldValues[rowNum] !== null) {
-              // this has a non-null value
-              const flattened = flattenLabels(frame, rowNum);
-              const newField = newFieldWithLabels(aField, flattened);
-              const newFieldValues = new ArrayVector();
-              const value = getValueOfField(aField, rowNum);
-              newFieldValues.add(value);
-              newField.values = newFieldValues;
-              newFrame.fields.push(newField);
+              newFrame.fields.push({
+                ...aField,
+                labels: flattenLabels(frame, rowNum),
+                values: new ArrayVector([getValueOfField(aField, rowNum)]),
+              });
             }
           }
         } else {
@@ -96,12 +92,6 @@ function flattenLabels(frame: DataFrame, rowNum: number) {
   }
   let labelWithValues = getLabelValues(frame, labelIndexes, rowNum);
   return labelWithValues;
-}
-
-function newFieldWithLabels(field: Field, labels: Labels): Field {
-  const newField = lodashCloneDeep(field);
-  newField.labels = labels;
-  return newField;
 }
 
 function getValueOfField(field: Field, index: number) {
