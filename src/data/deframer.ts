@@ -9,8 +9,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
   // for now, just insert now
   const timeToInsert = Date.now();
   const newData: DataFrame[] = [];
-  for (let i = 0; i < data.length; i++) {
-    const frame = data[i];
+  for (const frame of data) {
     //const flattened = this.flattenLabels(frame, 0);
     const newFrame: DataFrame = {
       ...frame,
@@ -22,15 +21,15 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
     const hasTimestamp = frameHasTimestamp(frame);
     // rebuild a new frame with labels on the numerical fields
     const numFields = frame.fields.length;
-    for (let j = 0; j < numFields; j++) {
-      const aField = frame.fields[j];
+    for (const aField of frame.fields) {
       if (aField.type === FieldType.number) {
-        // need to get the number of rows of data for this frame
-        const rowsOfField = aField.values.toArray().length;
         if (!hasTimestamp) {
+          // need to get the number of rows of data for this frame
+          const aFieldValues = aField.values.toArray();
+          const rowsOfField = aFieldValues.length;
           for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
             // only create a new field when the rowValue is not null
-            if (aField.values.toArray()[rowNum] !== null) {
+            if (aFieldValues[rowNum] !== null) {
               // this has a non-null value
               const flattened = flattenLabels(frame, rowNum);
               const newField = newFieldWithLabels(aField, flattened);
@@ -63,8 +62,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
     } else {
       // time field already exists
       // copy all non-number fields from original frame
-      for (let j = 0; j < frame.fields.length; j++) {
-        const aField = frame.fields[j];
+      for (const aField of frame.fields) {
         if (aField.type !== FieldType.number) {
           newFrame.fields.push(aField);
         }
