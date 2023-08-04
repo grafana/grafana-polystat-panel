@@ -1,6 +1,6 @@
 {
   "name": "grafana-polystat-panel",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Grafana Polystat Panel",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",

@@ -54,7 +54,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
   );
   const currentTheme = useTheme2();
 
-  if (processedData!.length > options.layoutDisplayLimit) {
+  if ((options.layoutDisplayLimit > 0) && (processedData!.length > options.layoutDisplayLimit)) {
     return (
       <div className={errorMessageStyles}>
         Not enough polygons for data. There are {processedData!.length} items to display,

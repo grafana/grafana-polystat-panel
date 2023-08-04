@@ -91,10 +91,10 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
       .addNumberInput({
         path: 'layoutDisplayLimit',
         name: 'Display Limit',
-        description: 'Maximum number of polygons to display',
+        description: 'Maximum number of polygons to display (0 for unlimited)',
         defaultValue: 100,
         settings: {
-          min: 1,
+          min: 0,
           integer: true,
         },
         category: ['Layout'],

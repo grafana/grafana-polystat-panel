@@ -43,7 +43,8 @@ export class LayoutManager {
     this.maxColumnsUsed = 0;
     this.maxRowsUsed = 0;
 
-    if (displayLimit < 1 || isNaN(displayLimit)) {
+    // negative or NaN limit gets set to 100, 0 is allowed for unlimited
+    if (displayLimit < 0 || isNaN(displayLimit)) {
       this.displayLimit = 100;
     } else {
       this.displayLimit = displayLimit;
