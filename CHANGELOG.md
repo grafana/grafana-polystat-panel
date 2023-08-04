@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.1
+
+- Fixes display limit bug [#255](https://github.com/grafana/grafana-polystat-panel/issues/255)
+- Fixes performance issues with G10 [#294](https://github.com/grafana/grafana-polystat-panel/issues/294)
+
 ## v2.1.0
 
 - Fixes tooltips being left behind when mousing out of panel in G10
