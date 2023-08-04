@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.1.2
+
+- Allow display limit of 0 for unlimited polygons [#298](https://github.com/grafana/grafana-polystat-panel/issues/298)
+
 ## v2.1.1
 
 - Fixes display limit bug [#255](https://github.com/grafana/grafana-polystat-panel/issues/255)
