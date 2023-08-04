@@ -1,18 +1,17 @@
 import React, { useEffect, createRef, useCallback } from 'react';
-import { Tooltip as ReactTooltip, VariantType } from 'react-tooltip';
-
+import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
-import { css } from '@emotion/css';
-import { GrafanaTheme2, textUtil } from '@grafana/data';
-import { hexbin } from 'd3-hexbin';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
+import { hexbin } from 'd3-hexbin';
+import { orderBy as lodashOrderBy } from 'lodash';
+import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 import { Gradients } from './gradients/Gradients';
-import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
 import { LayoutManager } from './layout/layoutManager';
+import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
 import { getTextSizeForWidthAndHeight } from '../utils';
-import { orderBy as lodashOrderBy } from 'lodash';
 
+import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
@@ -690,36 +689,3 @@ const computeTextFontSize = (
     maxFont
   );
 };
-
-const getNoTriggerTextStyles = (theme: GrafanaTheme2) => css`
-  font-size: ${theme.typography.h1.fontSize};
-  text-align: center;
-  justify-content: center;
-  color: ${theme.colors.success.shade};
-`;
-
-const getErrorMessageStyles = (theme: GrafanaTheme2) => css`
-  font-size: ${theme.typography.h1.fontSize};
-  text-align: center;
-  justify-content: center;
-  color: ${theme.colors.error.shade};
-`;
-
-const getWrapperStyles = (theme: GrafanaTheme2) => css`
-  fill: transparent;
-  display: flex;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-`;
-
-const getSVGStyles = (theme: GrafanaTheme2) => css`
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-  fill: transparent;
-`;
-
-const getSVGPathStyles = (theme: GrafanaTheme2) => css`
-  outline: none !important;
-`;

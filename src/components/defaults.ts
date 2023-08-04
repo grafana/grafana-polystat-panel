@@ -1,5 +1,6 @@
 import { Color } from './gradients/color';
 import { FontFamilies } from './types';
+
 /**
  * Color to use when rendering without any thresholds/overrides
  */
