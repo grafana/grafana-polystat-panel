@@ -5,6 +5,7 @@ import { Polystat } from './Polystat';
 import { css, cx } from '@emotion/css';
 import { useStyles2, useTheme2 } from '@grafana/ui';
 import { ProcessDataFrames } from '../data/processor';
+import { getErrorMessageStyles } from './styles';
 
 interface Props extends PanelProps<PolystatOptions> {}
 
@@ -28,6 +29,8 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
 
 export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
   const styles = useStyles2(getComponentStyles);
+  const errorMessageStyles = useStyles2(getErrorMessageStyles);
+
   // each series is a converted to a model we can use
   const processedData = ProcessDataFrames(
     options.compositeConfig.enabled,
@@ -50,6 +53,16 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.sortByField
   );
   const currentTheme = useTheme2();
+
+  if (processedData!.length > options.layoutDisplayLimit) {
+    return (
+      <div className={errorMessageStyles}>
+        Not enough polygons for data. There are {processedData!.length} items to display,
+      but configuration is limited to {options.layoutDisplayLimit}. See the Display Limit setting in category Layout.
+      </div>
+    );
+  }
+
   let autoFontColor = '#000000'; // default to black
   if (options.globalTextFontAutoColorEnabled) {
     // use primary text color for theme
