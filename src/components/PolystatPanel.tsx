@@ -50,7 +50,8 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.globalThresholdsConfig,
     options.globalUnitFormat,
     options.sortByDirection,
-    options.sortByField
+    options.sortByField,
+    options.compositeGlobalAliasingEnabled,
   );
   const currentTheme = useTheme2();
 
@@ -132,6 +133,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           tooltipSecondarySortByField={options.tooltipSecondarySortByField}
           tooltipDisplayMode={options.tooltipDisplayMode}
           tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
+          compositeGlobalAliasingEnabled={options.compositeGlobalAliasingEnabled}
         />
       </div>
     </div>

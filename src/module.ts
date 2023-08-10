@@ -493,6 +493,14 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         category: ['Overrides'],
       })
+      // allow enabling / disabling global aliasing for composite hexagon names
+      .addBooleanSwitch({
+        name: 'Composite Global Aliasing',
+        path: 'compositeGlobalAliasingEnabled',
+        defaultValue: false,
+        description: 'Enable / Disable composite global aliasing',
+        category: ['Composites'],
+      })
       .addCustomEditor({
         name: 'Composites',
         id: 'compositeConfig',

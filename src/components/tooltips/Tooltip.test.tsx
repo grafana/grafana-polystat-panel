@@ -47,7 +47,7 @@ describe('Test Tooltips', () => {
 
   describe('Tooltip Sorting', () => {
     it('returns unsorted metrics', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -72,7 +72,7 @@ describe('Test Tooltips', () => {
       expect(rows[5].innerHTML).toContain('C-series');
     });
     it('returns primary sorted metrics: case sensitive ascending', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -98,7 +98,7 @@ describe('Test Tooltips', () => {
     });
 
     it('returns primary sorted metrics: case sensitive descending', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -125,7 +125,7 @@ describe('Test Tooltips', () => {
 
     it('returns primary sorted metrics: numerical ascending', () => {
       let internalData = [numericalModelA, numericalModelB, numericalModelC];
-      internalData = ApplyComposites([compositeC], internalData, (val) => val);
+      internalData = ApplyComposites([compositeC], internalData, (val) => val, false);
       const props: TooltipProps = {
         data: internalData[0],
         valueEnabled: true,
@@ -152,7 +152,7 @@ describe('Test Tooltips', () => {
 
     it('returns primary sorted metrics: numerical descending', () => {
       let internalData = [numericalModelA, numericalModelB, numericalModelC];
-      internalData = ApplyComposites([compositeC], internalData, (val) => val);
+      internalData = ApplyComposites([compositeC], internalData, (val) => val, false);
       const props: TooltipProps = {
         data: internalData[0],
         valueEnabled: true,
@@ -178,7 +178,7 @@ describe('Test Tooltips', () => {
     });
 
     it('returns primary sorted metrics: case insensitive ascending', () => {
-      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -204,7 +204,7 @@ describe('Test Tooltips', () => {
     });
 
     it('returns primary sorted metrics: case insensitive descending', () => {
-      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -232,7 +232,7 @@ describe('Test Tooltips', () => {
 
   describe('Tooltip Generation', () => {
     it('returns tooltip for single metric', () => {
-      const applied = ApplyComposites([compositeA], [modelA], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA], (val) => val, false);
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -252,19 +252,19 @@ describe('Test Tooltips', () => {
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with one metric', () => {
-      const applied = ApplyComposites([compositeA], [modelA], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA], (val) => val, false);
       props.data = applied[0];
       render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with two metrics', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA, modelB], (val) => val, false);
       props.data = applied[0];
       render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
     });
     it('returns tooltip for composite metric with three metrics', () => {
-      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val);
+      const applied = ApplyComposites([compositeA], [modelA, modelB, modelC], (val) => val, false);
       props.data = applied[0];
       render(<Tooltip {...props} />);
       expect(screen.getByRole('table')).toMatchSnapshot();
@@ -273,7 +273,7 @@ describe('Test Tooltips', () => {
       modelA.thresholdLevel = 0;
       modelB.thresholdLevel = 1;
       modelC.thresholdLevel = 0;
-      const applied = ApplyComposites([compositeB], [modelA, modelB, modelC], (val) => val);
+      const applied = ApplyComposites([compositeB], [modelA, modelB, modelC], (val) => val, false);
       props.data = applied[0];
       // the displayMode comes from the applied composite, in this case there is one triggered metric
       if (applied[0].displayMode) {
