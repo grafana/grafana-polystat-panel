@@ -16,7 +16,8 @@
     "lint:fix": "yarn run lint --fix",
     "e2e:update": "yarn exec cypress install && yarn exec grafana-e2e run --update-screenshots",
     "server": "docker-compose up --build",
-    "sign": "npx --yes @grafana/sign-plugin@latest"
+    "sign": "npx --yes @grafana/sign-plugin@latest",
+    "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\""
   },
   "repository": {
     "type": "git",
@@ -55,6 +56,7 @@
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
     "copy-webpack-plugin": "^11.0.0",
+    "cspell": "^7.3.6",
     "css-loader": "^6.7.3",
     "cypress": "9.7.0",
     "eslint": "8.26.0",
