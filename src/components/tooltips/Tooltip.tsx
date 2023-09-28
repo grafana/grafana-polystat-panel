@@ -44,7 +44,7 @@ export const Tooltip = ({
     return (
       <tr>
         <th className={styles.tooltipCompositeHeading} colSpan={2}>
-          {data!.displayName}
+          {data?.displayName}
         </th>
       </tr>
     );
@@ -161,9 +161,9 @@ export const Tooltip = ({
           {data && data.isComposite ? (
             getCompositeMetrics(data)
           ) : (
-            <tr style={{ color: data!.color }}>
-              <td className={styles.tooltipName}>{data!.displayName}</td>
-              {valueEnabled && <td className={styles.tooltipValue}>{data!.valueFormatted}</td>}
+            <tr style={{ color: data?.color }}>
+              <td className={styles.tooltipName}>{data?.displayName}</td>
+              {valueEnabled && <td className={styles.tooltipValue}>{data?.valueFormatted}</td>}
             </tr>
           )}
         </tbody>
