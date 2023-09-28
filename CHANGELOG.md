@@ -6,7 +6,9 @@
 
 - Bump to Node 18
 - Update package
-- Fix for SQL result processing [[#309](https://github.com/grafana/grafana-polystat-panel/issues/309)]
+- Fix for SQL result processing [[#309](https://github.com/grafana/grafana-polystat-panel/issues/309)] and [#269](https://github.com/grafana/grafana-polystat-panel/issues/269)
+- Fix for tooltip crashing [#307](https://github.com/grafana/grafana-polystat-panel/issues/307)
+- NEW: Global Regex Aliasing for composites [#301](https://github.com/grafana/grafana-polystat-panel/pull/301)
 
 ## v2.1.2
 
