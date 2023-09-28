@@ -100,6 +100,33 @@ describe('Main Processor', () => {
       console.log(JSON.stringify(models[1], null, 2));
     });
   });
+
+  describe('Bug 308', () => {
+    it('returns polystat model with columns named as expected', () => {
+      const time = new Date().getTime();
+      const frameSQL = toDataFrame({
+        fields: [
+          { name: 'Time', type: FieldType.time, values: [time]},
+          { name: 'count', type: FieldType.number, values: [3], labels: {'severity': 'high'} },
+          { name: 'count', type: FieldType.number, values: [0], labels: { 'severity': 'low'} },
+          { name: 'count', type: FieldType.number, values: [5], labels: { 'severity': 'critical'} },
+          { name: 'count', type: FieldType.number, values: [2], labels: { 'severity': 'medium' } },
+        ],
+      });
+      const model = DataFrameToPolystat(frameSQL, 'lastNotNull');
+      console.log(JSON.stringify(model, null, 2));
+      expect(model.length).toEqual(4);
+      expect(model[0].displayName).toEqual('count high');
+      expect(model[0].stats['lastNotNull']).toEqual(3);
+      expect(model[1].displayName).toEqual('count low');
+      expect(model[1].stats['lastNotNull']).toEqual(0);
+      expect(model[2].displayName).toEqual('count critical');
+      expect(model[2].stats['lastNotNull']).toEqual(5);
+      expect(model[3].displayName).toEqual('count medium');
+      expect(model[3].stats['lastNotNull']).toEqual(2);
+    });
+  });
+
   describe('Test ApplyGlobalRegexPattern', () => {
     it('returns polystat model with -series removed from names', () => {
       const processed = ApplyGlobalRegexPattern(models, '/(.*)-series/');
