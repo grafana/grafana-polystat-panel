@@ -9,36 +9,39 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
   const timeToInsert = Date.now();
   const newData: DataFrame[] = [];
   for (const frame of data) {
-    //const flattened = this.flattenLabels(frame, 0);
     const newFrame: DataFrame = {
       ...frame,
       meta: {...frame.meta},
       fields: [], // clear the fields
     };
-    
-    //const labels = this.getLabelsOfFrame(frame);
     const hasTimestamp = frameHasTimestamp(frame);
     // rebuild a new frame with labels on the numerical fields
-    const numFields = frame.fields.length;
     for (const aField of frame.fields) {
       if (aField.type === FieldType.number) {
         if (!hasTimestamp) {
+          const copiedField = Object.assign({}, aField);
           // need to get the number of rows of data for this frame
-          const aFieldValues = aField.values.toArray();
+          const aFieldValues = copiedField.values.toArray();
           const rowsOfField = aFieldValues.length;
           for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
             // only create a new field when the rowValue is not null
             if (aFieldValues[rowNum] !== null) {
+              if (aField.state) {
+                copiedField.state = Object.assign({}, aField.state);
+              }
               newFrame.fields.push({
-                ...aField,
+                ...copiedField,
                 labels: flattenLabels(frame, rowNum),
-                values: new ArrayVector([getValueOfField(aField, rowNum)]),
+                values: new ArrayVector([getValueOfField(copiedField, rowNum)]),
               });
             }
           }
         } else {
           // copy the object
           const copiedField = Object.assign({}, aField);
+          if (aField.state) {
+            copiedField.state = Object.assign({}, aField.state);
+          }
           newFrame.fields.push(copiedField);
         }
       }
@@ -60,7 +63,11 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
       // copy all non-number fields from original frame
       for (const aField of frame.fields) {
         if (aField.type !== FieldType.number) {
-          newFrame.fields.push(aField);
+          const copiedField = Object.assign({}, aField);
+          if (aField.state) {
+            copiedField.state = Object.assign({}, aField.state);
+          }
+          newFrame.fields.push(copiedField);
         }
       }
     }

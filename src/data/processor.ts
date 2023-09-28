@@ -57,10 +57,11 @@ export function ProcessDataFrames(
   sortByDirection: number,
   sortByField: string
 ): PolystatModel[] {
+
   // check if data contains a field called Time of type time
   let processedData = InsertTime(data.series);
   let internalData = [] as PolystatModel[];
-  // just one for now...
+
   processedData.map((item) => {
     const models = DataFrameToPolystat(item, globalOperator);
     for (const aModel of models) {
@@ -245,7 +246,7 @@ const roundValue = (num: number, decimals: number) => {
   return Math.round(parseFloat(formatted)) / n;
 };
 
-export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): PolystatModel[] {
+export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): PolystatModel[] => {
   /*
   const shortenValue = (value: string, length: number) => {
     if (value.length > length) {
@@ -255,6 +256,7 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
     }
   };
   */
+
   const valueFields: Field[] = [];
 
   for (const aField of frame.fields) {
@@ -265,9 +267,15 @@ export function DataFrameToPolystat(frame: DataFrame, globalOperator: string): P
   const models: PolystatModel[] = [];
 
   for (const valueField of valueFields) {
-    const standardCalcs = reduceField({ field: valueField!, reducers: ['bogus'] });
-    //const x = getDisplayProcessor({ field: valueField, theme: useTheme2() });
     const valueFieldName = getFieldDisplayName(valueField!, frame);
+    const standardCalcs = reduceField({ field: valueField!, reducers: ['bogus'] });
+    //
+    // side effect of getFieldDisplayName: it modifies content of valueField.state by adding a displayName
+    // file a bug? deframer has been fixed to clone the the field.state to work around the issue
+    //
+    //if (valueField.state?.displayName !== undefined) {
+    //  delete valueField.state?.displayName;
+    //}
     const operatorValue = GetValueByOperator(valueFieldName, null, globalOperator, standardCalcs);
 
     let maxDecimals = 4;

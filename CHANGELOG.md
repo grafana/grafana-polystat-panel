@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v2.1.3
+
+- Bump to Node 18
+- Update package
+- Fix for SQL result processing [[#309](https://github.com/grafana/grafana-polystat-panel/issues/309)]
+
 ## v2.1.2
 
 - Allow display limit of 0 for unlimited polygons [#298](https://github.com/grafana/grafana-polystat-panel/issues/298)
