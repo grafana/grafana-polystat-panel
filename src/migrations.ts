@@ -209,6 +209,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     overrideConfig: {
       overrides: [],
     },
+    compositeGlobalAliasingEnabled: false,
     compositeConfig: {
       animationSpeed: '',
       composites: [],

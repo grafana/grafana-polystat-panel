@@ -50,6 +50,7 @@ export interface PolystatOptions {
   overrideConfig: {
     overrides: OverrideItemType[];
   };
+  compositeGlobalAliasingEnabled: boolean;
   compositeConfig: {
     animationSpeed: string;
     composites: CompositeItemType[];

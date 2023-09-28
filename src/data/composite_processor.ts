@@ -6,6 +6,7 @@ import { stringToJsRegex, escapeStringForRegex, ScopedVars, InterpolateFunction,
 import { getTemplateSrv } from '@grafana/runtime';
 import { CompositeItemType, CompositeMetric } from '../components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
+import { ApplyGlobalRegexPattern } from './processor';
 
 export const resolveCompositeTemplates = (
   metricComposites: CompositeItemType[],
@@ -127,7 +128,9 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
 export const ApplyComposites = (
   composites: CompositeItemType[],
   data: PolystatModel[],
-  replaceVariables: InterpolateFunction
+  replaceVariables: InterpolateFunction,
+  compositesGlobalAliasingEnabled: boolean,
+  globalRegexPattern?: string,
 ): PolystatModel[] => {
   if (!composites) {
     return data;
@@ -234,7 +237,11 @@ export const ApplyComposites = (
     }
   }
   // now merge the clonedComposites into data
-  Array.prototype.push.apply(data, clonedComposites);
+  if(compositesGlobalAliasingEnabled && globalRegexPattern) {
+    Array.prototype.push.apply(data, ApplyGlobalRegexPattern(clonedComposites, globalRegexPattern))
+  } else {
+    Array.prototype.push.apply(data, clonedComposites);
+  }
   // remove the keepMetrics from the filteredMetrics list
   // these have been marked by at least one composite to be displayed
   for (let i = 0; i < keepMetrics.length; i++) {

@@ -55,7 +55,8 @@ export function ProcessDataFrames(
   globalThresholds: PolystatThreshold[],
   globalUnitFormat: string,
   sortByDirection: number,
-  sortByField: string
+  sortByField: string,
+  compositesGlobalAliasingEnabled: boolean,
 ): PolystatModel[] {
 
   // check if data contains a field called Time of type time
@@ -82,7 +83,7 @@ export function ProcessDataFrames(
   );
   // composites
   if (compositesEnabled) {
-    internalData = ApplyComposites(composites, internalData, replaceVariables);
+    internalData = ApplyComposites(composites, internalData, replaceVariables, compositesGlobalAliasingEnabled, globalRegexPattern);
   }
   // clickthroughs
   internalData = ApplyGlobalClickThrough(
