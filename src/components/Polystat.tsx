@@ -89,7 +89,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       }
     });
     setAnimatedItems(animate);
-    let tick: NodeJS.Timer;
+    let tick: NodeJS.Timeout;
     if (shouldAnimate) {
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
       if (speed < 200 || isNaN(speed)) {
