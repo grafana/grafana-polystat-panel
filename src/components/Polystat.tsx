@@ -149,6 +149,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   } else {
     radius = lm.generateRadius(options.globalShape);
   }
+
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
   const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
@@ -311,6 +312,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
+  // allows the polygon to fill the horizontal space if the manually specified number of columns has not been used
+  let marginLeft = margin.left;
+  if ((!options.autoSizeColumns) && (radius) && (lm.maxColumnsUsed < options.layoutNumColumns)) {
+    let difference = options.layoutNumColumns - lm.maxColumnsUsed;
+    marginLeft += radius * difference;
+  }
+  // allows the polygon to fill the vertical space if the manually specified number of rows has not been used
+  let marginTop = margin.top;
+  if ((!options.autoSizeRows) && (radius) && (lm.maxRowsUsed < options.layoutNumRows)) {
+    let difference = options.layoutNumRows - lm.maxRowsUsed;
+    // always starts at zero, skip offset for first row used
+    marginTop += radius * (difference - 1);
+  }
 
   return (
     <div className={divStyles}>
@@ -323,7 +337,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         viewBox={`${xoffset},${yoffset},${options.panelWidth},${options.panelHeight}`}
       >
 
-        <g transform={`translate(${margin.left},${margin.top})`}>
+        <g transform={`translate(${marginLeft},${marginTop})`}>
           <Gradients gradientId={gradientId} data={options.processedData} />
 
           {options.processedData!.map((item, index) => {
