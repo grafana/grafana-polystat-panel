@@ -5,6 +5,7 @@
     "README.md",
     "node_modules/**",
     "dist/**",
+    "ci/dist/**",
     "coverage/**",
     "provisioning/**",
     "src/dashboards/**",
