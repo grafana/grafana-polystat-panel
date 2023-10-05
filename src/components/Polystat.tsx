@@ -311,26 +311,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
-  const getTextToDisplay = (
-    autoSizeFonts: boolean,
-    ellipseEnabled: boolean,
-    ellipseCharacters: number,
-    showEllipses: boolean,
-    numOfChars: number,
-    text: string,
-    alias: string
-  ) => {
-    if (alias !== '') {
-      text = alias;
-    }
-    if (showEllipses) {
-      return text.substring(0, numOfChars) + '...';
-    }
-    if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
-      return text.substring(0, ellipseCharacters) + '...';
-    }
-    return text;
-  };
 
   return (
     <div className={divStyles}>
@@ -454,6 +434,29 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 };
 
+export const getTextToDisplay = (
+  autoSizeFonts: boolean,
+  ellipseEnabled: boolean,
+  ellipseCharacters: number,
+  showEllipses: boolean,
+  numOfChars: number,
+  text: string,
+  displayName: string
+) => {
+  if (displayName !== '') {
+    text = displayName;
+  }
+  if (showEllipses) {
+    if (text.length > numOfChars) {
+      return text.substring(0, numOfChars) + '...';
+    }
+  }
+  if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
+    return text.substring(0, ellipseCharacters) + '...';
+  }
+  return text;
+};
+
 /*
               The element #{content} is currently not active.
               <br />
@@ -574,10 +577,16 @@ const autoFontScaler = (
   //number of characters to show on polygon
   let numOfChars = 0;
   // find the most text that will be displayed over all items
+  // displayName will have the "processed" name with Global Regex applied
   let maxLabel = '';
   for (let i = 0; i < data.length; i++) {
-    if (data[i].name.length > maxLabel.length) {
-      maxLabel = data[i].name;
+    let nameToCheck = data[i].name;
+    // use the displayName since it has been formatted
+    if (data[i].displayName !== '') {
+      nameToCheck = data[i].displayName;
+    }
+    if (nameToCheck.length > maxLabel.length) {
+      maxLabel = nameToCheck;
     }
   }
   // same for the value, also check for sub metrics size in case of composite
