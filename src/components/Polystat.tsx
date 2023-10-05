@@ -252,11 +252,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return (
           <path
-            data-tooltip-id='polystat-tooltip'
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
@@ -267,10 +267,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.CIRCLE:
         return (
           <circle
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             className={svgPathStyles}
             cx={coords.x}
             cy={coords.y}
@@ -281,10 +281,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.SQUARE:
         return (
           <rect
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             className={svgPathStyles}
             x={coords.x}
             y={coords.y}
@@ -296,11 +296,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       default:
         return (
           <path
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
@@ -418,7 +418,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             style={{
               boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
             }}
-            id="polystat-tooltip"
+            id={`polystat-tooltip-${options.panelId}`}
             place={'bottom'} // TODO: make this configurable
             float={true}
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
