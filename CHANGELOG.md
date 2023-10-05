@@ -2,6 +2,13 @@
 
 ## Entries
 
+## v2.1.4
+
+- Fix tooltips being displayed from wrong panel [#314](https://github.com/grafana/grafana-polystat-panel/issues/314) [#315](https://github.com/grafana/grafana-polystat-panel/issues/315)
+- Fix ellipses showing when they are not needed [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
+- Fix alignment based on shape [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
+- NEW: Clickthrough target can be customized, allowing better behavior in Scene-based apps. [#316](https://github.com/grafana/grafana-polystat-panel/issues/316)
+
 ## v2.1.3
 
 - Bump to Node 18
