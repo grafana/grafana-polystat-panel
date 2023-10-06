@@ -28,7 +28,9 @@ describe('Test Overrides', () => {
     clickThrough: '',
     clickThroughSanitize: false,
     clickThroughOpenNewTab: false,
-    order: 0,
+    clickThroughCustomTargetEnabled: false,
+    clickThroughCustomTarget: '',
+    order: 0
   };
   beforeEach(() => {
     const time = new Date().getTime();

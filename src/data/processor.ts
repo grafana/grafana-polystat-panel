@@ -47,6 +47,8 @@ export function ProcessDataFrames(
   globalClickthrough: string,
   globalClickthroughTabEnabled: boolean,
   globalClickthroughSanitizedEnabled: boolean,
+  globalClickthroughCustomTargetEnabled: boolean,
+  globalClickthroughCustomTarget: string,
   globalOperator: string,
   globalDecimals: number,
   globalDisplayMode: string,
@@ -90,7 +92,9 @@ export function ProcessDataFrames(
     internalData,
     globalClickthrough,
     globalClickthroughTabEnabled,
-    globalClickthroughSanitizedEnabled
+    globalClickthroughSanitizedEnabled,
+    globalClickthroughCustomTargetEnabled,
+    globalClickthroughCustomTarget
   );
   // filter by global display mode
   internalData = FilterByGlobalDisplayMode(internalData, globalDisplayMode);
@@ -135,7 +139,10 @@ export const ApplyGlobalClickThrough = (
   data: PolystatModel[],
   globalClickthrough: string,
   globalClickthroughNewTabEnabled: boolean,
-  globalClickthroughSanitizedEnabled: boolean
+  globalClickthroughSanitizedEnabled: boolean,
+  globalClickthroughCustomTargetEnabled: boolean,
+  globalClickthroughCustomTarget: string
+
 ) => {
   for (let index = 0; index < data.length; index++) {
     if (data[index].clickThrough.length === 0) {
@@ -144,6 +151,8 @@ export const ApplyGlobalClickThrough = (
       data[index].sanitizeURLEnabled = globalClickthroughSanitizedEnabled;
       // always provide both versions and overrides and composites can specify which one to use
       data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
+      data[index].customClickthroughTargetEnabled = globalClickthroughCustomTargetEnabled;
+      data[index].customClickthroughTarget = globalClickthroughCustomTarget;
     }
   }
   return data;
@@ -248,15 +257,6 @@ const roundValue = (num: number, decimals: number) => {
 };
 
 export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): PolystatModel[] => {
-  /*
-  const shortenValue = (value: string, length: number) => {
-    if (value.length > length) {
-      return value.substring(0, length).concat('...');
-    } else {
-      return value;
-    }
-  };
-  */
 
   const valueFields: Field[] = [];
 
@@ -293,8 +293,8 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       valueFormatted: valueFormatted,
       valueRounded: roundValue(operatorValue, maxDecimals) || operatorValue,
       stats: standardCalcs,
-      name: valueFieldName, // aSeries.name,
-      displayName: valueFieldName, // aSeries.name,
+      name: valueFieldName,
+      displayName: valueFieldName,
       timestamp: 0,
       prefix: '',
       suffix: '',
@@ -308,6 +308,8 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       showValue: true,
       isComposite: false,
       members: [],
+      customClickthroughTargetEnabled: false,
+      customClickthroughTarget: ''
     };
     models.push(model);
   }

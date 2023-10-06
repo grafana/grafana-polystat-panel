@@ -28,6 +28,8 @@ export interface OverrideItemType {
   clickThrough: string | '';
   clickThroughSanitize: boolean;
   clickThroughOpenNewTab: boolean;
+  clickThroughCustomTargetEnabled: boolean;
+  clickThroughCustomTarget: string;
   order: number;
 }
 

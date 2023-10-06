@@ -30,6 +30,8 @@ export interface CompositeItemType {
   clickThrough: string | '';
   clickThroughSanitize: boolean;
   clickThroughOpenNewTab: boolean;
+  clickThroughCustomTargetEnabled: boolean;
+  clickThroughCustomTarget: string;
 }
 
 export interface CompositeItemTracker {

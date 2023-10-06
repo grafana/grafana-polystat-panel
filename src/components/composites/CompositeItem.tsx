@@ -159,6 +159,21 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, clickThroughOpenNewTab: !composite.clickThroughOpenNewTab })}
             />
           </Field>
+          <Field label="Custom Clickthrough Target" description="Enable custom target" disabled={!composite.showComposite}>
+            <Switch
+              transparent={false}
+              value={composite.clickThroughCustomTargetEnabled}
+              disabled={!composite.showComposite}
+              onChange={() => setComposite({ ...composite, clickThroughCustomTargetEnabled: !composite.clickThroughCustomTargetEnabled })}
+            />
+          </Field>
+          <Field label="Custom Clickthrough Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!composite.showComposite}>
+            <Input
+              value={composite.clickThroughCustomTarget}
+              placeholder="_self"
+              onChange={(e) => setComposite({ ...composite, clickThroughCustomTarget: e.currentTarget.value })}
+            />
+          </Field>
           <Field disabled={!composite.showComposite}>
             <Button
               key="addMetric"

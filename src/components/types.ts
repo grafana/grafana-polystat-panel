@@ -13,6 +13,8 @@ export interface PolystatOptions {
   globalClickthrough: string;
   globalClickthroughNewTabEnabled: boolean;
   globalClickthroughSanitizedEnabled: boolean;
+  globalClickthroughCustomTargetEnabled: boolean;
+  globalClickthroughCustomTarget: string;
   globalDecimals: number;
   globalDisplayMode: string;
   globalDisplayTextTriggeredEmpty: string;
@@ -80,6 +82,8 @@ export interface PolystatModel {
   clickThrough: string;
   operatorName: string;
   newTabEnabled: boolean;
+  customClickthroughTargetEnabled: boolean;
+  customClickthroughTarget: string;
   sanitizedURL: string;
   sanitizeURLEnabled: boolean;
   showName: boolean;

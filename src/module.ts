@@ -472,6 +472,21 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Global'],
         description: 'Opens clickthrough in a new tab',
       })
+      .addBooleanSwitch({
+        name: 'Custom Target',
+        path: 'globalClickthroughCustomTargetEnabled',
+        defaultValue: true,
+        category: ['Global'],
+        description: 'Use custom target for global clickthrough (this overrides the new tab setting above). Typical values are: _blank|_self|_parent|_top|framename',
+      })
+      .addTextInput({
+        name: 'Clickthrough Target',
+        path: 'globalClickthroughCustomTarget',
+        description:
+          'Provide a different target to be appended to the clickthrough. Can be empty to reload the same page.',
+        category: ['Global'],
+        defaultValue: '',
+      })
 
       // aliasing
       .addTextInput({

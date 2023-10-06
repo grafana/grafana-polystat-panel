@@ -194,10 +194,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       break;
   }
 
-  const resolveClickThroughTarget = (d: any): string => {
+  const resolveClickThroughTarget = (d: PolystatModel): string => {
     let clickThroughTarget = '_self';
     if (d.newTabEnabled === true) {
       clickThroughTarget = '_blank';
+    }
+    // when a custom clickthrough is enabled, override the default _self
+    if (d.customClickthroughTargetEnabled) {
+      clickThroughTarget = d.customClickthroughTarget;
     }
     return clickThroughTarget;
   };
@@ -342,15 +346,25 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
           {options.processedData!.map((item, index) => {
             const coords = getCoords(index);
-            // TODO: should resolve this during processing
-            const ctt = resolveClickThroughTarget(item);
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
+            // determine if a target is required
+            const resolvedClickthroughTarget = resolveClickThroughTarget(item);
+            let clickableUrl: JSX.Element;
+            // only add target attribute when there is one specified
+            if ((resolvedClickthroughTarget.length > 0) && (useUrl.length > 0)) {
+              clickableUrl = <a target={resolvedClickthroughTarget} href={useUrl}>
+                {drawShape(index, options.globalShape)}
+              </a>;
+            } else {
+              clickableUrl = <a href={useUrl}>
+                {drawShape(index, options.globalShape)}
+              </a>;
+            }
+
             return (
               <>
-                {useUrl.length > 0 ? (
-                  <a target={ctt} href={useUrl}>
-                    {drawShape(index, options.globalShape)}
-                  </a>
+                {useUrl.length > 0 && clickableUrl ? (
+                  { clickableUrl }
                 ) : (
                   drawShape(index, options.globalShape)
                 )}
