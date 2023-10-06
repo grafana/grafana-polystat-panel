@@ -159,7 +159,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, clickThroughOpenNewTab: !composite.clickThroughOpenNewTab })}
             />
           </Field>
-          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!composite.showComposite}>
+          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!composite.showComposite} hidden={composite.clickThroughOpenNewTab}>
             <Switch
               transparent={false}
               value={composite.clickThroughCustomTargetEnabled}
@@ -167,7 +167,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, clickThroughCustomTargetEnabled: !composite.clickThroughCustomTargetEnabled })}
             />
           </Field>
-          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!composite.showComposite}>
+          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!composite.showComposite} hidden={!composite.clickThroughCustomTargetEnabled}>
             <Input
               value={composite.clickThroughCustomTarget}
               placeholder="_self"

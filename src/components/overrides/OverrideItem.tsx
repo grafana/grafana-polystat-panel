@@ -176,7 +176,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onChange={() => setOverride({ ...override, clickThroughOpenNewTab: !override.clickThroughOpenNewTab })}
             />
           </Field>
-          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!override.enabled}>
+          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!override.enabled} hidden={override.clickThroughOpenNewTab}>
             <Switch
               transparent={false}
               value={override.clickThroughCustomTargetEnabled}
@@ -184,7 +184,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onChange={() => setOverride({ ...override, clickThroughCustomTargetEnabled: !override.clickThroughCustomTargetEnabled })}
             />
           </Field>
-          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!override.enabled}>
+          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!override.enabled} hidden={!override.clickThroughCustomTargetEnabled}>
             <Input
               value={override.clickThroughCustomTarget}
               placeholder="_self"
