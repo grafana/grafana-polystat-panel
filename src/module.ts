@@ -484,7 +484,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         name: 'Custom URL Target',
         path: 'globalClickthroughCustomTarget',
         description:
-          'Provide a different target to be set in the target attribute of the clickthrough.',
+          'Provide a different target to be set in the target attribute of the clickthrough. Typical values are: _blank|_self|_parent|_top|framename',
         category: ['Global'],
         defaultValue: '',
         showIf: (c) => c.globalClickthroughCustomTargetEnabled === true,

@@ -276,6 +276,8 @@ When checked, this will allow you to set a custom value for the `target` attribu
 
 Specify the content for the `target` attribute of the clickthrough URL.
 
+Typical values are: _blank|_self|_parent|_top|
+
 ### Global Aliasing
 
 This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name.
@@ -380,10 +382,20 @@ For more examples using template variables and regular expression capture groups
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-#### New Tab Click
+#### Open URL in New Tab
 
 When checked, this will cause a new tab to be opened when you click on the polygon.
 For drill-down dashboards, disabling this is recommended.
+
+#### Enable Custom URL Target
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled. This will override the equivalent global setting.
+
+#### Custom URL Target
+
+Specify the content for the `target` attribute of the clickthrough URL. This will override the equivalent global setting.
+
+Typical values are: _blank|_self|_parent|_top|
 
 ### Bottom Menu
 
@@ -483,10 +495,20 @@ See the overrides section for details on [advanced usage](#clickthrough-url).
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-#### New Tab Click (composite)
+#### Open URL in New Tab (composite)
 
 When checked, this will cause a new tab to be opened when you click on the polygon.
 For drill-down dashboards, disabling this is recommended.
+
+#### Enable Custom URL Target (composite)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled.
+
+### Custom URL Target (composite)
+
+Specify the content for the `target` attribute of the clickthrough URL.
+
+Typical values are: _blank|_self|_parent|_top|
 
 ### Bottom Menu (composite)
 
