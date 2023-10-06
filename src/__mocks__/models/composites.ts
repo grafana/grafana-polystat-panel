@@ -14,6 +14,8 @@ export const compositeA: CompositeItemType = {
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,
+  clickThroughCustomTargetEnabled: false,
+  clickThroughCustomTarget: '',
   metrics: [
     {
       seriesMatch: '/series/',
@@ -36,6 +38,8 @@ export const compositeB: CompositeItemType = {
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,
+  clickThroughCustomTargetEnabled: false,
+  clickThroughCustomTarget: '',
   metrics: [
     {
       seriesMatch: '/series/',
@@ -58,6 +62,8 @@ export const compositeC: CompositeItemType = {
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,
+  clickThroughCustomTargetEnabled: false,
+  clickThroughCustomTarget: '',
   metrics: [
     {
       seriesMatch: '/\\d+/',

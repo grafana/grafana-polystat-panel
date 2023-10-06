@@ -183,6 +183,8 @@ export const ApplyOverrides = (
         data[index].sanitizeURLEnabled = anOverride.clickThroughSanitize;
         // provide both versions, what is displayed is determined later
         data[index].sanitizedURL = textUtil.sanitize(data[index].clickThrough);
+        data[index].customClickthroughTargetEnabled = anOverride.clickThroughCustomTargetEnabled;
+        data[index].customClickthroughTarget = anOverride.clickThroughCustomTarget;
       }
     } else if (globalThresholds && globalThresholds.length) {
       const result = getThresholdLevelForValue(globalThresholds, data[index].value, globalFillColor);

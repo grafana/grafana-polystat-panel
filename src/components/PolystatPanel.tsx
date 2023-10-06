@@ -42,6 +42,8 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.globalClickthrough,
     options.globalClickthroughNewTabEnabled,
     options.globalClickthroughSanitizedEnabled,
+    options.globalClickthroughCustomTargetEnabled,
+    options.globalClickthroughCustomTarget,
     options.globalOperator,
     options.globalDecimals,
     options.globalDisplayMode,
@@ -89,6 +91,8 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalClickthrough={options.globalClickthrough}
           globalClickthroughNewTabEnabled={options.globalClickthroughNewTabEnabled}
           globalClickthroughSanitizedEnabled={options.globalClickthroughSanitizedEnabled}
+          globalClickthroughCustomTargetEnabled={options.globalClickthroughCustomTargetEnabled}
+          globalClickthroughCustomTarget={options.globalClickthroughCustomTarget}
           globalOperator={options.globalOperator}
           globalDecimals={options.globalDecimals}
           globalDisplayMode={options.globalDisplayMode}

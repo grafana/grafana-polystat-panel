@@ -117,10 +117,12 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
     newTabEnabled: item.newTabEnabled,
     sanitizedURL: item.sanitizedURL,
     sanitizeURLEnabled: item.sanitizeURLEnabled,
+    customClickthroughTargetEnabled: false,
+    customClickthroughTarget: '',
     showName: item.showName,
     showValue: item.showValue,
     isComposite: item.isComposite,
-    members: [],
+    members: []
   };
   return clone;
 };
@@ -190,6 +192,8 @@ export const ApplyComposites = (
             url = ClickThroughTransformer.transformNthMetric(url, data);
             seriesItem.clickThrough = url;
             seriesItem.sanitizedURL = textUtil.sanitizeUrl(url);
+            seriesItem.customClickthroughTarget = aComposite.clickThroughCustomTarget;
+            seriesItem.customClickthroughTargetEnabled = aComposite.clickThroughCustomTargetEnabled;
           }
         }
       }
@@ -231,6 +235,8 @@ export const ApplyComposites = (
       clone.displayMode = aComposite.displayMode;
       clone.newTabEnabled = aComposite.clickThroughOpenNewTab;
       clone.sanitizeURLEnabled = aComposite.clickThroughSanitize;
+      clone.customClickthroughTarget = aComposite.clickThroughCustomTarget;
+      clone.customClickthroughTargetEnabled = aComposite.clickThroughCustomTargetEnabled;
       // mark this series as a composite
       clone.isComposite = true;
       clonedComposites.push(clone);

@@ -173,6 +173,8 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalClickthrough: '',
     globalClickthroughNewTabEnabled: false,
     globalClickthroughSanitizedEnabled: false,
+    globalClickthroughCustomTargetEnabled: false,
+    globalClickthroughCustomTarget: '',
     globalDecimals: 2,
     globalDisplayMode: 'all',
     globalDisplayTextTriggeredEmpty: '',
@@ -412,6 +414,8 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
         clickThrough: '',
         clickThroughSanitize: true,
         clickThroughOpenNewTab: true,
+        clickThroughCustomTargetEnabled: false,
+        clickThroughCustomTarget: '',
         order: order,
       };
       for (const p of Object.keys(seriesOverride)) {
@@ -546,6 +550,8 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
         clickThrough: '',
         clickThroughSanitize: true,
         clickThroughOpenNewTab: true,
+        clickThroughCustomTargetEnabled: false,
+        clickThroughCustomTarget: ''
       };
       index++;
       for (const p of Object.keys(composite)) {

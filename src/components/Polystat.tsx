@@ -89,7 +89,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       }
     });
     setAnimatedItems(animate);
-    let tick: NodeJS.Timer;
+    let tick: NodeJS.Timeout;
     if (shouldAnimate) {
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
       if (speed < 200 || isNaN(speed)) {
@@ -149,6 +149,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   } else {
     radius = lm.generateRadius(options.globalShape);
   }
+
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
   const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
@@ -193,10 +194,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       break;
   }
 
-  const resolveClickThroughTarget = (d: any): string => {
+  const resolveClickThroughTarget = (d: PolystatModel): string => {
     let clickThroughTarget = '_self';
     if (d.newTabEnabled === true) {
       clickThroughTarget = '_blank';
+    }
+    // when a custom clickthrough is enabled, override the default _self
+    if (d.customClickthroughTargetEnabled) {
+      clickThroughTarget = d.customClickthroughTarget;
     }
     return clickThroughTarget;
   };
@@ -252,11 +257,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return (
           <path
-            data-tooltip-id='polystat-tooltip'
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
@@ -267,10 +272,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.CIRCLE:
         return (
           <circle
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             className={svgPathStyles}
             cx={coords.x}
             cy={coords.y}
@@ -281,10 +286,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.SQUARE:
         return (
           <rect
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             className={svgPathStyles}
             x={coords.x}
             y={coords.y}
@@ -296,11 +301,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       default:
         return (
           <path
-            data-tooltip-id="polystat-tooltip"
+            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
-            key="polystat-tooltip"
+            key={`polystat-tooltip-${options.panelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
             d={customShape}
             fill={fillColor}
@@ -311,26 +316,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
-  const getTextToDisplay = (
-    autoSizeFonts: boolean,
-    ellipseEnabled: boolean,
-    ellipseCharacters: number,
-    showEllipses: boolean,
-    numOfChars: number,
-    text: string,
-    alias: string
-  ) => {
-    if (alias !== '') {
-      text = alias;
-    }
-    if (showEllipses) {
-      return text.substring(0, numOfChars) + '...';
-    }
-    if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
-      return text.substring(0, ellipseCharacters) + '...';
-    }
-    return text;
-  };
+  // allows the polygon to fill the horizontal space if the manually specified number of columns has not been used
+  let marginLeft = margin.left;
+  if ((!options.autoSizeColumns) && (radius) && (lm.maxColumnsUsed < options.layoutNumColumns)) {
+    let difference = options.layoutNumColumns - lm.maxColumnsUsed;
+    marginLeft += radius * difference;
+  }
+  // allows the polygon to fill the vertical space if the manually specified number of rows has not been used
+  let marginTop = margin.top;
+  if ((!options.autoSizeRows) && (radius) && (lm.maxRowsUsed < options.layoutNumRows)) {
+    let difference = options.layoutNumRows - lm.maxRowsUsed;
+    // always starts at zero, skip offset for first row used
+    marginTop += radius * (difference - 1);
+  }
 
   return (
     <div className={divStyles}>
@@ -343,20 +341,30 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         viewBox={`${xoffset},${yoffset},${options.panelWidth},${options.panelHeight}`}
       >
 
-        <g transform={`translate(${margin.left},${margin.top})`}>
+        <g transform={`translate(${marginLeft},${marginTop})`}>
           <Gradients gradientId={gradientId} data={options.processedData} />
 
           {options.processedData!.map((item, index) => {
             const coords = getCoords(index);
-            // TODO: should resolve this during processing
-            const ctt = resolveClickThroughTarget(item);
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
+            // determine if a target is required
+            const resolvedClickthroughTarget = resolveClickThroughTarget(item);
+            let clickableUrl: JSX.Element;
+            // only add target attribute when there is one specified
+            if ((resolvedClickthroughTarget.length > 0) && (useUrl.length > 0)) {
+              clickableUrl = <a target={resolvedClickthroughTarget} href={useUrl}>
+                {drawShape(index, options.globalShape)}
+              </a>;
+            } else {
+              clickableUrl = <a href={useUrl}>
+                {drawShape(index, options.globalShape)}
+              </a>;
+            }
+
             return (
               <>
-                {useUrl.length > 0 ? (
-                  <a target={ctt} href={useUrl}>
-                    {drawShape(index, options.globalShape)}
-                  </a>
+                {useUrl.length > 0 && clickableUrl ? (
+                  clickableUrl
                 ) : (
                   drawShape(index, options.globalShape)
                 )}
@@ -418,7 +426,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             style={{
               boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
             }}
-            id="polystat-tooltip"
+            id={`polystat-tooltip-${options.panelId}`}
             place={'bottom'} // TODO: make this configurable
             float={true}
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
@@ -452,6 +460,29 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       )}
     </div>
   );
+};
+
+export const getTextToDisplay = (
+  autoSizeFonts: boolean,
+  ellipseEnabled: boolean,
+  ellipseCharacters: number,
+  showEllipses: boolean,
+  numOfChars: number,
+  text: string,
+  displayName: string
+) => {
+  if (displayName !== '') {
+    text = displayName;
+  }
+  if (showEllipses) {
+    if (text.length > numOfChars) {
+      return text.substring(0, numOfChars) + '...';
+    }
+  }
+  if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
+    return text.substring(0, ellipseCharacters) + '...';
+  }
+  return text;
 };
 
 /*
@@ -574,10 +605,16 @@ const autoFontScaler = (
   //number of characters to show on polygon
   let numOfChars = 0;
   // find the most text that will be displayed over all items
+  // displayName will have the "processed" name with Global Regex applied
   let maxLabel = '';
   for (let i = 0; i < data.length; i++) {
-    if (data[i].name.length > maxLabel.length) {
-      maxLabel = data[i].name;
+    let nameToCheck = data[i].name;
+    // use the displayName since it has been formatted
+    if (data[i].displayName !== '') {
+      nameToCheck = data[i].displayName;
+    }
+    if (nameToCheck.length > maxLabel.length) {
+      maxLabel = nameToCheck;
     }
   }
   // same for the value, also check for sub metrics size in case of composite

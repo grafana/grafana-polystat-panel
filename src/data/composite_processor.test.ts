@@ -73,6 +73,8 @@ describe('Composite Processor', () => {
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,
+      clickThroughCustomTargetEnabled: false,
+      clickThroughCustomTarget: '',
       metrics: [
         {
           seriesMatch: '/series/',
@@ -95,6 +97,8 @@ describe('Composite Processor', () => {
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,
+      clickThroughCustomTargetEnabled: false,
+      clickThroughCustomTarget: '',
       metrics: [
         {
           seriesMatch: '/API - $compositeName/',

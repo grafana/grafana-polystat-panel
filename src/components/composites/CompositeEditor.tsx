@@ -128,6 +128,8 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       clickThrough: original.clickThrough,
       clickThroughOpenNewTab: original.clickThroughOpenNewTab,
       clickThroughSanitize: original.clickThroughSanitize,
+      clickThroughCustomTargetEnabled: original.clickThroughCustomTargetEnabled,
+      clickThroughCustomTarget: original.clickThroughCustomTarget
     };
     const aTracker: CompositeItemTracker = {
       composite: aComposite,
@@ -183,7 +185,9 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,
-      order: order,
+      clickThroughCustomTargetEnabled: false,
+      clickThroughCustomTarget: '',
+      order: order
     };
     const aTracker: CompositeItemTracker = {
       composite: aComposite,

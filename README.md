@@ -260,13 +260,26 @@ See the section [thresholds](#thresholds-details) below for details on how thres
 
 This clickthrough URL will be applied to all polygons that do not have an override or composite with a clickthrough specified.
 
-##### Clickthrough - Sanitize Url
+##### Clickthrough - Sanitize URL
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-##### Clickthrough - Open in new tab
+##### Clickthrough - Open URL In New Tab
 
 When checked, this will cause a new tab to be opened when you click on a polygon.  For drill-down dashboards, disabling this is recommended.
+
+##### Clickthrough - Enable Custom URL Target
+
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open in New Tab` is disabled.
+
+##### Clickthrough - Custom URL Target
+
+Specify the content for the `target` attribute of the clickthrough URL.
+
+Typical values are: _blank|_self|_parent|_top|
 
 ### Global Aliasing
 
@@ -372,10 +385,23 @@ For more examples using template variables and regular expression capture groups
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-#### New Tab Click
+#### Open URL in New Tab
 
 When checked, this will cause a new tab to be opened when you click on the polygon.
 For drill-down dashboards, disabling this is recommended.
+
+#### Enable Custom URL Target
+
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open URL in New Tab` is disabled. This will override the equivalent global setting.
+
+#### Custom URL Target
+
+Specify the content for the `target` attribute of the clickthrough URL. This will override the equivalent global setting.
+
+Typical values are: _blank|_self|_parent|_top|
 
 ### Bottom Menu
 
@@ -475,10 +501,23 @@ See the overrides section for details on [advanced usage](#clickthrough-url).
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-#### New Tab Click (composite)
+#### Open URL in New Tab (composite)
 
 When checked, this will cause a new tab to be opened when you click on the polygon.
 For drill-down dashboards, disabling this is recommended.
+
+#### Enable Custom URL Target (composite)
+
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open URL in New Tab` is disabled.
+
+### Custom URL Target (composite)
+
+Specify the content for the `target` attribute of the clickthrough URL.
+
+Typical values are: _blank|_self|_parent|_top|
 
 ### Bottom Menu (composite)
 

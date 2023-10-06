@@ -71,6 +71,8 @@ describe('Threshold Processor', () => {
       clickThrough: '',
       clickThroughSanitize: false,
       clickThroughOpenNewTab: false,
+      clickThroughCustomTargetEnabled: false,
+      clickThroughCustomTarget: '',
       order: 0,
     };
   });
