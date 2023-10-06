@@ -8,7 +8,7 @@
 - Fix ellipses showing when they are not needed [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
 - Fix alignment based on shape [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
   - When autoSizeRows or autoSizeColumns are disabled, the placement will be centered based on actual number of polygons rendered
-- NEW: Clickthrough target can be customized, allowing better behavior in Scene-based apps. [#316](https://github.com/grafana/grafana-polystat-panel/issues/316)
+- NEW: Clickthrough target can be customized, allowing better behavior in Scene-based apps. [#316](https://github.com/grafana/grafana-polystat-panel/issues/316).  Set "open in new tab" to off to use this new setting.
 
 ## v2.1.3
 
