@@ -270,7 +270,10 @@ When checked, this will cause a new tab to be opened when you click on a polygon
 
 ##### Clickthrough - Enable Custom URL Target
 
-When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled.
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open in New Tab` is disabled.
 
 ##### Clickthrough - Custom URL Target
 
@@ -389,7 +392,10 @@ For drill-down dashboards, disabling this is recommended.
 
 #### Enable Custom URL Target
 
-When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled. This will override the equivalent global setting.
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open URL in New Tab` is disabled. This will override the equivalent global setting.
 
 #### Custom URL Target
 
@@ -502,7 +508,10 @@ For drill-down dashboards, disabling this is recommended.
 
 #### Enable Custom URL Target (composite)
 
-When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled.
+![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
+NOTE: This is only visible when `Open URL in New Tab` is disabled.
 
 ### Custom URL Target (composite)
 
