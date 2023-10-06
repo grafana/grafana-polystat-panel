@@ -25,6 +25,7 @@
     "diffperc",
     "drilldown",
     "esversion",
+    "framename",
     "grafana",
     "hexbin",
     "iasc",
