@@ -458,7 +458,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
       })
       // sanitize clickthrough
       .addBooleanSwitch({
-        name: 'Sanitize',
+        name: 'Sanitize URL',
         path: 'globalClickthroughSanitizedEnabled',
         defaultValue: true,
         category: ['Global'],
@@ -466,14 +466,14 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
       })
       // open in new tab
       .addBooleanSwitch({
-        name: 'Open In New Tab',
+        name: 'Open URL In New Tab',
         path: 'globalClickthroughNewTabEnabled',
         defaultValue: true,
         category: ['Global'],
         description: 'Opens clickthrough in a new tab',
       })
       .addBooleanSwitch({
-        name: 'Custom Target',
+        name: 'Enable Custom URL Target',
         path: 'globalClickthroughCustomTargetEnabled',
         defaultValue: false,
         category: ['Global'],
@@ -481,10 +481,10 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         showIf: (c) => c.globalClickthroughNewTabEnabled === false,
       })
       .addTextInput({
-        name: 'Clickthrough Target',
+        name: 'Custom URL Target',
         path: 'globalClickthroughCustomTarget',
         description:
-          'Provide a different target to be appended to the clickthrough. Can be empty to reload the same page.',
+          'Provide a different target to be set in the target attribute of the clickthrough.',
         category: ['Global'],
         defaultValue: '',
         showIf: (c) => c.globalClickthroughCustomTargetEnabled === true,

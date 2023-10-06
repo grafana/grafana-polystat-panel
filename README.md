@@ -260,13 +260,21 @@ See the section [thresholds](#thresholds-details) below for details on how thres
 
 This clickthrough URL will be applied to all polygons that do not have an override or composite with a clickthrough specified.
 
-##### Clickthrough - Sanitize Url
+##### Clickthrough - Sanitize URL
 
 Normally this is enabled, and is intended to prevent malicious data entry.
 
-##### Clickthrough - Open in new tab
+##### Clickthrough - Open URL In New Tab
 
 When checked, this will cause a new tab to be opened when you click on a polygon.  For drill-down dashboards, disabling this is recommended.
+
+##### Clickthrough - Enable Custom URL Target
+
+When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.  This is only visible when `Open in new tab` is disabled.
+
+##### Clickthrough - Custom URL Target
+
+Specify the content for the `target` attribute of the clickthrough URL.
 
 ### Global Aliasing
 
