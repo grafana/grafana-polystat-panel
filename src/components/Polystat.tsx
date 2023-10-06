@@ -364,7 +364,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             return (
               <>
                 {useUrl.length > 0 && clickableUrl ? (
-                  { clickableUrl }
+                  clickableUrl
                 ) : (
                   drawShape(index, options.globalShape)
                 )}
