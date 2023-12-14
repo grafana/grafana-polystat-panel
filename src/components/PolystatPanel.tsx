@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
 import { PanelProps, GrafanaTheme2, LoadingState, PanelData, DataFrame } from '@grafana/data';
-import { PolystatOptions } from './types';
+import { PolystatOptions, PolystatModel } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from '@emotion/css';
-import { useStyles2, useTheme2 } from '@grafana/ui';
+import { useStyles2, useTheme, useTheme2 } from '@grafana/ui';
 import { ProcessDataFrames } from '../data/processor';
 import { getErrorMessageStyles } from './styles';
 
@@ -31,44 +31,47 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
 
 export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
   const styles = useStyles2(getComponentStyles);
-  const currentTheme = useTheme2();
-  let [cachedDataSeries, setCachedDataSeries] = useState<PanelData>();
+  const currentThemeV1 = useTheme(); // V8
+  const currentThemeV2 = useTheme2(); // V9+
+  let [cachedProcessedData, setCachedProcessedData] = useState<PolystatModel[]>();
   useEffect(() => {
     if (data.state === LoadingState.Done) {
-      setCachedDataSeries(data)
-    }
-  }, [data]);
+      // each series is a converted to a model we can use
+      const processedData = ProcessDataFrames(
+        options.compositeConfig.enabled,
+        options.compositeConfig.composites,
+        options.overrideConfig.overrides,
+        data,
+        replaceVariables,
+        fieldConfig,
+        options.globalClickthrough,
+        options.globalClickthroughNewTabEnabled,
+        options.globalClickthroughSanitizedEnabled,
+        options.globalClickthroughCustomTargetEnabled,
+        options.globalClickthroughCustomTarget,
+        options.globalOperator,
+        options.globalDecimals,
+        options.globalDisplayMode,
+        options.globalRegexPattern,
+        options.globalFillColor,
+        options.globalThresholdsConfig,
+        options.globalUnitFormat,
+        options.sortByDirection,
+        options.sortByField,
+        options.compositeGlobalAliasingEnabled,
+        currentThemeV1,
+        currentThemeV2,
+      );
+      setCachedProcessedData(processedData);
 
-  if (cachedDataSeries === undefined) {
+    }
+  }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2]);
+
+  if (cachedProcessedData === undefined) {
     return (
       <>Loading... please wait</>
     )
   }
-
-  // each series is a converted to a model we can use
-  const processedData = ProcessDataFrames(
-    options.compositeConfig.enabled,
-    options.compositeConfig.composites,
-    options.overrideConfig.overrides,
-    cachedDataSeries,
-    replaceVariables,
-    fieldConfig,
-    options.globalClickthrough,
-    options.globalClickthroughNewTabEnabled,
-    options.globalClickthroughSanitizedEnabled,
-    options.globalClickthroughCustomTargetEnabled,
-    options.globalClickthroughCustomTarget,
-    options.globalOperator,
-    options.globalDecimals,
-    options.globalDisplayMode,
-    options.globalRegexPattern,
-    options.globalFillColor,
-    options.globalThresholdsConfig,
-    options.globalUnitFormat,
-    options.sortByDirection,
-    options.sortByField,
-    options.compositeGlobalAliasingEnabled,
-  );
 
   return (
     <div
@@ -102,7 +105,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalFillColor={options.globalFillColor}
           globalRegexPattern={options.globalRegexPattern}
           globalGradientsEnabled={options.globalGradientsEnabled}
-          globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentTheme.colors.text.primary : '#000000'}
+          globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentThemeV2.colors.text.primary : '#000000'}
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}
           globalTextFontColor={options.globalTextFontColor}
           globalTextFontFamily={options.globalTextFontFamily}
@@ -116,7 +119,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           layoutDisplayLimit={options.layoutDisplayLimit}
           layoutNumColumns={options.layoutNumColumns}
           layoutNumRows={options.layoutNumRows}
-          processedData={processedData}
+          processedData={cachedProcessedData}
           panelId={id}
           panelWidth={width}
           panelHeight={height}
