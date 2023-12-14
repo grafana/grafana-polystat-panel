@@ -1,4 +1,5 @@
 import { FieldConfigProperty, PanelPlugin } from '@grafana/data';
+
 import {
   DisplayModes,
   FontFamilyOptions,
@@ -27,6 +28,7 @@ import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from './components/suggestions';
 import { hasRobotoFont, PolystatPanelMigrationHandler } from './migrations';
+
 
 export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
   .setMigrationHandler(PolystatPanelMigrationHandler)
@@ -66,7 +68,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           integer: true,
         },
         category: ['Layout'],
-        showIf: (c) => c.autoSizeColumns !== true,
+        showIf: (c) => !c.autoSizeColumns,
       })
       .addBooleanSwitch({
         name: 'Auto Size Rows',
@@ -86,7 +88,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           integer: true,
         },
         category: ['Layout'],
-        showIf: (c) => c.autoSizeRows !== true,
+        showIf: (c) => !c.autoSizeRows,
       })
       .addNumberInput({
         path: 'layoutDisplayLimit',
@@ -117,7 +119,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           min: 1,
         },
         category: ['Sizing'],
-        showIf: (c) => c.autoSizePolygons !== true,
+        showIf: (c) => !c.autoSizePolygons,
       })
       .addNumberInput({
         name: 'Border Size',
@@ -139,7 +141,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptions,
         },
-        showIf: () => hasRobotoFont() === false,
+        showIf: () => !hasRobotoFont(),
       })
       .addSelect({
         path: 'globalTextFontFamily',
@@ -150,7 +152,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptionsLegacy,
         },
-        showIf: () => hasRobotoFont() === true,
+        showIf: () => hasRobotoFont(),
       })
       .addBooleanSwitch({
         name: 'Auto Scale Fonts',
@@ -168,7 +170,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         category: ['Text'],
         description: 'Default font size to use when Auto is disabled',
-        showIf: (c) => c.globalAutoScaleFonts !== true,
+        showIf: (c) => !c.globalAutoScaleFonts,
       })
       // font color
       // auto set font color
@@ -185,7 +187,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Text'],
         defaultValue: '#000000',
         description: 'Font color to use for all text on polygon',
-        showIf: (c) => c.globalTextFontAutoColorEnabled !== true,
+        showIf: (c) => !c.globalTextFontAutoColorEnabled,
       })
 
       // ellipse enabled
@@ -195,7 +197,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: false,
         category: ['Text'],
         description: 'Use Ellipses when character count is exceeded',
-        showIf: (c) => c.globalAutoScaleFonts !== true,
+        showIf: (c) => !c.globalAutoScaleFonts,
       })
       // ellipse num chars
       .addNumberInput({
@@ -208,7 +210,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         category: ['Text'],
         description: 'Default number of characters to display before showing ellipses',
-        showIf: (c) => c.ellipseEnabled === true && c.globalAutoScaleFonts !== true,
+        showIf: (c) => c.ellipseEnabled && !c.globalAutoScaleFonts,
       })
 
       // Sorting
@@ -250,7 +252,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptions,
         },
-        showIf: () => hasRobotoFont() === false,
+        showIf: () => !hasRobotoFont(),
       })
       .addSelect({
         path: 'globalTooltipsFontFamily',
@@ -261,7 +263,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: FontFamilyOptionsLegacy,
         },
-        showIf: () => hasRobotoFont() === true,
+        showIf: () => hasRobotoFont(),
       })
       .addBooleanSwitch({
         name: 'Show timestamp',
@@ -478,7 +480,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: false,
         category: ['Global'],
         description: 'Use custom target for global clickthrough (this overrides the new tab setting above). Typical values are: _blank|_self|_parent|_top|framename',
-        showIf: (c) => c.globalClickthroughNewTabEnabled === false,
+        showIf: (c) => !c.globalClickthroughNewTabEnabled,
       })
       .addTextInput({
         name: 'Custom URL Target',
@@ -487,7 +489,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
           'Provide a different target to be set in the target attribute of the clickthrough. Typical values are: _blank|_self|_parent|_top|framename',
         category: ['Global'],
         defaultValue: '',
-        showIf: (c) => c.globalClickthroughCustomTargetEnabled === true,
+        showIf: (c) => c.globalClickthroughCustomTargetEnabled,
       })
 
       // aliasing
