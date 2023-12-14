@@ -1,5 +1,6 @@
-import React from 'react';
-import { PanelProps, GrafanaTheme2 } from '@grafana/data';
+import React, { useEffect, useState } from 'react';
+
+import { PanelProps, GrafanaTheme2, LoadingState, PanelData, DataFrame } from '@grafana/data';
 import { PolystatOptions } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from '@emotion/css';
@@ -27,16 +28,29 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
   };
 };
 
+
 export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
   const styles = useStyles2(getComponentStyles);
-  const errorMessageStyles = useStyles2(getErrorMessageStyles);
+  const currentTheme = useTheme2();
+  let [cachedDataSeries, setCachedDataSeries] = useState<PanelData>();
+  useEffect(() => {
+    if (data.state === LoadingState.Done) {
+      setCachedDataSeries(data)
+    }
+  }, [data]);
+
+  if (cachedDataSeries === undefined) {
+    return (
+      <>Loading... please wait</>
+    )
+  }
 
   // each series is a converted to a model we can use
   const processedData = ProcessDataFrames(
     options.compositeConfig.enabled,
     options.compositeConfig.composites,
     options.overrideConfig.overrides,
-    data,
+    cachedDataSeries,
     replaceVariables,
     fieldConfig,
     options.globalClickthrough,
@@ -55,23 +69,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
     options.sortByField,
     options.compositeGlobalAliasingEnabled,
   );
-  const currentTheme = useTheme2();
 
-  if ((options.layoutDisplayLimit > 0) && (processedData!.length > options.layoutDisplayLimit)) {
-    return (
-      <div className={errorMessageStyles}>
-        Not enough polygons for data. There are {processedData!.length} items to display,
-      but configuration is limited to {options.layoutDisplayLimit}. See the Display Limit setting in category Layout.
-      </div>
-    );
-  }
-
-  let autoFontColor = '#000000'; // default to black
-  if (options.globalTextFontAutoColorEnabled) {
-    // use primary text color for theme
-    autoFontColor = currentTheme.colors.text.primary;
-  }
-  const renderTime = new Date();
   return (
     <div
       className={cx(
@@ -104,7 +102,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalFillColor={options.globalFillColor}
           globalRegexPattern={options.globalRegexPattern}
           globalGradientsEnabled={options.globalGradientsEnabled}
-          globalTextFontAutoColor={autoFontColor}
+          globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentTheme.colors.text.primary : '#000000'}
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}
           globalTextFontColor={options.globalTextFontColor}
           globalTextFontFamily={options.globalTextFontFamily}
@@ -123,7 +121,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           panelWidth={width}
           panelHeight={height}
           radius={options.radius}
-          renderTime={renderTime}
+          renderTime={new Date()}
           globalShape={options.globalShape}
           sortByDirection={options.sortByDirection}
           sortByField={options.sortByField}

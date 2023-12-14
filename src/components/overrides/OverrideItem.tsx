@@ -14,9 +14,9 @@ import {
   CascaderOption,
 } from '@grafana/ui';
 import { OverrideItemProps, OverrideItemType } from './types';
-import { ThresholdsEditor } from '../../components/thresholds/ThresholdsEditor';
-import { PolystatThreshold } from '../../components/thresholds/types';
-import { OperatorOptions } from '../../components/types';
+import { ThresholdsEditor } from '../thresholds/ThresholdsEditor';
+import { PolystatThreshold } from '../thresholds/types';
+import { OperatorOptions } from '../types';
 import { SelectableValue } from '@grafana/data';
 import { getMetricHints } from '../metric_hints';
 
@@ -41,7 +41,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
     // no match, return last not null by default
     return OperatorOptions[5];
   };
-  const [operatorName, setOperatorName] = useState<SelectableValue<any>>(getOperator(props.override.operatorName));
+  const [operatorName, setOperatorName] = useState<SelectableValue>(getOperator(props.override.operatorName));
   const removeItem = () => {
     props.remover(override.order);
   };

@@ -25,34 +25,33 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
-  const [animatedItems, setAnimatedItems] = React.useState([] as any);
+  const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
 
-  useEffect(() => {
-    // clear animationRefs and set new ones
-    if (options.processedData!.length > 0) {
+  const updateAnimation = (data: PolystatModel[]) => {
+    if (data.length > 0) {
       const newAnimationRefs = [];
       const newAnimationMetricIndexes = [];
-      for (let i = 0; i < options.processedData!.length; i++) {
+      for (let i = 0; i < data!.length; i++) {
         newAnimationRefs.push(createRef());
         newAnimationMetricIndexes.push(0);
       }
       if (newAnimationRefs.length > 0) {
-        setAnimationRefs(newAnimationRefs);
-        setAnimationMetricIndexes(newAnimationMetricIndexes);
+        if (animationRefs.length !== newAnimationRefs.length) {
+          setAnimationRefs(newAnimationRefs);
+          setAnimationMetricIndexes(newAnimationMetricIndexes);
+        }
       }
     }
-  }, [options.processedData]);
+  };
 
   /*
     This is the animation method that will cycle through the metrics for a composite
    */
   const animateComposite = useCallback(() => {
-    //console.log(new Date().toLocaleString() + ` animate loop...`);
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
       if (animationRefs.length > 0 && animationRefs[index].current) {
-        //console.log(`animating ref ${index}`);
         if (options.processedData) {
           const item = options.processedData[index];
           const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
@@ -79,16 +78,23 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   /*
     Determine which items should be animated
   */
+
   useEffect(() => {
     let shouldAnimate = false;
-    const animate = [] as any;
+    const animate: number[] = [];
     options.processedData!.map((item, index) => {
       if (item.isComposite && item.showValue) {
         shouldAnimate = true;
         animate.push(index);
       }
     });
-    setAnimatedItems(animate);
+    // check array content equality
+    if (JSON.stringify(animatedItems) !== JSON.stringify(animate)) {
+      if (options.processedData) {
+        updateAnimation(options.processedData);
+        setAnimatedItems(animate);
+      }
+    }
     let tick: NodeJS.Timeout;
     if (shouldAnimate) {
       let speed = parseInt(options.compositeConfig.animationSpeed, 10);
@@ -101,7 +107,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     return () => {
       clearInterval(tick);
     };
-    // TODO: this is a hack to prevent re-rendering
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
@@ -113,8 +118,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     if (limit < options.processedData!.length) {
       return (
         <div className={errorMessageStyles}>
-          Not enoughs rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
-          {limit} places allocated.{' '}
+          Not enough rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
+          {limit} places allocated.{' '} See the Display Limit setting in category Layout{' '}
         </div>
       );
     }
@@ -153,7 +158,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
   const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
-
   const aHexbin = hexbin()
     .radius(radius)
     .extent([
@@ -168,7 +172,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const textAreaHeight = diameterY / 2; // Top and bottom of hexagon are not used
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
-  // use the smaller of diameterX or Y
+  // use the smallest of diameterX or Y
   if (diameterX < diameterY) {
     innerArea = diameterX * diameterX;
   }
@@ -196,7 +200,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   const resolveClickThroughTarget = (d: PolystatModel): string => {
     let clickThroughTarget = '_self';
-    if (d.newTabEnabled === true) {
+    if (d.newTabEnabled) {
       clickThroughTarget = '_blank';
     }
     // when a custom clickthrough is enabled, override the default _self
@@ -207,8 +211,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   const getCoords = (i: number) => {
-    const xValue = calculatedPoints[i][0];
-    const yValue = calculatedPoints[i][1];
+    const xValue = calculatedPoints[i].x;
+    const yValue = calculatedPoints[i].y;
     return { x: xValue, y: yValue };
   };
 
@@ -220,7 +224,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let numOfChars = options.ellipseCharacters;
 
   if (options.globalAutoScaleFonts) {
-    const result = autoFontScaler(
+    const result = autoFontScalar(
       options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
@@ -432,7 +436,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
             opacity={1} // TODO: make this configurable
             clickable={false} // TODO: make this configurable, extend with per-line clickthrough
-            render={({ content, activeAnchor }) => {
+            render={({ content}) => {
               // generate tooltip for item
               if (content) {
                 const contentIndex = parseInt(content, 10);
@@ -565,7 +569,7 @@ const getAlignments = (
     case PolygonShapes.SQUARE:
       // square is "centered" at top left, not the center
 
-      // compute alignment for each text element, base coordinate is at the top left corner (text is anchored at its bottom):
+      // compute alignment for each text element, base coordinate is in the top left corner (text is anchored at its bottom):
       // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
       // - Label text (top text) will be aligned in the middle of the top half of the text area
       valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
@@ -588,7 +592,7 @@ const getAlignments = (
   };
 };
 
-const autoFontScaler = (
+const autoFontScalar = (
   fontFamily: string,
   textAreaWidth: number,
   textAreaHeight: number,
