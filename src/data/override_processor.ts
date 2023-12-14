@@ -7,6 +7,8 @@ import {
   textUtil,
   getColorForTheme,
   FieldConfigSource,
+  GrafanaTheme2,
+  GrafanaTheme,
 } from '@grafana/data';
 import { useTheme, useTheme2 } from '@grafana/ui';
 import { getThresholdLevelForValue } from './threshold_processor';
@@ -76,17 +78,16 @@ export const ApplyOverrides = (
   fieldConfig: FieldConfigSource<any>,
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
-  replaceVariables: InterpolateFunction | null
+  replaceVariables: InterpolateFunction | null,
+  themeV1: GrafanaTheme, // V8
+  themeV2: GrafanaTheme2 // V9+
 ) => {
-  // v9 compatible
-  const theme2 = useTheme2();
-  const oldTheme = useTheme();
   // determine real color
   let realGlobalFillColor = '';
-  if (typeof theme2.visualization !== 'undefined') {
-    realGlobalFillColor = theme2.visualization.getColorByName(globalFillColor);
+  if (typeof themeV2.visualization !== 'undefined') {
+    realGlobalFillColor = themeV2.visualization.getColorByName(globalFillColor);
   } else {
-    realGlobalFillColor = getColorForTheme(globalFillColor, oldTheme);
+    realGlobalFillColor = getColorForTheme(globalFillColor, themeV1);
   }
 
   if (!overrides) {
@@ -105,10 +106,10 @@ export const ApplyOverrides = (
         anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : globalThresholds;
       const result = getThresholdLevelForValue(thresholds, dataValue, globalFillColor);
       let useColor = result.color;
-      if (typeof theme2.visualization !== 'undefined') {
-        useColor = theme2.visualization.getColorByName(result.color);
+      if (typeof themeV2.visualization !== 'undefined') {
+        useColor = themeV2.visualization.getColorByName(result.color);
       } else {
-        useColor = getColorForTheme(result.color, oldTheme);
+        useColor = getColorForTheme(result.color, themeV1);
       }
       // set value to what was returned
       data[index].value = dataValue;
@@ -121,7 +122,7 @@ export const ApplyOverrides = (
         data[index].valueFormatted = mappedValue.text;
         // set color also
         if (mappedValue.color) {
-          let realColor = theme2.visualization.getColorByName(mappedValue.color);
+          let realColor = themeV2.visualization.getColorByName(mappedValue.color);
           data[index].color = realColor;
         } else {
           data[index].color = realGlobalFillColor;

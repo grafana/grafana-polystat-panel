@@ -14,6 +14,8 @@ import {
   InterpolateFunction,
   FieldConfigSource,
   ScopedVars,
+  GrafanaTheme2,
+  GrafanaTheme,
 } from '@grafana/data';
 import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
@@ -59,6 +61,8 @@ export function ProcessDataFrames(
   sortByDirection: number,
   sortByField: string,
   compositesGlobalAliasingEnabled: boolean,
+  themeV1: GrafanaTheme,
+  themeV2: GrafanaTheme2,
 ): PolystatModel[] {
 
   // check if data contains a field called Time of type time
@@ -73,7 +77,7 @@ export function ProcessDataFrames(
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
   // formatting can change colors due to value maps
-  internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor);
+  internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor, themeV2);
   // applies overrides and global thresholds (and mappings)
   internalData = ApplyOverrides(
     overrides,
@@ -81,7 +85,9 @@ export function ProcessDataFrames(
     fieldConfig,
     globalFillColor,
     globalThresholds,
-    replaceVariables
+    replaceVariables,
+    themeV1,
+    themeV2
   );
   // composites
   if (compositesEnabled) {
@@ -171,9 +177,9 @@ export const ApplyGlobalFormatting = (
   fieldConfig: FieldConfigSource<any>,
   globalUnitFormat: string,
   globalDecimals: number,
-  globalFillColor: string
+  globalFillColor: string,
+  theme: GrafanaTheme2
 ): PolystatModel[] => {
-  const theme = useTheme2();
   let realGlobalFillColor = theme.visualization.getColorByName(globalFillColor);
   const formatFunc = getValueFormat(globalUnitFormat);
   for (let index = 0; index < data.length; index++) {
