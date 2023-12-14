@@ -207,6 +207,15 @@ function SortVariableValuesByField(options: any, sortField: string, sortOrder: n
   return options;
 }
 
+const roundValue = (num: number, decimals: number): number | null => {
+  if (num === null) {
+    return null;
+  }
+  const n = Math.pow(10, decimals);
+  const formatted = (n * num).toFixed(decimals);
+  return Math.round(parseFloat(formatted)) / n;
+};
+
 export {
   GetDecimalsForValue,
   getTextSizeForWidth,
@@ -215,4 +224,5 @@ export {
   RGBToHex,
   SortVariableValuesByField,
   getTextOrValue,
+  roundValue
 };

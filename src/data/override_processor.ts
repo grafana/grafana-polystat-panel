@@ -17,15 +17,7 @@ import { CUSTOM_SPLIT_DELIMITER } from './types';
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { GetMappedValue } from './valueMappingsWrapper';
-
-const roundValue = (num: number, decimals: number) => {
-  if (num === null) {
-    return null;
-  }
-  const n = Math.pow(10, decimals);
-  const formatted = (n * num).toFixed(decimals);
-  return Math.round(parseFloat(formatted)) / n;
-};
+import { roundValue } from 'utils';
 
 const customFormatter = (value: any): string => {
   if (Object.prototype.toString.call(value) === '[object Array]') {

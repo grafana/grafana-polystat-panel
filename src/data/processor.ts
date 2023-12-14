@@ -19,7 +19,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
 import { DisplayModes, OperatorOptions, PolystatModel } from '../components/types';
 import { GLOBAL_FILL_COLOR_RGBA } from '../components/defaults';
-import { GetDecimalsForValue, SortVariableValuesByField } from '../utils';
+import { GetDecimalsForValue, SortVariableValuesByField, roundValue } from '../utils';
 import { ApplyComposites } from './composite_processor';
 import { CompositeItemType } from 'components/composites/types';
 import { ApplyOverrides } from './override_processor';
@@ -32,7 +32,7 @@ import { GetValueByOperator } from './stats';
 /**
  * Converts dataframes to internal model
  *
- * @param   {PanelData}    data                [data description]
+ * @param   {DataFrame[]}    data                [data description]
  * @param   {string[]}     globalRegexPattern  [globalRegexPattern description]
  *
  * @return  {DataFrame[]}                      [return description]
@@ -105,13 +105,11 @@ export function ProcessDataFrames(
 
 /**
  * renames according to a global regex pattern
- *
- * @param   {DataFrame[]}  series        [series description]
- * @param   {string[]}     regexPattern  [regexPattern description]
- *
- * @return  {DataFrame[]}                [return description]
+ * @param {PolystatModel[]} data [series description]
+ * @param {string[]} regexPattern [regexPattern description]
+ * @return {PolystatModel[]} [return description]
  */
-export const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string) => {
+export const ApplyGlobalRegexPattern = (data: PolystatModel[], regexPattern: string): PolystatModel[] => {
   for (let i = 0; i < data.length; i++) {
     if (regexPattern !== '') {
       const regexVal = stringToJsRegex(regexPattern);
@@ -142,8 +140,7 @@ export const ApplyGlobalClickThrough = (
   globalClickthroughSanitizedEnabled: boolean,
   globalClickthroughCustomTargetEnabled: boolean,
   globalClickthroughCustomTarget: string
-
-) => {
+): PolystatModel[] => {
   for (let index = 0; index < data.length; index++) {
     if (data[index].clickThrough.length === 0) {
       data[index].clickThrough = processDefaultClickThrough(index, globalClickthrough, data);
@@ -175,7 +172,7 @@ export const ApplyGlobalFormatting = (
   globalUnitFormat: string,
   globalDecimals: number,
   globalFillColor: string
-) => {
+): PolystatModel[] => {
   const theme = useTheme2();
   let realGlobalFillColor = theme.visualization.getColorByName(globalFillColor);
   const formatFunc = getValueFormat(globalUnitFormat);
@@ -215,7 +212,7 @@ export const ApplyGlobalFormatting = (
   return data;
 };
 
-const FilterByGlobalDisplayMode = (data: any, globalDisplayMode: string) => {
+const FilterByGlobalDisplayMode = (data: any, globalDisplayMode: string): PolystatModel[] => {
   const filteredMetrics: number[] = [];
   const compositeMetrics: PolystatModel[] = [];
   if (globalDisplayMode !== 'all') {
@@ -245,15 +242,6 @@ const FilterByGlobalDisplayMode = (data: any, globalDisplayMode: string) => {
     }
   }
   return data;
-};
-
-const roundValue = (num: number, decimals: number) => {
-  if (num === null) {
-    return null;
-  }
-  const n = Math.pow(10, decimals);
-  const formatted = (n * num).toFixed(decimals);
-  return Math.round(parseFloat(formatted)) / n;
 };
 
 export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): PolystatModel[] => {
