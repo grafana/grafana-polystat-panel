@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 import { PolygonShapes, PolystatDiameters } from '../types';
+import { LayoutPoint } from './types';
 /**
  * LayoutManager creates layouts for supported polygon shapes
  */
@@ -243,22 +244,18 @@ export class LayoutManager {
         }
         const y = radius * row * 1.5;
         return [x, y];
-        break;
       case PolygonShapes.CIRCLE:
         return [radius * column * 2, radius * row * 2];
-        break;
       case PolygonShapes.SQUARE:
         return [radius * column * 2, radius * row * 2];
-        break;
       default:
         return [radius * column * 1.75, radius * row * 1.5];
-        break;
     }
   }
 
   // Builds the placeholder polygons needed to represent each metric
-  generatePoints(data: any, displayLimit: number, shape: PolygonShapes): any {
-    const points = [] as any;
+  generatePoints(data: any, displayLimit: number, shape: PolygonShapes): LayoutPoint[] {
+    const points: LayoutPoint[] = [];
     if (typeof data === 'undefined') {
       return points;
     }
@@ -283,7 +280,12 @@ export class LayoutManager {
             if (columnsUsed > maxColumnsUsed) {
               maxColumnsUsed = columnsUsed;
             }
-            points.push(this.shapeToCoordinates(shape, this.radius, j, i));
+            let coords = this.shapeToCoordinates(shape, this.radius, j, i);
+            const aPoint: LayoutPoint = {
+              x: coords[0],
+              y: coords[1],
+            }
+            points.push(aPoint);
           }
         }
       }
@@ -338,10 +340,6 @@ export class LayoutManager {
     this.maxRowsUsed = maxRowsUsed;
     this.maxColumnsUsed = maxColumnsUsed;
     return points;
-  }
-
-  getRadius(): number {
-    return this.radius;
   }
 
   generateRadius(shape: PolygonShapes): number {

@@ -84,8 +84,7 @@ export const Tooltip = ({
         return val;
       };
     }
-    const sortedMembers = lodashOrderBy(data.members, [pSortFunction, sSortFunction], [pDirection, sDirection]);
-    return sortedMembers;
+    return lodashOrderBy(data.members, [pSortFunction, sSortFunction], [pDirection, sDirection]);
   };
 
   const getTriggeredCount = (data: PolystatModel) => {

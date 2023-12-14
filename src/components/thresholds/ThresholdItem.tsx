@@ -30,7 +30,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
     return ThresholdStates[0];
   };
 
-  const [threshold, setThreshold] = useState<SelectableValue<any>>(getThreshold(options.threshold.state));
+  const [threshold, setThreshold] = useState<SelectableValue>(getThreshold(options.threshold.state));
 
   return (
     <Input

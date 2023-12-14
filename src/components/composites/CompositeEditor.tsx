@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { StandardEditorProps } from '@grafana/data';
-import { Button, Input, Switch, Collapse, Field, FieldSet } from '@grafana/ui';
+import React, {useState} from 'react';
+import {StandardEditorProps} from '@grafana/data';
+import {Button, Collapse, Field, FieldSet, Input, Switch} from '@grafana/ui';
 
-import { CompositeItem } from './CompositeItem';
-import { DisplayModes, CompositeItemType, CompositeMetric, CompositeItemTracker } from './types';
-import { v4 as uuidv4 } from 'uuid';
+import {CompositeItem} from './CompositeItem';
+import {CompositeItemTracker, CompositeItemType, CompositeMetric, DisplayModes} from './types';
+import {v4 as UUIdv4} from 'uuid';
 
 export interface CompositeEditorSettings {
   composites: CompositeItemType[];
@@ -19,19 +19,19 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   const [animationSpeed, _setAnimationSpeed] = useState(context.options.compositeConfig.animationSpeed);
   const [compositesEnabled, _setCompositesEnabled] = useState(context.options.compositeConfig.enabled);
   const [tracker, _setTracker] = useState((): CompositeItemTracker[] => {
-    if (!settings.composites) {
-      const empty: CompositeItemTracker[] = [];
-      return empty;
+    if (settings.composites) {
+      const items: CompositeItemTracker[] = [];
+      settings.composites.forEach((value: CompositeItemType, index: number) => {
+        items[index] = {
+          composite: value,
+          order: index,
+          ID: UUIdv4(),
+        };
+      });
+      return items;
+    } else {
+      return [] as CompositeItemTracker[];
     }
-    const items: CompositeItemTracker[] = [];
-    settings.composites.forEach((value: CompositeItemType, index: number) => {
-      items[index] = {
-        composite: value,
-        order: index,
-        ID: uuidv4(),
-      };
-    });
-    return items;
   });
 
   const setAnimationSpeed = (val: any) => {
@@ -64,8 +64,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   // tracks composite card collapse state
   const [isOpen, setIsOpen] = useState((): boolean[] => {
     if (!tracker) {
-      const empty: boolean[] = [];
-      return empty;
+      return [];
     }
     let size = tracker.length;
     const openStates: boolean[] = [];
@@ -134,7 +133,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     const aTracker: CompositeItemTracker = {
       composite: aComposite,
       order: order,
-      ID: uuidv4(),
+      ID: UUIdv4(),
     };
     setTracker([...tracker, aTracker]);
     setIsOpen([...isOpen, true]);
@@ -192,7 +191,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     const aTracker: CompositeItemTracker = {
       composite: aComposite,
       order: order,
-      ID: uuidv4(),
+      ID: UUIdv4(),
     };
     setTracker([...tracker, aTracker]);
     // add an opener also

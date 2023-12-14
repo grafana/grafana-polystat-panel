@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { StandardEditorProps } from '@grafana/data';
 import { OverrideItem } from './OverrideItem';
 import { OverrideItemType, OverrideItemTracker } from './types';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as UUIdv4 } from 'uuid';
 import { Button, Collapse } from '@grafana/ui';
-import { PolystatThreshold } from '../../components/thresholds/types';
-import { OperatorOptions } from '../../components/types';
+import { PolystatThreshold } from '../thresholds/types';
+import { OperatorOptions } from '../types';
 import {
   DEFAULT_CRITICAL_COLOR_HEX,
   DEFAULT_NO_THRESHOLD_COLOR_HEX,
   DEFAULT_OK_COLOR_HEX,
   DEFAULT_WARNING_COLOR_HEX,
-} from '../../components/defaults';
+} from '../defaults';
 
 export interface OverrideEditorSettings {
   overrides: OverrideItemType[];
@@ -24,15 +24,14 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
   const [settings] = useState(context.options.overrideConfig);
   const [tracker, _setTracker] = useState((): OverrideItemTracker[] => {
     if (!settings.overrides) {
-      const empty: OverrideItemTracker[] = [];
-      return empty;
+      return [] as OverrideItemTracker[];
     }
     const items: OverrideItemTracker[] = [];
     settings.overrides.forEach((value: OverrideItemType, index: number) => {
       items[index] = {
         override: value,
         order: index,
-        ID: uuidv4(),
+        ID: UUIdv4(),
       };
     });
     return items;
@@ -96,7 +95,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
     const aTracker: OverrideItemTracker = {
       override: anOverride,
       order: order,
-      ID: uuidv4(),
+      ID: UUIdv4(),
     };
     setTracker([...tracker, aTracker]);
     setIsOpen([...isOpen, true]);
@@ -191,7 +190,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
     const aTracker: OverrideItemTracker = {
       override: anOverride,
       order: order,
-      ID: uuidv4(),
+      ID: UUIdv4(),
     };
     setTracker([...tracker, aTracker]);
     // add an opener also

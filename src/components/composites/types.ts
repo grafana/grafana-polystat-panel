@@ -13,6 +13,8 @@ export interface CompositeMetric {
   alias?: string;
   ID?: string;
   order: number;
+  seriesName?: string;
+  seriesNameEscaped?: string;
 }
 
 export interface CompositeItemType {
