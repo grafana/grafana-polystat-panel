@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-import { PanelProps, GrafanaTheme2, LoadingState, PanelData, DataFrame } from '@grafana/data';
+import { PanelProps, GrafanaTheme2, LoadingState } from '@grafana/data';
 import { PolystatOptions, PolystatModel } from './types';
 import { Polystat } from './Polystat';
 import { css, cx } from '@emotion/css';
 import { useStyles2, useTheme, useTheme2 } from '@grafana/ui';
 import { ProcessDataFrames } from '../data/processor';
-import { getErrorMessageStyles } from './styles';
 
 interface Props extends PanelProps<PolystatOptions> {}
 

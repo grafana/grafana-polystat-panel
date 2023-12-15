@@ -52,8 +52,7 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
 
   const [isOpen, setIsOpen] = useState((): boolean[] => {
     if (!tracker) {
-      const empty: boolean[] = [];
-      return empty;
+      return [] as boolean[];
     }
     let size = tracker.length;
     const openStates: boolean[] = [];

@@ -49,9 +49,9 @@ function GetDecimalsForValue(value: any, panelDecimals: any): { decimals: number
  * @param {String} text The text to be rendered.
  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold ?px verdana")
  *                      -- note the use of ? in place of the font size.
- * @param {width} the width in pixels the string must fit in
- * @param {minFontPx} the smallest acceptable font size in pixels
- * @param {maxFontPx} the largest acceptable font size in pixels
+ * @param {number} width width in pixels the string must fit in
+ * @param {number} minFontPx the smallest acceptable font size in pixels
+ * @param {number} maxFontPx the largest acceptable font size in pixels
  */
 function getTextSizeForWidth(text: string, font: any, width: number, minFontPx: number, maxFontPx: number) {
   let s = font.replace('?', maxFontPx);
@@ -79,10 +79,10 @@ function getTextSizeForWidth(text: string, font: any, width: number, minFontPx: 
  * @param {String} text The text to be rendered.
  * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold ?px verdana")
  *                      -- note the use of ? in place of the font size.
- * @param {width} the width in pixels the string must fit in
- * @param {height} the height in pixels
- * @param {minFontPx} the smallest acceptable font size in pixels
- * @param {maxFontPx} the largest acceptable font size in pixels
+ * @param {number} width the width in pixels the string must fit in
+ * @param {number} height the height in pixels
+ * @param {number} minFontPx the smallest acceptable font size in pixels
+ * @param {number} maxFontPx the largest acceptable font size in pixels
  */
 function getTextSizeForWidthAndHeight(
   text: string,

@@ -519,8 +519,7 @@ export const migrateValueAndRangeMaps = (panel: any) => {
   // append together
   const newMappings = newValueMappings.concat(newRangeMappings);
   // get uniques only
-  const uniques = [...new Map(newMappings.map((v) => [JSON.stringify(v), v])).values()];
-  return uniques;
+  return [...new Map(newMappings.map((v) => [JSON.stringify(v), v])).values()];
 };
 
 export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {

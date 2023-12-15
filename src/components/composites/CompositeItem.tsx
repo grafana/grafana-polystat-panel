@@ -18,7 +18,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
     // no match, return all by default
     return DisplayModes[0];
   };
-  const [displayMode, setDisplayMode] = useState<SelectableValue<any>>(getDisplayMode(props.composite.displayMode));
+  const [displayMode, setDisplayMode] = useState<SelectableValue>(getDisplayMode(props.composite.displayMode));
   const setComposite = (value: CompositeItemType) => {
     _setComposite(value);
     props.setter(composite.order, value);
