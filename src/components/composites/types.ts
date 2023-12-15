@@ -1,7 +1,5 @@
 import { SelectableValue } from '@grafana/data';
 
-export interface CompositeMember {}
-
 export const DisplayModes: SelectableValue[] = [
   { value: 'all', label: 'Show All' },
   { value: 'triggered', label: 'Show Triggered' },
@@ -13,6 +11,8 @@ export interface CompositeMetric {
   alias?: string;
   ID?: string;
   order: number;
+  seriesName?: string;
+  seriesNameEscaped?: string;
 }
 
 export interface CompositeItemType {

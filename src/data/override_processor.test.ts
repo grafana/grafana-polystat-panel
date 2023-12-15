@@ -9,6 +9,7 @@ import { OverrideItemType } from 'components/overrides/types';
 import { PolystatModel } from '../components/types';
 import { FieldConfigSource, FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
+import { useTheme, useTheme2 } from '@grafana/ui';
 
 describe('Test Overrides', () => {
   let modelA: PolystatModel;
@@ -56,7 +57,7 @@ describe('Test Overrides', () => {
         },
         overrides: [],
       };
-      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], null));
+      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], null, useTheme(), useTheme2()));
       expect(result.all.length).toBe(1);
       const x = result.all[0] as PolystatModel[];
       const modified = x[0] as PolystatModel;

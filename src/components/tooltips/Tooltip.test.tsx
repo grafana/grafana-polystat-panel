@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { FontFamilies, SortOptions } from '../../components/types';
+import { FontFamilies, SortOptions } from '../types';
 import { ApplyComposites } from '../../data/composite_processor';
 
 import { Tooltip, TooltipProps } from './Tooltip';

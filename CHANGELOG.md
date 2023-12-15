@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.5
+
+- Fixes rendering of composites when template variables changes
+- Refactor/Cleanup code, slightly more efficient
+
 ## v2.1.4
 
 - Fix tooltips being displayed from wrong panel [#314](https://github.com/grafana/grafana-polystat-panel/issues/314) [#315](https://github.com/grafana/grafana-polystat-panel/issues/315)

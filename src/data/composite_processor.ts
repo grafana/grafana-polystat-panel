@@ -44,8 +44,8 @@ export const resolveMemberTemplates = (
   compositeName: string,
   members: CompositeMetric[],
   replaceVariables: InterpolateFunction
-): any[] => {
-  const ret: any[] = [];
+): CompositeMetric[] => {
+  const ret: CompositeMetric[] = [];
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   members.forEach((member) => {
     // Resolve templates in series names

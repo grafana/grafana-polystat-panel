@@ -8,3 +8,5 @@ coverage
 .vscode/*.log
 .yarn/install-state.gz
 .eslintcache
+.idea
+.stignore
