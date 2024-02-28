@@ -10,7 +10,6 @@ import {
   GrafanaTheme2,
   GrafanaTheme,
 } from '@grafana/data';
-import { useTheme, useTheme2 } from '@grafana/ui';
 import { getThresholdLevelForValue } from './threshold_processor';
 import { GetValueByOperator } from './stats';
 import { ClickThroughTransformer } from './clickThroughTransformer';
@@ -87,6 +86,8 @@ export const ApplyOverrides = (
   if (typeof themeV2.visualization !== 'undefined') {
     realGlobalFillColor = themeV2.visualization.getColorByName(globalFillColor);
   } else {
+    // intentional use of deprecated function for v8 compat
+    // eslint-disable-next-line deprecation/deprecation
     realGlobalFillColor = getColorForTheme(globalFillColor, themeV1);
   }
 
@@ -109,6 +110,8 @@ export const ApplyOverrides = (
       if (typeof themeV2.visualization !== 'undefined') {
         useColor = themeV2.visualization.getColorByName(result.color);
       } else {
+        // intentional use of deprecated function for v8 compat
+        // eslint-disable-next-line deprecation/deprecation
         useColor = getColorForTheme(result.color, themeV1);
       }
       // set value to what was returned
