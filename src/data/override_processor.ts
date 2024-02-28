@@ -161,19 +161,14 @@ export const ApplyOverrides = (
       data[index].suffix = anOverride.suffix;
       // set the url, replace template vars
       if (anOverride.clickThrough && anOverride.clickThrough.length > 0) {
-        const regex = stringToJsRegex(anOverride.metricName);
-        const matches = regex.exec(data[index].name);
-        const templateVars: ScopedVars = {};
-        if (matches && matches.length > 0) {
-          matches.forEach((name: string, i: number) => {
-            templateVars[i] = { text: i, value: name };
-          });
-        }
-        let url = getTemplateSrv().replace(anOverride.clickThrough, templateVars);
+        let url = anOverride.clickThrough;
         // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
         url = ClickThroughTransformer.transformSingleMetric(index, url, data);
         url = ClickThroughTransformer.transformNthMetric(url, data);
         url = ClickThroughTransformer.transformByRegex(anOverride.metricName, data[index], url);
+        if (replaceVariables) {
+          url = replaceVariables(url);
+        }
         data[index].clickThrough = url;
         data[index].newTabEnabled = anOverride.clickThroughOpenNewTab;
         data[index].sanitizeURLEnabled = anOverride.clickThroughSanitize;
