@@ -184,12 +184,13 @@ export const ApplyComposites = (
             keepMetrics.push(index);
           }
           if (aComposite.clickThrough && aComposite.clickThrough.length > 0) {
-            // process template variables
-            let url = replaceVariables(aComposite.clickThrough);
+            let url = aComposite.clickThrough;
             // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
             url = ClickThroughTransformer.transformComposite(aComposite.name, url);
             url = ClickThroughTransformer.transformSingleMetric(index, url, data);
             url = ClickThroughTransformer.transformNthMetric(url, data);
+            // lastly apply template variables
+            url = replaceVariables(aComposite.clickThrough);
             seriesItem.clickThrough = url;
             seriesItem.sanitizedURL = textUtil.sanitizeUrl(url);
             seriesItem.customClickthroughTarget = aComposite.clickThroughCustomTarget;
