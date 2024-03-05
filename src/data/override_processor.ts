@@ -1,4 +1,3 @@
-import { getTemplateSrv } from '@grafana/runtime';
 import {
   getValueFormat,
   stringToJsRegex,
@@ -36,9 +35,9 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariable
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template: any) => {
-          const templateVars: ScopedVars = {};
+          const scopedVars: ScopedVars = {};
           const resolvedSeriesNames = replaceVariables(
-            template, templateVars, customFormatter)
+            template, scopedVars, customFormatter)
             .split(CUSTOM_SPLIT_DELIMITER);
 
           resolvedSeriesNames.forEach((seriesName) => {

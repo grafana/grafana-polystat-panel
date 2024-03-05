@@ -54,11 +54,11 @@ export const resolveMemberTemplates = (
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((aMatch) => {
           // expand the templatedName (append compositeName to the variables first)
-          const templateVars: ScopedVars = {
+          const scopedVars: ScopedVars = {
             compositeName: { text: 'compositeName', value: compositeName },
           };
           // template variables can be multi-select, or "all", iterate over each match
-          const resolvedSeriesNames = replaceVariables(aMatch, templateVars, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
+          const resolvedSeriesNames = replaceVariables(aMatch, scopedVars, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
           // iterate over the array of names
           if (resolvedSeriesNames && resolvedSeriesNames.length) {
             resolvedSeriesNames.forEach((aName) => {
@@ -85,16 +85,16 @@ export const resolveMemberTemplates = (
 };
 
 const resolveMemberAliasTemplates = (name: string, matches: any): string => {
-  const templateVars: ScopedVars = {};
+  const scopedVars: ScopedVars = {};
   matches.forEach((name: string, i: number) => {
-    templateVars[i] = { text: i, value: name };
+    scopedVars[i] = { text: i, value: name };
   });
   if (matches.groups) {
     Object.keys(matches.groups).forEach((key) => {
-      templateVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
+      scopedVars[key.replace(/\s+/g, '_')] = { text: key, value: matches.groups[key] };
     });
   }
-  return getTemplateSrv().replace(name, templateVars);
+  return getTemplateSrv().replace(name, scopedVars);
 };
 
 /**
