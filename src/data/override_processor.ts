@@ -27,7 +27,7 @@ const customFormatter = (value: any): string => {
   return value;
 };
 
-const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemType[] => {
+const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType[] => {
   const ret: OverrideItemType[] = [];
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   overrides.forEach((override) => {
@@ -37,9 +37,10 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template: any) => {
           const templateVars: ScopedVars = {};
-          const resolvedSeriesNames = getTemplateSrv()
-            .replace(template, templateVars, customFormatter)
+          const resolvedSeriesNames = replaceVariables(
+            template, templateVars, customFormatter)
             .split(CUSTOM_SPLIT_DELIMITER);
+
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
@@ -58,8 +59,8 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
   return ret;
 };
 
-export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): OverrideItemType | null => {
-  const resolvedOverrides = resolveOverrideTemplates(overrides);
+export const MatchOverride = (pattern: string, overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType | null => {
+  const resolvedOverrides = resolveOverrideTemplates(overrides, replaceVariables);
   for (let index = 0; index < resolvedOverrides.length; index++) {
     const anOverride = resolvedOverrides[index];
     const regex = stringToJsRegex(anOverride.metricName);
@@ -77,7 +78,7 @@ export const ApplyOverrides = (
   fieldConfig: FieldConfigSource<any>,
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
-  replaceVariables: InterpolateFunction | null,
+  replaceVariables: InterpolateFunction,
   themeV1: GrafanaTheme, // V8
   themeV2: GrafanaTheme2 // V9+
 ) => {
@@ -96,7 +97,7 @@ export const ApplyOverrides = (
   }
 
   for (let index = 0; index < data.length; index++) {
-    const anOverride = MatchOverride(data[index].name, overrides);
+    const anOverride = MatchOverride(data[index].name, overrides, replaceVariables);
     if (anOverride) {
       const aSeries = data[index];
       // set the operators
