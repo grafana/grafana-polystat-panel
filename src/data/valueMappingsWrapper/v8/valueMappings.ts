@@ -133,6 +133,8 @@ export enum LegacyMappingType {
 export interface LegacyBaseMap {
   id: number; // this could/should just be the array index
   text: string; // the final display value
+  // intentional use of deprecated function for v8 compat
+  // eslint-disable-next-line deprecation/deprecation
   type: LegacyMappingType;
 }
 
@@ -140,12 +142,16 @@ export interface LegacyBaseMap {
  * @deprecated use ValueMapping instead
  * @internal
  */
+// intentional use of deprecated function for v8 compat
+// eslint-disable-next-line deprecation/deprecation
 export type LegacyValueMapping = LegacyValueMap | LegacyRangeMap;
 
 /**
  * @deprecated use ValueMap instead
  * @internal
  */
+// intentional use of deprecated function for v8 compat
+// eslint-disable-next-line deprecation/deprecation
 export interface LegacyValueMap extends LegacyBaseMap {
   value: string;
 }
@@ -154,6 +160,8 @@ export interface LegacyValueMap extends LegacyBaseMap {
  * @deprecated use RangeMap instead
  * @internal
  */
+// intentional use of deprecated function for v8 compat
+// eslint-disable-next-line deprecation/deprecation
 export interface LegacyRangeMap extends LegacyBaseMap {
   from: string;
   to: string;
@@ -163,7 +171,11 @@ export interface LegacyRangeMap extends LegacyBaseMap {
  * @deprecated use getValueMappingResult instead
  * @internal
  */
+// intentional use of deprecated function for v8 compat
+// eslint-disable-next-line deprecation/deprecation
 export function getMappedValue(valueMappings: LegacyValueMapping[], value: any): LegacyValueMapping {
+  // intentional use of deprecated function for v8 compat
+  // eslint-disable-next-line deprecation/deprecation
   const emptyResult = { type: LegacyMappingType.ValueToText, value: '', text: '', from: '', to: '', id: 0 };
   if (!valueMappings?.length) {
     return emptyResult;
@@ -188,6 +200,8 @@ export function getMappedValue(valueMappings: LegacyValueMapping[], value: any):
   }
 
   return {
+    // intentional use of deprecated function for v8 compat
+    // eslint-disable-next-line deprecation/deprecation
     type: LegacyMappingType.ValueToText,
     value: result.text,
     text: result.text ?? '',
@@ -261,6 +275,8 @@ function upgradeOldAngularValueMapping(old: any, thresholds?: ThresholdsConfig):
   }
 
   switch (old.type) {
+    // intentional use of deprecated function for v8 compat
+    // eslint-disable-next-line deprecation/deprecation
     case LegacyMappingType.ValueToText:
     case MappingType.ValueToText:
       if (old.value != null) {
@@ -280,6 +296,8 @@ function upgradeOldAngularValueMapping(old: any, thresholds?: ThresholdsConfig):
         }
       }
       break;
+    // intentional use of deprecated function for v8 compat
+    // eslint-disable-next-line deprecation/deprecation
     case LegacyMappingType.RangeToText:
     case MappingType.RangeToText:
       if (old.from === 'null' || old.to === 'null') {

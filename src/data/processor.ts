@@ -1,5 +1,4 @@
 import { InsertTime } from './deframer';
-import { useTheme2 } from '@grafana/ui';
 import {
   Field,
   FieldType,
@@ -13,11 +12,9 @@ import {
   stringToJsRegex,
   InterpolateFunction,
   FieldConfigSource,
-  ScopedVars,
   GrafanaTheme2,
   GrafanaTheme,
 } from '@grafana/data';
-import { getTemplateSrv } from '@grafana/runtime';
 import { includes as lodashIncludes } from 'lodash';
 import { DisplayModes, OperatorOptions, PolystatModel } from '../components/types';
 import { GLOBAL_FILL_COLOR_RGBA } from '../components/defaults';
@@ -100,7 +97,8 @@ export function ProcessDataFrames(
     globalClickthroughTabEnabled,
     globalClickthroughSanitizedEnabled,
     globalClickthroughCustomTargetEnabled,
-    globalClickthroughCustomTarget
+    globalClickthroughCustomTarget,
+    replaceVariables
   );
   // filter by global display mode
   internalData = FilterByGlobalDisplayMode(internalData, globalDisplayMode);
@@ -145,11 +143,12 @@ export const ApplyGlobalClickThrough = (
   globalClickthroughNewTabEnabled: boolean,
   globalClickthroughSanitizedEnabled: boolean,
   globalClickthroughCustomTargetEnabled: boolean,
-  globalClickthroughCustomTarget: string
+  globalClickthroughCustomTarget: string,
+  replaceVariables: InterpolateFunction
 ): PolystatModel[] => {
   for (let index = 0; index < data.length; index++) {
     if (data[index].clickThrough.length === 0) {
-      data[index].clickThrough = processDefaultClickThrough(index, globalClickthrough, data);
+      data[index].clickThrough = processDefaultClickThrough(index, globalClickthrough, data, replaceVariables);
       data[index].newTabEnabled = globalClickthroughNewTabEnabled;
       data[index].sanitizeURLEnabled = globalClickthroughSanitizedEnabled;
       // always provide both versions and overrides and composites can specify which one to use
@@ -161,14 +160,25 @@ export const ApplyGlobalClickThrough = (
   return data;
 };
 
-const processDefaultClickThrough = (index: number, globalClickthrough: string, data: PolystatModel[]): string => {
+/**
+ * Only called for dataframes that do not have a clickthrough specified via overrides or composites.
+ * @param {number}              index
+ * @param {string}              globalClickthrough string containing the GlobalClickthrough text
+ * @param {PolystatModel[]}     data array of data
+ * @param {InterpolateFunction} replaceVariables function from template server
+ * @return {string} New URL with default clickthrough processed replacements and template variables
+ */
+export const processDefaultClickThrough = (
+  index: number,
+  globalClickthrough: string,
+  data: PolystatModel[],
+  replaceVariables: InterpolateFunction): string => {
   let url = globalClickthrough;
   // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
-  url = ClickThroughTransformer.transformSingleMetric(index, url, data);
-  url = ClickThroughTransformer.transformNthMetric(url, data);
+  url = ClickThroughTransformer.transformSingleMetric(index, globalClickthrough, data);
+  url = ClickThroughTransformer.transformNthMetric(globalClickthrough, data);
   // process template variables inside clickthrough
-  const templateVars: ScopedVars = {};
-  url = getTemplateSrv().replace(url, templateVars);
+  url = replaceVariables(url);
   return url;
 };
 

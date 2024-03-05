@@ -1,4 +1,3 @@
-import { getTemplateSrv } from '@grafana/runtime';
 import {
   getValueFormat,
   stringToJsRegex,
@@ -10,7 +9,6 @@ import {
   GrafanaTheme2,
   GrafanaTheme,
 } from '@grafana/data';
-import { useTheme, useTheme2 } from '@grafana/ui';
 import { getThresholdLevelForValue } from './threshold_processor';
 import { GetValueByOperator } from './stats';
 import { ClickThroughTransformer } from './clickThroughTransformer';
@@ -28,7 +26,7 @@ const customFormatter = (value: any): string => {
   return value;
 };
 
-const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemType[] => {
+const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType[] => {
   const ret: OverrideItemType[] = [];
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   overrides.forEach((override) => {
@@ -37,10 +35,11 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
       const matchResult = override.metricName.match(variableRegex);
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template: any) => {
-          const templateVars: ScopedVars = {};
-          const resolvedSeriesNames = getTemplateSrv()
-            .replace(template, templateVars, customFormatter)
+          const scopedVars: ScopedVars = {};
+          const resolvedSeriesNames = replaceVariables(
+            template, scopedVars, customFormatter)
             .split(CUSTOM_SPLIT_DELIMITER);
+
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
             ret.push({
@@ -59,8 +58,8 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[]): OverrideItemTy
   return ret;
 };
 
-export const MatchOverride = (pattern: string, overrides: OverrideItemType[]): OverrideItemType | null => {
-  const resolvedOverrides = resolveOverrideTemplates(overrides);
+export const MatchOverride = (pattern: string, overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType | null => {
+  const resolvedOverrides = resolveOverrideTemplates(overrides, replaceVariables);
   for (let index = 0; index < resolvedOverrides.length; index++) {
     const anOverride = resolvedOverrides[index];
     const regex = stringToJsRegex(anOverride.metricName);
@@ -78,7 +77,7 @@ export const ApplyOverrides = (
   fieldConfig: FieldConfigSource<any>,
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
-  replaceVariables: InterpolateFunction | null,
+  replaceVariables: InterpolateFunction,
   themeV1: GrafanaTheme, // V8
   themeV2: GrafanaTheme2 // V9+
 ) => {
@@ -87,6 +86,8 @@ export const ApplyOverrides = (
   if (typeof themeV2.visualization !== 'undefined') {
     realGlobalFillColor = themeV2.visualization.getColorByName(globalFillColor);
   } else {
+    // intentional use of deprecated function for v8 compat
+    // eslint-disable-next-line deprecation/deprecation
     realGlobalFillColor = getColorForTheme(globalFillColor, themeV1);
   }
 
@@ -95,7 +96,7 @@ export const ApplyOverrides = (
   }
 
   for (let index = 0; index < data.length; index++) {
-    const anOverride = MatchOverride(data[index].name, overrides);
+    const anOverride = MatchOverride(data[index].name, overrides, replaceVariables);
     if (anOverride) {
       const aSeries = data[index];
       // set the operators
@@ -109,6 +110,8 @@ export const ApplyOverrides = (
       if (typeof themeV2.visualization !== 'undefined') {
         useColor = themeV2.visualization.getColorByName(result.color);
       } else {
+        // intentional use of deprecated function for v8 compat
+        // eslint-disable-next-line deprecation/deprecation
         useColor = getColorForTheme(result.color, themeV1);
       }
       // set value to what was returned
@@ -158,19 +161,14 @@ export const ApplyOverrides = (
       data[index].suffix = anOverride.suffix;
       // set the url, replace template vars
       if (anOverride.clickThrough && anOverride.clickThrough.length > 0) {
-        const regex = stringToJsRegex(anOverride.metricName);
-        const matches = regex.exec(data[index].name);
-        const templateVars: ScopedVars = {};
-        if (matches && matches.length > 0) {
-          matches.forEach((name: string, i: number) => {
-            templateVars[i] = { text: i, value: name };
-          });
-        }
-        let url = getTemplateSrv().replace(anOverride.clickThrough, templateVars);
+        let url = anOverride.clickThrough;
         // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
         url = ClickThroughTransformer.transformSingleMetric(index, url, data);
         url = ClickThroughTransformer.transformNthMetric(url, data);
         url = ClickThroughTransformer.transformByRegex(anOverride.metricName, data[index], url);
+        if (replaceVariables) {
+          url = replaceVariables(url);
+        }
         data[index].clickThrough = url;
         data[index].newTabEnabled = anOverride.clickThroughOpenNewTab;
         data[index].sanitizeURLEnabled = anOverride.clickThroughSanitize;

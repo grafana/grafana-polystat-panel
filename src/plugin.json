@@ -54,7 +54,7 @@
 
     "dependencies": {
         "grafanaVersion": "8.4.x",
-        "grafanaDependency": ">=8.4.10",
+        "grafanaDependency": ">=8.4.11",
         "plugins": []
     }
 }

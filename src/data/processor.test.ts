@@ -1,6 +1,6 @@
 import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
-import { DataFrameToPolystat, ApplyGlobalRegexPattern } from './processor';
+import { DataFrameToPolystat, ApplyGlobalRegexPattern, processDefaultClickThrough, ApplyGlobalClickThrough } from './processor';
 
 describe('Main Processor', () => {
   let modelA: PolystatModel;
@@ -133,6 +133,39 @@ describe('Main Processor', () => {
       console.log(JSON.stringify(processed, null, 2));
       expect(processed[0].displayName).toEqual('A');
       expect(processed[1].displayName).toEqual('B');
+    });
+  });
+
+  describe('Test processDefaultClickThrough', () => {
+    const replaceVariables = (str: string) => {
+      return str.replace(/\${machine}/g, 'machineA');
+    }
+    const globalClickthrough = '/d/dashboard?var-machine=${machine}';
+    it('returns polystat model with global clickthrough applied', () => {
+      // ensure not set
+      modelA.clickThrough = '';
+      const newUrl = processDefaultClickThrough(
+        0,
+        globalClickthrough,
+        [modelA],
+        replaceVariables
+      );
+      console.log(JSON.stringify(newUrl, null, 2));
+      expect(newUrl).toEqual('/d/dashboard?var-machine=machineA');
+    });
+    it('returns polystat model with global clickthrough not applied', () => {
+      // ensure not set
+      modelA.clickThrough = '/d/dashboard-other?var-machine=${machine}';
+      const applied = ApplyGlobalClickThrough(
+        [modelA],
+        globalClickthrough,
+        false,
+        false,
+        false,
+        '',
+        replaceVariables
+        );
+      expect(applied[0].clickThrough).toEqual('/d/dashboard-other?var-machine=${machine}');
     });
   });
 });

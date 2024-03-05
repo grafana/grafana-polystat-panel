@@ -52,6 +52,8 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     if (typeof theme2.visualization !== 'undefined') {
       useColor = theme2.visualization.getColorByName(color);
     } else {
+      // intentional use of deprecated function for v8 compat
+      // eslint-disable-next-line deprecation/deprecation
       useColor = getColorForTheme(color, oldTheme);
     }
     tracker[index].threshold.color = useColor;

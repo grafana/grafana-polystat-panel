@@ -33,6 +33,10 @@ describe('Test Overrides', () => {
     clickThroughCustomTarget: '',
     order: 0
   };
+  const replaceVariables = (str: string) => {
+    return str.replace(/\${noVariable}/g, 'noValue');
+  }
+
   beforeEach(() => {
     const time = new Date().getTime();
     const frameA = toDataFrame({
@@ -45,7 +49,7 @@ describe('Test Overrides', () => {
   });
   describe('Override affects model', () => {
     it('returns an override match', () => {
-      const { result } = renderHook(() => MatchOverride(modelA.name, [overrideA]));
+      const { result } = renderHook(() => MatchOverride(modelA.name, [overrideA], replaceVariables));
       expect(result.all.length).toBe(1);
       const modified = result.all[0] as OverrideItemType;
       expect(modified.label).toBe('OVERRIDE-0');
@@ -57,7 +61,7 @@ describe('Test Overrides', () => {
         },
         overrides: [],
       };
-      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], null, useTheme(), useTheme2()));
+      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, useTheme(), useTheme2()));
       expect(result.all.length).toBe(1);
       const x = result.all[0] as PolystatModel[];
       const modified = x[0] as PolystatModel;
