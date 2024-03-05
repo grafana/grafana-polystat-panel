@@ -12,15 +12,17 @@ services:
     #image: grafana/grafana:10.0.11
     #image: grafana/grafana:10.1.7
     #image: grafana/grafana:10.2.4
-    image: grafana/grafana:10.3.3
+    #image: grafana/grafana:10.3.3
+    #      args:
+    image:  grafana/grafana:${GRAFANA_VERSION:-10.3.3}
     ports:
       - 3000:3000
     volumes:
       - ./dist:/var/lib/grafana/plugins/grafana-polystat-panel
       - ./provisioning:/etc/grafana/provisioning
     environment:
-      GF_AUTH_ANONYMOUS_ENABLED: 1
-      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      #GF_AUTH_ANONYMOUS_ENABLED: 1
+      #GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
       GF_DATAPROXY_LOGGING: 1
       GF_LIVE_ALLOWED_ORIGINS: '*'
       GF_LOG_LEVEL: debug

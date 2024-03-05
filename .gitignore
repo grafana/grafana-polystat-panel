@@ -1,5 +1,3 @@
-cypress/report.json
-cypress/videos
 node_modules
 dist
 provisioning
@@ -10,3 +8,6 @@ coverage
 .eslintcache
 .idea
 .stignore
+playwright/.auth
+playwright-report
+test-results
