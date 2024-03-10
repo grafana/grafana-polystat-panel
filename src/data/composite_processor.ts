@@ -137,6 +137,7 @@ export const ApplyComposites = (
   if (!composites) {
     return data;
   }
+
   const filteredMetrics: number[] = [];
   const keepMetrics: number[] = [];
   const clonedComposites: PolystatModel[] = [];
@@ -190,7 +191,7 @@ export const ApplyComposites = (
             url = ClickThroughTransformer.transformSingleMetric(index, url, data);
             url = ClickThroughTransformer.transformNthMetric(url, data);
             // lastly apply template variables
-            url = replaceVariables(aComposite.clickThrough);
+            url = replaceVariables(url);
             seriesItem.clickThrough = url;
             seriesItem.sanitizedURL = textUtil.sanitizeUrl(url);
             seriesItem.customClickthroughTarget = aComposite.clickThroughCustomTarget;
