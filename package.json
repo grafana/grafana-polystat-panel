@@ -108,7 +108,7 @@
   },
   "resolutions": {
     "@types/react": "17.0.30",
-    "jackspeak": "2.3.6"
+    "jackspeak": "2.1.5"
   },
   "packageManager": "yarn@1.22.19"
 }
