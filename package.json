@@ -107,8 +107,7 @@
     "node": ">= 20"
   },
   "resolutions": {
-    "@types/react": "17.0.30",
-    "jackspeak": "2.1.1"
+    "@types/react": "17.0.30"
   },
-  "packageManager": "yarn@1.22.19"
+  "packageManager": "yarn@4.1.1"
 }
