@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.7
+
+- Fix for using ${__composite_name} in clickthrough
+- Update dependencies
+
 ## v2.1.6
 
 - Fix for repeat panel usage of template variables not expanding correctly [[#331](https://github.com/grafana/grafana-polystat-panel/issues/331)]
