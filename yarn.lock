@@ -2189,10 +2189,10 @@
   dependencies:
     "@types/geojson" "*"
 
-"@types/d3-hexbin@0.2.5":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@types/d3-hexbin/-/d3-hexbin-0.2.5.tgz#367e0759816fa57ea32508d8b6aa807030619a9c"
-  integrity sha512-EF/1szlis0vN810Q3F//NYeiOjiRZHiRlHADQzc8GMMeaJx9J662LHsxJYBqwqlsTMZuvVk1qLULyvC7p1JNAg==
+"@types/d3-hexbin@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@types/d3-hexbin/-/d3-hexbin-0.2.3.tgz#75a86a3d2e782ca3070ebcce789abdb88036abda"
+  integrity sha512-R/mmx2FJucHACRvGFoI+6jpr3mOAD6wuU2OjuCixxGRPHdmQNlMtBGBwxTmTs//kJvBzk9/vMhn47QOcY8Afrg==
 
 "@types/d3-hierarchy@*":
   version "3.1.6"
@@ -2287,10 +2287,10 @@
     "@types/d3-interpolate" "*"
     "@types/d3-selection" "*"
 
-"@types/d3@7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@types/d3/-/d3-7.4.3.tgz#d4550a85d08f4978faf0a4c36b848c61eaac07e2"
-  integrity sha512-lZXZ9ckh5R8uiFVt8ogUNf+pIrK4EsWrx2Np75WvF/eTpJ0FMHNhjXk8CKEx/+gpHbNQyJWehbFaTvqmHWB3ww==
+"@types/d3@7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@types/d3/-/d3-7.4.1.tgz#0168b616fa551d99e4534d0cbdeb50844c92b597"
+  integrity sha512-lBpYmbHTCtFKO1DB1R7E9dXp9/g1F3JXSGOF7iKPZ+wRmYg/Q6tCRHODGOc5Qk25fJRe2PI60EDRf2HLPUncMA==
   dependencies:
     "@types/d3-array" "*"
     "@types/d3-axis" "*"
@@ -2542,10 +2542,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.3.tgz#6209321eb2c1712a7e7466422b8cb1fc0d9dd5d8"
   integrity sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==
 
-"@types/tinycolor2@1.4.6":
-  version "1.4.6"
-  resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.6.tgz#670cbc0caf4e58dd61d1e3a6f26386e473087f06"
-  integrity sha512-iEN8J0BoMnsWBqjVbWH/c0G0Hh7O21lpR2/+PrvAVgWdzL7eexIFm4JN/Wn10PTcmNdtS6U67r499mlWMXOxNw==
+"@types/tinycolor2@1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@types/tinycolor2/-/tinycolor2-1.4.4.tgz#bca7469668247469087d6eba588c02e7709fcab5"
+  integrity sha512-FYK4mlLxUUajo/mblv7EUDHku20qT6ThYNsGZsTHilcHRvIkF8WXqtZO+DVTYkpHWCaAT97LueV59H/5Ve3bGA==
 
 "@types/tough-cookie@*":
   version "4.0.5"
