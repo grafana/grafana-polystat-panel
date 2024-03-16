@@ -7516,7 +7516,7 @@ __metadata:
     react-test-renderer: "npm:^17.0.2"
     react-tooltip: "npm:5.21.5"
     replace-in-file-webpack-plugin: "npm:^1.0.6"
-    sass: "npm:1.63.2"
+    sass: "npm:1.72.0"
     sass-loader: "npm:13.3.1"
     style-loader: "npm:3.3.3"
     swc-loader: "npm:^0.2.3"
@@ -11558,16 +11558,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:1.63.2":
-  version: 1.63.2
-  resolution: "sass@npm:1.63.2"
+"sass@npm:1.72.0":
+  version: 1.72.0
+  resolution: "sass@npm:1.72.0"
   dependencies:
     chokidar: "npm:>=3.0.0 <4.0.0"
     immutable: "npm:^4.0.0"
     source-map-js: "npm:>=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 10c0/22dfb77f2c2707a67adef382a448899a5d0577bfa8f4cd5560ab1f3b0d492bdfee78b753f130bccef3647dfa7be3585c936fbfbfd110ee4f96d3916e937f655e
+  checksum: 10c0/7df1bb470648edc4b528976b1b165c78d4c6731f680afac7cdc8324142f1ef4304598d317d98dac747a2ae8eee17271d760def90bba072021a8b19b459336ccd
   languageName: node
   linkType: hard
 
