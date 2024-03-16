@@ -175,8 +175,8 @@ export const processDefaultClickThrough = (
   replaceVariables: InterpolateFunction): string => {
   let url = globalClickthrough;
   // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
-  url = ClickThroughTransformer.transformSingleMetric(index, globalClickthrough, data);
-  url = ClickThroughTransformer.transformNthMetric(globalClickthrough, data);
+  url = ClickThroughTransformer.transformSingleMetric(index, url, data);
+  url = ClickThroughTransformer.transformNthMetric(url, data);
   // process template variables inside clickthrough
   url = replaceVariables(url);
   return url;
