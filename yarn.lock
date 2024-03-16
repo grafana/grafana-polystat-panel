@@ -7509,7 +7509,7 @@ __metadata:
     jest-canvas-mock: "npm:2.4.0"
     jest-environment-jsdom: "npm:^29.5.0"
     jshint: "npm:2.13.6"
-    prettier: "npm:^2.8.7"
+    prettier: "npm:^3.2.5"
     react: "npm:17.0.2"
     react-dom: "npm:17.0.2"
     react-redux: "npm:7.2.6"
@@ -10303,12 +10303,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.8.7":
-  version: 2.8.8
-  resolution: "prettier@npm:2.8.8"
+"prettier@npm:^3.2.5":
+  version: 3.2.5
+  resolution: "prettier@npm:3.2.5"
   bin:
-    prettier: bin-prettier.js
-  checksum: 10c0/463ea8f9a0946cd5b828d8cf27bd8b567345cf02f56562d5ecde198b91f47a76b7ac9eae0facd247ace70e927143af6135e8cf411986b8cb8478784a4d6d724a
+    prettier: bin/prettier.cjs
+  checksum: 10c0/ea327f37a7d46f2324a34ad35292af2ad4c4c3c3355da07313339d7e554320f66f65f91e856add8530157a733c6c4a897dc41b577056be5c24c40f739f5ee8c6
   languageName: node
   linkType: hard
 
