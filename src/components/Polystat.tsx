@@ -349,6 +349,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <Gradients gradientId={gradientId} data={options.processedData} />
 
           {options.processedData!.map((item, index) => {
+
+            let d = new Date(item.timestamp);
+            const vFormatted =  d.getHours() + ":" + d.getMinutes()
+
             const coords = getCoords(index);
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
@@ -386,7 +390,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     pointerEvents: 'none',
                   }}
                 >
-                  {item.showName &&
+                  {
+                  item.showName &&
                     getTextToDisplay(
                       options.globalAutoScaleFonts,
                       options.ellipseEnabled,
@@ -416,7 +421,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   {item.showValue &&
                     (item.isComposite
                       ? formatCompositeValue(0, item, options.globalDisplayTextTriggeredEmpty)
-                      : item.valueFormatted)}
+                      : vFormatted)}
                 </text>
 
               </>
