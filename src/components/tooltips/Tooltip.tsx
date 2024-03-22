@@ -36,6 +36,10 @@ export const Tooltip = ({
 }: TooltipProps) => {
   const styles = useStyles2(getTooltipStyles);
 
+  // check for timestamp in data, override renderTime when present
+  if (data?.timestamp) {
+    renderTime = new Date(data?.timestamp);
+  }
   /* the name of the composite is shown at the top */
   const getCompositeHeader = (data: PolystatModel | null) => {
     if (data && data.members && data.members.length === 0) {
