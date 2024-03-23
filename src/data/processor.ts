@@ -263,11 +263,28 @@ const FilterByGlobalDisplayMode = (data: any, globalDisplayMode: string): Polyst
 export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): PolystatModel[] => {
 
   const valueFields: Field[] = [];
+  let newestTimestamp = 0;
 
   for (const aField of frame.fields) {
     if (aField.type === FieldType.number) {
       valueFields.push(aField);
     }
+    else if (aField.type === FieldType.time) {
+      // get the "newest" timestamp from data
+      // check if timestamp is 0
+      const aTimestamp = aField.values.get(frame.length - 1)
+      if (newestTimestamp === 0) {
+        newestTimestamp = aTimestamp;
+      }
+      // check if data timestamp is newer
+      if (aTimestamp > newestTimestamp) {
+        newestTimestamp = aTimestamp;
+      }
+    }
+  }
+  if (newestTimestamp === 0) {
+    // use current time if none is found
+    newestTimestamp = new Date().getTime()
   }
   const models: PolystatModel[] = [];
 
@@ -299,7 +316,7 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       stats: standardCalcs,
       name: valueFieldName,
       displayName: valueFieldName,
-      timestamp: 0,
+      timestamp: newestTimestamp,
       prefix: '',
       suffix: '',
       color: GLOBAL_FILL_COLOR_RGBA,

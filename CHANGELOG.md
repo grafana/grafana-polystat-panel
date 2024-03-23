@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.1.8
+
+- Tooltips will now display newest time of data received, and current time if none is supplied
+
 ## v2.1.7
 
 - Fix for using ${__composite_name} in clickthrough
