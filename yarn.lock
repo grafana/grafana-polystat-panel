@@ -2636,6 +2636,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@swc/helpers@npm:^0.5.8":
+  version: 0.5.8
+  resolution: "@swc/helpers@npm:0.5.8"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10c0/53a52b3654edb1b22ab317feb4ab7fa805eb368082530d2835647e5d0cc497f5c3aa8e16d568df6eee301982aac532674345acbaaa45354ffb58043768d4db36
+  languageName: node
+  linkType: hard
+
 "@swc/jest@npm:^0.2.26":
   version: 0.2.36
   resolution: "@swc/jest@npm:0.2.36"
@@ -7489,7 +7498,7 @@ __metadata:
     "@grafana/ui": "npm:8.4.11"
     "@playwright/test": "npm:^1.42.1"
     "@swc/core": "npm:^1.3.90"
-    "@swc/helpers": "npm:^0.5.0"
+    "@swc/helpers": "npm:^0.5.8"
     "@swc/jest": "npm:^0.2.26"
     "@testing-library/jest-dom": "npm:6.4.2"
     "@testing-library/react": "npm:12.1.5"
