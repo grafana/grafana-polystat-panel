@@ -28,6 +28,9 @@ export interface PolystatOptions {
   globalRegexPattern: string;
   globalShape: PolygonShapes;
   globalShowValueEnabled: boolean;
+  globalShowTimestampEnabled: boolean;
+  globalShowTimestampFormat: string;
+  globalShowTimestampYOffset: number;
   globalShowTooltipColumnHeadersEnabled: boolean;
   globalTextFontAutoColor: string;
   globalTextFontAutoColorEnabled: boolean;
@@ -184,4 +187,12 @@ export const FontFamilyOptionsLegacy = [
   { value: FontFamilies.HELVETICA_NEUE, label: 'Helvetica Neue' },
   { value: FontFamilies.ROBOTO, label: 'Roboto' },
   { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
+];
+
+export const ShowTimestampFormats = [
+  { value: 'YYYY-MM-DD HH:mm:ss', label: 'YYYY-MM-DD HH:mm:ss' },
+  { value: 'YYYY-MM-DD HH:mm:ss.SSS', label: 'YYYY-MM-DD HH:mm:ss.SSS' },
+  { value: 'MM/DD/YY h:mm:ss a', label: 'MM/DD/YY h:mm:ss a' },
+  { value: 'MMMM D, YYYY LT', label: 'MMMM D, YYYY LT' },
+  { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD' },
 ];

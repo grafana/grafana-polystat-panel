@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-import { IconName, Button, Input, Select, Field, FieldSet, Switch, Card, IconButton } from '@grafana/ui';
+import { IconName, Button, Input, Select, Field, FieldSet, Switch, Card, IconButton, Cascader } from '@grafana/ui';
 import { DisplayModes, CompositeItemProps, CompositeMetric, CompositeItemType } from './types';
 import { CompositeMetricItem } from './CompositeMetricItem';
 import { v4 as UUIDv4 } from 'uuid';
 import { SelectableValue } from '@grafana/data';
+import { ShowTimestampFormats } from 'components/types';
 
 export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItemProps) => {
   const [composite, _setComposite] = useState(props.composite);
@@ -83,7 +84,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
   };
 
   return (
-    <Card heading="" key={`composite-card-${props.ID}`}>
+    <Card key={`composite-card-${props.ID}`}>
       <Card.Meta>
         <FieldSet>
           <Field label="Composite Name" description="Name or Regular Expression" disabled={!composite.showComposite}>
@@ -109,6 +110,33 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, showValue: !composite.showValue })}
             />
           </Field>
+          <Field label="Show Timestamp" description="Toggle Display of Timestamp for each value" disabled={!composite.showComposite}>
+            <Switch
+              transparent={true}
+              value={composite.showTimestampEnabled}
+              disabled={!composite.showComposite}
+              onChange={() => setComposite({ ...composite, showTimestampEnabled: !composite.showTimestampEnabled })}
+            />
+          </Field>
+          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!composite.showComposite} hidden={composite.showTimestampEnabled}>
+            <Cascader
+              initialValue={composite.showTimestampFormat}
+              allowCustomValue
+              placeholder=""
+              options={ShowTimestampFormats}
+              onSelect={(val: string) => setComposite({ ...composite, showTimestampFormat: val })}
+            />
+          </Field>
+          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!composite.showComposite} hidden={composite.showTimestampEnabled}>
+            <Input
+              value={composite.showTimestampYOffset}
+              type="number"
+              step={1}
+              placeholder="0"
+              onChange={(v) => setComposite({ ...composite, showTimestampYOffset: v.currentTarget.valueAsNumber })}
+            />
+          </Field>
+
           <Field
             label="Show Members"
             description="Toggle Display of composite members"

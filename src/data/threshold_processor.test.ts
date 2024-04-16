@@ -1,4 +1,4 @@
-import { PolystatModel } from '../components/types';
+import { PolystatModel, ShowTimestampFormats } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getThresholdLevelForValue, getWorstSeries } from './threshold_processor';
@@ -74,6 +74,9 @@ describe('Threshold Processor', () => {
       clickThroughCustomTargetEnabled: false,
       clickThroughCustomTarget: '',
       order: 0,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
     };
   });
 

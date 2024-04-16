@@ -5,7 +5,7 @@ import { CompositeItemType, CompositeMetric } from 'components/composites/types'
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
 
-import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions } from './components/types';
+import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats } from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -189,6 +189,9 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
     globalShowValueEnabled: true,
     globalShowTooltipColumnHeadersEnabled: true,
+    globalShowTimestampEnabled: false,
+    globalShowTimestampFormat: ShowTimestampFormats[0].value,
+    globalShowTimestampYOffset: 0,
     globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
     globalTextFontAutoColorEnabled: false,
@@ -417,6 +420,9 @@ export const migrateOverrides = (angular: AngularSavedOverrides) => {
         clickThroughCustomTargetEnabled: false,
         clickThroughCustomTarget: '',
         order: order,
+        showTimestampEnabled: false,
+        showTimestampFormat: ShowTimestampFormats[0].value,
+        showTimestampYOffset: 0,
       };
       for (const p of Object.keys(seriesOverride)) {
         // @ts-ignore
@@ -545,6 +551,9 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
         showValue: true,
         showComposite: true,
         showMembers: false,
+        showTimestampEnabled: false,
+        showTimestampFormat: ShowTimestampFormats[0].value,
+        showTimestampYOffset: 0,
         metrics: [],
         clickThrough: '',
         clickThroughSanitize: true,

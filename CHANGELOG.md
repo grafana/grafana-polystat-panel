@@ -2,6 +2,13 @@
 
 ## Entries
 
+## 2.1.9
+
+- NEW: Option to display timestamp of metric inside polygon.
+  - Global Configuration
+  - Override
+  - Composite
+
 ## v2.1.8
 
 - Tooltips will now display newest time of data received, and current time if none is supplied

@@ -6,7 +6,7 @@ import { renderHook } from '@testing-library/react-hooks';
 
 import { ApplyOverrides, MatchOverride } from './override_processor';
 import { OverrideItemType } from 'components/overrides/types';
-import { PolystatModel } from '../components/types';
+import { PolystatModel, ShowTimestampFormats } from '../components/types';
 import { FieldConfigSource, FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { useTheme, useTheme2 } from '@grafana/ui';
@@ -31,7 +31,10 @@ describe('Test Overrides', () => {
     clickThroughOpenNewTab: false,
     clickThroughCustomTargetEnabled: false,
     clickThroughCustomTarget: '',
-    order: 0
+    order: 0,
+    showTimestampEnabled: false,
+    showTimestampFormat: ShowTimestampFormats[0].value,
+    showTimestampYOffset: 0,
   };
   const replaceVariables = (str: string) => {
     return str.replace(/\${noVariable}/g, 'noValue');

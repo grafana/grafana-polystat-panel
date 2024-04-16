@@ -1,4 +1,4 @@
-import { PolystatModel } from '../components/types';
+import { PolystatModel, ShowTimestampFormats } from '../components/types';
 import { FieldType, InterpolateFunction, ScopedVars, toDataFrame, VariableModel } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getWorstSeries } from './threshold_processor';
@@ -70,6 +70,9 @@ describe('Composite Processor', () => {
       showMembers: false,
       showValue: true,
       showComposite: true,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,
@@ -94,6 +97,9 @@ describe('Composite Processor', () => {
       showMembers: false,
       showValue: true,
       showComposite: true,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       clickThrough: '',
       clickThroughOpenNewTab: true,
       clickThroughSanitize: true,

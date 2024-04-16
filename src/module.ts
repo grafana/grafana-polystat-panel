@@ -7,6 +7,7 @@ import {
   OperatorOptions,
   PolygonNamedShapes,
   PolystatOptions,
+  ShowTimestampFormats,
   SortByFieldOptions,
   SortOptions,
 } from './components/types';
@@ -372,6 +373,38 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         defaultValue: true,
         category: ['Global'],
         description: 'Show value on the polygon',
+      })
+
+      // displays timestamp on polygons
+      .addBooleanSwitch({
+        name: 'Show Timestamp',
+        path: 'globalShowTimestampEnabled',
+        defaultValue: false,
+        category: ['Global'],
+        description: 'Show timestamp of metric on the polygon',
+      })
+      .addSelect({
+        name: 'Timestamp Format',
+        path: 'globalShowTimestampFormat',
+        description: 'Format of timestamp to display',
+        category: ['Global'],
+        defaultValue: ShowTimestampFormats[0].value,
+        settings: {
+          options: ShowTimestampFormats,
+          allowCustomValue: true,
+        },
+        showIf: (c) => c.globalShowTimestampEnabled,
+      })
+      .addNumberInput({
+        name: 'Timestamp Y-Offset',
+        path: 'globalShowTimestampYOffset',
+        description: 'Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down',
+        defaultValue: 0,
+        settings: {
+          integer: true,
+        },
+        category: ['Global'],
+        showIf: (c) => c.globalShowTimestampEnabled,
       })
 
       // shape
