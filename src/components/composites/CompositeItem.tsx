@@ -118,7 +118,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, showTimestampEnabled: !composite.showTimestampEnabled })}
             />
           </Field>
-          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!composite.showComposite} hidden={composite.showTimestampEnabled}>
+          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!composite.showComposite} hidden={!composite.showTimestampEnabled}>
             <Cascader
               initialValue={composite.showTimestampFormat}
               allowCustomValue
@@ -127,7 +127,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onSelect={(val: string) => setComposite({ ...composite, showTimestampFormat: val })}
             />
           </Field>
-          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!composite.showComposite} hidden={composite.showTimestampEnabled}>
+          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!composite.showComposite} hidden={!composite.showTimestampEnabled}>
             <Input
               value={composite.showTimestampYOffset}
               type="number"

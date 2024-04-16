@@ -144,7 +144,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onChange={() => setOverride({ ...override, showTimestampEnabled: !override.showTimestampEnabled })}
             />
           </Field>
-          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!override.enabled} hidden={override.showTimestampEnabled}>
+          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!override.enabled} hidden={!override.showTimestampEnabled}>
             <Cascader
               initialValue={override.showTimestampFormat}
               allowCustomValue
@@ -153,7 +153,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onSelect={(val: string) => setOverride({ ...override, showTimestampFormat: val })}
             />
           </Field>
-          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!override.enabled} hidden={override.showTimestampEnabled}>
+          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!override.enabled} hidden={!override.showTimestampEnabled}>
             <Input
               value={override.showTimestampYOffset}
               type="number"
