@@ -91,6 +91,8 @@ export interface PolystatModel {
   sanitizeURLEnabled: boolean;
   showName: boolean;
   showValue: boolean;
+  showTimestamp: boolean;
+  timestampFormatted: string;
   isComposite: boolean;
   members: PolystatModel[];
   triggerCache?: any; // holds animation frame info
@@ -190,6 +192,7 @@ export const FontFamilyOptionsLegacy = [
 ];
 
 export const ShowTimestampFormats = [
+  { value: 'HH:mm:ss', label: 'HH:mm:ss' },
   { value: 'YYYY-MM-DD HH:mm:ss', label: 'YYYY-MM-DD HH:mm:ss' },
   { value: 'YYYY-MM-DD HH:mm:ss.SSS', label: 'YYYY-MM-DD HH:mm:ss.SSS' },
   { value: 'MM/DD/YY h:mm:ss a', label: 'MM/DD/YY h:mm:ss a' },
