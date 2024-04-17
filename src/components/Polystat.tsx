@@ -69,7 +69,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         if (options.processedData) {
           const item = options.processedData[index];
           const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
-          console.log(`animateComposite: timestamp is ${ts}`);
+          // console.log(`animateComposite: timestamp is ${ts}`);
           if (animationTimestampRefs[index].current.innerHTML !== null) {
             animationTimestampRefs[index].current.innerHTML = ts;
           }
