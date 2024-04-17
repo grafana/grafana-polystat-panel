@@ -23,6 +23,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const tooltipTheme = useTheme2().isDark ? 'dark' : 'light';
   // used to change/animate text in polygon
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
+  const [animationTimestampRefs, setAnimationTimestampRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
@@ -30,14 +31,17 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
       const newAnimationRefs = [];
+      const newAnimationTimestampRefs = [];
       const newAnimationMetricIndexes = [];
       for (let i = 0; i < data!.length; i++) {
         newAnimationRefs.push(createRef());
+        newAnimationTimestampRefs.push(createRef());
         newAnimationMetricIndexes.push(0);
       }
       if (newAnimationRefs.length > 0) {
         if (animationRefs.length !== newAnimationRefs.length) {
           setAnimationRefs(newAnimationRefs);
+          setAnimationTimestampRefs(newAnimationTimestampRefs);
           setAnimationMetricIndexes(newAnimationMetricIndexes);
         }
       }
@@ -51,12 +55,23 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
+
       if (animationRefs.length > 0 && animationRefs[index].current) {
         if (options.processedData) {
           const item = options.processedData[index];
-          const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
+          const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
           if (animationRefs[index].current.innerHTML !== null) {
             animationRefs[index].current.innerHTML = val;
+          }
+        }
+      }
+      if (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current) {
+        if (options.processedData) {
+          const item = options.processedData[index];
+          const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
+          console.log(`animateComposite: timestamp is ${ts}`);
+          if (animationTimestampRefs[index].current.innerHTML !== null) {
+            animationTimestampRefs[index].current.innerHTML = ts;
           }
         }
       }
@@ -70,6 +85,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   }, [
     animationMetricIndexes,
     animationRefs,
+    animationTimestampRefs,
     animatedItems,
     options.processedData,
     options.globalDisplayTextTriggeredEmpty,
@@ -220,6 +236,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let activeLabelFontSize = options.globalFontSize;
   // font sizes are independent for label and values
   let activeValueFontSize = options.globalFontSize;
+  // timestamp sizing
+  let activeTimestampFontSize = options.globalFontSize;
   let showEllipses = false;
   let numOfChars = options.ellipseCharacters;
 
@@ -233,6 +251,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     );
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
+    activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
@@ -364,7 +383,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 {drawShape(index, options.globalShape)}
               </a>;
             }
-
             return (
               <>
                 {useUrl.length > 0 && clickableUrl ? (
@@ -416,8 +434,29 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 >
                   {item.showValue &&
                     (item.isComposite
-                      ? formatCompositeValue(0, item, options.globalDisplayTextTriggeredEmpty)
+                      ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
                     : item.valueFormatted)}
+                </text>
+
+                <text
+                  ref={animationTimestampRefs[index]}
+                  className={`timestampLabel${index}`}
+                  x={coords.x + alignments.labelValueAlignmentX}
+                  y={coords.y + alignments.valueWithLabelTextAlignment + 30}
+                  textAnchor="middle"
+                  fontFamily={options.globalTextFontFamily}
+                  fontSize={activeTimestampFontSize + 'px'}
+                  style={{
+                    fill: options.globalTextFontAutoColorEnabled
+                      ? options.globalTextFontAutoColor
+                      : options.globalTextFontColor,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  {item.showTimestamp &&
+                    (item.isComposite
+                    ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
+                      : item.timestampFormatted)}
                 </text>
 
               </>
@@ -517,9 +556,10 @@ const buildTriggerCache = (item: any) => {
   return triggerCache;
 };
 
-const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
+const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
   // TODO: if just one value, could speed this up
   let content = item.valueFormatted;
+  let timestampContent = item.timestampFormatted;
   const len = item.members.length;
   if (len > 0) {
     let triggeredIndex = -1;
@@ -534,13 +574,14 @@ const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplay
         triggeredIndex = item.triggerCache[z].index;
       } else {
         // nothing triggered        //triggeredIndex = frames % len;
-        return globalDisplayTextTriggeredEmpty;
+        return [globalDisplayTextTriggeredEmpty, ''];
       }
     }
     const aMember = Object.assign({}, item.members[triggeredIndex]);
     content = aMember.name + ': ' + aMember.valueFormatted;
+    timestampContent = aMember.timestampFormatted;
   }
-  return textUtil.sanitize(content);
+  return [textUtil.sanitize(content), timestampContent];
 };
 
 const getAlignments = (
@@ -623,10 +664,15 @@ const autoFontScalar = (
     }
   }
   // same for the value, also check for sub metrics size in case of composite
+  // timestamp is also calculated here
   let maxValue = '';
+  let maxTimestamp = '';
   for (let i = 0; i < data.length; i++) {
     if (data[i].valueFormatted.length > maxValue.length) {
       maxValue = data[i].valueFormatted;
+    }
+    if (data[i].timestampFormatted.length > maxTimestamp.length) {
+      maxTimestamp = data[i].timestampFormatted;
     }
     const subMetricCount = data[i].members.length;
     if (subMetricCount > 0) {
@@ -635,6 +681,10 @@ const autoFontScalar = (
         const checkContent = data[i].members[counter].displayName + ': ' + data[i].members[counter].valueFormatted;
         if (checkContent && checkContent.length > maxValue.length) {
           maxValue = checkContent;
+        }
+        const checkCompositeTimestamp = data[i].members[counter].timestampFormatted;
+        if (checkCompositeTimestamp && checkCompositeTimestamp.length > maxTimestamp.length) {
+          maxTimestamp = checkCompositeTimestamp;
         }
         counter++;
       }
@@ -661,9 +711,23 @@ const autoFontScalar = (
     textAreaWidth,
     textAreaHeight
   );
+  let activeTimestampFontSize = computeTextFontSize(
+    maxTimestamp,
+    fontFamily,
+    minFont,
+    maxFont,
+    maxLinesToDisplay,
+    textAreaWidth - 110,
+    textAreaHeight
+  );
+
+  if (activeTimestampFontSize < minFont) {
+    // do not render it, too small
+    activeTimestampFontSize = 0;
+  }
 
   if (activeLabelFontSize < minFont) {
-    showEllipses = true;
+    showEllipses = true; // TODO: possible bug here
     numOfChars = 18;
     maxLabel = maxLabel.substring(0, numOfChars + 2);
     activeLabelFontSize = computeTextFontSize(
@@ -710,7 +774,7 @@ const autoFontScalar = (
   if (!valueEnabled) {
     activeValueFontSize = 0;
   }
-  return { activeLabelFontSize, activeValueFontSize, showEllipses, numOfChars };
+  return { activeLabelFontSize, activeValueFontSize, activeTimestampFontSize, showEllipses, numOfChars };
 };
 
 const computeTextFontSize = (

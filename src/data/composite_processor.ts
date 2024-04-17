@@ -7,6 +7,7 @@ import { getTemplateSrv } from '@grafana/runtime';
 import { CompositeItemType, CompositeMetric } from '../components/composites/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 import { ApplyGlobalRegexPattern } from './processor';
+import { TimeFormatter } from './time_formatter';
 
 export const resolveCompositeTemplates = (
   metricComposites: CompositeItemType[],
@@ -109,6 +110,7 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
     name: item.name,
     displayName: item.displayName,
     timestamp: item.timestamp,
+    timestampFormatted: item.timestampFormatted,
     prefix: item.prefix,
     suffix: item.suffix,
     color: item.color,
@@ -121,6 +123,7 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
     customClickthroughTarget: '',
     showName: item.showName,
     showValue: item.showValue,
+    showTimestamp: item.showTimestamp,
     isComposite: item.isComposite,
     members: []
   };
@@ -197,6 +200,11 @@ export const ApplyComposites = (
             seriesItem.customClickthroughTarget = aComposite.clickThroughCustomTarget;
             seriesItem.customClickthroughTargetEnabled = aComposite.clickThroughCustomTargetEnabled;
           }
+          // process the timestamp display
+          if (aComposite.showTimestampEnabled) {
+            seriesItem.timestampFormatted = TimeFormatter(data[index].timestamp, aComposite.showTimestampFormat);
+            seriesItem.showTimestamp = true;
+          }
         }
       }
     }
@@ -234,6 +242,7 @@ export const ApplyComposites = (
       // add the composite setting for showing the name/value to the new cloned model
       clone.showName = aComposite.showName;
       clone.showValue = aComposite.showValue;
+      clone.showTimestamp = aComposite.showTimestampEnabled;
       clone.displayMode = aComposite.displayMode;
       clone.newTabEnabled = aComposite.clickThroughOpenNewTab;
       clone.sanitizeURLEnabled = aComposite.clickThroughSanitize;

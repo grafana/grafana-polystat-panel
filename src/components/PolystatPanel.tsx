@@ -55,6 +55,8 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
         options.globalFillColor,
         options.globalThresholdsConfig,
         options.globalUnitFormat,
+        options.globalShowTimestampEnabled,
+        options.globalShowTimestampFormat,
         options.sortByDirection,
         options.sortByField,
         options.compositeGlobalAliasingEnabled,

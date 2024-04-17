@@ -7,6 +7,7 @@ import {
   DataFrame,
   PanelData,
   getFieldDisplayName,
+  dateTime,
   formattedValueToString,
   getValueFormat,
   stringToJsRegex,
@@ -27,6 +28,7 @@ import { PolystatThreshold } from '../components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';
 import { GetMappedValue } from './valueMappingsWrapper';
 import { GetValueByOperator } from './stats';
+import { TimeFormatter } from './time_formatter';
 
 /**
  * Converts dataframes to internal model
@@ -55,6 +57,8 @@ export function ProcessDataFrames(
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
   globalUnitFormat: string,
+  globalShowTimestamp: boolean,
+  globalShowTimestampFormat: string,
   sortByDirection: number,
   sortByField: string,
   compositesGlobalAliasingEnabled: boolean,
@@ -74,7 +78,7 @@ export function ProcessDataFrames(
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
   // formatting can change colors due to value maps
-  internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor, themeV2);
+  internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor, globalShowTimestamp, globalShowTimestampFormat, themeV2);
   // applies overrides and global thresholds (and mappings)
   internalData = ApplyOverrides(
     overrides,
@@ -188,6 +192,8 @@ export const ApplyGlobalFormatting = (
   globalUnitFormat: string,
   globalDecimals: number,
   globalFillColor: string,
+  globalShowTimestampEnabled: boolean,
+  globalShowTimestampFormat: string,
   theme: GrafanaTheme2
 ): PolystatModel[] => {
   let realGlobalFillColor = theme.visualization.getColorByName(globalFillColor);
@@ -198,6 +204,10 @@ export const ApplyGlobalFormatting = (
       const mappedValue = GetMappedValue(fieldConfig.defaults.mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
+        if (globalShowTimestampEnabled) {
+          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, globalShowTimestampFormat);
+          data[index].showTimestamp = true;
+        }
         // set color also
         if (mappedValue.color) {
           let realColor = theme.visualization.getColorByName(mappedValue.color);
@@ -219,6 +229,10 @@ export const ApplyGlobalFormatting = (
           const valueRounded = roundValue(data[index].value, result.decimals);
           if (valueRounded !== null) {
             data[index].valueRounded = valueRounded;
+          }
+          if (globalShowTimestampEnabled) {
+            data[index].timestampFormatted = TimeFormatter(data[index].timestamp, globalShowTimestampFormat);
+            data[index].showTimestamp = true;
           }
         }
         data[index].color = realGlobalFillColor;
@@ -306,7 +320,6 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
     }
     const result = getValueFormat(valueField!.config.unit)(operatorValue, maxDecimals, undefined, undefined);
     const valueFormatted = formattedValueToString(result);
-
     const model: PolystatModel = {
       displayMode: DisplayModes[0].value,
       thresholdLevel: 0,
@@ -317,6 +330,7 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       name: valueFieldName,
       displayName: valueFieldName,
       timestamp: newestTimestamp,
+      timestampFormatted: '',
       prefix: '',
       suffix: '',
       color: GLOBAL_FILL_COLOR_RGBA,
@@ -327,6 +341,7 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       sanitizeURLEnabled: true,
       showName: true,
       showValue: true,
+      showTimestamp: false,
       isComposite: false,
       members: [],
       customClickthroughTargetEnabled: false,

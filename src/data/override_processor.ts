@@ -18,6 +18,7 @@ import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
 import { GetMappedValue } from './valueMappingsWrapper';
 import { roundValue } from 'utils';
+import { TimeFormatter } from './time_formatter';
 
 const customFormatter = (value: any): string => {
   if (Object.prototype.toString.call(value) === '[object Array]') {
@@ -130,6 +131,11 @@ export const ApplyOverrides = (
         } else {
           data[index].color = realGlobalFillColor;
         }
+        // override the timestamp format also
+        if (anOverride.showTimestampEnabled) {
+          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].showTimestamp = true;
+        }
       } else {
         const formatFunc = getValueFormat(anOverride.unitFormat);
         if (formatFunc) {
@@ -146,6 +152,12 @@ export const ApplyOverrides = (
           }
           data[index].valueRounded = roundValue(data[index].value, decimals) || data[index].value;
         }
+        // process the timestamp display
+        if (anOverride.showTimestampEnabled) {
+          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].showTimestamp = true;
+        }
+
       }
       // add prefix/suffix to formatted value
       if (anOverride.prefix !== '') {
