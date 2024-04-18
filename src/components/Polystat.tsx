@@ -9,10 +9,11 @@ import { Tooltip as ReactTooltip } from 'react-tooltip';
 import { Gradients } from './gradients/Gradients';
 import { LayoutManager } from './layout/layoutManager';
 import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
-import { getTextSizeForWidthAndHeight } from '../utils';
 
 import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
+import { AutoFontScalar } from './auto_font_scaler';
+import { GetAlignments } from './alignment';
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
@@ -242,11 +243,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let numOfChars = options.ellipseCharacters;
 
   if (options.globalAutoScaleFonts) {
-    const result = autoFontScalar(
+    const result = AutoFontScalar(
       options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
       options.globalShowValueEnabled,
+      options.globalShowTimestampEnabled,
       options.processedData!
     );
     activeLabelFontSize = result.activeLabelFontSize;
@@ -255,15 +257,21 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
-  const alignments = getAlignments(
+  const alignments = GetAlignments(
     options.globalShape,
     diameterX,
     diameterY,
     textAreaHeight,
     activeValueFontSize,
-    activeLabelFontSize
+    activeLabelFontSize,
+    activeTimestampFontSize
   );
 
+  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.35);
+  if (activeValueFontSize > activeTimestampFontSize) {
+    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.35);
+  }
+  //console.log(`timestamp lineSpacing ${timestampLineSpacing}`);
   // this MUST be unique for gradients to work properly
   const gradientId = `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString();
 
@@ -442,7 +450,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   ref={animationTimestampRefs[index]}
                   className={`timestampLabel${index}`}
                   x={coords.x + alignments.labelValueAlignmentX}
-                  y={coords.y + alignments.valueWithLabelTextAlignment + 30}
+                  y={coords.y + alignments.timestampAlignment - timestampLineSpacing}
                   textAnchor="middle"
                   fontFamily={options.globalTextFontFamily}
                   fontSize={activeTimestampFontSize + 'px'}
@@ -582,216 +590,4 @@ const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, g
     timestampContent = aMember.timestampFormatted;
   }
   return [textUtil.sanitize(content), timestampContent];
-};
-
-const getAlignments = (
-  shape: PolygonShapes,
-  diameterX: number,
-  diameterY: number,
-  textAreaHeight: number,
-  activeValueFontSize: number,
-  activeLabelFontSize: number
-) => {
-  let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
-  let valueOnlyTextAlignment = activeValueFontSize / 2;
-  let labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
-  let labelOnlyTextAlignment = activeLabelFontSize / 2;
-  let labelTextAlignmentX = 0;
-  let labelValueAlignmentX = 0;
-
-  switch (shape) {
-    case PolygonShapes.HEXAGON_POINTED_TOP:
-      // offset when only showing label
-      labelOnlyTextAlignment = activeLabelFontSize * 0.37;
-      break;
-    case PolygonShapes.CIRCLE:
-      // offset when only showing label
-      labelOnlyTextAlignment = activeLabelFontSize * 0.37;
-      break;
-    case PolygonShapes.SQUARE:
-      // square is "centered" at top left, not the center
-
-      // compute alignment for each text element, base coordinate is in the top left corner (text is anchored at its bottom):
-      // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
-      // - Label text (top text) will be aligned in the middle of the top half of the text area
-      valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
-      valueOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
-      labelWithValueTextAlignment = diameterY / 4 + activeLabelFontSize / 2;
-      // alignment is equal to the half of height plus a fraction of the fontSize
-      labelOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
-      //
-      labelTextAlignmentX = diameterX / 2;
-      labelValueAlignmentX = diameterX / 2;
-      break;
-  }
-  return {
-    valueWithLabelTextAlignment,
-    valueOnlyTextAlignment,
-    labelWithValueTextAlignment,
-    labelOnlyTextAlignment,
-    labelTextAlignmentX,
-    labelValueAlignmentX,
-  };
-};
-
-const autoFontScalar = (
-  fontFamily: string,
-  textAreaWidth: number,
-  textAreaHeight: number,
-  valueEnabled: boolean,
-  data: PolystatModel[]
-) => {
-  // TODO: 6 is VERY small, perhaps 10 as a min?
-  // A hint from the config could be used (max characters)
-  const minFont = 6;
-  const maxFont = 240;
-  // this ensures we have space between label and value
-  const maxLinesToDisplay = 2;
-  let showEllipses = false;
-  //number of characters to show on polygon
-  let numOfChars = 0;
-  // find the most text that will be displayed over all items
-  // displayName will have the "processed" name with Global Regex applied
-  let maxLabel = '';
-  for (let i = 0; i < data.length; i++) {
-    let nameToCheck = data[i].name;
-    // use the displayName since it has been formatted
-    if (data[i].displayName !== '') {
-      nameToCheck = data[i].displayName;
-    }
-    if (nameToCheck.length > maxLabel.length) {
-      maxLabel = nameToCheck;
-    }
-  }
-  // same for the value, also check for sub metrics size in case of composite
-  // timestamp is also calculated here
-  let maxValue = '';
-  let maxTimestamp = '';
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].valueFormatted.length > maxValue.length) {
-      maxValue = data[i].valueFormatted;
-    }
-    if (data[i].timestampFormatted.length > maxTimestamp.length) {
-      maxTimestamp = data[i].timestampFormatted;
-    }
-    const subMetricCount = data[i].members.length;
-    if (subMetricCount > 0) {
-      let counter = 0;
-      while (counter < subMetricCount) {
-        const checkContent = data[i].members[counter].displayName + ': ' + data[i].members[counter].valueFormatted;
-        if (checkContent && checkContent.length > maxValue.length) {
-          maxValue = checkContent;
-        }
-        const checkCompositeTimestamp = data[i].members[counter].timestampFormatted;
-        if (checkCompositeTimestamp && checkCompositeTimestamp.length > maxTimestamp.length) {
-          maxTimestamp = checkCompositeTimestamp;
-        }
-        counter++;
-      }
-    }
-  }
-  // estimate how big of a font can be used
-  // Two lines of text must fit with vertical spacing included
-  // if it is too small, hide everything
-  let activeLabelFontSize = computeTextFontSize(
-    maxLabel,
-    fontFamily,
-    minFont,
-    maxFont,
-    maxLinesToDisplay,
-    textAreaWidth,
-    textAreaHeight
-  );
-  let activeValueFontSize = computeTextFontSize(
-    maxValue,
-    fontFamily,
-    minFont,
-    maxFont,
-    maxLinesToDisplay,
-    textAreaWidth,
-    textAreaHeight
-  );
-  let activeTimestampFontSize = computeTextFontSize(
-    maxTimestamp,
-    fontFamily,
-    minFont,
-    maxFont,
-    maxLinesToDisplay,
-    textAreaWidth - 110,
-    textAreaHeight
-  );
-
-  if (activeTimestampFontSize < minFont) {
-    // do not render it, too small
-    activeTimestampFontSize = 0;
-  }
-
-  if (activeLabelFontSize < minFont) {
-    showEllipses = true; // TODO: possible bug here
-    numOfChars = 18;
-    maxLabel = maxLabel.substring(0, numOfChars + 2);
-    activeLabelFontSize = computeTextFontSize(
-      maxLabel,
-      fontFamily,
-      minFont,
-      maxFont,
-      maxLinesToDisplay,
-      textAreaWidth,
-      textAreaHeight
-    );
-    if (activeLabelFontSize < minFont) {
-      numOfChars = 10;
-      maxLabel = maxLabel.substring(0, numOfChars + 2);
-      activeLabelFontSize = computeTextFontSize(
-        maxLabel,
-        fontFamily,
-        minFont,
-        maxFont,
-        maxLinesToDisplay,
-        textAreaWidth,
-        textAreaHeight
-      );
-      if (activeLabelFontSize < minFont) {
-        numOfChars = 6;
-        maxLabel = maxLabel.substring(0, numOfChars + 2);
-        activeLabelFontSize = computeTextFontSize(
-          maxLabel,
-          fontFamily,
-          minFont,
-          maxFont,
-          maxLinesToDisplay,
-          textAreaWidth,
-          textAreaHeight
-        );
-      }
-    }
-  }
-  // NOTE: allow different sizes, the value could be displayed larger than the label
-  // value should never be larger than the label
-  //if (activeValueFontSize > activeLabelFontSize) {
-  //  activeValueFontSize = activeLabelFontSize;
-  //}
-  if (!valueEnabled) {
-    activeValueFontSize = 0;
-  }
-  return { activeLabelFontSize, activeValueFontSize, activeTimestampFontSize, showEllipses, numOfChars };
-};
-
-const computeTextFontSize = (
-  text: string,
-  font: string,
-  minFont: number,
-  maxFont: number,
-  linesToDisplay: number,
-  textAreaWidth: number,
-  textAreaHeight: number
-): number => {
-  return getTextSizeForWidthAndHeight(
-    text,
-    `?px ${font}`,
-    textAreaWidth,
-    textAreaHeight / linesToDisplay, // multiple lines of text
-    minFont,
-    maxFont
-  );
 };

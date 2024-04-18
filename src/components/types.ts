@@ -30,6 +30,7 @@ export interface PolystatOptions {
   globalShowValueEnabled: boolean;
   globalShowTimestampEnabled: boolean;
   globalShowTimestampFormat: string;
+  globalShowTimestampPosition: string;
   globalShowTimestampYOffset: number;
   globalShowTooltipColumnHeadersEnabled: boolean;
   globalTextFontAutoColor: string;
@@ -193,9 +194,20 @@ export const FontFamilyOptionsLegacy = [
 
 export const ShowTimestampFormats = [
   { value: 'HH:mm:ss', label: 'HH:mm:ss' },
+  { value: 'YYYY-MM-DD HH:mm', label: 'YYYY-MM-DD HH:mm' },
   { value: 'YYYY-MM-DD HH:mm:ss', label: 'YYYY-MM-DD HH:mm:ss' },
   { value: 'YYYY-MM-DD HH:mm:ss.SSS', label: 'YYYY-MM-DD HH:mm:ss.SSS' },
   { value: 'MM/DD/YY h:mm:ss a', label: 'MM/DD/YY h:mm:ss a' },
   { value: 'MMMM D, YYYY LT', label: 'MMMM D, YYYY LT' },
   { value: 'YYYY-MM-DD', label: 'YYYY-MM-DD' },
+];
+
+export enum TimestampPositions {
+  BELOW_VALUE = 'below_value',
+  ABOVE_VALUE = 'above_value',
+}
+
+export const ShowTimestampPositions = [
+  { value: TimestampPositions.ABOVE_VALUE, label: 'Above Value' },
+  { value: TimestampPositions.BELOW_VALUE, label: 'Below Value' },
 ];

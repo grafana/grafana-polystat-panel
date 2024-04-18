@@ -8,6 +8,7 @@ import {
   PolygonNamedShapes,
   PolystatOptions,
   ShowTimestampFormats,
+  ShowTimestampPositions,
   SortByFieldOptions,
   SortOptions,
 } from './components/types';
@@ -392,6 +393,18 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         settings: {
           options: ShowTimestampFormats,
           allowCustomValue: true,
+        },
+        showIf: (c) => c.globalShowTimestampEnabled,
+      })
+      .addSelect({
+        name: 'Timestamp Position',
+        path: 'globalShowTimestampPosition',
+        description: 'Position of Timestamp',
+        category: ['Global'],
+        defaultValue: ShowTimestampPositions[0].value,
+        settings: {
+          options: ShowTimestampPositions,
+          allowCustomValue: false,
         },
         showIf: (c) => c.globalShowTimestampEnabled,
       })

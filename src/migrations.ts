@@ -5,7 +5,7 @@ import { CompositeItemType, CompositeMetric } from 'components/composites/types'
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
 
-import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats } from './components/types';
+import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats, ShowTimestampPositions } from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -191,6 +191,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalShowTooltipColumnHeadersEnabled: true,
     globalShowTimestampEnabled: false,
     globalShowTimestampFormat: ShowTimestampFormats[0].value,
+    globalShowTimestampPosition: ShowTimestampPositions[0].value,
     globalShowTimestampYOffset: 0,
     globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
