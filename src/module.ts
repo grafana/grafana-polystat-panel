@@ -389,7 +389,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalShowTimestampFormat',
         description: 'Format of timestamp to display',
         category: ['Global'],
-        defaultValue: ShowTimestampFormats[0].value,
+        defaultValue: ShowTimestampFormats[2].value,
         settings: {
           options: ShowTimestampFormats,
           allowCustomValue: true,
@@ -412,7 +412,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalShowTimestampPosition',
         description: 'Position of Timestamp',
         category: ['Global'],
-        defaultValue: ShowTimestampPositions[0].value,
+        defaultValue: ShowTimestampPositions[1].value,
         settings: {
           options: ShowTimestampPositions,
           allowCustomValue: false,
