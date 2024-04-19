@@ -2,7 +2,7 @@
 
 ## Entries
 
-## 2.1.9
+## v2.1.9
 
 - NEW: Option to display timestamp of metric inside polygon, available in Global Configuration Section
   - Show Timestamp Toggle on/off
