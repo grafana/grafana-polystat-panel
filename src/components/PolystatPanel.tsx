@@ -55,6 +55,8 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
         options.globalFillColor,
         options.globalThresholdsConfig,
         options.globalUnitFormat,
+        true, // TODO: future configurable global option to not display label
+        options.globalShowValueEnabled,
         options.globalShowTimestampEnabled,
         options.globalShowTimestampFormat,
         options.sortByDirection,

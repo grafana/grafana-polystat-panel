@@ -57,6 +57,8 @@ export function ProcessDataFrames(
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
   globalUnitFormat: string,
+  globalShowLabel: boolean,
+  globalShowValue: boolean,
   globalShowTimestamp: boolean,
   globalShowTimestampFormat: string,
   sortByDirection: number,
@@ -85,6 +87,8 @@ export function ProcessDataFrames(
     globalUnitFormat,
     globalDecimals,
     globalFillColor,
+    globalShowLabel,
+    globalShowValue,
     globalShowTimestamp,
     globalShowTimestampFormat,
     timeZone,
@@ -209,6 +213,8 @@ export const ApplyGlobalFormatting = (
   globalUnitFormat: string,
   globalDecimals: number,
   globalFillColor: string,
+  globalShowLabel: boolean,
+  globalShowValue: boolean,
   globalShowTimestampEnabled: boolean,
   globalShowTimestampFormat: string,
   timeZone: string,
@@ -219,6 +225,8 @@ export const ApplyGlobalFormatting = (
   for (let index = 0; index < data.length; index++) {
     // Check for mapped value, if nothing set, format value
     if (data[index].value !== null) {
+      data[index].showName = globalShowLabel;
+      data[index].showValue = globalShowValue;
       const mappedValue = GetMappedValue(fieldConfig.defaults.mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
