@@ -62,6 +62,7 @@ export function ProcessDataFrames(
   sortByDirection: number,
   sortByField: string,
   compositesGlobalAliasingEnabled: boolean,
+  timeZone: string,
   themeV1: GrafanaTheme,
   themeV2: GrafanaTheme2,
 ): PolystatModel[] {
@@ -78,7 +79,16 @@ export function ProcessDataFrames(
   });
   internalData = ApplyGlobalRegexPattern(internalData, globalRegexPattern);
   // formatting can change colors due to value maps
-  internalData = ApplyGlobalFormatting(internalData, fieldConfig, globalUnitFormat, globalDecimals, globalFillColor, globalShowTimestamp, globalShowTimestampFormat, themeV2);
+  internalData = ApplyGlobalFormatting(
+    internalData,
+    fieldConfig,
+    globalUnitFormat,
+    globalDecimals,
+    globalFillColor,
+    globalShowTimestamp,
+    globalShowTimestampFormat,
+    timeZone,
+    themeV2);
   // applies overrides and global thresholds (and mappings)
   internalData = ApplyOverrides(
     overrides,
@@ -194,6 +204,7 @@ export const ApplyGlobalFormatting = (
   globalFillColor: string,
   globalShowTimestampEnabled: boolean,
   globalShowTimestampFormat: string,
+  timeZone: string,
   theme: GrafanaTheme2
 ): PolystatModel[] => {
   let realGlobalFillColor = theme.visualization.getColorByName(globalFillColor);
@@ -205,7 +216,7 @@ export const ApplyGlobalFormatting = (
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
         if (globalShowTimestampEnabled) {
-          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, globalShowTimestampFormat);
+          data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, globalShowTimestampFormat);
           data[index].showTimestamp = true;
         }
         // set color also
@@ -231,7 +242,7 @@ export const ApplyGlobalFormatting = (
             data[index].valueRounded = valueRounded;
           }
           if (globalShowTimestampEnabled) {
-            data[index].timestampFormatted = TimeFormatter(data[index].timestamp, globalShowTimestampFormat);
+            data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, globalShowTimestampFormat);
             data[index].showTimestamp = true;
           }
         }

@@ -28,7 +28,7 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
 };
 
 
-export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
+export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig, timeZone }) => {
   const styles = useStyles2(getComponentStyles);
   const currentThemeV1 = useTheme(); // V8
   const currentThemeV2 = useTheme2(); // V9+
@@ -60,13 +60,14 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
         options.sortByDirection,
         options.sortByField,
         options.compositeGlobalAliasingEnabled,
+        timeZone,
         currentThemeV1,
         currentThemeV2,
       );
       setCachedProcessedData(processedData);
 
     }
-  }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2]);
+  }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2, timeZone]);
 
   if (cachedProcessedData === undefined) {
     return (

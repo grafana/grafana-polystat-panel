@@ -56,8 +56,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
+      // TODO: future to implement per composite
 
-      if (animationRefs.length > 0 && animationRefs[index].current) {
+      if (options.globalShowValueEnabled && (animationRefs.length > 0 && animationRefs[index].current)) {
         if (options.processedData) {
           const item = options.processedData[index];
           const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
@@ -66,7 +67,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           }
         }
       }
-      if (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current) {
+      if (options.globalShowTimestampEnabled && (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current)) {
         if (options.processedData) {
           const item = options.processedData[index];
           const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
@@ -89,6 +90,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     animatedItems,
     options.processedData,
     options.globalDisplayTextTriggeredEmpty,
+    options.globalShowTimestampEnabled,
+    options.globalShowValueEnabled,
   ]);
 
   /*
@@ -453,7 +456,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           pointerEvents: 'none',
         }}
       >
-        {options.globalShowValueEnabled &&
+        {(options.globalShowValueEnabled) &&
           (item.isComposite
             ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
             : item.valueFormatted)}
@@ -491,7 +494,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           pointerEvents: 'none',
         }}
       >
-        {item.showTimestamp &&
+        {options.globalShowTimestampEnabled &&
           (item.isComposite
             ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
             : item.timestampFormatted)}
