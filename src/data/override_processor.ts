@@ -79,6 +79,7 @@ export const ApplyOverrides = (
   globalFillColor: string,
   globalThresholds: PolystatThreshold[],
   replaceVariables: InterpolateFunction,
+  timeZone: string,
   themeV1: GrafanaTheme, // V8
   themeV2: GrafanaTheme2 // V9+
 ) => {
@@ -133,7 +134,7 @@ export const ApplyOverrides = (
         }
         // override the timestamp format also
         if (anOverride.showTimestampEnabled) {
-          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, anOverride.showTimestampFormat);
           data[index].showTimestamp = true;
         }
       } else {
@@ -154,7 +155,7 @@ export const ApplyOverrides = (
         }
         // process the timestamp display
         if (anOverride.showTimestampEnabled) {
-          data[index].timestampFormatted = TimeFormatter(data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, anOverride.showTimestampFormat);
           data[index].showTimestamp = true;
         }
 

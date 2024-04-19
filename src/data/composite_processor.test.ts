@@ -130,7 +130,7 @@ describe('Composite Processor', () => {
         };
         return value;
       };
-      const applied = ApplyComposites([compositeA], [modelA, modelB], replacer1, false);
+      const applied = ApplyComposites([compositeA], [modelA, modelB], replacer1, false, 'utc');
       console.log(JSON.stringify(applied));
       expect(applied.length).toBe(1);
     });

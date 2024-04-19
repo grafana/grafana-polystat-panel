@@ -64,7 +64,7 @@ describe('Test Overrides', () => {
         },
         overrides: [],
       };
-      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, useTheme(), useTheme2()));
+      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2()));
       expect(result.all.length).toBe(1);
       const x = result.all[0] as PolystatModel[];
       const modified = x[0] as PolystatModel;

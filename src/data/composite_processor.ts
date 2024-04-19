@@ -135,6 +135,7 @@ export const ApplyComposites = (
   data: PolystatModel[],
   replaceVariables: InterpolateFunction,
   compositesGlobalAliasingEnabled: boolean,
+  timeZone: string,
   globalRegexPattern?: string,
 ): PolystatModel[] => {
   if (!composites) {
@@ -202,7 +203,7 @@ export const ApplyComposites = (
           }
           // process the timestamp display
           if (aComposite.showTimestampEnabled) {
-            seriesItem.timestampFormatted = TimeFormatter(data[index].timestamp, aComposite.showTimestampFormat);
+            seriesItem.timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, aComposite.showTimestampFormat);
             seriesItem.showTimestamp = true;
           }
         }

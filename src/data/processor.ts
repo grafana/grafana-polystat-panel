@@ -97,12 +97,19 @@ export function ProcessDataFrames(
     globalFillColor,
     globalThresholds,
     replaceVariables,
+    timeZone,
     themeV1,
     themeV2
   );
   // composites
   if (compositesEnabled) {
-    internalData = ApplyComposites(composites, internalData, replaceVariables, compositesGlobalAliasingEnabled, globalRegexPattern);
+    internalData = ApplyComposites(
+      composites,
+      internalData,
+      replaceVariables,
+      compositesGlobalAliasingEnabled,
+      timeZone,
+      globalRegexPattern);
   }
   // clickthroughs
   internalData = ApplyGlobalClickThrough(
