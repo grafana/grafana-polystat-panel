@@ -1,3 +1,4 @@
+import { ShowTimestampFormats } from 'components/types';
 import { CompositeItemType } from '../../components/composites/types';
 
 export const compositeA: CompositeItemType = {
@@ -11,6 +12,9 @@ export const compositeA: CompositeItemType = {
   showMembers: false,
   showValue: true,
   showComposite: true,
+  showTimestampEnabled: false,
+  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,
@@ -35,6 +39,9 @@ export const compositeB: CompositeItemType = {
   showMembers: false,
   showValue: true,
   showComposite: true,
+  showTimestampEnabled: false,
+  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,
@@ -59,6 +66,9 @@ export const compositeC: CompositeItemType = {
   showMembers: false,
   showValue: true,
   showComposite: true,
+  showTimestampEnabled: false,
+  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,
   clickThroughSanitize: true,

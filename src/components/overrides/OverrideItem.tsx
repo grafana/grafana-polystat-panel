@@ -16,7 +16,7 @@ import {
 import { OverrideItemProps, OverrideItemType } from './types';
 import { ThresholdsEditor } from '../thresholds/ThresholdsEditor';
 import { PolystatThreshold } from '../thresholds/types';
-import { OperatorOptions } from '../types';
+import { OperatorOptions, ShowTimestampFormats } from '../types';
 import { SelectableValue } from '@grafana/data';
 import { getMetricHints } from '../metric_hints';
 
@@ -76,7 +76,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
   }, [props.context.data]);
 
   return (
-    <Card heading="" key={`override-card-${props.ID}`}>
+    <Card key={`override-card-${props.ID}`}>
       <Card.Meta>
         <FieldSet>
           <Field
@@ -136,6 +136,35 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               <span>{override.unitFormat}</span>
             )}
           </Field>
+          {/*
+          <Field label="Show Timestamp" description="Toggle Display of Timestamp" disabled={!override.enabled}>
+            <Switch
+              transparent={true}
+              value={override.showTimestampEnabled}
+              disabled={!override.enabled}
+              onChange={() => setOverride({ ...override, showTimestampEnabled: !override.showTimestampEnabled })}
+            />
+          </Field>
+          <Field label="Timestamp Format" description="Format of timestamp to display" disabled={!override.enabled} hidden={!override.showTimestampEnabled}>
+            <Cascader
+              initialValue={override.showTimestampFormat}
+              allowCustomValue
+              placeholder=""
+              options={ShowTimestampFormats}
+              onSelect={(val: string) => setOverride({ ...override, showTimestampFormat: val })}
+            />
+          </Field>
+          <Field label="Timestamp Y Offset" description="Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down" disabled={!override.enabled} hidden={!override.showTimestampEnabled}>
+            <Input
+              value={override.showTimestampYOffset}
+              type="number"
+              step={1}
+              placeholder="0"
+              onChange={(v) => setOverride({ ...override, showTimestampYOffset: v.currentTarget.valueAsNumber })}
+            />
+          </Field>
+          */}
+
           <Field label="Thresholds" disabled={!override.enabled}>
             <ThresholdsEditor disabled={!override.enabled} thresholds={override.thresholds} setter={setThresholds} />
           </Field>

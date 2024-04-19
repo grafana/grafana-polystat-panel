@@ -5,7 +5,7 @@ import { OverrideItemType, OverrideItemTracker } from './types';
 import { v4 as UUIdv4 } from 'uuid';
 import { Button, Collapse } from '@grafana/ui';
 import { PolystatThreshold } from '../thresholds/types';
-import { OperatorOptions } from '../types';
+import { OperatorOptions, ShowTimestampFormats } from '../types';
 import {
   DEFAULT_CRITICAL_COLOR_HEX,
   DEFAULT_NO_THRESHOLD_COLOR_HEX,
@@ -84,6 +84,9 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
       clickThroughSanitize: original.clickThroughSanitize,
       clickThroughCustomTargetEnabled: original.clickThroughCustomTargetEnabled,
       clickThroughCustomTarget: original.clickThroughCustomTarget,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       unitFormat: original.unitFormat,
       scaledDecimals: original.scaledDecimals,
       decimals: original.decimals,
@@ -174,6 +177,9 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
       clickThroughSanitize: true,
       clickThroughCustomTargetEnabled: false,
       clickThroughCustomTarget: '',
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       unitFormat: 'short',
       scaledDecimals: null,
       decimals: '2',

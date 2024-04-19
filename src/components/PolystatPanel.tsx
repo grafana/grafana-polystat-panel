@@ -28,7 +28,7 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
 };
 
 
-export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig }) => {
+export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig, timeZone }) => {
   const styles = useStyles2(getComponentStyles);
   const currentThemeV1 = useTheme(); // V8
   const currentThemeV2 = useTheme2(); // V9+
@@ -55,16 +55,21 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
         options.globalFillColor,
         options.globalThresholdsConfig,
         options.globalUnitFormat,
+        true, // TODO: future configurable global option to not display label
+        options.globalShowValueEnabled,
+        options.globalShowTimestampEnabled,
+        options.globalShowTimestampFormat,
         options.sortByDirection,
         options.sortByField,
         options.compositeGlobalAliasingEnabled,
+        timeZone,
         currentThemeV1,
         currentThemeV2,
       );
       setCachedProcessedData(processedData);
 
     }
-  }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2]);
+  }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2, timeZone]);
 
   if (cachedProcessedData === undefined) {
     return (
@@ -104,6 +109,11 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalFillColor={options.globalFillColor}
           globalRegexPattern={options.globalRegexPattern}
           globalGradientsEnabled={options.globalGradientsEnabled}
+          globalShowTimestampEnabled={options.globalShowTimestampEnabled}
+          globalShowTimestampFormat={options.globalShowTimestampFormat}
+          globalShowTimestampPosition={options.globalShowTimestampPosition}
+          globalShowTimestampFontSize={options.globalShowTimestampFontSize}
+          globalShowTimestampYOffset={options.globalShowTimestampYOffset}
           globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentThemeV2.colors.text.primary : '#000000'}
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}
           globalTextFontColor={options.globalTextFontColor}

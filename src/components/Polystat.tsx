@@ -8,11 +8,12 @@ import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 import { Gradients } from './gradients/Gradients';
 import { LayoutManager } from './layout/layoutManager';
-import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
-import { getTextSizeForWidthAndHeight } from '../utils';
+import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes, TimestampPositions } from './types';
 
 import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
+import { AutoFontScalar } from './auto_font_scaler';
+import { GetAlignments } from './alignment';
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
@@ -23,6 +24,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const tooltipTheme = useTheme2().isDark ? 'dark' : 'light';
   // used to change/animate text in polygon
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
+  const [animationTimestampRefs, setAnimationTimestampRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
@@ -30,14 +32,17 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
       const newAnimationRefs = [];
+      const newAnimationTimestampRefs = [];
       const newAnimationMetricIndexes = [];
       for (let i = 0; i < data!.length; i++) {
         newAnimationRefs.push(createRef());
+        newAnimationTimestampRefs.push(createRef());
         newAnimationMetricIndexes.push(0);
       }
       if (newAnimationRefs.length > 0) {
         if (animationRefs.length !== newAnimationRefs.length) {
           setAnimationRefs(newAnimationRefs);
+          setAnimationTimestampRefs(newAnimationTimestampRefs);
           setAnimationMetricIndexes(newAnimationMetricIndexes);
         }
       }
@@ -51,12 +56,23 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
-      if (animationRefs.length > 0 && animationRefs[index].current) {
+      // TODO: future to implement per composite
+
+      if (options.globalShowValueEnabled && (animationRefs.length > 0 && animationRefs[index].current)) {
         if (options.processedData) {
           const item = options.processedData[index];
-          const val = formatCompositeValue(metricIndex, item, options.globalDisplayTextTriggeredEmpty);
+          const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
           if (animationRefs[index].current.innerHTML !== null) {
             animationRefs[index].current.innerHTML = val;
+          }
+        }
+      }
+      if (options.globalShowTimestampEnabled && (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current)) {
+        if (options.processedData) {
+          const item = options.processedData[index];
+          const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
+          if (animationTimestampRefs[index].current.innerHTML !== null) {
+            animationTimestampRefs[index].current.innerHTML = ts;
           }
         }
       }
@@ -70,9 +86,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   }, [
     animationMetricIndexes,
     animationRefs,
+    animationTimestampRefs,
     animatedItems,
     options.processedData,
     options.globalDisplayTextTriggeredEmpty,
+    options.globalShowTimestampEnabled,
+    options.globalShowValueEnabled,
   ]);
 
   /*
@@ -220,30 +239,98 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let activeLabelFontSize = options.globalFontSize;
   // font sizes are independent for label and values
   let activeValueFontSize = options.globalFontSize;
+  // timestamp sizing
+  let activeTimestampFontSize = options.globalShowTimestampFontSize;
   let showEllipses = false;
   let numOfChars = options.ellipseCharacters;
 
+  let hasShowTimeStampEnabled = options.globalShowTimestampEnabled;
+  let hasShowValueEnabled = options.globalShowValueEnabled;
+
   if (options.globalAutoScaleFonts) {
-    const result = autoFontScalar(
+    /*
+    // check if any item has an override with show timestamp enabled
+    if (options.processedData && !hasShowTimeStampEnabled) {
+      for (let i = 0; i < options.processedData.length; i++) {
+        const item = options.processedData[i];
+        console.log(item);
+        if (item.showTimestamp) {
+          hasShowTimeStampEnabled = true;
+          break;
+        }
+        // check members
+        if (item.members) {
+          for (let j = 0; i < item.members.length; j++) {
+            const aMember = item.members[j];
+            if (aMember.showTimestamp) {
+              hasShowTimeStampEnabled = true;
+              break;
+            }
+          }
+        }
+        // break out if it is true at any point
+        if (hasShowTimeStampEnabled) {
+          break;
+        }
+      }
+    }
+    */
+    /*
+    if (options.processedData) {
+      for (let i = 0; i < options.processedData.length; i++) {
+        const item = options.processedData[i];
+        if (item.showValue) {
+          hasShowValueEnabled = true;
+          break;
+        }
+        // check members
+        if (item.members) {
+          for (let j = 0; i < item.members.length; j++) {
+            const aMember = item.members[j];
+            if (aMember.showValue) {
+              hasShowValueEnabled = true;
+              break;
+            }
+          }
+        }
+        // break out if it is true at any point
+        if (hasShowValueEnabled) {
+          break;
+        }
+      }
+    }
+    */
+
+    const result = AutoFontScalar(
       options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
-      options.globalShowValueEnabled,
+      hasShowValueEnabled,
+      hasShowTimeStampEnabled,
       options.processedData!
     );
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
+    activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
-  const alignments = getAlignments(
+
+  const alignments = GetAlignments(
     options.globalShape,
     diameterX,
     diameterY,
     textAreaHeight,
     activeValueFontSize,
-    activeLabelFontSize
+    activeLabelFontSize,
+    activeTimestampFontSize,
+    hasShowTimeStampEnabled
   );
+
+  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.35);
+  if (activeValueFontSize > activeTimestampFontSize) {
+    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.35);
+  }
 
   // this MUST be unique for gradients to work properly
   const gradientId = `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString();
@@ -334,6 +421,127 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     marginTop += radius * (difference - 1);
   }
 
+  const getLabelContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    let verticalAlignment = alignments.labelWithValueTextAlignment;
+    if (!item.showValue) {
+      verticalAlignment = alignments.labelOnlyTextAlignment;
+    }
+    return (
+      <text
+        className="toplabel"
+        x={coords.x + alignments.labelTextAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeLabelFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {
+          item.showName &&
+          getTextToDisplay(
+            options.globalAutoScaleFonts,
+            options.ellipseEnabled,
+            options.ellipseCharacters,
+            showEllipses,
+            numOfChars,
+            item.name,
+            item.displayName
+          )}
+      </text>
+    );
+  };
+
+  const getValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    // default
+    let verticalAlignment = alignments.valueWithLabelTextAlignment;
+    // check if showTimeStamp is enabled
+    // TODO: the show value should be inside the item also
+    if (options.globalShowTimestampEnabled) {
+      // TODO: the offset should be put inside the item also to handle overrides and composites correctly
+      if (isNaN(options.globalShowTimestampYOffset)) {
+        options.globalShowTimestampYOffset = 0;
+      }
+      switch (options.globalShowTimestampPosition) {
+        case TimestampPositions.ABOVE_VALUE:
+          verticalAlignment = alignments.valueWithLabelTextAlignment;
+          break;
+        case TimestampPositions.BELOW_VALUE:
+          verticalAlignment = alignments.timestampAlignment + timestampLineSpacing;
+          break;
+      }
+    }
+    return (
+      <text
+        ref={animationRefs[index]}
+        className={`valueLabel${index}`}
+        x={coords.x + alignments.labelValueAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeValueFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {(options.globalShowValueEnabled) &&
+          (item.isComposite
+            ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
+            : item.valueFormatted)}
+      </text>
+    );
+  };
+
+  const getTimestampForValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    // TODO: the offset should be put inside the item also to handle overrides and composites correctly
+    if (isNaN(options.globalShowTimestampYOffset)) {
+      options.globalShowTimestampYOffset = 0;
+    }
+    let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+    switch (options.globalShowTimestampPosition) {
+      case TimestampPositions.ABOVE_VALUE:
+        if (item.showValue) {
+          verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+        } else {
+          // the below calc can be used when value is not displayed
+          verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        }
+        break;
+      case TimestampPositions.BELOW_VALUE:
+        verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        break;
+    }
+    return (
+      <text
+        ref={animationTimestampRefs[index]}
+        className={`timestampLabel${index}`}
+        x={coords.x + alignments.labelValueAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeTimestampFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {options.globalShowTimestampEnabled &&
+          (item.isComposite
+            ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
+            : item.timestampFormatted)}
+      </text>
+    )
+  };
+
   return (
     <div className={divStyles}>
       <svg
@@ -364,7 +572,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 {drawShape(index, options.globalShape)}
               </a>;
             }
-
             return (
               <>
                 {useUrl.length > 0 && clickableUrl ? (
@@ -372,53 +579,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 ) : (
                   drawShape(index, options.globalShape)
                 )}
-                <text
-                  className="toplabel"
-                  x={coords.x + alignments.labelTextAlignmentX}
-                  y={coords.y + alignments.labelWithValueTextAlignment}
-                  textAnchor="middle"
-                  fontFamily={options.globalTextFontFamily}
-                  fontSize={activeLabelFontSize + 'px'}
-                  style={{
-                    fill: options.globalTextFontAutoColorEnabled
-                      ? options.globalTextFontAutoColor
-                      : options.globalTextFontColor,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {
-                  item.showName &&
-                    getTextToDisplay(
-                      options.globalAutoScaleFonts,
-                      options.ellipseEnabled,
-                      options.ellipseCharacters,
-                      showEllipses,
-                      numOfChars,
-                      item.name,
-                      item.displayName
-                    )}
-                </text>
-
-                <text
-                  ref={animationRefs[index]}
-                  className={`valueLabel${index}`}
-                  x={coords.x + alignments.labelValueAlignmentX}
-                  y={coords.y + alignments.valueWithLabelTextAlignment}
-                  textAnchor="middle"
-                  fontFamily={options.globalTextFontFamily}
-                  fontSize={activeValueFontSize + 'px'}
-                  style={{
-                    fill: options.globalTextFontAutoColorEnabled
-                      ? options.globalTextFontAutoColor
-                      : options.globalTextFontColor,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {item.showValue &&
-                    (item.isComposite
-                      ? formatCompositeValue(0, item, options.globalDisplayTextTriggeredEmpty)
-                    : item.valueFormatted)}
-                </text>
+                {getLabelContent(item, index, coords)}
+                {getValueContent(item, index, coords)}
+                {getTimestampForValueContent(item, index, coords)}
 
               </>
             );
@@ -437,7 +600,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
             opacity={1} // TODO: make this configurable
             clickable={false} // TODO: make this configurable, extend with per-line clickthrough
-            render={({ content}) => {
+            render={({ content }) => {
               // generate tooltip for item
               if (content) {
                 const contentIndex = parseInt(content, 10);
@@ -517,9 +680,10 @@ const buildTriggerCache = (item: any) => {
   return triggerCache;
 };
 
-const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
+const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
   // TODO: if just one value, could speed this up
   let content = item.valueFormatted;
+  let timestampContent = item.timestampFormatted;
   const len = item.members.length;
   if (len > 0) {
     let triggeredIndex = -1;
@@ -534,200 +698,12 @@ const formatCompositeValue = (frames: number, item: PolystatModel, globalDisplay
         triggeredIndex = item.triggerCache[z].index;
       } else {
         // nothing triggered        //triggeredIndex = frames % len;
-        return globalDisplayTextTriggeredEmpty;
+        return [globalDisplayTextTriggeredEmpty, ''];
       }
     }
     const aMember = Object.assign({}, item.members[triggeredIndex]);
     content = aMember.name + ': ' + aMember.valueFormatted;
+    timestampContent = aMember.timestampFormatted;
   }
-  return textUtil.sanitize(content);
-};
-
-const getAlignments = (
-  shape: PolygonShapes,
-  diameterX: number,
-  diameterY: number,
-  textAreaHeight: number,
-  activeValueFontSize: number,
-  activeLabelFontSize: number
-) => {
-  let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
-  let valueOnlyTextAlignment = activeValueFontSize / 2;
-  let labelWithValueTextAlignment = -(textAreaHeight / 2 / 2) + activeLabelFontSize / 2;
-  let labelOnlyTextAlignment = activeLabelFontSize / 2;
-  let labelTextAlignmentX = 0;
-  let labelValueAlignmentX = 0;
-
-  switch (shape) {
-    case PolygonShapes.HEXAGON_POINTED_TOP:
-      // offset when only showing label
-      labelOnlyTextAlignment = activeLabelFontSize * 0.37;
-      break;
-    case PolygonShapes.CIRCLE:
-      // offset when only showing label
-      labelOnlyTextAlignment = activeLabelFontSize * 0.37;
-      break;
-    case PolygonShapes.SQUARE:
-      // square is "centered" at top left, not the center
-
-      // compute alignment for each text element, base coordinate is in the top left corner (text is anchored at its bottom):
-      // - Value text (bottom text) will be aligned (positively i.e. lower) in the middle of the bottom half of the text area
-      // - Label text (top text) will be aligned in the middle of the top half of the text area
-      valueWithLabelTextAlignment = diameterY / 1.5 + activeValueFontSize / 2;
-      valueOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
-      labelWithValueTextAlignment = diameterY / 4 + activeLabelFontSize / 2;
-      // alignment is equal to the half of height plus a fraction of the fontSize
-      labelOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
-      //
-      labelTextAlignmentX = diameterX / 2;
-      labelValueAlignmentX = diameterX / 2;
-      break;
-  }
-  return {
-    valueWithLabelTextAlignment,
-    valueOnlyTextAlignment,
-    labelWithValueTextAlignment,
-    labelOnlyTextAlignment,
-    labelTextAlignmentX,
-    labelValueAlignmentX,
-  };
-};
-
-const autoFontScalar = (
-  fontFamily: string,
-  textAreaWidth: number,
-  textAreaHeight: number,
-  valueEnabled: boolean,
-  data: PolystatModel[]
-) => {
-  // TODO: 6 is VERY small, perhaps 10 as a min?
-  // A hint from the config could be used (max characters)
-  const minFont = 6;
-  const maxFont = 240;
-  // this ensures we have space between label and value
-  const maxLinesToDisplay = 2;
-  let showEllipses = false;
-  //number of characters to show on polygon
-  let numOfChars = 0;
-  // find the most text that will be displayed over all items
-  // displayName will have the "processed" name with Global Regex applied
-  let maxLabel = '';
-  for (let i = 0; i < data.length; i++) {
-    let nameToCheck = data[i].name;
-    // use the displayName since it has been formatted
-    if (data[i].displayName !== '') {
-      nameToCheck = data[i].displayName;
-    }
-    if (nameToCheck.length > maxLabel.length) {
-      maxLabel = nameToCheck;
-    }
-  }
-  // same for the value, also check for sub metrics size in case of composite
-  let maxValue = '';
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].valueFormatted.length > maxValue.length) {
-      maxValue = data[i].valueFormatted;
-    }
-    const subMetricCount = data[i].members.length;
-    if (subMetricCount > 0) {
-      let counter = 0;
-      while (counter < subMetricCount) {
-        const checkContent = data[i].members[counter].displayName + ': ' + data[i].members[counter].valueFormatted;
-        if (checkContent && checkContent.length > maxValue.length) {
-          maxValue = checkContent;
-        }
-        counter++;
-      }
-    }
-  }
-  // estimate how big of a font can be used
-  // Two lines of text must fit with vertical spacing included
-  // if it is too small, hide everything
-  let activeLabelFontSize = computeTextFontSize(
-    maxLabel,
-    fontFamily,
-    minFont,
-    maxFont,
-    maxLinesToDisplay,
-    textAreaWidth,
-    textAreaHeight
-  );
-  let activeValueFontSize = computeTextFontSize(
-    maxValue,
-    fontFamily,
-    minFont,
-    maxFont,
-    maxLinesToDisplay,
-    textAreaWidth,
-    textAreaHeight
-  );
-
-  if (activeLabelFontSize < minFont) {
-    showEllipses = true;
-    numOfChars = 18;
-    maxLabel = maxLabel.substring(0, numOfChars + 2);
-    activeLabelFontSize = computeTextFontSize(
-      maxLabel,
-      fontFamily,
-      minFont,
-      maxFont,
-      maxLinesToDisplay,
-      textAreaWidth,
-      textAreaHeight
-    );
-    if (activeLabelFontSize < minFont) {
-      numOfChars = 10;
-      maxLabel = maxLabel.substring(0, numOfChars + 2);
-      activeLabelFontSize = computeTextFontSize(
-        maxLabel,
-        fontFamily,
-        minFont,
-        maxFont,
-        maxLinesToDisplay,
-        textAreaWidth,
-        textAreaHeight
-      );
-      if (activeLabelFontSize < minFont) {
-        numOfChars = 6;
-        maxLabel = maxLabel.substring(0, numOfChars + 2);
-        activeLabelFontSize = computeTextFontSize(
-          maxLabel,
-          fontFamily,
-          minFont,
-          maxFont,
-          maxLinesToDisplay,
-          textAreaWidth,
-          textAreaHeight
-        );
-      }
-    }
-  }
-  // NOTE: allow different sizes, the value could be displayed larger than the label
-  // value should never be larger than the label
-  //if (activeValueFontSize > activeLabelFontSize) {
-  //  activeValueFontSize = activeLabelFontSize;
-  //}
-  if (!valueEnabled) {
-    activeValueFontSize = 0;
-  }
-  return { activeLabelFontSize, activeValueFontSize, showEllipses, numOfChars };
-};
-
-const computeTextFontSize = (
-  text: string,
-  font: string,
-  minFont: number,
-  maxFont: number,
-  linesToDisplay: number,
-  textAreaWidth: number,
-  textAreaHeight: number
-): number => {
-  return getTextSizeForWidthAndHeight(
-    text,
-    `?px ${font}`,
-    textAreaWidth,
-    textAreaHeight / linesToDisplay, // multiple lines of text
-    minFont,
-    maxFont
-  );
+  return [textUtil.sanitize(content), timestampContent];
 };

@@ -26,6 +26,9 @@ export interface CompositeItemType {
   showValue: boolean;
   showComposite: boolean;
   showMembers: boolean;
+  showTimestampEnabled: boolean;
+  showTimestampFormat: string;
+  showTimestampYOffset: number;
   metrics: CompositeMetric[];
   clickThrough: string | '';
   clickThroughSanitize: boolean;

@@ -5,6 +5,7 @@ import {Button, Collapse, Field, FieldSet, Input, Switch} from '@grafana/ui';
 import {CompositeItem} from './CompositeItem';
 import {CompositeItemTracker, CompositeItemType, CompositeMetric, DisplayModes} from './types';
 import {v4 as UUIdv4} from 'uuid';
+import { ShowTimestampFormats } from 'components/types';
 
 export interface CompositeEditorSettings {
   composites: CompositeItemType[];
@@ -35,13 +36,11 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   });
 
   const setAnimationSpeed = (val: any) => {
-    //context.options.compositeConfig.animationSpeed = val;
     _setAnimationSpeed(val);
     settings.animationSpeed = val;
     onChange(settings);
   };
   const setCompositesEnabled = (val: any) => {
-    //context.options.compositeConfig.enabled = val;
     _setCompositesEnabled(val);
     settings.enabled = val;
     onChange(settings);
@@ -123,6 +122,9 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       showValue: original.showValue,
       showComposite: original.showComposite,
       showMembers: original.showMembers,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       metrics: original.metrics,
       clickThrough: original.clickThrough,
       clickThroughOpenNewTab: original.clickThroughOpenNewTab,
@@ -177,6 +179,9 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       showValue: true,
       showMembers: false,
       showComposite: true,
+      showTimestampEnabled: false,
+      showTimestampFormat: ShowTimestampFormats[0].value,
+      showTimestampYOffset: 0,
       isTemplated: false,
       enabled: true,
       metrics: [] as CompositeMetric[],

@@ -30,6 +30,9 @@ export interface OverrideItemType {
   clickThroughOpenNewTab: boolean;
   clickThroughCustomTargetEnabled: boolean;
   clickThroughCustomTarget: string;
+  showTimestampEnabled: boolean;
+  showTimestampFormat: string;
+  showTimestampYOffset: number;
   order: number;
 }
 

@@ -204,9 +204,31 @@ You can choose to display only metrics that have triggered a threshold or displa
 
 Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered.
 
-#### Show Value
+#### Show Value (Global)
 
-Show the value of the metric along with the name
+Show the value of the metric along with the name.
+
+#### Show Timestamp (Global)
+
+This option will display the time of the metric in the polygon.
+
+![Global Show Timestamp](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-showtimestamp.png)
+
+##### Timestamp Formats
+
+Presets are provided for the timestamp, and the field will also accept a custom format.
+
+##### Timestamp Position
+
+The timestamp can be displayed above or below the value.  If the value is not displayed, it will be place where the value is normally rendered.
+
+![Global Show Timestamp Position Above](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-timestamp-above.png)
+
+![Global Show Timestamp Position Below](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-global-timestamp-below.png)
+
+##### Timestamp Y-Offset
+
+This allows adjust the timestamp up or down to fine tune placement. Positive values move the timestamp down, negative values move it up.
 
 #### Shape
 
