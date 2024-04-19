@@ -242,6 +242,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let numOfChars = options.ellipseCharacters;
 
   let hasShowTimeStampEnabled = options.globalShowTimestampEnabled;
+  let hasShowValueEnabled = options.globalShowValueEnabled;
 
   if (options.globalAutoScaleFonts) {
     /*
@@ -271,7 +272,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       }
     }
     */
-    let hasShowValueEnabled = options.globalShowValueEnabled;
     /*
     if (options.processedData) {
       for (let i = 0; i < options.processedData.length; i++) {
@@ -422,7 +422,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // default
     let verticalAlignment = alignments.valueWithLabelTextAlignment;
     // check if showTimeStamp is enabled
-    if (item.showTimestamp) {
+    // TODO: the show value should be inside the item also
+    if (options.globalShowTimestampEnabled) {
       // TODO: the offset should be put inside the item also to handle overrides and composites correctly
       if (isNaN(options.globalShowTimestampYOffset)) {
         options.globalShowTimestampYOffset = 0;
@@ -452,7 +453,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           pointerEvents: 'none',
         }}
       >
-        {item.showValue &&
+        {options.globalShowValueEnabled &&
           (item.isComposite
             ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
             : item.valueFormatted)}
