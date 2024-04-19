@@ -446,13 +446,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@braintree/sanitize-url@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "@braintree/sanitize-url@npm:7.0.1"
-  checksum: 10c0/d849b93f494aef173c5c1d419c1ad0851e9119e038dcc331155ffcf5f6e9c02cf3de8e571fbf91e042337e0890bf1ee0474896cd043c050f3b0be0c6d9af5176
-  languageName: node
-  linkType: hard
-
 "@cspell/cspell-bundled-dicts@npm:8.7.0":
   version: 8.7.0
   resolution: "@cspell/cspell-bundled-dicts@npm:8.7.0"
@@ -7501,7 +7494,6 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.21.4"
     "@babel/helper-validator-option": "npm:7.18.6"
-    "@braintree/sanitize-url": "npm:^7.0.1"
     "@emotion/css": "npm:11.10.6"
     "@emotion/react": "npm:11.7.1"
     "@grafana/data": "npm:8.4.11"
