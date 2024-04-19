@@ -109,6 +109,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalShowTimestampEnabled={options.globalShowTimestampEnabled}
           globalShowTimestampFormat={options.globalShowTimestampFormat}
           globalShowTimestampPosition={options.globalShowTimestampPosition}
+          globalShowTimestampFontSize={options.globalShowTimestampFontSize}
           globalShowTimestampYOffset={options.globalShowTimestampYOffset}
           globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentThemeV2.colors.text.primary : '#000000'}
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}

@@ -184,7 +184,6 @@ const getMaxValueAndTimestamp = (data: PolystatModel[]) => {
       }
     }
   }
-  //console.log(`maxValue: ${maxValue} maxTimestamp: ${maxTimestamp}`);
   return {maxValue, maxTimestamp};
 };
 

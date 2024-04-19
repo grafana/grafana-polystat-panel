@@ -110,6 +110,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, showValue: !composite.showValue })}
             />
           </Field>
+          {/*
           <Field label="Show Timestamp" description="Toggle Display of Timestamp for each value" disabled={!composite.showComposite}>
             <Switch
               transparent={true}
@@ -136,7 +137,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={(v) => setComposite({ ...composite, showTimestampYOffset: v.currentTarget.valueAsNumber })}
             />
           </Field>
-
+          */}
           <Field
             label="Show Members"
             description="Toggle Display of composite members"

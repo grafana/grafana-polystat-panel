@@ -30,7 +30,8 @@ export interface PolystatOptions {
   globalShowValueEnabled: boolean;
   globalShowTimestampEnabled: boolean;
   globalShowTimestampFormat: string;
-  globalShowTimestampPosition: string;
+  globalShowTimestampFontSize: number;
+  globalShowTimestampPosition: TimestampPositions;
   globalShowTimestampYOffset: number;
   globalShowTooltipColumnHeadersEnabled: boolean;
   globalTextFontAutoColor: string;

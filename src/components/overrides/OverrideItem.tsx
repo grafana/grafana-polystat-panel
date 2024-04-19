@@ -136,6 +136,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               <span>{override.unitFormat}</span>
             )}
           </Field>
+          {/*
           <Field label="Show Timestamp" description="Toggle Display of Timestamp" disabled={!override.enabled}>
             <Switch
               transparent={true}
@@ -162,6 +163,7 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onChange={(v) => setOverride({ ...override, showTimestampYOffset: v.currentTarget.valueAsNumber })}
             />
           </Field>
+          */}
 
           <Field label="Thresholds" disabled={!override.enabled}>
             <ThresholdsEditor disabled={!override.enabled} thresholds={override.thresholds} setter={setThresholds} />

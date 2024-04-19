@@ -8,6 +8,7 @@ export const GetAlignments = (
   activeValueFontSize: number,
   activeLabelFontSize: number,
   activeTimestampFontSize: number,
+  showTimestampEnabled: boolean,
 ) => {
   let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
   let valueOnlyTextAlignment = activeValueFontSize / 2;
@@ -21,7 +22,7 @@ export const GetAlignments = (
     case PolygonShapes.HEXAGON_POINTED_TOP:
       // offset when only showing label
       labelOnlyTextAlignment = activeLabelFontSize * 0.37;
-      if (activeTimestampFontSize > 0) {
+      if (showTimestampEnabled && activeTimestampFontSize > 0) {
         // adjust value down
         valueWithLabelTextAlignment = textAreaHeight * 0.67 / 2 + activeValueFontSize / 2;
       }

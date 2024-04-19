@@ -8,7 +8,7 @@ import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 import { Gradients } from './gradients/Gradients';
 import { LayoutManager } from './layout/layoutManager';
-import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes } from './types';
+import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes, TimestampPositions } from './types';
 
 import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
@@ -70,7 +70,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         if (options.processedData) {
           const item = options.processedData[index];
           const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
-          // console.log(`animateComposite: timestamp is ${ts}`);
           if (animationTimestampRefs[index].current.innerHTML !== null) {
             animationTimestampRefs[index].current.innerHTML = ts;
           }
@@ -238,17 +237,73 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // font sizes are independent for label and values
   let activeValueFontSize = options.globalFontSize;
   // timestamp sizing
-  let activeTimestampFontSize = options.globalFontSize;
+  let activeTimestampFontSize = options.globalShowTimestampFontSize;
   let showEllipses = false;
   let numOfChars = options.ellipseCharacters;
 
+  let hasShowTimeStampEnabled = options.globalShowTimestampEnabled;
+
   if (options.globalAutoScaleFonts) {
+    /*
+    // check if any item has an override with show timestamp enabled
+    if (options.processedData && !hasShowTimeStampEnabled) {
+      for (let i = 0; i < options.processedData.length; i++) {
+        const item = options.processedData[i];
+        console.log(item);
+        if (item.showTimestamp) {
+          hasShowTimeStampEnabled = true;
+          break;
+        }
+        // check members
+        if (item.members) {
+          for (let j = 0; i < item.members.length; j++) {
+            const aMember = item.members[j];
+            if (aMember.showTimestamp) {
+              hasShowTimeStampEnabled = true;
+              break;
+            }
+          }
+        }
+        // break out if it is true at any point
+        if (hasShowTimeStampEnabled) {
+          break;
+        }
+      }
+    }
+    */
+    let hasShowValueEnabled = options.globalShowValueEnabled;
+    /*
+    if (options.processedData) {
+      for (let i = 0; i < options.processedData.length; i++) {
+        const item = options.processedData[i];
+        if (item.showValue) {
+          hasShowValueEnabled = true;
+          break;
+        }
+        // check members
+        if (item.members) {
+          for (let j = 0; i < item.members.length; j++) {
+            const aMember = item.members[j];
+            if (aMember.showValue) {
+              hasShowValueEnabled = true;
+              break;
+            }
+          }
+        }
+        // break out if it is true at any point
+        if (hasShowValueEnabled) {
+          break;
+        }
+      }
+    }
+    */
+
     const result = AutoFontScalar(
       options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
-      options.globalShowValueEnabled,
-      options.globalShowTimestampEnabled,
+      hasShowValueEnabled,
+      hasShowTimeStampEnabled,
       options.processedData!
     );
     activeLabelFontSize = result.activeLabelFontSize;
@@ -257,6 +312,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
+
   const alignments = GetAlignments(
     options.globalShape,
     diameterX,
@@ -264,14 +320,15 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     textAreaHeight,
     activeValueFontSize,
     activeLabelFontSize,
-    activeTimestampFontSize
+    activeTimestampFontSize,
+    hasShowTimeStampEnabled
   );
 
   let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.35);
   if (activeValueFontSize > activeTimestampFontSize) {
     timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.35);
   }
-  //console.log(`timestamp lineSpacing ${timestampLineSpacing}`);
+
   // this MUST be unique for gradients to work properly
   const gradientId = `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString();
 
@@ -361,6 +418,86 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     marginTop += radius * (difference - 1);
   }
 
+  const getValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    // default
+    let verticalAlignment = alignments.valueWithLabelTextAlignment;
+    // check if showTimeStamp is enabled
+    if (item.showTimestamp) {
+      // TODO: the offset should be put inside the item also to handle overrides and composites correctly
+      if (isNaN(options.globalShowTimestampYOffset)) {
+        options.globalShowTimestampYOffset = 0;
+      }
+      switch (options.globalShowTimestampPosition) {
+        case TimestampPositions.ABOVE_VALUE:
+          verticalAlignment = alignments.valueWithLabelTextAlignment;
+          break;
+        case TimestampPositions.BELOW_VALUE:
+          verticalAlignment = alignments.timestampAlignment + timestampLineSpacing;
+          break;
+      }
+    }
+    return (
+      <text
+        ref={animationRefs[index]}
+        className={`valueLabel${index}`}
+        x={coords.x + alignments.labelValueAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeValueFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {item.showValue &&
+          (item.isComposite
+            ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
+            : item.valueFormatted)}
+      </text>
+    );
+  };
+
+  const getTimestampForValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    // TODO: the offset should be put inside the item also to handle overrides and composites correctly
+    if (isNaN(options.globalShowTimestampYOffset)) {
+      options.globalShowTimestampYOffset = 0;
+    }
+    let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+    switch (options.globalShowTimestampPosition) {
+      case TimestampPositions.ABOVE_VALUE:
+        verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+        break;
+      case TimestampPositions.BELOW_VALUE:
+        verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        break;
+    }
+    return (
+      <text
+        ref={animationTimestampRefs[index]}
+        className={`timestampLabel${index}`}
+        x={coords.x + alignments.labelValueAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeTimestampFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {item.showTimestamp &&
+          (item.isComposite
+            ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
+            : item.timestampFormatted)}
+      </text>
+    )
+  };
+
   return (
     <div className={divStyles}>
       <svg
@@ -413,7 +550,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                   }}
                 >
                   {
-                  item.showName &&
+                    item.showName &&
                     getTextToDisplay(
                       options.globalAutoScaleFonts,
                       options.ellipseEnabled,
@@ -425,47 +562,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     )}
                 </text>
 
-                <text
-                  ref={animationRefs[index]}
-                  className={`valueLabel${index}`}
-                  x={coords.x + alignments.labelValueAlignmentX}
-                  y={coords.y + alignments.valueWithLabelTextAlignment}
-                  textAnchor="middle"
-                  fontFamily={options.globalTextFontFamily}
-                  fontSize={activeValueFontSize + 'px'}
-                  style={{
-                    fill: options.globalTextFontAutoColorEnabled
-                      ? options.globalTextFontAutoColor
-                      : options.globalTextFontColor,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {item.showValue &&
-                    (item.isComposite
-                      ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
-                    : item.valueFormatted)}
-                </text>
-
-                <text
-                  ref={animationTimestampRefs[index]}
-                  className={`timestampLabel${index}`}
-                  x={coords.x + alignments.labelValueAlignmentX}
-                  y={coords.y + alignments.timestampAlignment - timestampLineSpacing}
-                  textAnchor="middle"
-                  fontFamily={options.globalTextFontFamily}
-                  fontSize={activeTimestampFontSize + 'px'}
-                  style={{
-                    fill: options.globalTextFontAutoColorEnabled
-                      ? options.globalTextFontAutoColor
-                      : options.globalTextFontColor,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {item.showTimestamp &&
-                    (item.isComposite
-                    ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
-                      : item.timestampFormatted)}
-                </text>
+                {getValueContent(item, index, coords)}
+                {getTimestampForValueContent(item, index, coords)}
 
               </>
             );
@@ -484,7 +582,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
             opacity={1} // TODO: make this configurable
             clickable={false} // TODO: make this configurable, extend with per-line clickthrough
-            render={({ content}) => {
+            render={({ content }) => {
               // generate tooltip for item
               if (content) {
                 const contentIndex = parseInt(content, 10);

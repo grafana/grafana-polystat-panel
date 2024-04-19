@@ -396,6 +396,17 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         },
         showIf: (c) => c.globalShowTimestampEnabled,
       })
+      .addNumberInput({
+        name: 'Font Size',
+        path: 'globalShowTimestampFontSize',
+        defaultValue: 12,
+        settings: {
+          min: 0,
+        },
+        category: ['Global'],
+        description: 'Default font size to use when Global Auto Scale Fonts is disabled',
+        showIf: (c) => !c.globalAutoScaleFonts,
+      })
       .addSelect({
         name: 'Timestamp Position',
         path: 'globalShowTimestampPosition',

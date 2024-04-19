@@ -192,6 +192,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalShowTimestampEnabled: false,
     globalShowTimestampFormat: ShowTimestampFormats[0].value,
     globalShowTimestampPosition: ShowTimestampPositions[0].value,
+    globalShowTimestampFontSize: 12,
     globalShowTimestampYOffset: 0,
     globalTextFontColor: '#000000',
     globalTextFontAutoColor: '#000000',
