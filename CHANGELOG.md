@@ -9,6 +9,7 @@
   - Preset time formats, and allows entry of arbitrary format
   - Position of timestamp can be above or below the metric value (default is below)
   - Y Offset can be specified to fine tune placement of timestamp displayed
+- Fixed alignment bug when name or value is disabled, will now align correctly (and use more space)
 
 ## v2.1.8
 
