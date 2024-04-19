@@ -30,6 +30,10 @@ export const GetAlignments = (
     case PolygonShapes.CIRCLE:
       // offset when only showing label
       labelOnlyTextAlignment = activeLabelFontSize * 0.37;
+      if (showTimestampEnabled && activeTimestampFontSize > 0) {
+        // adjust value down
+        valueWithLabelTextAlignment = textAreaHeight * 0.67 / 2 + activeValueFontSize / 2;
+      }
       break;
     case PolygonShapes.SQUARE:
       // square is "centered" at top left, not the center
