@@ -49,6 +49,10 @@ export const GetAlignments = (
       //
       labelTextAlignmentX = diameterX / 2;
       labelValueAlignmentX = diameterX / 2;
+      if (showTimestampEnabled && activeTimestampFontSize > 0) {
+        // line spacing offset is needed
+        timestampAlignment = diameterY / 1.5 - (activeTimestampFontSize * 0.67);
+      }
       break;
   }
   return {
