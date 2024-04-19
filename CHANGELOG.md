@@ -4,12 +4,11 @@
 
 ## 2.1.9
 
-- NEW: Option to display timestamp of metric inside polygon.
-  - Global Configuration Section
-    Show Timestamp Toggle on/off
-      Preset time formats, and allows entry of arbitrary format
-      Position of timestamp can be above or below the metric value (default is below)
-      Y Offset can be specified to fine tune placement of timestamp displayed
+- NEW: Option to display timestamp of metric inside polygon, available in Global Configuration Section
+  - Show Timestamp Toggle on/off
+  - Preset time formats, and allows entry of arbitrary format
+  - Position of timestamp can be above or below the metric value (default is below)
+  - Y Offset can be specified to fine tune placement of timestamp displayed
 
 ## v2.1.8
 
