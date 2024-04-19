@@ -421,6 +421,41 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     marginTop += radius * (difference - 1);
   }
 
+  const getLabelContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+    let verticalAlignment = alignments.labelWithValueTextAlignment;
+    if (!item.showValue) {
+      verticalAlignment = alignments.labelOnlyTextAlignment;
+    }
+    return (
+      <text
+        className="toplabel"
+        x={coords.x + alignments.labelTextAlignmentX}
+        y={coords.y + verticalAlignment}
+        textAnchor="middle"
+        fontFamily={options.globalTextFontFamily}
+        fontSize={activeLabelFontSize + 'px'}
+        style={{
+          fill: options.globalTextFontAutoColorEnabled
+            ? options.globalTextFontAutoColor
+            : options.globalTextFontColor,
+          pointerEvents: 'none',
+        }}
+      >
+        {
+          item.showName &&
+          getTextToDisplay(
+            options.globalAutoScaleFonts,
+            options.ellipseEnabled,
+            options.ellipseCharacters,
+            showEllipses,
+            numOfChars,
+            item.name,
+            item.displayName
+          )}
+      </text>
+    );
+  };
+
   const getValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
     // default
     let verticalAlignment = alignments.valueWithLabelTextAlignment;
@@ -472,7 +507,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
     switch (options.globalShowTimestampPosition) {
       case TimestampPositions.ABOVE_VALUE:
-        verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+        if (item.showValue) {
+          verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+        } else {
+          // the below calc can be used when value is not displayed
+          verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        }
         break;
       case TimestampPositions.BELOW_VALUE:
         verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
@@ -539,33 +579,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 ) : (
                   drawShape(index, options.globalShape)
                 )}
-                <text
-                  className="toplabel"
-                  x={coords.x + alignments.labelTextAlignmentX}
-                  y={coords.y + alignments.labelWithValueTextAlignment}
-                  textAnchor="middle"
-                  fontFamily={options.globalTextFontFamily}
-                  fontSize={activeLabelFontSize + 'px'}
-                  style={{
-                    fill: options.globalTextFontAutoColorEnabled
-                      ? options.globalTextFontAutoColor
-                      : options.globalTextFontColor,
-                    pointerEvents: 'none',
-                  }}
-                >
-                  {
-                    item.showName &&
-                    getTextToDisplay(
-                      options.globalAutoScaleFonts,
-                      options.ellipseEnabled,
-                      options.ellipseCharacters,
-                      showEllipses,
-                      numOfChars,
-                      item.name,
-                      item.displayName
-                    )}
-                </text>
-
+                {getLabelContent(item, index, coords)}
                 {getValueContent(item, index, coords)}
                 {getTimestampForValueContent(item, index, coords)}
 
