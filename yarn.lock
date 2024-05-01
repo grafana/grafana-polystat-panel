@@ -7559,7 +7559,7 @@ __metadata:
     react-dom: "npm:17.0.2"
     react-redux: "npm:7.2.6"
     react-test-renderer: "npm:^17.0.2"
-    react-tooltip: "npm:5.26.3"
+    react-tooltip: "npm:5.26.4"
     replace-in-file-webpack-plugin: "npm:^1.0.6"
     sass: "npm:1.72.0"
     sass-loader: "npm:13.3.1"
@@ -11102,16 +11102,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-tooltip@npm:5.26.3":
-  version: 5.26.3
-  resolution: "react-tooltip@npm:5.26.3"
+"react-tooltip@npm:5.26.4":
+  version: 5.26.4
+  resolution: "react-tooltip@npm:5.26.4"
   dependencies:
     "@floating-ui/dom": "npm:^1.6.1"
     classnames: "npm:^2.3.0"
   peerDependencies:
     react: ">=16.14.0"
     react-dom: ">=16.14.0"
-  checksum: 10c0/fcce843ebfda0a74ddaf90b7d322879c9070bd180e490ae4634ff02052b1cd39158a0af3a27621a9ffe62a1a8ad246633908a1d214998aea0403ec7aeca874fb
+  checksum: 10c0/f419baf6551c1cd812cc5d3dec76d027899f0ac99e20a50759ad26daa7bfabb3b9283345771f964e1dc973be7b16981f09b4c78f3ace3e1d8fe0389cecf8c199
   languageName: node
   linkType: hard
 
