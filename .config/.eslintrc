@@ -10,7 +10,6 @@
   "rules": {
     "react/prop-types": "off"
   },
-  "parser": "@typescript-eslint/parser",
   "overrides": [
     {
       "plugins": ["deprecation"],
@@ -20,13 +19,6 @@
       },
       "parserOptions": {
         "project": "./tsconfig.json"
-      }
-    },
-    {
-      "plugins": ["@typescript-eslint"],
-      "files": ["src/**/*.{ts,tsx}"],
-      "parserOptions": {
-        "project": ["./tsconfig.json"]
       }
     }
   ]
