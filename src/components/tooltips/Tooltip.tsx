@@ -103,19 +103,26 @@ export const Tooltip = ({
     }
     return triggered;
   };
+
   const filterTriggered = (items: PolystatModel) => {
     const triggerCount = getTriggeredCount(items);
+    // clone model
+    const compositeWithTriggeredItemsOnly = Object.assign({}, items);
+    // start with no triggered members
+    compositeWithTriggeredItemsOnly.members = [];
     if (triggerCount > 0) {
       for (let i = 0; i < items.members.length; i++) {
-        if (items.members[i].thresholdLevel === 0) {
-          items.members.splice(i, 1);
+        // non-OK (state 0) members will be appended to the cloned model
+        if (items.members[i].thresholdLevel !== 0) {
+          compositeWithTriggeredItemsOnly.members.push(items.members[i]);
         }
       }
-      return items;
+      return compositeWithTriggeredItemsOnly;
     } else {
       return null;
     }
   };
+
   const getCompositeMetrics = (data: PolystatModel | null) => {
     let dataToSort = data;
     if (dataToSort && data && displayMode === 'triggered') {
