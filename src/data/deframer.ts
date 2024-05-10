@@ -1,4 +1,4 @@
-import { DataFrame, Field, FieldType, FieldConfig, ArrayVector, Labels } from '@grafana/data';
+import { DataFrame, Field, FieldType, FieldConfig } from '@grafana/data';
 
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"
@@ -32,7 +32,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
               newFrame.fields.push({
                 ...copiedField,
                 labels: flattenLabels(frame, rowNum),
-                values: new ArrayVector([getValueOfField(copiedField, rowNum)]),
+                values: [getValueOfField(copiedField, rowNum)] as any,
               });
             }
           }
@@ -47,7 +47,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
       }
     }
     if (!hasTimestamp) {
-      const z = new ArrayVector();
+      const z = [] as any;
       z.add(timeToInsert);
       const fc: FieldConfig = {};
       const timeField: Field = {
