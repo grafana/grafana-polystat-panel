@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.10
+
+- Fix for filtering triggered composites in tooltips [[[#368](https://github.com/grafana/grafana-polystat-panel/issues/368)]]
+- Remove deprecated ArrayVector usage (G11 compatibility)
+
 ## v2.1.9
 
 - NEW: Option to display timestamp of metric inside polygon, available in Global Configuration Section
