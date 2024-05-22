@@ -201,6 +201,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalThresholdsConfig: [],
     globalTooltipsEnabled: true,
     globalTooltipsShowTimestampEnabled: true,
+    globalTooltipsShowValueEnabled: true,
     globalTooltipsFontFamily: FontFamilies.INTER,
     globalUnitFormat: '',
     layoutDisplayLimit: 100,

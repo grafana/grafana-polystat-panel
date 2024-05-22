@@ -41,6 +41,7 @@ export interface PolystatOptions {
   globalThresholdsConfig: PolystatThreshold[];
   globalTooltipsEnabled: boolean;
   globalTooltipsShowTimestampEnabled: boolean;
+  globalTooltipsShowValueEnabled: boolean;
   globalTooltipsFontFamily: string,
   globalUnitFormat: string;
   layoutDisplayLimit: number;
