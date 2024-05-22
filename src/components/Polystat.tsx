@@ -56,24 +56,27 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
       let metricIndex = animationMetricIndexes[index];
-      // TODO: future to implement per composite
 
-      if (options.globalShowValueEnabled && (animationRefs.length > 0 && animationRefs[index].current)) {
-        if (options.processedData) {
-          const item = options.processedData[index];
-          const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
-          if (animationRefs[index].current.innerHTML !== null) {
-            animationRefs[index].current.innerHTML = val;
-          }
+      // composites can have animated values displayed
+      let isValueAnimated = false;
+      if (options.globalShowValueEnabled ||
+        (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
+      ) {
+        isValueAnimated = true;
+      }
+      if (isValueAnimated && options.processedData && (animationRefs.length > 0 && animationRefs[index].current)) {
+        const item = options.processedData[index];
+        const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
+        if (animationRefs[index].current.innerHTML !== null) {
+          animationRefs[index].current.innerHTML = val;
         }
       }
-      if (options.globalShowTimestampEnabled && (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current)) {
-        if (options.processedData) {
-          const item = options.processedData[index];
-          const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
-          if (animationTimestampRefs[index].current.innerHTML !== null) {
-            animationTimestampRefs[index].current.innerHTML = ts;
-          }
+      // currently global setting determines if timestamp is animated
+      if (options.globalShowTimestampEnabled && options.processedData && (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current)) {
+        const item = options.processedData[index];
+        const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
+        if (animationTimestampRefs[index].current.innerHTML !== null) {
+          animationTimestampRefs[index].current.innerHTML = ts;
         }
       }
       metricIndex++;
@@ -239,6 +242,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let activeLabelFontSize = options.globalFontSize;
   // font sizes are independent for label and values
   let activeValueFontSize = options.globalFontSize;
+  let activeCompositeValueFontSize = options.globalFontSize;
   // timestamp sizing
   let activeTimestampFontSize = options.globalShowTimestampFontSize;
   let showEllipses = false;
@@ -248,59 +252,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let hasShowValueEnabled = options.globalShowValueEnabled;
 
   if (options.globalAutoScaleFonts) {
-    /*
-    // check if any item has an override with show timestamp enabled
-    if (options.processedData && !hasShowTimeStampEnabled) {
-      for (let i = 0; i < options.processedData.length; i++) {
-        const item = options.processedData[i];
-        console.log(item);
-        if (item.showTimestamp) {
-          hasShowTimeStampEnabled = true;
-          break;
-        }
-        // check members
-        if (item.members) {
-          for (let j = 0; i < item.members.length; j++) {
-            const aMember = item.members[j];
-            if (aMember.showTimestamp) {
-              hasShowTimeStampEnabled = true;
-              break;
-            }
-          }
-        }
-        // break out if it is true at any point
-        if (hasShowTimeStampEnabled) {
-          break;
-        }
-      }
-    }
-    */
-    /*
-    if (options.processedData) {
-      for (let i = 0; i < options.processedData.length; i++) {
-        const item = options.processedData[i];
-        if (item.showValue) {
-          hasShowValueEnabled = true;
-          break;
-        }
-        // check members
-        if (item.members) {
-          for (let j = 0; i < item.members.length; j++) {
-            const aMember = item.members[j];
-            if (aMember.showValue) {
-              hasShowValueEnabled = true;
-              break;
-            }
-          }
-        }
-        // break out if it is true at any point
-        if (hasShowValueEnabled) {
-          break;
-        }
-      }
-    }
-    */
-
     const result = AutoFontScalar(
       options.globalTextFontFamily,
       textAreaWidth,
@@ -312,6 +263,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
     activeTimestampFontSize = result.activeTimestampFontSize;
+    activeCompositeValueFontSize = result.activeCompositeValueFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
@@ -327,9 +279,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     hasShowTimeStampEnabled
   );
 
-  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.35);
+  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.20);
   if (activeValueFontSize > activeTimestampFontSize) {
-    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.35);
+    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.20);
+  }
+  // composites can have their own settings for displaying the value
+  let compositeTimestampLineSpacing = Math.ceil(activeCompositeValueFontSize);
+  if (activeCompositeValueFontSize > activeTimestampFontSize) {
+    // ABOVE
+    compositeTimestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.75);
+    // BELOW
+    if (options.globalShowTimestampPosition === TimestampPositions.BELOW_VALUE) {
+      compositeTimestampLineSpacing = Math.ceil(activeTimestampFontSize);
+    }
   }
 
   // this MUST be unique for gradients to work properly
@@ -472,8 +434,27 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           break;
         case TimestampPositions.BELOW_VALUE:
           verticalAlignment = alignments.timestampAlignment + timestampLineSpacing;
+          if (item.isComposite && item.showValue) {
+            // compositeTimestampLineSpacing not used for composite here
+            verticalAlignment = alignments.timestampAlignment;
+          }
           break;
       }
+    }
+    let valueContent = "";
+    if (item.isComposite) {
+      if (item.showValue) {
+        valueContent = formatCompositeValueAndTimestamp(0, item,
+          options.globalDisplayTextTriggeredEmpty)[0];
+      }
+    } else {
+      if (options.globalShowValueEnabled) {
+        valueContent = item.valueFormatted;
+      }
+    }
+    let useFontSize = activeValueFontSize;
+    if (item.isComposite) {
+      useFontSize = activeCompositeValueFontSize;
     }
     return (
       <text
@@ -483,7 +464,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         y={coords.y + verticalAlignment}
         textAnchor="middle"
         fontFamily={options.globalTextFontFamily}
-        fontSize={activeValueFontSize + 'px'}
+        fontSize={useFontSize + 'px'}
         style={{
           fill: options.globalTextFontAutoColorEnabled
             ? options.globalTextFontAutoColor
@@ -491,10 +472,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           pointerEvents: 'none',
         }}
       >
-        {(options.globalShowValueEnabled) &&
-          (item.isComposite
-            ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0]
-            : item.valueFormatted)}
+        {valueContent}
       </text>
     );
   };
@@ -509,6 +487,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case TimestampPositions.ABOVE_VALUE:
         if (item.showValue) {
           verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+          if (item.isComposite) {
+            verticalAlignment = alignments.timestampAlignment - compositeTimestampLineSpacing + options.globalShowTimestampYOffset;
+          }
         } else {
           // the below calc can be used when value is not displayed
           verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
@@ -516,6 +497,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         break;
       case TimestampPositions.BELOW_VALUE:
         verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        if (item.isComposite && item.showValue) {
+          verticalAlignment = activeCompositeValueFontSize + compositeTimestampLineSpacing + options.globalShowTimestampYOffset;
+        }
         break;
     }
     return (
@@ -582,7 +566,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                 {getLabelContent(item, index, coords)}
                 {getValueContent(item, index, coords)}
                 {getTimestampForValueContent(item, index, coords)}
-
               </>
             );
           })}
@@ -609,7 +592,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     data={options.processedData![contentIndex]}
                     renderTime={options.renderTime!}
                     showTime={options.globalTooltipsShowTimestampEnabled}
-                    valueEnabled={options.globalShowValueEnabled}
+                    valueEnabled={options.globalTooltipsShowValueEnabled}
                     tooltipColumnHeadersEnabled={options.globalShowTooltipColumnHeadersEnabled}
                     primarySortByField={options.tooltipPrimarySortByField}
                     primarySortDirection={options.tooltipPrimarySortDirection}
