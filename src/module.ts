@@ -268,11 +268,18 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         showIf: () => hasRobotoFont(),
       })
       .addBooleanSwitch({
-        name: 'Show timestamp',
+        name: 'Show Timestamp',
         path: 'globalTooltipsShowTimestampEnabled',
         defaultValue: true,
         category: ['Tooltips'],
         description: 'Show timestamp at bottom of tooltip',
+      })
+      .addBooleanSwitch({
+        name: 'Show Value',
+        path: 'globalTooltipsShowValueEnabled',
+        defaultValue: true,
+        category: ['Tooltips'],
+        description: 'Show values in tooltip',
       })
       // show tooltip column headers
       .addBooleanSwitch({
