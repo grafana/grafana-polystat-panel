@@ -2,9 +2,15 @@
 
 ## Entries
 
+## v2.1.11
+
+- Fix for show/hide metric value in composites  [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
+- Fix for value toggle in tooltips [#381](https://github.com/grafana/grafana-polystat-panel/issues/381)
+- NEW: Tooltips now have a toggle for showing values
+
 ## v2.1.10
 
-- Fix for filtering triggered composites in tooltips [[[#368](https://github.com/grafana/grafana-polystat-panel/issues/368)]]
+- Fix for filtering triggered composites in tooltips [#368](https://github.com/grafana/grafana-polystat-panel/issues/368)
 - Remove deprecated ArrayVector usage (G11 compatibility)
 
 ## v2.1.9
@@ -27,7 +33,7 @@
 
 ## v2.1.6
 
-- Fix for repeat panel usage of template variables not expanding correctly [[#331](https://github.com/grafana/grafana-polystat-panel/issues/331)]
+- Fix for repeat panel usage of template variables not expanding correctly [#331](https://github.com/grafana/grafana-polystat-panel/issues/331)
 
 ## v2.1.5
 
