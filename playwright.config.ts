@@ -1,15 +1,10 @@
+import { dirname } from 'path';
 import { defineConfig, devices } from '@playwright/test';
+import type { PluginOptions } from '@grafana/plugin-e2e';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
+const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
 
-/**
- * See https://playwright.dev/docs/test-configuration.
- */
-export default defineConfig({
+export default defineConfig<PluginOptions>({
   testDir: './playwright',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -36,30 +31,21 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // 0. Auth used by after-auth project test files
     {
       name: 'auth',
-      testDir: 'node_modules/@grafana/plugin-e2e/dist/auth',
+      testDir: pluginE2eAuth,
       testMatch: [/.*\.js/],
     },
-    // 1. Run all unauthenticated tests using Chrome.
     {
-      name: 'not-authenticated',
+      name: 'run-tests',
       use: {
         ...devices['Desktop Chrome'],
-      },
-      testMatch: [/pre-auth\/.*\.spec\.ts/],
-    },
-    // 2. Run all authenticated tests in parallel using Chrome.
-    {
-      name: 'authenticated',
-      use: {
-        ...devices['Desktop Chrome'],
+        // @grafana/plugin-e2e writes the auth state to this file,
+        // the path should not be modified
         storageState: 'playwright/.auth/admin.json',
       },
-      testMatch: [/post-auth\/.*\.spec\.ts/],
       dependencies: ['auth'],
-    },
+    }
   ],
 
 });
