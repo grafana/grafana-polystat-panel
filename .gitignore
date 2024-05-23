@@ -1,6 +1,6 @@
 node_modules
 dist
-provisioning
+provisioning-private
 coverage
 .DS_Store
 .vscode/*.log
