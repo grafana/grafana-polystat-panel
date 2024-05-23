@@ -9,7 +9,8 @@
     "coverage/**",
     "provisioning/**",
     "src/dashboards/**",
-    "tests/__mocks__/**"
+    "tests/__mocks__/**",
+    "yarn.lock"
   ],
   "words": [
     "Abbrevation",
@@ -37,6 +38,7 @@
     "logmin",
     "magn",
     "Neue",
+    "networkidle",
     "ngalert",
     "polystat",
     "Polystat",

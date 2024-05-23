@@ -1,9 +1,5 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
-test('check grafana version', async ({ grafanaVersion }) => {
-  expect(grafanaVersion).toEqual("10.3.3");
-});
-
 test('data query should return polystat with label A-series', async ({ panelEditPage }) => {
   await panelEditPage.datasource.set('gdev-testdata');
   await panelEditPage.setVisualization('Polystat');

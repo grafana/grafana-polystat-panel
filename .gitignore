@@ -1,6 +1,6 @@
 node_modules
 dist
-provisioning
+provisioning-private
 coverage
 .DS_Store
 .vscode/*.log
@@ -8,6 +8,8 @@ coverage
 .eslintcache
 .idea
 .stignore
+blob-report/
 playwright/.auth
-playwright-report
-test-results
+playwright/.cache/
+playwright-report/
+test-results/

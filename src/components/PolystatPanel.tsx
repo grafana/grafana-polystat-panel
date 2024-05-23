@@ -121,6 +121,7 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalThresholdsConfig={options.globalThresholdsConfig}
           globalTooltipsEnabled={options.globalTooltipsEnabled}
           globalTooltipsShowTimestampEnabled={options.globalTooltipsShowTimestampEnabled}
+          globalTooltipsShowValueEnabled={options.globalTooltipsShowValueEnabled}
           globalTooltipsFontFamily={options.globalTooltipsFontFamily}
           globalUnitFormat={options.globalUnitFormat}
           autoSizeColumns={options.autoSizeColumns}
