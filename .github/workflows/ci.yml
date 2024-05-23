@@ -159,8 +159,11 @@ jobs:
           node-version: '20'
           cache: 'yarn'
 
-      - name: Install dev dependencies
-        run: yarn ci
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build frontend
+        run: yarn run build
 
       - name: Start Grafana
         run: |
