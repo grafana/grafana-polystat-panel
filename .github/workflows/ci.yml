@@ -139,6 +139,7 @@ jobs:
             provisioning
             tests
             .config
+            .yarn
 
       - name: Download plugin
         if: needs.build.outputs.has-backend == 'true'
