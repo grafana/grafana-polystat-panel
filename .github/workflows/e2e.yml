@@ -40,13 +40,13 @@ jobs:
       - name: Install yarn dependencies
         run: yarn install
 
-      - name: Install Mage
-        uses: magefile/mage-action@v3
-        with:
-          install-only: true
+#      - name: Install Mage
+#        uses: magefile/mage-action@v3
+#        with:
+#          install-only: true
 
-      - name: Build binaries
-        run: mage -v build:linux
+#      - name: Build binaries
+#        run: mage -v build:linux
 
       - name: Build frontend
         run: yarn build
