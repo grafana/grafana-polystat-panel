@@ -63,9 +63,9 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
           tooltip="Copy Metric/Regex"
           onClick={() => copySelectedMetricToClipboard(props.index)}
         />
-        <Field label="Metric/RegEx" style={{ minWidth: '175px' }} disabled={props.disabled}>
+        <Field label="Metric/RegEx" id={`cmi-field-index-${props.index}`} style={{ minWidth: '175px' }} disabled={props.disabled}>
           <Cascader
-            key={`cmi-index-${props.index}`}
+            key={`cmi-cascader-index-${props.index}`}
             initialValue={props.metric.seriesMatch}
             allowCustomValue
             placeholder=""
@@ -74,7 +74,9 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
           />
         </Field>
         <Field label="Alias" disabled={props.disabled}>
-          <Input value={props.metric.alias} placeholder="" onChange={(e) => updateMetricAlias(e.currentTarget.value)} />
+          <Input value={props.metric.alias}
+            id={`cmi-alias-index-${props.index}`}
+            placeholder="" onChange={(e) => updateMetricAlias(e.currentTarget.value)} />
         </Field>
       </HorizontalGroup>
     </FieldSet>
