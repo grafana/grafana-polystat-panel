@@ -144,15 +144,8 @@ jobs:
       - name: Download plugin
         uses: actions/download-artifact@v4
         with:
-          # from create-plugin
           path: dist
-          # use dot path
-          #path: ./dist
           name: ${{ needs.build.outputs.plugin-id }}-${{ needs.build.outputs.plugin-version }}
-      - name: list
-        run: ls -lR dist
-      #- name: move
-      #  run: mv ${{ needs.build.outputs.plugin-id }}-${{ needs.build.outputs.plugin-version }} dist
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
