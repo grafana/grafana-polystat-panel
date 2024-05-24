@@ -5,7 +5,7 @@ import type { PluginOptions } from '@grafana/plugin-e2e';
 const pluginE2eAuth = `${dirname(require.resolve('@grafana/plugin-e2e'))}/auth`;
 
 export default defineConfig<PluginOptions>({
-  testDir: './playwright',
+  testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
