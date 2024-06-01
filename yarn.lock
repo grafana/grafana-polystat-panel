@@ -3229,17 +3229,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/hoist-non-react-statics@npm:3.3.1":
-  version: 3.3.1
-  resolution: "@types/hoist-non-react-statics@npm:3.3.1"
-  dependencies:
-    "@types/react": "npm:*"
-    hoist-non-react-statics: "npm:^3.3.0"
-  checksum: 10c0/5ed808e5fbf0979fe07acd631147420c30319383f4388a57e0fb811c6ff30abef286e937a84c7b00f4647ca7f1ab390cc42af0bfc7547a87d2e59e0e7072d92b
-  languageName: node
-  linkType: hard
-
-"@types/hoist-non-react-statics@npm:^3.3.0":
+"@types/hoist-non-react-statics@npm:3.3.5, @types/hoist-non-react-statics@npm:^3.3.0":
   version: 3.3.5
   resolution: "@types/hoist-non-react-statics@npm:3.3.5"
   dependencies:
@@ -7515,7 +7505,7 @@ __metadata:
     "@types/d3": "npm:7.4.3"
     "@types/d3-hexbin": "npm:0.2.5"
     "@types/glob": "npm:^8.0.0"
-    "@types/hoist-non-react-statics": "npm:3.3.1"
+    "@types/hoist-non-react-statics": "npm:3.3.5"
     "@types/jest": "npm:^29.5.0"
     "@types/jquery": "npm:3.5.14"
     "@types/lodash": "npm:^4.14.194"
