@@ -58,7 +58,7 @@
     "@types/tinycolor2": "1.4.6",
     "@typescript-eslint/eslint-plugin": "^5.42.1",
     "@typescript-eslint/parser": "^5.42.1",
-    "copy-webpack-plugin": "^11.0.0",
+    "copy-webpack-plugin": "^12.0.2",
     "cspell": "^8.6.0",
     "css-loader": "^6.7.3",
     "eslint": "8.26.0",
