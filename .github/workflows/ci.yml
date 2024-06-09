@@ -122,6 +122,10 @@ jobs:
       - name: Resolve Grafana E2E versions
         id: resolve-versions
         uses: grafana/plugin-actions/e2e-version@main
+        with:
+          version-resolver-type: plugin-grafana-dependency
+          # test v10 and above since
+          grafana-dependency: ">=10.0.0"
 
   playwright-tests:
     needs: [resolve-versions, build]
