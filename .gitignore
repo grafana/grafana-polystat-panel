@@ -11,5 +11,6 @@ coverage
 blob-report/
 tests/.auth
 tests/.cache/
+playwright/
 playwright-report/
 test-results/
