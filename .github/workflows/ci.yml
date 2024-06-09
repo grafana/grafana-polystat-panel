@@ -123,6 +123,7 @@ jobs:
         id: resolve-versions
         uses: grafana/plugin-actions/e2e-version@main
         with:
+          skip-grafana-dev-image: true
           version-resolver-type: plugin-grafana-dependency
           # test v10 and above since
           grafana-dependency: ">=10.0.0"
