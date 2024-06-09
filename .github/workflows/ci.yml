@@ -122,6 +122,11 @@ jobs:
       - name: Resolve Grafana E2E versions
         id: resolve-versions
         uses: grafana/plugin-actions/e2e-version@main
+        with:
+          skip-grafana-dev-image: true
+          version-resolver-type: plugin-grafana-dependency
+          # test v10 and above since
+          grafana-dependency: ">=10.0.0"
 
   playwright-tests:
     needs: [resolve-versions, build]
@@ -142,16 +147,10 @@ jobs:
             .yarn
 
       - name: Download plugin
-        if: needs.build.outputs.has-backend == 'true'
         uses: actions/download-artifact@v4
         with:
           path: dist
           name: ${{ needs.build.outputs.plugin-id }}-${{ needs.build.outputs.plugin-version }}
-
-      - name: Execute permissions on binary
-        if: needs.build.outputs.has-backend == 'true'
-        run: |
-          chmod +x ./dist/gpx_cicd_linux_amd64
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
@@ -162,8 +161,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build frontend
-        run: yarn run build
+#      - name: Build frontend
+#        run: yarn run build
 
       - name: Start Grafana
         run: |
@@ -188,7 +187,7 @@ jobs:
       - name: Docker logs
         if: ${{ always() && steps.run-tests.outcome == 'failure' }}
         run: |
-          docker logs briangann-foo-panel >& grafana-server.log
+          docker logs ${{ needs.build.outputs.plugin-id }} >& grafana-server.log
 
       - name: Stop grafana docker
         run: docker-compose down

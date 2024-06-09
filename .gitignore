@@ -9,7 +9,8 @@ coverage
 .idea
 .stignore
 blob-report/
-playwright/.auth
-playwright/.cache/
+tests/.auth
+tests/.cache/
+playwright/
 playwright-report/
 test-results/
