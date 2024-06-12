@@ -312,7 +312,14 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
     else if (aField.type === FieldType.time) {
       // get the "newest" timestamp from data
       // check if timestamp is 0
-      const aTimestamp = aField.values.get(frame.length - 1)
+      let aTimestamp = 0;
+      let timestampIndex = aField.values.length - 1;
+      try {
+        aTimestamp = aField.values.get(timestampIndex);
+      } catch {
+        // @ts-ignore, workaround for 9.5+ removal of VectorArray
+        aTimestamp = aField.values[timestampIndex];
+      }
       if (newestTimestamp === 0) {
         newestTimestamp = aTimestamp;
       }

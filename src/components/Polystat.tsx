@@ -28,6 +28,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
+  const margin = { top: 0, right: 0, bottom: 0, left: 0 };
+  // this MUST be unique for gradients to work properly
+  const [gradientId] = React.useState<string>(`polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString());
 
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
@@ -132,20 +135,27 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [options.compositeConfig.animationSpeed, options.processedData, animationRefs]);
 
-  if (options.processedData && options.processedData.length === 0) {
-    return <div className={noTriggerTextStyles}>{options.globalDisplayTextTriggeredEmpty}</div>;
-  }
-  if (!options.autoSizeColumns && !options.autoSizeRows) {
-    const limit = options.layoutNumColumns * options.layoutNumRows;
-    if (limit < options.processedData!.length) {
-      return (
-        <div className={errorMessageStyles}>
-          Not enough rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
-          {limit} places allocated.{' '} See the Display Limit setting in category Layout{' '}
-        </div>
-      );
+  const detectNoDataEmptyState = () => {
+    if (options.processedData && options.processedData.length === 0) {
+      return <div className={noTriggerTextStyles}>{options.globalDisplayTextTriggeredEmpty}</div>;
     }
-  }
+    return null;
+  };
+
+  const detectLayoutIssue = () => {
+    if (!options.autoSizeColumns && !options.autoSizeRows) {
+      const limit = options.layoutNumColumns * options.layoutNumRows;
+      if (limit < options.processedData!.length) {
+        return (
+          <div className={errorMessageStyles}>
+            Not enough rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
+            {limit} places allocated.{' '} See the Display Limit setting in category Layout{' '}
+          </div>
+        );
+      }
+    }
+    return null;
+  };
 
   const lm = new LayoutManager(
     options.panelWidth,
@@ -156,7 +166,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.autoSizePolygons,
     options.globalShape
   );
-  const margin = { top: 0, right: 0, bottom: 0, left: 0 };
 
   // determine how many rows and columns are going to be generated
   lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData!.length);
@@ -294,8 +303,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   }
 
-  // this MUST be unique for gradients to work properly
-  const gradientId = `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString();
 
   const drawShape = (index: number, shape: PolygonShapes) => {
     let fillColor = options.processedData![index].color;
@@ -310,7 +317,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return (
           <path
-            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
@@ -325,7 +332,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.CIRCLE:
         return (
           <circle
-            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             key={`polystat-tooltip-${options.panelId}`}
@@ -339,7 +346,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.SQUARE:
         return (
           <rect
-            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             key={`polystat-tooltip-${options.panelId}`}
@@ -354,7 +361,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       default:
         return (
           <path
-            data-tooltip-id={`polystat-tooltip-${options.panelId}`}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
@@ -526,6 +533,16 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     )
   };
 
+  const detectEmptyState = detectNoDataEmptyState();
+  if (detectEmptyState !== null) {
+    return detectEmptyState;
+  }
+
+  const layoutIssueDetected = detectLayoutIssue();
+  if (layoutIssueDetected !== null) {
+    return layoutIssueDetected;
+  }
+
   return (
     <div className={divStyles}>
       <svg
@@ -577,7 +594,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             style={{
               boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
             }}
-            id={`polystat-tooltip-${options.panelId}`}
+            id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : undefined}
             place={'bottom'} // TODO: make this configurable
             float={true}
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)

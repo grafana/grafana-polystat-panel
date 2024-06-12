@@ -1,4 +1,4 @@
-import { DataFrame, Field, FieldType, FieldConfig } from '@grafana/data';
+import { DataFrame, Field, FieldType, FieldConfig, Vector } from '@grafana/data';
 
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"
@@ -47,13 +47,11 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
       }
     }
     if (!hasTimestamp) {
-      const z = [] as any;
-      z.add(timeToInsert);
       const fc: FieldConfig = {};
       const timeField: Field = {
         name: 'Time',
         type: FieldType.time,
-        values: z,
+        values: [timeToInsert] as any,
         config: fc,
       };
       // insert it

@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.1.12
+
+- Fix for runtime differences causing parsing errors [#387](https://github.com/grafana/grafana-polystat-panel/issues/387) and [#389](https://github.com/grafana/grafana-polystat-panel/issues/389)
+
 ## v2.1.11
 
 - Fix for show/hide metric value in composites  [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
