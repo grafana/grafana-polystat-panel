@@ -176,10 +176,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-validator-option@npm:7.18.6":
-  version: 7.18.6
-  resolution: "@babel/helper-validator-option@npm:7.18.6"
-  checksum: 10c0/7a1452725b87e6b0d26e8a981ad1e19a24d3bb8b17fb25d1254d6d1f3f2f2efd675135417d44f704ea4dd88f854e7a0a31967322dcb3e06fa80fc4fec71853a5
+"@babel/helper-validator-option@npm:7.24.7":
+  version: 7.24.7
+  resolution: "@babel/helper-validator-option@npm:7.24.7"
+  checksum: 10c0/21aea2b7bc5cc8ddfb828741d5c8116a84cbc35b4a3184ec53124f08e09746f1f67a6f9217850188995ca86059a7942e36d8965a6730784901def777b7e8a436
   languageName: node
   linkType: hard
 
@@ -7493,7 +7493,7 @@ __metadata:
   resolution: "grafana-polystat-panel@workspace:."
   dependencies:
     "@babel/core": "npm:^7.21.4"
-    "@babel/helper-validator-option": "npm:7.18.6"
+    "@babel/helper-validator-option": "npm:7.24.7"
     "@braintree/sanitize-url": "npm:^7.0.1"
     "@emotion/css": "npm:11.10.6"
     "@emotion/react": "npm:11.7.1"
