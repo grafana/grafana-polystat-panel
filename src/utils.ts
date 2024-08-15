@@ -200,6 +200,13 @@ function SortVariableValuesByField(options: any, sortField: string, sortOrder: n
         }
       });
       break;
+    case 4: // Natural Sort
+      const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+      options = options.slice(); // Shallow clone original array
+      options.sort((a, b) => {
+        return collator.compare(a[sortField], b[sortField]);
+      });
+      break;
   }
 
   if (reverseSort) {
