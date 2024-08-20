@@ -2,7 +2,7 @@
  * Tests for utils
  */
 //import 'jest-canvas-mock';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import { ApplyOverrides, MatchOverride } from './override_processor';
 import { OverrideItemType } from 'components/overrides/types';
@@ -53,9 +53,8 @@ describe('Test Overrides', () => {
   describe('Override affects model', () => {
     it('returns an override match', () => {
       const { result } = renderHook(() => MatchOverride(modelA.name, [overrideA], replaceVariables));
-      expect(result.all.length).toBe(1);
-      const modified = result.all[0] as OverrideItemType;
-      expect(modified.label).toBe('OVERRIDE-0');
+      expect(result.current).not.toBeNull();
+      expect(result.current?.label).toBe('OVERRIDE-0');
     });
     it('returns an overridden model', () => {
       const fieldConfig: FieldConfigSource<any> = {
@@ -65,9 +64,9 @@ describe('Test Overrides', () => {
         overrides: [],
       };
       const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2()));
-      expect(result.all.length).toBe(1);
-      const x = result.all[0] as PolystatModel[];
-      const modified = x[0] as PolystatModel;
+      expect(result.current).not.toBeNull();
+      const x = result.current;
+      const modified = x[0];
       //console.log(JSON.stringify(modified));
       expect(modified.valueFormatted).toBe('210.00');
       expect(modified.color).toBe('#ffffff');

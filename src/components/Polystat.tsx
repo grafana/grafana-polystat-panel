@@ -1,4 +1,4 @@
-import React, { useEffect, createRef, useCallback } from 'react';
+import React, { useId, useEffect, createRef, useCallback } from 'react';
 import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
@@ -31,6 +31,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
   // this MUST be unique for gradients to work properly
   const [gradientId] = React.useState<string>(`polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString());
+
+  const tooltipId = useId()
 
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
@@ -317,7 +319,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return (
           <path
-            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${tooltipId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
@@ -332,7 +334,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.CIRCLE:
         return (
           <circle
-            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${tooltipId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             key={`polystat-tooltip-${options.panelId}`}
@@ -346,7 +348,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       case PolygonShapes.SQUARE:
         return (
           <rect
-            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${tooltipId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             key={`polystat-tooltip-${options.panelId}`}
@@ -361,7 +363,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       default:
         return (
           <path
-            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : null}
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${tooltipId}` : null}
             data-tooltip-content={index}
             data-tooltip-position-strategy='fixed'
             className={svgPathStyles}
@@ -594,7 +596,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             style={{
               boxShadow: 'rgba(1, 4, 9, 0.75) 0px 4px 8px 0px',
             }}
-            id={options.globalTooltipsEnabled ? `polystat-tooltip-${options.panelId}` : undefined}
+            id={options.globalTooltipsEnabled ? `polystat-tooltip-${tooltipId}` : undefined}
             place={'bottom'} // TODO: make this configurable
             float={true}
             variant={tooltipTheme} // TODO: this could be made configurable (auto, or specified)
