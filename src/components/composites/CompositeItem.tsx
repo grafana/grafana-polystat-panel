@@ -96,7 +96,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           </Field>
           <Field label="Show Name" description="Toggle Display of composite name" disabled={!composite.showComposite}>
             <Switch
-              transparent={true}
               value={composite.showName}
               disabled={!composite.showComposite}
               onChange={toggleShowName}
@@ -104,7 +103,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           </Field>
           <Field label="Show Value" description="Toggle Display of composite value" disabled={!composite.showComposite}>
             <Switch
-              transparent={true}
               value={composite.showValue}
               disabled={!composite.showComposite}
               onChange={() => setComposite({ ...composite, showValue: !composite.showValue })}
@@ -144,7 +142,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
             disabled={!composite.showComposite}
           >
             <Switch
-              transparent={true}
               value={composite.showMembers}
               disabled={!composite.showComposite}
               onChange={() => setComposite({ ...composite, showMembers: !composite.showMembers })}
@@ -174,7 +171,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           </Field>
           <Field label="Sanitize URL" description="Sanitize URL before evaluating" disabled={!composite.showComposite}>
             <Switch
-              transparent={false}
               disabled={!composite.showComposite}
               value={composite.clickThroughSanitize}
               onChange={() => setComposite({ ...composite, clickThroughSanitize: !composite.clickThroughSanitize })}
@@ -182,7 +178,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           </Field>
           <Field label="Open URL in New Tab" description="Open link in new tab" disabled={!composite.showComposite}>
             <Switch
-              transparent={false}
               value={composite.clickThroughOpenNewTab}
               disabled={!composite.showComposite}
               onChange={() => setComposite({ ...composite, clickThroughOpenNewTab: !composite.clickThroughOpenNewTab })}
@@ -190,7 +185,6 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
           </Field>
           <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!composite.showComposite} hidden={composite.clickThroughOpenNewTab}>
             <Switch
-              transparent={false}
               value={composite.clickThroughCustomTargetEnabled}
               disabled={!composite.showComposite}
               onChange={() => setComposite({ ...composite,
