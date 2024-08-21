@@ -191,7 +191,6 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
           </Field>
           <Field label="Sanitize URL" description="Sanitize URL before evaluating" disabled={!override.enabled}>
             <Switch
-              transparent={false}
               disabled={!override.enabled}
               value={override.clickThroughSanitize}
               onChange={() => setOverride({ ...override, clickThroughSanitize: !override.clickThroughSanitize })}
@@ -199,7 +198,6 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
           </Field>
           <Field label="Open URL in New Tab" description="Open link in new tab" disabled={!override.enabled}>
             <Switch
-              transparent={false}
               value={override.clickThroughOpenNewTab}
               disabled={!override.enabled}
               onChange={() => setOverride({ ...override, clickThroughOpenNewTab: !override.clickThroughOpenNewTab })}
@@ -207,7 +205,6 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
           </Field>
           <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!override.enabled} hidden={override.clickThroughOpenNewTab}>
             <Switch
-              transparent={false}
               value={override.clickThroughCustomTargetEnabled}
               disabled={!override.enabled}
               onChange={() => setOverride({ ...override,

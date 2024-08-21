@@ -208,7 +208,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       <FieldSet>
         <Field label="Enable Composites" description="Enable/Disable Composites Globally">
           <Switch
-            transparent={true}
             value={compositesEnabled}
             onChange={() => setCompositesEnabled(!compositesEnabled)}
           />
