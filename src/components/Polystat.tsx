@@ -3,7 +3,7 @@ import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
 import { hexbin } from 'd3-hexbin';
-import { orderBy as lodashOrderBy, uniq } from 'lodash';
+import { orderBy as lodashOrderBy } from 'lodash';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
 import { Gradients } from './gradients/Gradients';
