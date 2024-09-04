@@ -150,6 +150,8 @@ export const SortOptions = [
   { value: 4, label: 'Numerical (desc)' },
   { value: 5, label: 'Alphabetical (case-insensitive, asc)' },
   { value: 6, label: 'Alphabetical (case-insensitive, desc)' },
+  { value: 7, label: 'Natural sort (asc)' },
+  { value: 8, label: 'Natural sort (desc)' },
 ];
 
 export const SortOptionOperators = ['disabled', 'asc', 'desc', 'asc', 'desc', 'iasc', 'idesc'];
