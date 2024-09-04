@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.13
+
+- Fix for id conflicts [#413](https://github.com/grafana/grafana-polystat-panel/pull/413)
+- Adds natural sort [#410](https://github.com/grafana/grafana-polystat-panel/pull/410)
+
 ## v2.1.12
 
 - Fix for runtime differences causing parsing errors [#387](https://github.com/grafana/grafana-polystat-panel/issues/387) and [#389](https://github.com/grafana/grafana-polystat-panel/issues/389)
