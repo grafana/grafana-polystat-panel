@@ -34,9 +34,6 @@ jobs:
 
       - name: Check types
         run: yarn run typecheck
-      # skip for now
-      #- name: Lint
-      #  run: yarn run lint
       - name: Unit tests
         run: yarn run test:ci
       - name: Build frontend
@@ -54,7 +51,8 @@ jobs:
         if: steps.check-for-backend.outputs.has-backend == 'true'
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version-file: go.mod
+          check-latest: true
 
       - name: Test backend
         if: steps.check-for-backend.outputs.has-backend == 'true'
