@@ -2,6 +2,10 @@
 
 ## Entries
 
+## v2.1.14
+
+- Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This feature now requires an exact match instead of a wildcard.
+
 ## v2.1.13
 
 - Fix for id conflicts [#413](https://github.com/grafana/grafana-polystat-panel/pull/413)
