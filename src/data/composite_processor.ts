@@ -48,6 +48,8 @@ export const resolveMemberTemplates = (
 ): CompositeMetric[] => {
   const ret: CompositeMetric[] = [];
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
+  // the metric name must exactly match the composite name
+  const compositeNameRegex = new RegExp(`^${compositeName}$`);
   members.forEach((member) => {
     // Resolve templates in series names
     if (member.seriesMatch) {
@@ -63,7 +65,8 @@ export const resolveMemberTemplates = (
           // iterate over the array of names
           if (resolvedSeriesNames && resolvedSeriesNames.length) {
             resolvedSeriesNames.forEach((aName) => {
-              if (aName.includes(compositeName)) {
+              // exact match of the composite name is required
+              if (aName.match(compositeNameRegex)) {
                 const newName = member.seriesMatch.replace(aMatch, aName);
                 const escapedName = escapeStringForRegex(aName);
                 const newNameEscaped = member.seriesMatch.replace(aMatch, escapedName);
