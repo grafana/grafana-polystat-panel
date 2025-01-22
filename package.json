@@ -43,7 +43,7 @@
     "@swc/helpers": "^0.5.0",
     "@swc/jest": "^0.2.26",
     "@testing-library/jest-dom": "6.4.2",
-    "@testing-library/react": "14.0.0",
+    "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/d3": "7.4.3",
     "@types/d3-hexbin": "0.2.5",
@@ -53,9 +53,10 @@
     "@types/jquery": "3.5.31",
     "@types/lodash": "^4.14.194",
     "@types/node": "^20.11.25",
-    "@types/react": "17.0.38",
-    "@types/react-dom": "17.0.11",
+    "@types/react": "17.0.44",
+    "@types/react-dom": "17.0.15",
     "@types/react-router-dom": "^5.2.0",
+    "@types/semver": "^7.5.8",
     "@types/testing-library__jest-dom": "5.14.8",
     "@types/tinycolor2": "1.4.6",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
@@ -109,7 +110,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-redux": "7.2.6",
-    "react-tooltip": "5.26.4",
+    "react-tooltip": "5.28.0",
     "tinycolor2": "^1.6.0",
     "tslib": "2.5.3"
   },
@@ -117,7 +118,7 @@
     "node": ">= 20"
   },
   "resolutions": {
-    "@types/react": "17.0.30"
+    "@types/react": "17.0.44"
   },
   "packageManager": "yarn@4.6.0"
 }
