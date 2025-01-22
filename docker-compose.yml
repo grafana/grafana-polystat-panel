@@ -15,7 +15,7 @@ services:
     #image: grafana/grafana:10.4.3
     #      args:
     container_name: grafana-polystat-panel
-    image:  grafana/${GRAFANA_IMAGE:-grafana}:${GRAFANA_VERSION:-11.2.1}
+    image:  grafana/${GRAFANA_IMAGE:-grafana}:${GRAFANA_VERSION:-11.2.5}
     ports:
       - 3000:3000
     volumes:
