@@ -198,8 +198,8 @@ describe('Polystat -> PolystatV2 migrations', () => {
       },
     };
     const options = migrateDefaults(oldPolystatOptions.polystat);
-    console.log('top level...');
-    console.log(JSON.stringify(options, null, 2));
+    //console.log('top level...');
+    //console.log(JSON.stringify(options, null, 2));
     expect(options.layoutNumColumns).toEqual(6);
     expect(options.autoSizeColumns).toEqual(true);
     expect(options.globalClickthrough).toEqual('https://grafana.com');
@@ -271,7 +271,7 @@ describe('Polystat -> PolystatV2 migrations', () => {
       },
     };
     const options = migrateDefaults(oldPolystatOptions.polystat);
-    console.log('global thresholds...');
+    //console.log('global thresholds...');
     expect(options.globalThresholdsConfig.length).toEqual(3);
     expect(options.globalThresholdsConfig[0].color).toEqual('#299c46');
     expect(options.globalThresholdsConfig[1].color).toEqual('#ED8128');
@@ -346,8 +346,8 @@ describe('Polystat -> PolystatV2 migrations', () => {
       ],
     };
     const options = migrateOverrides(oldPolystatOptions);
-    console.log('overrides...');
-    console.log(JSON.stringify(options.overrideConfig, null, 2));
+    //console.log('overrides...');
+    //console.log(JSON.stringify(options.overrideConfig, null, 2));
     expect(options.overrideConfig.overrides[0].label).toEqual('OVERRIDE 1');
     expect(options.overrideConfig.overrides[0].thresholds[0].color).toEqual('#299c46');
   });
@@ -410,8 +410,8 @@ describe('Polystat -> PolystatV2 migrations', () => {
       ],
     };
     const options = migrateComposites(oldPolystatOptions, '2222');
-    console.log('composites...');
-    console.log(JSON.stringify(options, null, 2));
+    //console.log('composites...');
+    //console.log(JSON.stringify(options, null, 2));
     expect(options.compositeConfig.animationSpeed).toEqual('2222');
   });
 
@@ -444,7 +444,7 @@ describe('Polystat -> PolystatV2 migrations', () => {
       ],
     };
     const newMaps = migrateValueAndRangeMaps(aPanel);
-    console.log(JSON.stringify(newMaps, null, 2));
+    //console.log(JSON.stringify(newMaps, null, 2));
     expect(newMaps.length).toEqual(3);
     const aSpecialMap = newMaps[0] as SpecialValueMap;
     expect(aSpecialMap.type).toEqual('special');
