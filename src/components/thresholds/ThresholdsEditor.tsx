@@ -5,7 +5,7 @@ import { v4 as UUIdv4 } from 'uuid';
 import { PolystatThreshold, ThresholdItemTracker } from './types';
 import { ThresholdItem } from './ThresholdItem';
 import { DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX, DEFAULT_CRITICAL_COLOR_HEX } from '../defaults';
-import { getColorForTheme } from '@grafana/data';
+
 interface Props {
   thresholds: PolystatThreshold[];
   setter: any;
@@ -48,14 +48,7 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
   };
 
   const updateThresholdColor = (index: number, color: string) => {
-    let useColor: string;
-    if (typeof theme2.visualization !== 'undefined') {
-      useColor = theme2.visualization.getColorByName(color);
-    } else {
-      // intentional use of deprecated function for v8 compat
-      // eslint-disable-next-line deprecation/deprecation
-      useColor = getColorForTheme(color, oldTheme);
-    }
+    const useColor = theme2.visualization.getColorByName(color);
     tracker[index].threshold.color = useColor;
     setTracker([...tracker]);
   };

@@ -4,7 +4,6 @@ import {
   ScopedVars,
   InterpolateFunction,
   textUtil,
-  getColorForTheme,
   FieldConfigSource,
   GrafanaTheme2,
   GrafanaTheme,
@@ -84,14 +83,7 @@ export const ApplyOverrides = (
   themeV2: GrafanaTheme2 // V9+
 ) => {
   // determine real color
-  let realGlobalFillColor = '';
-  if (typeof themeV2.visualization !== 'undefined') {
-    realGlobalFillColor = themeV2.visualization.getColorByName(globalFillColor);
-  } else {
-    // intentional use of deprecated function for v8 compat
-    // eslint-disable-next-line deprecation/deprecation
-    realGlobalFillColor = getColorForTheme(globalFillColor, themeV1);
-  }
+  const realGlobalFillColor = themeV2.visualization.getColorByName(globalFillColor);
 
   if (!overrides) {
     return data;
@@ -108,14 +100,7 @@ export const ApplyOverrides = (
       const thresholds =
         anOverride.thresholds && anOverride.thresholds.length ? anOverride.thresholds : globalThresholds;
       const result = getThresholdLevelForValue(thresholds, dataValue, globalFillColor);
-      let useColor = result.color;
-      if (typeof themeV2.visualization !== 'undefined') {
-        useColor = themeV2.visualization.getColorByName(result.color);
-      } else {
-        // intentional use of deprecated function for v8 compat
-        // eslint-disable-next-line deprecation/deprecation
-        useColor = getColorForTheme(result.color, themeV1);
-      }
+      const useColor = themeV2.visualization.getColorByName(result.color);
       // set value to what was returned
       data[index].value = dataValue;
       data[index].color = useColor;
