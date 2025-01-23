@@ -101,10 +101,10 @@
   "dependencies": {
     "@emotion/css": "11.10.6",
     "@emotion/react": "11.7.1",
-    "@grafana/data": "^8.4.11",
-    "@grafana/runtime": "^8.4.11",
+    "@grafana/data": "^9.5.21",
+    "@grafana/runtime": "^9.5.21",
     "@grafana/schema": "^11.3.2",
-    "@grafana/ui": "^8.4.11",
+    "@grafana/ui": "^9.5.21",
     "d3-hexbin": "0.2.2",
     "emotion": "11.0.0",
     "react": "17.0.2",

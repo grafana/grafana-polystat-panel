@@ -5,6 +5,7 @@
 ## v2.1.14
 
 - Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This feature now requires an exact match instead of a wildcard.
+- Minumin version of Grafana is now v9.5 due to API changes
 
 ## v2.1.13
 
