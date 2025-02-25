@@ -1,5 +1,5 @@
 import { PolystatModel, ShowTimestampFormats } from '../components/types';
-import { FieldType, InterpolateFunction, ScopedVars, toDataFrame, VariableModel } from '@grafana/data';
+import { FieldType, InterpolateFunction, ScopedVars, toDataFrame, TypedVariableModel } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getWorstSeries } from './threshold_processor';
 import { CompositeItemType } from 'components/composites/types';
@@ -26,7 +26,7 @@ jest.mock('@grafana/runtime', () => {
         }
         return s;
       },
-      getVariables: () => [] as unknown as VariableModel[],
+      getVariables: () => [] as unknown as TypedVariableModel[],
     }),
   };
 });
