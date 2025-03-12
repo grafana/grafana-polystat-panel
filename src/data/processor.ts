@@ -7,7 +7,6 @@ import {
   DataFrame,
   PanelData,
   getFieldDisplayName,
-  dateTime,
   formattedValueToString,
   getValueFormat,
   stringToJsRegex,
@@ -16,7 +15,7 @@ import {
   GrafanaTheme2,
   GrafanaTheme,
 } from '@grafana/data';
-import { includes as lodashIncludes, map } from 'lodash';
+import { includes as lodashIncludes } from 'lodash';
 import { DisplayModes, OperatorOptions, PolystatModel } from '../components/types';
 import { GLOBAL_FILL_COLOR_RGBA } from '../components/defaults';
 import { GetDecimalsForValue, SortVariableValuesByField, roundValue } from '../utils';
@@ -26,7 +25,7 @@ import { ApplyOverrides } from './override_processor';
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { GetMappedValue } from './valueMappingsWrapper';
+import { GetMappedValue, getMappings } from './valueMappingsWrapper';
 import { GetValueByOperator } from './stats';
 import { TimeFormatter } from './time_formatter';
 
@@ -227,7 +226,7 @@ export const ApplyGlobalFormatting = (
     if (data[index].value !== null) {
       data[index].showName = globalShowLabel;
       data[index].showValue = globalShowValue;
-      const mappings = fieldConfig.defaults.mappings && fieldConfig.defaults.mappings.length > 0 ? fieldConfig.defaults.mappings : data[index].mappings;
+      const mappings = getMappings(fieldConfig.defaults.mappings, data[index].mappings);
       const mappedValue = GetMappedValue(mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
@@ -380,7 +379,7 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       members: [],
       customClickthroughTargetEnabled: false,
       customClickthroughTarget: '',
-      mappings: valueField.config.mappings,
+      mappings: valueField.config.mappings || [],
     };
     models.push(model);
   }

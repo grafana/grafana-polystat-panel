@@ -15,7 +15,7 @@ import { PolystatModel } from '../components/types';
 import { CUSTOM_SPLIT_DELIMITER } from './types';
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from 'components/thresholds/types';
-import { GetMappedValue } from './valueMappingsWrapper';
+import { GetMappedValue, getMappings } from './valueMappingsWrapper';
 import { roundValue } from 'utils';
 import { TimeFormatter } from './time_formatter';
 
@@ -107,7 +107,7 @@ export const ApplyOverrides = (
       data[index].thresholdLevel = result.thresholdLevel;
       // format it
       // TODO: fix me!
-      const mappings = fieldConfig.defaults.mappings && fieldConfig.defaults.mappings.length > 0 ? fieldConfig.defaults.mappings : data[index].mappings;
+      const mappings = getMappings(fieldConfig.defaults.mappings, data[index].mappings);
       const mappedValue = GetMappedValue(mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;

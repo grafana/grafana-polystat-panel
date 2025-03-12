@@ -1,3 +1,4 @@
+import { ValueMapping } from '@grafana/data';
 import { getMappedValue } from './v7/valueMappings';
 import { getValueMappingResult } from './v8/valueMappings';
 
@@ -18,3 +19,7 @@ export const GetMappedValue = (valueMappings: any[], value: any): any => {
   }
   return mappedValue;
 };
+
+export const getMappings = (fieldConfigMappings: ValueMapping[] | undefined, dataMappings: ValueMapping[] | undefined) => {
+  return fieldConfigMappings && fieldConfigMappings.length > 0 ? fieldConfigMappings : dataMappings;
+}
