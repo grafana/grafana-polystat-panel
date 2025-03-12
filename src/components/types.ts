@@ -1,4 +1,4 @@
-import { SelectableValue } from '@grafana/data';
+import { SelectableValue, ValueMapping } from '@grafana/data';
 import { CompositeItemType } from 'components/composites/types';
 import { OverrideItemType } from './overrides/types';
 import { PolystatThreshold } from './thresholds/types';
@@ -99,6 +99,7 @@ export interface PolystatModel {
   isComposite: boolean;
   members: PolystatModel[];
   triggerCache?: any; // holds animation frame info
+  mappings?: ValueMapping[];
 }
 
 export enum PolygonShapes {
