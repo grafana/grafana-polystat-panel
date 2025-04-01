@@ -3673,21 +3673,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.25":
-  version: 20.17.15
-  resolution: "@types/node@npm:20.17.15"
-  dependencies:
-    undici-types: "npm:~6.19.2"
-  checksum: 10c0/2fd51772cacd12f5442bfad91cb1af3a8744dff29ca1852f9eef7ed2df6356a4f67a0fd8185188535ba9b0b0ffbe444d1cf240afa179f716838e82f3568d2185
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:^22.0.0":
   version: 22.13.5
   resolution: "@types/node@npm:22.13.5"
   dependencies:
     undici-types: "npm:~6.20.0"
   checksum: 10c0/a2e7ed7bb0690e439004779baedeb05159c5cc41ef6d81c7a6ebea5303fde4033669e1c0e41ff7453b45fd2fea8dbd55fddfcd052950c7fcae3167c970bca725
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.13.16":
+  version: 22.13.16
+  resolution: "@types/node@npm:22.13.16"
+  dependencies:
+    undici-types: "npm:~6.20.0"
+  checksum: 10c0/06a33975e0a55d84841e584544cf943cd31d1bea31152a1fd755391540f57059fee9257b3342ad6e424b316c67166df707087fcf6f95d95dd05a9cd9ccd7d99b
   languageName: node
   linkType: hard
 
@@ -7867,7 +7867,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:3.5.31"
     "@types/lodash": "npm:^4.14.194"
-    "@types/node": "npm:^20.11.25"
+    "@types/node": "npm:^22.13.16"
     "@types/react": "npm:17.0.44"
     "@types/react-dom": "npm:17.0.15"
     "@types/react-router-dom": "npm:^5.2.0"
@@ -13560,13 +13560,6 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     which-boxed-primitive: "npm:^1.1.1"
   checksum: 10c0/7dbd35ab02b0e05fe07136c72cb9355091242455473ec15057c11430129bab38b7b3624019b8778d02a881c13de44d63cd02d122ee782fb519e1de7775b5b982
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~6.19.2":
-  version: 6.19.8
-  resolution: "undici-types@npm:6.19.8"
-  checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
   languageName: node
   linkType: hard
 
