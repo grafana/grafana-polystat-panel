@@ -43,6 +43,10 @@ export default defineConfig<PluginOptions>({
         // @grafana/plugin-e2e writes the auth state to this file,
         // the path should not be modified
         storageState: 'playwright/.auth/admin.json',
+        launchOptions: {
+          args: ['--disable-features=PlzDedicatedWorker'], // because https://github.com/microsoft/playwright/pull/34400
+        },
+        channel: 'chrome',
       },
       dependencies: ['auth'],
     }
