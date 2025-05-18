@@ -128,7 +128,8 @@ const shallowClone = (item: PolystatModel): PolystatModel => {
     showValue: item.showValue,
     showTimestamp: item.showTimestamp,
     isComposite: item.isComposite,
-    members: []
+    members: [],
+    mappings: item.mappings,
   };
   return clone;
 };

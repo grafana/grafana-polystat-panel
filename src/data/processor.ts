@@ -7,7 +7,6 @@ import {
   DataFrame,
   PanelData,
   getFieldDisplayName,
-  dateTime,
   formattedValueToString,
   getValueFormat,
   stringToJsRegex,
@@ -26,7 +25,7 @@ import { ApplyOverrides } from './override_processor';
 import { OverrideItemType } from '../components/overrides/types';
 import { PolystatThreshold } from '../components/thresholds/types';
 import { ClickThroughTransformer } from './clickThroughTransformer';
-import { GetMappedValue } from './valueMappingsWrapper';
+import { GetMappedValue, getMappings } from './valueMappingsWrapper';
 import { GetValueByOperator } from './stats';
 import { TimeFormatter } from './time_formatter';
 
@@ -227,7 +226,8 @@ export const ApplyGlobalFormatting = (
     if (data[index].value !== null) {
       data[index].showName = globalShowLabel;
       data[index].showValue = globalShowValue;
-      const mappedValue = GetMappedValue(fieldConfig.defaults.mappings!, data[index].value);
+      const mappings = getMappings(fieldConfig.defaults.mappings, data[index].mappings);
+      const mappedValue = GetMappedValue(mappings!, data[index].value);
       if (mappedValue && mappedValue.text !== '') {
         data[index].valueFormatted = mappedValue.text;
         if (globalShowTimestampEnabled) {
@@ -378,7 +378,8 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
       isComposite: false,
       members: [],
       customClickthroughTargetEnabled: false,
-      customClickthroughTarget: ''
+      customClickthroughTarget: '',
+      mappings: valueField.config.mappings || [],
     };
     models.push(model);
   }
