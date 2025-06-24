@@ -3705,15 +3705,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:17.0.15":
-  version: 17.0.15
-  resolution: "@types/react-dom@npm:17.0.15"
-  dependencies:
-    "@types/react": "npm:^17"
-  checksum: 10c0/f6faa3b12c5301817f37a19a7b54beace8f35dee3480401a165cf9e9e4bcf2775496b7f37f3262ced9f44b0ee8e863b991efcce3b8588aec9a45a85268bdfb89
-  languageName: node
-  linkType: hard
-
 "@types/react-dom@npm:<18.0.0":
   version: 17.0.26
   resolution: "@types/react-dom@npm:17.0.26"
@@ -7869,7 +7860,6 @@ __metadata:
     "@types/lodash": "npm:^4.14.194"
     "@types/node": "npm:^20.11.25"
     "@types/react": "npm:17.0.44"
-    "@types/react-dom": "npm:17.0.15"
     "@types/react-router-dom": "npm:^5.2.0"
     "@types/semver": "npm:^7.5.8"
     "@types/testing-library__jest-dom": "npm:5.14.8"
@@ -7900,7 +7890,6 @@ __metadata:
     moment-timezone: "npm:^0.5.45"
     prettier: "npm:^3.2.5"
     react: "npm:17.0.2"
-    react-dom: "npm:17.0.2"
     react-redux: "npm:7.2.6"
     react-tooltip: "npm:5.28.0"
     replace-in-file-webpack-plugin: "npm:^1.0.6"
@@ -11332,19 +11321,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:17.0.2":
-  version: 17.0.2
-  resolution: "react-dom@npm:17.0.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-    object-assign: "npm:^4.1.1"
-    scheduler: "npm:^0.20.2"
-  peerDependencies:
-    react: 17.0.2
-  checksum: 10c0/51abbcb72450fe527ebf978c3bc989ba266630faaa53f47a2fae5392369729e8de62b2e4683598cbe651ea7873cd34ec7d5127e2f50bf4bfe6bd0c3ad9bddcb0
-  languageName: node
-  linkType: hard
-
 "react-dropzone@npm:14.2.3":
   version: 14.2.3
   resolution: "react-dropzone@npm:14.2.3"
@@ -12139,16 +12115,6 @@ __metadata:
   dependencies:
     xmlchars: "npm:^2.2.0"
   checksum: 10c0/3847b839f060ef3476eb8623d099aa502ad658f5c40fd60c105ebce86d244389b0d76fcae30f4d0c728d7705ceb2f7e9b34bb54717b6a7dbedaf5dad2d9a4b74
-  languageName: node
-  linkType: hard
-
-"scheduler@npm:^0.20.2":
-  version: 0.20.2
-  resolution: "scheduler@npm:0.20.2"
-  dependencies:
-    loose-envify: "npm:^1.1.0"
-    object-assign: "npm:^4.1.1"
-  checksum: 10c0/b0982e4b0f34f4ffa4f2f486161c0fd9ce9b88680b045dccbf250eb1aa4fd27413570645455187a83535e2370f5c667a251045547765408492bd883cbe95fcdb
   languageName: node
   linkType: hard
 
