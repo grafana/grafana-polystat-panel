@@ -184,7 +184,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalOperator: 'mean',
     globalPolygonBorderSize: 1,
     globalPolygonBorderColor: '',
-    globalPolygonSize: 50,
+    globalPolygonSize: '50',
     globalRegexPattern: '',
     globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
     globalShowValueEnabled: true,
