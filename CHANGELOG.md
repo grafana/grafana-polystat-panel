@@ -7,6 +7,7 @@
 - Force uplot dependency to resolve to 1.6.32 (package is not used)
 - Fixes [[#411](https://github.com/grafana/grafana-polystat-panel/issues/411)]
 - Fixes [[#404](https://github.com/grafana/grafana-polystat-panel/issues/404)]
+- Fixes [[#427](https://github.com/grafana/grafana-polystat-panel/issues/427)]
 
 ## v2.1.14
 
