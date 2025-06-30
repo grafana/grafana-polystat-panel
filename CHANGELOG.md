@@ -2,6 +2,12 @@
 
 ## Entries
 
+## v2.1.15
+
+- Force uplot dependency to resolve to 1.6.32 (package is not used)
+- Fixes [[#411](https://github.com/grafana/grafana-polystat-panel/issues/411)]
+- Fixes [[#404](https://github.com/grafana/grafana-polystat-panel/issues/404)]
+
 ## v2.1.14
 
 - Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This feature now requires an exact match instead of a wildcard.
