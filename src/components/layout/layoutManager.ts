@@ -150,10 +150,17 @@ export class LayoutManager {
     return this.truncateFloat(uniformRadius);
   }
 
-  generatePossibleColumnAndRowsSizes(columnAutoSize: boolean, rowAutoSize: boolean, dataSize: number) {
+  generatePossibleColumnAndRowsSizes(columnAutoSize: boolean, rowAutoSize: boolean, displayLimit: number, dataSize: number) {
+    if (isNaN(displayLimit) || displayLimit < 0) {
+      displayLimit = 100;
+    }
+    let useLimit = displayLimit;
+    if (displayLimit === 0) {
+      useLimit = dataSize;
+    }
     if (rowAutoSize && columnAutoSize) {
       // sqrt of # data items
-      const squared = Math.sqrt(dataSize);
+      const squared = Math.sqrt(useLimit);
       // favor columns when width is greater than height
       // favor rows when width is less than height
       if (this.width > this.height) {
@@ -161,12 +168,12 @@ export class LayoutManager {
         // always at least 1 column and max. data.length columns
         if (this.numColumns < 1) {
           this.numColumns = 1;
-        } else if (this.numColumns > dataSize) {
-          this.numColumns = dataSize;
+        } else if (this.numColumns > useLimit) {
+          this.numColumns = useLimit;
         }
 
         // Align rows count to computed columns count
-        this.numRows = Math.ceil(dataSize / this.numColumns);
+        this.numRows = Math.ceil(useLimit / this.numColumns);
         // always at least 1 row
         if (this.numRows < 1) {
           this.numRows = 1;
@@ -176,11 +183,11 @@ export class LayoutManager {
         // always at least 1 row and max. data.length rows
         if (this.numRows < 1) {
           this.numRows = 1;
-        } else if (this.numRows > dataSize) {
-          this.numRows = dataSize;
+        } else if (this.numRows > useLimit) {
+          this.numRows = useLimit;
         }
         // Align columns count to computed rows count
-        this.numColumns = Math.ceil(dataSize / this.numRows);
+        this.numColumns = Math.ceil(useLimit / this.numRows);
         // always at least 1 column
         if (this.numColumns < 1) {
           this.numColumns = 1;
@@ -188,14 +195,14 @@ export class LayoutManager {
       }
     } else if (rowAutoSize) {
       // Align rows count to fixed columns count
-      this.numRows = Math.ceil(dataSize / this.numColumns);
+      this.numRows = Math.ceil(useLimit / this.numColumns);
       // always at least 1 row
       if (this.numRows < 1) {
         this.numRows = 1;
       }
     } else if (columnAutoSize) {
       // Align columns count to fixed rows count
-      this.numColumns = Math.ceil(dataSize / this.numRows);
+      this.numColumns = Math.ceil(useLimit / this.numRows);
       // always at least 1 column
       if (this.numColumns < 1) {
         this.numColumns = 1;
@@ -376,16 +383,23 @@ export class LayoutManager {
     return 0;
   }
 
-  getOffsets(shape: PolygonShapes, dataSize: number): any {
+  getOffsets(shape: PolygonShapes, displayLimit: number, dataSize: number): any {
+    if (isNaN(displayLimit) || displayLimit < 0) {
+      displayLimit = 100;
+    }
+    let useLimit = displayLimit;
+    if (displayLimit === 0) {
+      useLimit = dataSize;
+    }
     switch (shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
-        return this.getOffsetsHexagonPointedTop(dataSize);
+        return this.getOffsetsHexagonPointedTop(useLimit);
       case PolygonShapes.SQUARE:
-        return this.getOffsetsSquare(dataSize);
+        return this.getOffsetsSquare(useLimit);
       case PolygonShapes.CIRCLE:
-        return this.getOffsetsUniform(dataSize);
+        return this.getOffsetsUniform(useLimit);
       default:
-        return this.getOffsetsUniform(dataSize);
+        return this.getOffsetsUniform(useLimit);
     }
   }
 

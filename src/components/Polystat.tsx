@@ -168,7 +168,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 
   // determine how many rows and columns are going to be generated
-  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData!.length);
+  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.layoutDisplayLimit, options.processedData!.length);
   // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
   lm.generateActualColumnAndRowUsage(options.processedData, options.layoutDisplayLimit);
   // next the radius can be determined from actual rows and columns being used
@@ -196,7 +196,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       [options.panelWidth, options.panelHeight],
     ]);
   const { diameterX, diameterY } = lm.getDiameters();
-  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.processedData!.length);
+  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.layoutDisplayLimit, options.processedData!.length);
 
   // compute text area size (used to calculate the fontsize)
   const textAreaWidth = diameterX;
@@ -242,9 +242,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   const getCoords = (i: number) => {
-    const xValue = calculatedPoints[i].x;
-    const yValue = calculatedPoints[i].y;
-    return { x: xValue, y: yValue };
+    if (i < calculatedPoints.length) {
+      const xValue = calculatedPoints[i].x;
+      const yValue = calculatedPoints[i].y;
+      return { x: xValue, y: yValue };
+    }
+    return null;
   };
 
   // calculate the fontsize based on the shape and the text
@@ -312,6 +315,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
     const useRadius = lm.generateRadius(options.globalShape);
     const coords = getCoords(index);
+    if (!coords) {
+      return;
+    }
 
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
@@ -559,6 +565,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
           {options.processedData!.map((item, index) => {
             const coords = getCoords(index);
+            if (!coords) {
+              return;
+            }
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);
