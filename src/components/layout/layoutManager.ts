@@ -155,7 +155,7 @@ export class LayoutManager {
       displayLimit = 100;
     }
     let useLimit = displayLimit;
-    if (displayLimit === 0) {
+    if ((displayLimit === 0) || (displayLimit > dataSize)) {
       useLimit = dataSize;
     }
     if (rowAutoSize && columnAutoSize) {
@@ -388,7 +388,7 @@ export class LayoutManager {
       displayLimit = 100;
     }
     let useLimit = displayLimit;
-    if (displayLimit === 0) {
+    if ((displayLimit === 0) || (displayLimit > dataSize)) {
       useLimit = dataSize;
     }
     switch (shape) {
