@@ -44,7 +44,7 @@
     "@swc/helpers": "^0.5.0",
     "@swc/jest": "^0.2.26",
     "@testing-library/jest-dom": "6.6.3",
-    "@testing-library/react": "14.0.0",
+    "@testing-library/react": "12.1.5",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/d3": "7.4.3",
     "@types/d3-hexbin": "0.2.5",
