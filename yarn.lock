@@ -3760,12 +3760,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.11.25":
-  version: 20.19.2
-  resolution: "@types/node@npm:20.19.2"
+"@types/node@npm:^22.13.14":
+  version: 22.15.34
+  resolution: "@types/node@npm:22.15.34"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/85195d2435a215c886b3dabb2a93c557397e2b933a18803c6dd4fb3f87c3de9c8290fe78f08b52ebeb3b14063a00b217f66b4f9c0192581dc7a677c4f8663a9c
+  checksum: 10c0/fb6a6b36daaa1b484aaba3d33b4d1e7b37ea993e29f20b7a676affa76ed6ff6acd2ded4d5003469bc8dbc815b3d224533b4560896037ef6d5b5d552721ab7d57
   languageName: node
   linkType: hard
 
@@ -7919,7 +7919,7 @@ __metadata:
     "@types/jest": "npm:^29.5.14"
     "@types/jquery": "npm:3.5.31"
     "@types/lodash": "npm:^4.14.194"
-    "@types/node": "npm:^20.11.25"
+    "@types/node": "npm:^22.13.14"
     "@types/react": "npm:17.0.44"
     "@types/react-dom": "npm:17.0.15"
     "@types/react-router-dom": "npm:^5.2.0"
@@ -7954,7 +7954,7 @@ __metadata:
     react: "npm:17.0.2"
     react-dom: "npm:17.0.2"
     react-redux: "npm:7.2.6"
-    react-tooltip: "npm:5.28.0"
+    react-tooltip: "npm:5.29.1"
     replace-in-file-webpack-plugin: "npm:^1.0.6"
     sass: "npm:1.77.0"
     sass-loader: "npm:13.3.1"
@@ -11759,16 +11759,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-tooltip@npm:5.28.0":
-  version: 5.28.0
-  resolution: "react-tooltip@npm:5.28.0"
+"react-tooltip@npm:5.29.1":
+  version: 5.29.1
+  resolution: "react-tooltip@npm:5.29.1"
   dependencies:
     "@floating-ui/dom": "npm:^1.6.1"
     classnames: "npm:^2.3.0"
   peerDependencies:
     react: ">=16.14.0"
     react-dom: ">=16.14.0"
-  checksum: 10c0/817909584adf4d84d70768e41c7fdf66bf9affd980499742a2da54378e5c8be53a0867bf72bdfb441fa4aa35c79847585990b6e31c91e6647e789ba68e9b08a2
+  checksum: 10c0/f5bbdf7d3e27497d71098a9a054f528f4c45c0823914bbf1351f01d992fd526709793112ebcbf775287a829d157551d4880075cfd90cd9489308dc5a1de4d0e0
   languageName: node
   linkType: hard
 
