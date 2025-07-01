@@ -94,8 +94,11 @@ function getTextSizeForWidthAndHeight(
 ) {
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
-  // need to pad the width: use 80% of the space (leave 10% padding on each side)
-  width = width * 0.95;
+  //console.log(`getTextSizeForWidthAndHeight: width raw ${width}`);
+  // need to pad the width: use 95% of the space (leave 10% padding on each side)
+  // and ensure it is a whole number
+  width = Math.round(width * 0.95);
+  //console.log(`getTextSizeForWidthAndHeight: width reduced ${width}`);
   if (w <= width && maxFontPx <= height) {
     return maxFontPx;
   }
