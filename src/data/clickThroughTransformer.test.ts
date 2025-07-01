@@ -10,6 +10,7 @@ import { DataFrameToPolystat } from './processor';
 describe('ClickThroughTransformer', () => {
   let modelA: PolystatModel;
   let modelB: PolystatModel;
+  let modelC: PolystatModel;
   let models: PolystatModel[] = [];
   const field: FieldConfig = {
     decimals: 2,
@@ -39,6 +40,17 @@ describe('ClickThroughTransformer', () => {
     modelB.operatorName = 'mean';
     modelB.clickThrough = '/dashboard/test?orgId=1&var-CUSTOM=${__cell_name}';
     models.push(modelB);
+    const frameC = toDataFrame({
+      fields: [
+        { name: 'time', type: FieldType.time, values: [time, time + 1, time + 2] },
+        { name: '1.0-2+auto10', type: FieldType.number, values: [600, 610, 620], config: field },
+      ],
+    });
+    // operator mean
+    modelC = DataFrameToPolystat(frameC, 'mean')[0];
+    modelC.operatorName = 'mean';
+    modelC.clickThrough = '/dashboard/test?orgId=1&var-CUSTOM=${__cell_name}';
+    models.push(modelC);
   });
   describe('Single Metric: Reference a cell name', () => {
     it('returns cell name', () => {
@@ -48,6 +60,15 @@ describe('ClickThroughTransformer', () => {
       expect(result).toBe('/dashboard/test?orgId=1&var-CUSTOM=A-series');
     });
   });
+  describe('Single Metric: Reference a cell name with encoding required', () => {
+    it('returns cell name', () => {
+      const url = modelC.clickThrough;
+      const result = ClickThroughTransformer.transformSingleMetric(2, url, models);
+      // this should be an encoded value
+      expect(result).toBe('/dashboard/test?orgId=1&var-CUSTOM=1.0-2%2Bauto10');
+    });
+  });
+
   describe('Single Metric: Reference a cell value with units', () => {
     it('returns cell value', () => {
       console.log(JSON.stringify(modelA));

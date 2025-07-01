@@ -14,5 +14,6 @@ test('test composite creation', async ({ page, panelEditPage }) => {
   await page.locator('#cmi-field-index-0').getByRole('textbox').pressSequentially('/A.*/');
   await page.keyboard.press('Enter');
   await expect(panelEditPage.refreshPanel()).toBeOK();
+  // without the display limit set to 10, this will be "dotted"
   await expect(panelEditPage.panel.locator.getByText('Composite-A')).toBeVisible();
 });

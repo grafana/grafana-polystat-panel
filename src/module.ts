@@ -111,14 +111,13 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Sizing'],
         description: 'Automatically sets size of polygon for best fit',
       })
-      .addNumberInput({
+      .addTextInput({
         name: 'Polygon Size in pixels',
         path: 'globalPolygonSize',
         description: 'Use specific size for polygons',
-        defaultValue: 25,
+        defaultValue: '25',
         settings: {
           placeHolder: 'Auto',
-          min: 1,
         },
         category: ['Sizing'],
         showIf: (c) => !c.autoSizePolygons,

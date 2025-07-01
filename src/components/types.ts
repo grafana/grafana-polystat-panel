@@ -24,7 +24,7 @@ export interface PolystatOptions {
   globalOperator: string;
   globalPolygonBorderSize: number;
   globalPolygonBorderColor: string;
-  globalPolygonSize: number;
+  globalPolygonSize: string;
   globalRegexPattern: string;
   globalShape: PolygonShapes;
   globalShowValueEnabled: boolean;
@@ -70,7 +70,7 @@ export interface PolystatOptions {
   tooltipSecondarySortByField: string;
   tooltipDisplayMode: string;
   tooltipDisplayTextTriggeredEmpty: string;
-}
+};
 
 export interface PolystatModel {
   displayMode?: string;
@@ -100,13 +100,13 @@ export interface PolystatModel {
   members: PolystatModel[];
   triggerCache?: any; // holds animation frame info
   mappings?: ValueMapping[];
-}
+};
 
 export enum PolygonShapes {
   HEXAGON_POINTED_TOP = 'hexagon_pointed_top',
   CIRCLE = 'circle',
   SQUARE = 'square',
-}
+};
 
 export const PolygonNamedShapes = [
   { value: 'hexagon_pointed_top', label: 'Hexagon Pointed Top' },
@@ -117,7 +117,7 @@ export const PolygonNamedShapes = [
 export interface PolystatDiameters {
   diameterX: number;
   diameterY: number;
-}
+};
 
 export const OperatorOptions: SelectableValue[] = [
   { value: 'mean', label: 'Mean (avg)' },
@@ -180,7 +180,7 @@ export enum FontFamilies {
   INTER = 'Inter',
   ROBOTO = 'Roboto',
   ROBOTO_MONO = 'Roboto Mono',
-}
+};
 
 export const FontFamilyOptions = [
   { value: FontFamilies.ARIAL, label: 'Arial' },
@@ -189,6 +189,7 @@ export const FontFamilyOptions = [
   { value: FontFamilies.INTER, label: 'Inter' },
   { value: FontFamilies.ROBOTO_MONO, label: 'Roboto Mono' },
 ];
+
 export const FontFamilyOptionsLegacy = [
   { value: FontFamilies.ARIAL, label: 'Arial' },
   { value: FontFamilies.HELVETICA, label: 'Helvetica' },
@@ -210,7 +211,7 @@ export const ShowTimestampFormats = [
 export enum TimestampPositions {
   BELOW_VALUE = 'below_value',
   ABOVE_VALUE = 'above_value',
-}
+};
 
 export const ShowTimestampPositions = [
   { value: TimestampPositions.ABOVE_VALUE, label: 'Above Value' },

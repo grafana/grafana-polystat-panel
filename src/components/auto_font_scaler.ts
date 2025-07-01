@@ -26,6 +26,9 @@ export const AutoFontScalar = (
   // estimate how big of a font can be used
   // Two lines of text must fit with vertical spacing included
   // if it is too small, hide everything
+  // console.log(`AutoFontScalar maxLabel ${maxLabel}`);
+  // console.log(`AutoFontScalar textAreaWidth ${textAreaWidth}`);
+  // console.log(`AutoFontScalar textAreaHeight ${textAreaHeight}`);
   let activeLabelFontSize = computeTextFontSize(
     maxLabel,
     fontFamily,
@@ -78,6 +81,7 @@ export const AutoFontScalar = (
 
   // same for the value and timestamp option, also check for sub metrics size in case of composite
   let {maxValue, maxTimestamp} = getMaxValueAndTimestamp(data);
+  //console.log(`AutoFontScalar maxValue ${maxValue}`);
   // assume no timestamp
   let activeValueFontSize = computeTextFontSize(
     maxValue,
@@ -88,6 +92,7 @@ export const AutoFontScalar = (
     textAreaWidth,
     textAreaHeight
   );
+  //console.log(`calc activeValueFontSize ${activeValueFontSize}`);
   if (showTimestamp) {
     // two lines to be displayed, sharing half of the normal space for the value
     activeValueFontSize = computeTextFontSize(
@@ -141,7 +146,7 @@ export const AutoFontScalar = (
       activeCompositeValueFontSize = 0;
     }
   }
-
+  //console.log(`calc final activeLabelFontSize: ${activeLabelFontSize}`);
   return { activeLabelFontSize, activeValueFontSize, activeCompositeValueFontSize, activeTimestampFontSize, showEllipses, numOfChars };
 };
 
@@ -214,7 +219,7 @@ const computeTextFontSize = (
   textAreaWidth: number,
   textAreaHeight: number
 ): number => {
-  return getTextSizeForWidthAndHeight(
+  let computedSize = getTextSizeForWidthAndHeight(
     text,
     `?px ${font}`,
     textAreaWidth,
@@ -222,4 +227,5 @@ const computeTextFontSize = (
     minFont,
     maxFont
   );
+  return (computedSize);
 };
