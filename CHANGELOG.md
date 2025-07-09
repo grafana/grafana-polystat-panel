@@ -5,7 +5,11 @@
 ## v2.1.15
 
 - New Feature - Templated Polygon Sizing [[#354](https://github.com/grafana/grafana-polystat-panel/issues/354)]
-  - Note: Font auto-scaling does not currently work with this enabled
+  - When font autoscaling is disabled these four options become available
+    1. Label Font Size
+    2. Value Font Size
+    3. Timestamp Font Size
+    4. Composite Value Font Size
 - Force uplot dependency to resolve to 1.6.32 (package is not used)
 - Fixes [[#411](https://github.com/grafana/grafana-polystat-panel/issues/411)]
 - Fixes [[#404](https://github.com/grafana/grafana-polystat-panel/issues/404)]
