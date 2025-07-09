@@ -163,14 +163,36 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         description: 'Automatically sets label and value font size based on size of polygon',
       })
       .addNumberInput({
-        name: 'Font Size',
-        path: 'globalFontSize',
+        name: 'Label Font Size',
+        path: 'globalLabelFontSize',
         defaultValue: 12,
         settings: {
           min: 0,
         },
         category: ['Text'],
-        description: 'Default font size to use when Auto is disabled',
+        description: 'Label font size',
+        showIf: (c) => !c.globalAutoScaleFonts,
+      })
+      .addNumberInput({
+        name: 'Value Font Size',
+        path: 'globalValueFontSize',
+        defaultValue: 14,
+        settings: {
+          min: 0,
+        },
+        category: ['Text'],
+        description: 'Value font size',
+        showIf: (c) => !c.globalAutoScaleFonts,
+      })
+      .addNumberInput({
+        name: 'Composite Value Font Size',
+        path: 'globalCompositeValueFontSize',
+        defaultValue: 14,
+        settings: {
+          min: 0,
+        },
+        category: ['Text'],
+        description: 'Composite Value font size',
         showIf: (c) => !c.globalAutoScaleFonts,
       })
       // font color

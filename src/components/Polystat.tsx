@@ -266,10 +266,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   // calculate the fontsize based on the shape and the text
-  let activeLabelFontSize = options.globalFontSize;
+  let activeLabelFontSize = options.globalLabelFontSize;
   // font sizes are independent for label and values
-  let activeValueFontSize = options.globalFontSize;
-  let activeCompositeValueFontSize = options.globalFontSize;
+  let activeValueFontSize = options.globalValueFontSize;
+  let activeCompositeValueFontSize = options.globalCompositeValueFontSize;
   // timestamp sizing
   let activeTimestampFontSize = options.globalShowTimestampFontSize;
   let showEllipses = false;
@@ -289,8 +289,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     );
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
-    activeTimestampFontSize = result.activeTimestampFontSize;
     activeCompositeValueFontSize = result.activeCompositeValueFontSize;
+    activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }

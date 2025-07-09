@@ -19,7 +19,9 @@ export interface PolystatOptions {
   globalDisplayMode: string;
   globalDisplayTextTriggeredEmpty: string;
   globalFillColor: string;
-  globalFontSize: number;
+  globalLabelFontSize: number;
+  globalValueFontSize: number;
+  globalCompositeValueFontSize: number;
   globalGradientsEnabled: boolean;
   globalOperator: string;
   globalPolygonBorderSize: number;

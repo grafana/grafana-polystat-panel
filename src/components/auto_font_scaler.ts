@@ -147,7 +147,13 @@ export const AutoFontScalar = (
     }
   }
   //console.log(`calc final activeLabelFontSize: ${activeLabelFontSize}`);
-  return { activeLabelFontSize, activeValueFontSize, activeCompositeValueFontSize, activeTimestampFontSize, showEllipses, numOfChars };
+  return {
+    activeLabelFontSize,
+    activeValueFontSize,
+    activeCompositeValueFontSize,
+    activeTimestampFontSize,
+    showEllipses,
+    numOfChars };
 };
 
 /**
