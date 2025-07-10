@@ -7,5 +7,5 @@ module.exports = {
   // Jest configuration provided by Grafana
   ...require('./.config/jest.config'),
   // Inform jest to only transform specific node_module packages.
-  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules, 'rxjs'])],
+  transformIgnorePatterns: [nodeModulesToTransform([...grafanaESModules, 'rxjs', 'robust-predicates', 'd3-.*', 'delaunator', 'internmap'])],
 };

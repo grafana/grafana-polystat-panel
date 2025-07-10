@@ -105,6 +105,8 @@ export interface AngularSavedComposites {
  * This is called when the panel is imported or reloaded
  */
 export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>): Partial<PolystatOptions> => {
+  // add defaults values for v2.1.15 feature
+
   //@ts-ignore
   if (!panel.polystat) {
     // not angular, just return the options if currently set
@@ -112,7 +114,20 @@ export const PolystatPanelMigrationHandler = (panel: PanelModel<PolystatOptions>
       // This happens on the first load or when migrating from angular
       return {} as any;
     }
-    // have settings, return them unchanged
+    //
+    // have react-based settings, modifications to new config will be processed here
+    //
+    // ensure there is a default for new feature in v2.1.15
+    if (!panel.options.globalValueFontSize) {
+      panel.options.globalValueFontSize = 14;
+    }
+    // @ts-ignore
+    if (panel.options.globalFontSize) {
+      // @ts-ignore
+      panel.options.globalLabelFontSize = panel.options.globalFontSize;
+      // @ts-ignore
+      delete panel.options.globalFontSize;
+    }
     return panel.options;
   }
   //@ts-ignore
@@ -179,12 +194,14 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     globalDisplayMode: 'all',
     globalDisplayTextTriggeredEmpty: '',
     globalFillColor: '',
-    globalFontSize: 8,
+    globalLabelFontSize: 12,
+    globalValueFontSize: 14,
+    globalCompositeValueFontSize: 14,
     globalGradientsEnabled: false,
     globalOperator: 'mean',
     globalPolygonBorderSize: 1,
     globalPolygonBorderColor: '',
-    globalPolygonSize: 50,
+    globalPolygonSize: '50',
     globalRegexPattern: '',
     globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
     globalShowValueEnabled: true,
@@ -271,7 +288,7 @@ export const migrateDefaults = (angular: AngularPolystatOptions) => {
     options.globalAutoScaleFonts = angular.fontAutoScale;
   }
   if (angular.fontSize) {
-    options.globalFontSize = angular.fontSize;
+    options.globalLabelFontSize = angular.fontSize;
   }
   options.globalTextFontFamily = FontFamilies.INTER;
   if (hasRobotoFont()) {
