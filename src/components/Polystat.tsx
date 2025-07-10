@@ -14,6 +14,7 @@ import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVG
 import { Tooltip } from './tooltips/Tooltip';
 import { AutoFontScalar } from './auto_font_scaler';
 import { GetAlignments } from './alignment';
+import { getTemplateSrv } from '@grafana/runtime';
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
@@ -168,20 +169,34 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 
   // determine how many rows and columns are going to be generated
-  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.processedData!.length);
+  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.layoutDisplayLimit, options.processedData!.length);
   // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
   lm.generateActualColumnAndRowUsage(options.processedData, options.layoutDisplayLimit);
   // next the radius can be determined from actual rows and columns being used
   let radius = 0;
   if (!options.autoSizePolygons && options.globalPolygonSize) {
-    if (options.globalPolygonSize < 0 || isNaN(options.globalPolygonSize)) {
+    // user specified the size as either numeric, or template variable
+    let calculatedGlobalPolygonSize = options.globalPolygonSize;
+    let useNumber = NaN;
+    if (!isNaN(Number(calculatedGlobalPolygonSize))) {
+      useNumber = Number(calculatedGlobalPolygonSize);
+    } else {
+      // handle templated size
+      let replaced = getTemplateSrv().replace(calculatedGlobalPolygonSize);
+      if (!isNaN(Number(replaced))) {
+        useNumber = Number(replaced);
+      } else {
+        useNumber = NaN;
+      }
+    }
+    if (useNumber < 0 || isNaN(useNumber)) {
       // force min size if below zero or NaN
-      options.globalPolygonSize = 50;
+      useNumber = 50;
       console.log(`WARNING: polygon size is manually set to an invalid value, forcing to 50px`);
     } else {
-      lm.setRadius(options.globalPolygonSize);
+      lm.setRadius(useNumber);
     }
-    radius = options.globalPolygonSize;
+    radius = useNumber;
   } else {
     radius = lm.generateRadius(options.globalShape);
   }
@@ -196,7 +211,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       [options.panelWidth, options.panelHeight],
     ]);
   const { diameterX, diameterY } = lm.getDiameters();
-  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.processedData!.length);
+  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.layoutDisplayLimit, options.processedData!.length);
 
   // compute text area size (used to calculate the fontsize)
   const textAreaWidth = diameterX;
@@ -242,16 +257,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   };
 
   const getCoords = (i: number) => {
-    const xValue = calculatedPoints[i].x;
-    const yValue = calculatedPoints[i].y;
-    return { x: xValue, y: yValue };
+    if (i < calculatedPoints.length) {
+      const xValue = calculatedPoints[i].x;
+      const yValue = calculatedPoints[i].y;
+      return { x: xValue, y: yValue };
+    }
+    return null;
   };
 
   // calculate the fontsize based on the shape and the text
-  let activeLabelFontSize = options.globalFontSize;
+  let activeLabelFontSize = options.globalLabelFontSize;
   // font sizes are independent for label and values
-  let activeValueFontSize = options.globalFontSize;
-  let activeCompositeValueFontSize = options.globalFontSize;
+  let activeValueFontSize = options.globalValueFontSize;
+  let activeCompositeValueFontSize = options.globalCompositeValueFontSize;
   // timestamp sizing
   let activeTimestampFontSize = options.globalShowTimestampFontSize;
   let showEllipses = false;
@@ -271,8 +289,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     );
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
-    activeTimestampFontSize = result.activeTimestampFontSize;
     activeCompositeValueFontSize = result.activeCompositeValueFontSize;
+    activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
   }
@@ -312,6 +330,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
     const useRadius = lm.generateRadius(options.globalShape);
     const coords = getCoords(index);
+    if (!coords) {
+      return;
+    }
 
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
@@ -559,6 +580,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
           {options.processedData!.map((item, index) => {
             const coords = getCoords(index);
+            if (!coords) {
+              return;
+            }
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);

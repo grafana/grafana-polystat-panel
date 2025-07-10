@@ -2,6 +2,19 @@
 
 ## Entries
 
+## v2.1.15
+
+- New Feature - Templated Polygon Sizing [[#354](https://github.com/grafana/grafana-polystat-panel/issues/354)]
+  - When font autoscaling is disabled these four options become available
+    1. Label Font Size
+    2. Value Font Size
+    3. Timestamp Font Size
+    4. Composite Value Font Size
+- Force uplot dependency to resolve to 1.6.32 (package is not used)
+- Fixes [[#411](https://github.com/grafana/grafana-polystat-panel/issues/411)]
+- Fixes [[#404](https://github.com/grafana/grafana-polystat-panel/issues/404)]
+- Fixes [[#427](https://github.com/grafana/grafana-polystat-panel/issues/427)]
+
 ## v2.1.14
 
 - Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This feature now requires an exact match instead of a wildcard.

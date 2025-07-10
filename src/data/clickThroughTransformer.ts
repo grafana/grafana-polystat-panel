@@ -23,7 +23,7 @@ class ClickThroughTransformer {
     // check if url contains any dereferencing
     while (url.match(this.cellName)) {
       // replace with series name
-      url = url.replace(this.cellName, item.name);
+      url = url.replace(this.cellName, encodeURIComponent(item.name));
     }
     while (url.match(this.cellValue)) {
       // replace with formatted value, and encoded
@@ -31,7 +31,7 @@ class ClickThroughTransformer {
     }
     while (url.match(this.cellRawValue)) {
       // replace with value
-      url = url.replace(this.cellRawValue, item.value.toString());
+      url = url.replace(this.cellRawValue, encodeURIComponent(item.value.toString()));
     }
     return url;
   }
