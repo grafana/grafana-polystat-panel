@@ -37,3 +37,4 @@ jobs:
       attestation: true
       run-playwright-with-skip-grafana-dev-image: true
       run-playwright-with-grafana-dependency: ">=10.1.0"
+      upload-playwright-artifacts: true
