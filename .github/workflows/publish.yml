@@ -35,4 +35,5 @@ jobs:
       environment: ${{ github.event.inputs.environment }}
       docs-only: ${{ fromJSON(github.event.inputs.docs-only) }}
       attestation: true
-
+      run-playwright-with-skip-grafana-dev-image: true
+      run-playwright-with-grafana-dependency: ">=10.1.0"
