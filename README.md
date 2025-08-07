@@ -40,7 +40,7 @@ Composites allow you to combine multiple metrics into a single representation th
 
 ## Value Mappings
 
-This is a built-in option in Grafana and behaves in the same manner as documented [here.](https://grafana.com/docs/grafana/latest/panels/configure-value-mappings/)
+This is a built-in option in Grafana and behaves as documented in [Configure value mappings](https://grafana.com/docs/grafana/latest/panels/configure-value-mappings/).
 
 NOTE: Color assignments are ignored, only threshold colors are applied.
 
@@ -48,7 +48,11 @@ NOTE: Color assignments are ignored, only threshold colors are applied.
 
 This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds).
 
-## Building
+## Templating
+
+Template variables are available in the clickThroughUrl setting. Find more information in [Templating](docs/Polystat-docs-templates).
+
+## Build the plugin
 
 This plugin relies on the [Plugin Tools](https://github.com/grafana/plugin-tools) typical build sequence:
 
@@ -67,7 +71,9 @@ yarn dev
 
 ### Docker Support
 
-A docker-compose.yml file is include for easy development and testing, just run
+The plugin includes a `docker-compose.yml` file for development and testing. 
+
+To use it run:
 
 ```BASH
 docker-compose up
