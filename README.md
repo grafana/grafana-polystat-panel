@@ -30,6 +30,14 @@ See the following examples:
 
 This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings) and [Options](docs/Polystat-docs-options).
 
+### Template variables
+
+Template variables are available in the `clickThroughUrl` setting. Find more information in [Templating](docs/Polystat-docs-templates).
+
+## Set thresholds
+
+This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds).
+
 ## Overrides
 
 Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs. [Learn more](docs/Polystat-docs-overrides).
@@ -38,19 +46,11 @@ Use overrides to apply additional rendering options for metrics, including custo
 
 Composites allow you to combine multiple metrics into a single representation that reflects the "worst" state of the metrics combined. See how at [Composites](docs/Polystat-docs-composites).
 
-## Value Mappings
+## Value mappings
 
 This is a built-in option in Grafana and behaves as documented in [Configure value mappings](https://grafana.com/docs/grafana/latest/panels/configure-value-mappings/).
 
-NOTE: Color assignments are ignored, only threshold colors are applied.
-
-## Set thresholds
-
-This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds).
-
-## Templating
-
-Template variables are available in the clickThroughUrl setting. Find more information in [Templating](docs/Polystat-docs-templates).
+Note that color assignments are ignored, and only threshold colors are applied.
 
 ## Build the plugin
 

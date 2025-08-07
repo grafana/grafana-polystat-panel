@@ -108,7 +108,7 @@ The clickthrough URL is applied to all polygons that do not have an override or 
 
   - Typical values are: _blank|_self|_parent|_top|
 
-## Global Aliasing
+## Global aliasing
 
 This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name.
 

@@ -1,8 +1,8 @@
-# Templating
+# Template variables
 
 ## Using Dashboard Template Variables
 
-Template variables are available in the clickThroughUrl setting, specified by using ${varname}.
+Template variables are available in the `clickThroughUrl` setting, specified by using ${varname}.
 They can also be passed to another dashboard by appending var-VARNAME=value to the url
 
 ```URL
