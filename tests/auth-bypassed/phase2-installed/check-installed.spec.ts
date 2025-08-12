@@ -11,5 +11,5 @@ test('Check Plugin Installed', async ({ page }) => {
   // get version from package.json
   const pluginVersion = packageJSON.version;
   const pattern = new RegExp(`Version:?.*${pluginVersion}`);
-  await expect(page.getByText(pattern)).toContainText(pluginVersion);
+  await expect(page.getByText(pattern).first()).toContainText(pluginVersion);
 });
