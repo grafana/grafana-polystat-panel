@@ -28,23 +28,23 @@ See the following examples:
 
 ## Settings and options
 
-This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings) and [Options](docs/Polystat-docs-options).
+This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings.md) and [Options](docs/Polystat-docs-options.md).
 
 ### Template variables
 
-Template variables are available in the `clickThroughUrl` setting. Find more information in [Templating](docs/Polystat-docs-templates).
+Template variables are available in the `clickThroughUrl` setting. Find more information in [Templating](docs/Polystat-docs-templates.md).
 
 ## Set thresholds
 
-This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds).
+This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds.md).
 
 ## Overrides
 
-Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs. [Learn more](docs/Polystat-docs-overrides).
+Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs. [Learn more](docs/Polystat-docs-overrides.md).
 
 ## Composites
 
-Composites allow you to combine multiple metrics into a single representation that reflects the "worst" state of the metrics combined. See how at [Composites](docs/Polystat-docs-composites).
+Composites allow you to combine multiple metrics into a single representation that reflects the "worst" state of the metrics combined. See how at [Composites](docs/Polystat-docs-composites.md).
 
 ## Value mappings
 
