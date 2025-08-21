@@ -9,7 +9,7 @@ T0 = lowest decimal value, any state
 TN = highest decimal value, any state
 ```
 
-Initial state is set to "ok"
+The initial state is set to "ok".
 
 A comparison is made using "greater than or equal to" against the value
   `If value >= thresholdValue state = X`

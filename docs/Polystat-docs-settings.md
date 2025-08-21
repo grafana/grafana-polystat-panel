@@ -58,32 +58,32 @@ Currently there are three shapes that can be selected, and each use a best fit m
 
 The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified.
 
-- Clickthrough - Sanitize URL: Normally this is enabled, and is intended to prevent malicious data entry.
+- **Clickthrough - Sanitize URL**: Usually enabled, it prevents malicious data entry.
 
-- Clickthrough - Open URL In New Tab: When checked, this will cause a new tab to be opened when you click on a polygon.  For drill-down dashboards, disabling this is recommended.
+- **Clickthrough - Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
 
-- Clickthrough - Enable Custom URL Target: When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough. Note that this is only visible when `Open in New Tab` is disabled.
+- **Clickthrough - Enable Custom URL Target**: If checked, you can set a custom value for the `target` attribute of the clickthrough. Note that this is only visible when `Open in New Tab` is disabled.
 
 ![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
 
-- Clickthrough - Custom URL Target: Specify the content for the `target` attribute of the clickthrough URL. 
-
-  - Typical values are: _blank|_self|_parent|_top|
+- **Clickthrough - Custom URL Target**: Specifies the content for the `target` attribute of the clickthrough URL. Typical values are `_blank`, `_self`, `_parent`, and `_top`.
 
 ## Global Aliasing
 
-This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name.
+This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name. 
 
-If you have these 3 Queries, returning a series:
-Foo-A, values 1,2,3
-Bar-B, values 4,5,6
-Misc, values 7,8,9
+### Example
+
+If you have these 3 queries, returning the following series:
+
+- Foo-A, values 1,2,3
+- Bar-B, values 4,5,6
+- Misc, values 7,8,9
 
 ![Before Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-before.png)
 
-Adding the regular expression: `/(Foo|Bar)/`, will display:
+If you add the regular expression `/(Foo|Bar)/`, the result is:
 
 ![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-after.png)
 
-Specify a regular expression to pick a portion of matching metric names.
 
