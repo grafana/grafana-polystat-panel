@@ -12,7 +12,8 @@ TN = highest decimal value, any state
 The initial state is set to "ok".
 
 A comparison is made using "greater than or equal to" against the value
-  `If value >= thresholdValue state = X`
+
+`If value >= thresholdValue state = X`
 
 Comparisons are made in reverse order, using the range between the Nth (inclusive) threshold and N+1 (exclusive)
 
@@ -21,7 +22,9 @@ Comparisons are made in reverse order, using the range between the Nth (inclusiv
   ExclusiveValue = T(n+1).value
 ```
 
-When there is no n+1 threshold, the highest value threshold T(n), a simple inclusive >= comparison is made
+## Examples
+
+When there is no n+1 threshold, the highest value threshold T(n), a simple inclusive >= comparison is made:
 
 Example 1: (typical linear)
 

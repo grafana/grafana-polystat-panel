@@ -54,19 +54,11 @@ Currently there are three shapes that can be selected, and each use a best fit m
 
 ![Polygon Square](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-square.png)
 
-## Global Clickthrough
+- **Default Clickthrough**: The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified. Options include:
 
-The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified.
+  - **Sanitize URL**: Usually enabled, it prevents malicious data entry.
 
-- **Clickthrough - Sanitize URL**: Usually enabled, it prevents malicious data entry.
-
-- **Clickthrough - Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
-
-- **Clickthrough - Enable Custom URL Target**: If checked, you can set a custom value for the `target` attribute of the clickthrough. Note that this is only visible when `Open in New Tab` is disabled.
-
-![Custom URL Target](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-custom-clickthrough-target.png)
-
-- **Clickthrough - Custom URL Target**: Specifies the content for the `target` attribute of the clickthrough URL. Typical values are `_blank`, `_self`, `_parent`, and `_top`.
+  - **Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
 
 ## Global Aliasing
 

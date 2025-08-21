@@ -14,40 +14,64 @@ The final result of the above override with thresholds applied:
 
 ![Override with Thresholds Rendered](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-overrides-rendered-thresholds.png)
 
-## Label
+## Override settings
 
-Label overrides to ease search. The label is not rendered on the polygon.
+- **Label**: Label overrides to ease search. The label is not rendered on the polygon.
 
-## Metric
+- **Metric**: If set, the panel will provide "hints" for metric names, and allow you to enter a regular expression to match multiple metrics.
 
-The panel will provide "hints" for metric names, and allow you to enter a regular expression to match multiple metrics.
+- **Decimals**: Sets the maximum number of decimals to be displayed. Leave this empty to show all decimals.
 
-## Decimals (limit)
+- **Statistic to Display (Stat)**: Allows you to specify a different statistic to use for the matching metric, and will replace the global statistic. As with the global setting, the full set of statistics Grafana provides are available.
 
-Sets the maximum number of decimals to be displayed. Leave this empty to show all decimals.
+- **Unit Formatting**: All of the unit types are available in this selector and will be applied to the value displayed. A suffix is typically added by the formatter to indicate the unit like "B/sec" or symbols for temperatures, percentages, and similar.
 
-## Statistic to Display (Stat)
+- **Thresholds**: An override can specify a set of thresholds that are to be applied to the matching metric, and will replace any global threshold settings. See [thresholds](#thresholds-details) for details on how thresholds are evaluated.
 
-This lets you specify a different statistic to use for the matching metric, and will replace the global statistic.
-As with the global setting, the full set of statistics Grafana provides are available.
+- **Prefix**: Text in this field will be prepended to the rendered metric.
 
-## Unit Formatting
+- **Suffix**: Text in this field will be appended to the rendered metric after any unit text is applied.
 
-All of the unit types are available in this selector and will be applied to the value displayed. A suffix is typically added by the formatter to indicate the unit like "B/sec" or symbols for temperatures, percentages, and similar.
+## Clickthrough URL
 
-## Thresholds
+Use this setting to indicate the URL to open when clicking. 
 
-An override can specify a set of thresholds that are to be applied to the matching metric, and will replace any global threshold settings.
+Options include:
 
-See [thresholds](#thresholds-details) for details on how thresholds are evaluated.
+- **Sanitize URL**: Usually enabled, it prevents malicious data entry.
 
-## Prefix
+- **Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
 
-Text in this field will be prepended to the rendered metric.
+- **Enable Custom URL Target**: If checked, you can set a custom value for the `target` attribute of the clickthrough. Note that this is only visible when `Open in New Tab` is disabled.
 
-## Suffix
+- **Custom URL Target**: Specifies the content for the `target` attribute of the clickthrough URL. Typical values are `_blank`, `_self`, `_parent`, and `_top`.
 
-Text in this field will be appended to the rendered metric after any unit text is applied.
+### Form clickthrough URLs using regex and templates
+
+You can form URLs using regular expression capture groups and template variables.
+
+For example, if you have multiple metrics like this:
+
+```TEXT
+hera_memutil
+plex_memutil
+```
+
+And a regular expression for the override:
+
+```REGEX
+/(.*)_mem/
+```
+
+You can use the capture group `$1` in the URL:
+
+```TEXT
+/dashboard/detail-dash?var-HOSTNAME=$1
+```
+
+And obtain the final URL `https://myserver/dashboard/detail-dash?var-HOSTNAME=hera`.
+
+For more examples using template variables and regular expression capture groups see [Templates](#templating).
 
 ## Bottom Menu
 
@@ -62,30 +86,3 @@ See the menu at the bottom right side of the override for additional controls.
 - **Duplicate**: Allows you to make a copy of the current override and append it to the end of the list, named with "Copy" at the end.
 
 - **Delete**: This button will delete the override completely.
-
-## Example using capture groups
-
-If you have multiple metrics like this:
-
-```TEXT
-hera_memutil
-plex_memutil
-```
-
-And a regular expression for the override:
-
-```REGEX
-/(.*)_mem/
-```
-
-The capture group `$1` can be used in the url:
-
-```TEXT
-/dashboard/detail-dash?var-HOSTNAME=$1
-```
-
-The url will end up being:
-
-`https://myserver/dashboard/detail-dash?var-HOSTNAME=hera`
-
-For more examples using template variables and regular expression capture groups see [this section on templating](#templating)
