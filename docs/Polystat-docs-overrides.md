@@ -32,7 +32,7 @@ The final result of the above override with thresholds applied:
 
 - **Suffix**: Text in this field will be appended to the rendered metric after any unit text is applied.
 
-- **Clickthough URL**: Use this setting to indicate the URL to open when clicking the polygon. See more at [Use Clickthroughs](./Polystat-docs-clickthroughurl.md).
+- **Clickthrough URL**: Use this setting to indicate the URL to open when clicking the polygon. See more at [Use Clickthroughs](./Polystat-docs-clickthroughurl.md).
 
 ## Bottom Menu
 
