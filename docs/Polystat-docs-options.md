@@ -87,7 +87,7 @@ The following options are available:
 
 ![Tooltip Display Modes](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-display-modes.png)
 
-- **Non Triggered State Text**: When there are no threshold violations, displayes this text in the tooltip instead of the metric value. Leave blank if you want to show the value.
+- **Non Triggered State Text**: When there are no threshold violations, display this text in the tooltip instead of the metric value. Leave blank if you want to show the value.
 
 ## Tooltip Sorting
 
