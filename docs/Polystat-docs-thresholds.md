@@ -53,7 +53,7 @@ If there isn't any `n+1` threshold and the highest value is T(n), a simple inclu
   50 <= value < 90
 ```
 
-**Example 3: Bounded)**
+**Example 3: Bounded**
 
 ```TEXT
     T0 - 50, critical
