@@ -30,9 +30,9 @@ See the following examples:
 
 This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings.md) and [Options](docs/Polystat-docs-options.md).
 
-### Template variables
+### Clickthrough URLs
 
-Template variables are available in the `clickThroughUrl` setting. Find more information in [Templating](docs/Polystat-docs-templates.md).
+Use this setting to indicate the URL to open when clicking the polygon. Find more information in [Use Clickthrough URLs](docs/Polystat-docs-clickthroughurl.md).
 
 ## Set thresholds
 
