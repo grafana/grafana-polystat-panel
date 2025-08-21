@@ -32,7 +32,7 @@ Main settings include:
 
 - **Global Thresholds**: This set of thresholds are applied to all metrics that do not have a matching override. See [Use thresholds](./Polystat-docs-thresholds.md) for details on how thresholds are evaluated.
 
-- **Global Clickthrough**: The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified. See more at [Global Clickthrough](#global-clickthrough).
+- **Global Clickthrough**: The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified. See more at [Use Clickthroughs](./Polystat-docs-clickthroughurl.md).
 
 - **Global Aliasing**: This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name. See more at [Global Aliasing](#global-aliasing).
 
@@ -53,12 +53,6 @@ Currently there are three shapes that can be selected, and each use a best fit m
 **Square**
 
 ![Polygon Square](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-shape-square.png)
-
-- **Default Clickthrough**: The clickthrough URL is applied to all polygons that do not have an override or composite with a clickthrough specified. Options include:
-
-  - **Sanitize URL**: Usually enabled, it prevents malicious data entry.
-
-  - **Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
 
 ## Global Aliasing
 

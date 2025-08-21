@@ -8,14 +8,13 @@ Thresholds are expected to be sorted by ascending value, where
 T0 = lowest decimal value, any state
 TN = highest decimal value, any state
 ```
-
 The initial state is set to "ok".
 
-A comparison is made using "greater than or equal to" against the value
+A comparison is made using "greater than or equal to" against the value:
 
 `If value >= thresholdValue state = X`
 
-Comparisons are made in reverse order, using the range between the Nth (inclusive) threshold and N+1 (exclusive)
+Comparisons are made in reverse order, using the range between the Nth (inclusive) threshold and N+1 (exclusive):
 
 ```TEXT
   InclusiveValue = T(n).value
@@ -24,9 +23,9 @@ Comparisons are made in reverse order, using the range between the Nth (inclusiv
 
 ## Examples
 
-When there is no n+1 threshold, the highest value threshold T(n), a simple inclusive >= comparison is made:
+If there isn't any `n+1` threshold and the highest value is T(n), a simple inclusive >= comparison is made:
 
-Example 1: (typical linear)
+**Example 1: Ttypical linear**
 
 ```TEXT
     T0 - 5, ok
@@ -40,7 +39,7 @@ Example 1: (typical linear)
   5 <= Value < 10   (T0 <= Value < T1)
 ```
 
-Example 2: (reverse linear)
+**Example 2: Reverse linear**
 
 ```TEXT
     T0 - 50, critical
@@ -54,7 +53,7 @@ Example 2: (reverse linear)
   50 <= value < 90
 ```
 
-Example 3: (bounded)
+**Example 3: Bounded)**
 
 ```TEXT
     T0 - 50, critical

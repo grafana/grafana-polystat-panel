@@ -26,52 +26,13 @@ The final result of the above override with thresholds applied:
 
 - **Unit Formatting**: All of the unit types are available in this selector and will be applied to the value displayed. A suffix is typically added by the formatter to indicate the unit like "B/sec" or symbols for temperatures, percentages, and similar.
 
-- **Thresholds**: An override can specify a set of thresholds that are to be applied to the matching metric, and will replace any global threshold settings. See [thresholds](#thresholds-details) for details on how thresholds are evaluated.
+- **Thresholds**: An override can specify a set of thresholds that are to be applied to the matching metric, and will replace any global threshold settings. See [Use thresholds](./Polystat-docs-thresholds.md) for details on how thresholds are evaluated.
 
 - **Prefix**: Text in this field will be prepended to the rendered metric.
 
 - **Suffix**: Text in this field will be appended to the rendered metric after any unit text is applied.
 
-## Clickthrough URL
-
-Use this setting to indicate the URL to open when clicking. 
-
-Options include:
-
-- **Sanitize URL**: Usually enabled, it prevents malicious data entry.
-
-- **Open URL In New Tab**: If checked, clicking a polygon will open in a new tab. Disable this option in drill-down dashboards.
-
-- **Enable Custom URL Target**: If checked, you can set a custom value for the `target` attribute of the clickthrough. Note that this is only visible when `Open in New Tab` is disabled.
-
-- **Custom URL Target**: Specifies the content for the `target` attribute of the clickthrough URL. Typical values are `_blank`, `_self`, `_parent`, and `_top`.
-
-### Form clickthrough URLs using regex and templates
-
-You can form URLs using regular expression capture groups and template variables.
-
-For example, if you have multiple metrics like this:
-
-```TEXT
-hera_memutil
-plex_memutil
-```
-
-And a regular expression for the override:
-
-```REGEX
-/(.*)_mem/
-```
-
-You can use the capture group `$1` in the URL:
-
-```TEXT
-/dashboard/detail-dash?var-HOSTNAME=$1
-```
-
-And obtain the final URL `https://myserver/dashboard/detail-dash?var-HOSTNAME=hera`.
-
-For more examples using template variables and regular expression capture groups see [Templates](#templating).
+- **Clickthough URL**: Use this setting to indicate the URL to open when clicking the polygon. See more at [Use Clickthroughs](./Polystat-docs-clickthroughurl.md).
 
 ## Bottom Menu
 
