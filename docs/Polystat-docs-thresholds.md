@@ -25,7 +25,7 @@ Comparisons are made in reverse order, using the range between the Nth (inclusiv
 
 If there isn't any `n+1` threshold and the highest value is T(n), a simple inclusive >= comparison is made:
 
-**Example 1: Ttypical linear**
+**Example 1: Typical linear**
 
 ```TEXT
     T0 - 5, ok
