@@ -1,7 +1,7 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
 test('test composite creation', async ({ page, panelEditPage }) => {
-  await panelEditPage.datasource.set('gdev-testdata');
+  await panelEditPage.datasource.set('TestData DB');
   await panelEditPage.setVisualization('Polystat');
   await page.getByLabel('Series count', { exact: true }).click();
   await page.getByLabel('Series count', { exact: true }).fill('10');
