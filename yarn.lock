@@ -3719,12 +3719,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jquery@npm:3.5.31":
-  version: 3.5.31
-  resolution: "@types/jquery@npm:3.5.31"
+"@types/jquery@npm:3.5.33":
+  version: 3.5.33
+  resolution: "@types/jquery@npm:3.5.33"
   dependencies:
     "@types/sizzle": "npm:*"
-  checksum: 10c0/94a6e209382908e102199aa32d261147c97bf578693a6e7657d12a35e1304940b18bebadb21c207cd3efa51b4d16eb117be36af235c27f399be09cc56ed125b5
+  checksum: 10c0/d96c42762b7370ddf3b81cdad436a79d275e0ff09e2f4d7fbf2bbd8f97acef4110a11f1c3cb683195a1eba4fd9959e59d73f84d56ce2c010907a2bea696eb057
   languageName: node
   linkType: hard
 
@@ -7949,7 +7949,7 @@ __metadata:
     "@types/glob": "npm:^8.1.0"
     "@types/hoist-non-react-statics": "npm:3.3.5"
     "@types/jest": "npm:^29.5.14"
-    "@types/jquery": "npm:3.5.31"
+    "@types/jquery": "npm:3.5.33"
     "@types/lodash": "npm:^4.14.194"
     "@types/node": "npm:^22.13.14"
     "@types/react": "npm:17.0.44"
