@@ -1377,18 +1377,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/eslint-plugin-plugins@npm:^0.2.1":
-  version: 0.2.4
-  resolution: "@grafana/eslint-plugin-plugins@npm:0.2.4"
+"@grafana/eslint-plugin-plugins@npm:^0.4.0":
+  version: 0.4.8
+  resolution: "@grafana/eslint-plugin-plugins@npm:0.4.8"
   dependencies:
-    "@grafana/levitate": "npm:^0.16.0"
+    "@grafana/levitate": "npm:^0.17.0"
     "@typescript-eslint/utils": "npm:^8.23.0"
     semver: "npm:^7.7.0"
     typescript: "npm:^5.7.0"
   peerDependencies:
     "@types/eslint": ^8.56.10 || ^9.0.0
     eslint: ^8.56.0 || ^9.0.0
-  checksum: 10c0/8096e4fd58b402a3bd5571b4e1c5b89aa9e2924538c14bc3c9999449a16d425438bae5386918084327f550d23600f52fa252c4f2a559265ed0f677593976aa61
+  checksum: 10c0/dce64c04c32cf2bd6932186fd290d605afddca836740e1318731cc0762f3182a86e372c72c17b3d6cd2a6a331a43f56651c944b84496dec770a415a8baaa7a90
   languageName: node
   linkType: hard
 
@@ -1413,9 +1413,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/levitate@npm:^0.16.0":
-  version: 0.16.4
-  resolution: "@grafana/levitate@npm:0.16.4"
+"@grafana/levitate@npm:^0.17.0":
+  version: 0.17.1
+  resolution: "@grafana/levitate@npm:0.17.1"
   dependencies:
     "@stylistic/eslint-plugin-ts": "npm:^4.2.0"
     "@tsd/typescript": "npm:^5.6.2"
@@ -1430,10 +1430,10 @@ __metadata:
     tar: "npm:^7.4.3"
     tty-table: "npm:^4.1.5"
     typescript: "npm:5.8.3"
-    yargs: "npm:^17.7.2"
+    yargs: "npm:^18.0.0"
   bin:
     levitate: dist/bin.js
-  checksum: 10c0/5717053a45e1fe7bd9c98116f3b1c0a4d0c3309efc3bf11f01038564e3d237ce168fe168dd49000895bb532d5d8aad600adff7b798251a550e3abe139251812b
+  checksum: 10c0/001468eb41118a49b118bc3808c2a5e385d603cc6bfe5afab3302ccae01dd1fb1790d44778b9cd1eff4e8268f008e14b1270e7ba7c81e0e6a94c66f13d6b497f
   languageName: node
   linkType: hard
 
@@ -1451,15 +1451,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/plugin-meta-extractor@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@grafana/plugin-meta-extractor@npm:0.8.0"
+"@grafana/plugin-meta-extractor@npm:^0.9.0":
+  version: 0.9.3
+  resolution: "@grafana/plugin-meta-extractor@npm:0.9.3"
   dependencies:
     debug: "npm:^4.3.4"
     typescript: "npm:^5.4.5"
   bin:
-    plugin-meta-extractor: ./dist/bin/run.js
-  checksum: 10c0/56063c91fe189f69524d2bc89622b3163c48e4022f0db4ac69434b41dc4fcb7bde029c3f29a11f7f9a6f9e19fc7d43691e09aeb8511a2529d37265b826cb11f9
+    plugin-meta-extractor: dist/bin/run.js
+  checksum: 10c0/92b9bdc972ccfdce01745d0146b727d7e1c95386ef34ef599e61a4168c5563dee77084d9e509d01620afdedb1050481b5c5b4b75deab7ec2f359c73e2ff3423e
   languageName: node
   linkType: hard
 
@@ -4542,6 +4542,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ansi-styles@npm:^6.2.1":
+  version: 6.2.3
+  resolution: "ansi-styles@npm:6.2.3"
+  checksum: 10c0/23b8a4ce14e18fb854693b95351e286b771d23d8844057ed2e7d083cd3e708376c3323707ec6a24365f7d7eda3ca00327fe04092e29e551499ec4c8b7bfac868
+  languageName: node
+  linkType: hard
+
 "ansicolor@npm:1.1.100":
   version: 1.1.100
   resolution: "ansicolor@npm:1.1.100"
@@ -5217,6 +5224,17 @@ __metadata:
     strip-ansi: "npm:^6.0.1"
     wrap-ansi: "npm:^7.0.0"
   checksum: 10c0/4bda0f09c340cbb6dfdc1ed508b3ca080f12992c18d68c6be4d9cf51756033d5266e61ec57529e610dacbf4da1c634423b0c1b11037709cc6b09045cbd815df5
+  languageName: node
+  linkType: hard
+
+"cliui@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "cliui@npm:9.0.1"
+  dependencies:
+    string-width: "npm:^7.2.0"
+    strip-ansi: "npm:^7.1.0"
+    wrap-ansi: "npm:^9.0.0"
+  checksum: 10c0/13441832e9efe7c7a76bd2b8e683555c478d461a9f249dc5db9b17fe8d4b47fa9277b503914b90bd00e4a151abb6b9b02b2288972ffe2e5e3ca40bcb1c2330d3
   languageName: node
   linkType: hard
 
@@ -7928,9 +7946,9 @@ __metadata:
     "@emotion/react": "npm:11.7.1"
     "@grafana/data": "npm:^9.5.21"
     "@grafana/eslint-config": "npm:^8.0.0"
-    "@grafana/eslint-plugin-plugins": "npm:^0.2.1"
+    "@grafana/eslint-plugin-plugins": "npm:^0.4.0"
     "@grafana/plugin-e2e": "npm:^2.0.6"
-    "@grafana/plugin-meta-extractor": "npm:^0.8.0"
+    "@grafana/plugin-meta-extractor": "npm:^0.9.0"
     "@grafana/runtime": "npm:^9.5.21"
     "@grafana/schema": "npm:^12.0.2"
     "@grafana/tsconfig": "npm:^2.0.0"
@@ -12966,7 +12984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string-width@npm:^7.2.0":
+"string-width@npm:^7.0.0, string-width@npm:^7.2.0":
   version: 7.2.0
   resolution: "string-width@npm:7.2.0"
   dependencies:
@@ -14309,6 +14327,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"wrap-ansi@npm:^9.0.0":
+  version: 9.0.2
+  resolution: "wrap-ansi@npm:9.0.2"
+  dependencies:
+    ansi-styles: "npm:^6.2.1"
+    string-width: "npm:^7.0.0"
+    strip-ansi: "npm:^7.1.0"
+  checksum: 10c0/3305839b9a0d6fb930cb63a52f34d3936013d8b0682ff3ec133c9826512620f213800ffa19ea22904876d5b7e9a3c1f40682f03597d986a4ca881fa7b033688c
+  languageName: node
+  linkType: hard
+
 "wrappy@npm:1":
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
@@ -14449,6 +14478,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yargs-parser@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "yargs-parser@npm:22.0.0"
+  checksum: 10c0/cb7ef81759c4271cb1d96b9351dbbc9a9ce35d3e1122d2b739bf6c432603824fa02c67cc12dcef6ea80283379d63495686e8f41cc7b06c6576e792aba4d33e1c
+  languageName: node
+  linkType: hard
+
 "yargs@npm:^15.1.0":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
@@ -14468,7 +14504,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:^17.3.1, yargs@npm:^17.7.1, yargs@npm:^17.7.2":
+"yargs@npm:^17.3.1, yargs@npm:^17.7.1":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:
@@ -14480,6 +14516,20 @@ __metadata:
     y18n: "npm:^5.0.5"
     yargs-parser: "npm:^21.1.1"
   checksum: 10c0/ccd7e723e61ad5965fffbb791366db689572b80cca80e0f96aad968dfff4156cd7cd1ad18607afe1046d8241e6fb2d6c08bf7fa7bfb5eaec818735d8feac8f05
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "yargs@npm:18.0.0"
+  dependencies:
+    cliui: "npm:^9.0.1"
+    escalade: "npm:^3.1.1"
+    get-caller-file: "npm:^2.0.5"
+    string-width: "npm:^7.2.0"
+    y18n: "npm:^5.0.5"
+    yargs-parser: "npm:^22.0.0"
+  checksum: 10c0/bf290e4723876ea9c638c786a5c42ac28e03c9ca2325e1424bf43b94e5876456292d3ed905b853ebbba6daf43ed29e772ac2a6b3c5fb1b16533245d6211778f3
   languageName: node
   linkType: hard
 
