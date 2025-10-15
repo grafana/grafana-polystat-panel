@@ -26,7 +26,11 @@
         "npm"
       ],
       "excludePackagePatterns": [
-        "^@grafana/"
+        "^@grafana/",
+        "^react$",
+        "^react-dom$",
+        "^@types/react$",
+        "^@types/react-dom$"
       ],
       "groupName": "npm dependencies",
       "description": "Group all other npm dependencies"
