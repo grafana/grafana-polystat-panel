@@ -4,9 +4,7 @@
     "github>grafana/grafana-community-team//renovate/renovate"
   ],
   "ignorePaths": [
-    "**/fixtures/**/package.json",
-    "**/tests/**/package.json",
-    "**/test/**/package.json"
+    ".config/**"
   ],
   "packageRules": [
     {
