@@ -3,9 +3,6 @@
   "extends": [
     "github>grafana/grafana-community-team//renovate/renovate"
   ],
-  "ignorePaths": [
-    ".config/**"
-  ],
   "packageRules": [
     {
       "matchManagers": [
