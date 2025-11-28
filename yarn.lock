@@ -1377,9 +1377,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/eslint-plugin-plugins@npm:^0.4.0":
-  version: 0.4.8
-  resolution: "@grafana/eslint-plugin-plugins@npm:0.4.8"
+"@grafana/eslint-plugin-plugins@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@grafana/eslint-plugin-plugins@npm:0.6.0"
   dependencies:
     "@grafana/levitate": "npm:^0.17.0"
     "@typescript-eslint/utils": "npm:^8.23.0"
@@ -1388,7 +1388,7 @@ __metadata:
   peerDependencies:
     "@types/eslint": ^8.56.10 || ^9.0.0
     eslint: ^8.56.0 || ^9.0.0
-  checksum: 10c0/dce64c04c32cf2bd6932186fd290d605afddca836740e1318731cc0762f3182a86e372c72c17b3d6cd2a6a331a43f56651c944b84496dec770a415a8baaa7a90
+  checksum: 10c0/d4a328f010fb008b06d043847ca054452e7061977c992887431be24bd933743904d35beb65f193d4ab0697cfe747d0c53e6c4bf739da94b1eca5b60bd26777f0
   languageName: node
   linkType: hard
 
@@ -1451,15 +1451,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/plugin-meta-extractor@npm:^0.9.0":
-  version: 0.9.3
-  resolution: "@grafana/plugin-meta-extractor@npm:0.9.3"
+"@grafana/plugin-meta-extractor@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "@grafana/plugin-meta-extractor@npm:0.11.0"
   dependencies:
     debug: "npm:^4.3.4"
     typescript: "npm:^5.4.5"
   bin:
     plugin-meta-extractor: dist/bin/run.js
-  checksum: 10c0/92b9bdc972ccfdce01745d0146b727d7e1c95386ef34ef599e61a4168c5563dee77084d9e509d01620afdedb1050481b5c5b4b75deab7ec2f359c73e2ff3423e
+  checksum: 10c0/76546d4b403de3f1dd9890804a534cb720516a4c462ae0bd1e76b36b0a4302b3dcaf133c40efc068294bcdfb87bf2313ee7e9b334696227aee36e534db4f8331
   languageName: node
   linkType: hard
 
@@ -4535,14 +4535,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-styles@npm:^6.1.0":
-  version: 6.2.1
-  resolution: "ansi-styles@npm:6.2.1"
-  checksum: 10c0/5d1ec38c123984bcedd996eac680d548f31828bd679a66db2bdf11844634dde55fec3efa9c6bb1d89056a5e79c1ac540c4c784d592ea1d25028a92227d2f2d5c
-  languageName: node
-  linkType: hard
-
-"ansi-styles@npm:^6.2.1":
+"ansi-styles@npm:^6.1.0, ansi-styles@npm:^6.2.1":
   version: 6.2.3
   resolution: "ansi-styles@npm:6.2.3"
   checksum: 10c0/23b8a4ce14e18fb854693b95351e286b771d23d8844057ed2e7d083cd3e708376c3323707ec6a24365f7d7eda3ca00327fe04092e29e551499ec4c8b7bfac868
@@ -7946,9 +7939,9 @@ __metadata:
     "@emotion/react": "npm:11.7.1"
     "@grafana/data": "npm:^9.5.21"
     "@grafana/eslint-config": "npm:^8.0.0"
-    "@grafana/eslint-plugin-plugins": "npm:^0.4.0"
+    "@grafana/eslint-plugin-plugins": "npm:^0.6.0"
     "@grafana/plugin-e2e": "npm:^2.0.6"
-    "@grafana/plugin-meta-extractor": "npm:^0.9.0"
+    "@grafana/plugin-meta-extractor": "npm:^0.11.0"
     "@grafana/runtime": "npm:^9.5.21"
     "@grafana/schema": "npm:^12.0.2"
     "@grafana/tsconfig": "npm:^2.0.0"
