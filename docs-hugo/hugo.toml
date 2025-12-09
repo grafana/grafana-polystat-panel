@@ -1,0 +1,26 @@
+baseURL = 'https://github.com/grafana/grafana-polystat-panel/'
+languageCode = 'en-us'
+title = 'Polystat'
+theme = "hugo-theme-relearn"
+cleanDestinationDir = true
+titleCaseStyle = 'firstupper'
+
+[params]
+  disableLandingPageButton = false
+  disableRootBreadcrumb = true
+  linkTitle = 'Polystat Panel'
+  showVisitedLinks = false
+  ordersectionsby = 'weight'
+  sectionPagesMenu = 'main'
+  themeVariant = 'zen-light'
+  landingPageName = '<i class="fa-fw fas fa-home"></i> Overview'
+  disableDefaultRelref = true
+  collapsibleMenu = false
+  minify = true
+
+[outputs]
+  home = ['html']
+  page = ['html']
+  section = ['html']
+  taxonomy = ['html']
+  term = ['html']
