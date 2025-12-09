@@ -5,6 +5,8 @@
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
+    "docs-dev": "cd docs-hugo; hugo server --buildDrafts",
+    "docs-builds": "cd docs-hugo; hugo --buildDrafts",
     "lint": "eslint --cache --ignore-path ./.gitignore --ext .js,.jsx,.ts,.tsx .",
     "lint:fix": "yarn run lint --fix && prettier --write --list-different .",
     "playwright:test": "npx playwright test",
