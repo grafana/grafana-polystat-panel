@@ -2,6 +2,11 @@
 
 ## Entries
 
+## v2.1.16
+
+- New docs now available
+- Package dependencies updated
+
 ## v2.1.15
 
 - New Feature - Templated Polygon Sizing [[#354](https://github.com/grafana/grafana-polystat-panel/issues/354)]
