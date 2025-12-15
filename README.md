@@ -6,9 +6,8 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/grafana/grafana-polystat-panel/badge.svg)](https://snyk.io/test/github/grafana/grafana-polystat-panel)
 [![Maintainability](https://api.codeclimate.com/v1/badges/5c5cd1076777c637b931/maintainability)](https://codeclimate.com/github/grafana/grafana-polystat-panel/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/5c5cd1076777c637b931/test_coverage)](https://codeclimate.com/github/grafana/grafana-polystat-panel/test_coverage)
-[![Build Status](https://drone.grafana.net/api/badges/grafana/grafana-polystat-panel/status.svg)](https://drone.grafana.net/grafana/grafana-polystat-panel)
 
-The Polystat panel plugin provides a [D3-based](http://www.d3js.org) multi-stat panel for [Grafana](https://grafana.com/) 8.4 or later. 
+The Polystat panel plugin provides a [D3-based](http://www.d3js.org) multi-stat panel for [Grafana](https://grafana.com/) 9.5 or later.
 
 This plugin creates an hexagon for each metric received, and allows you to group metrics into a composite metric and display the triggered state of the composite. The plugin supports autoscaling for best-fit sizing of each polygon to the panel size. When the complete text cannot be displayed, only tooltips are active.
 
@@ -71,7 +70,7 @@ yarn dev
 
 ### Docker Support
 
-The plugin includes a `docker-compose.yml` file for development and testing. 
+The plugin includes a `docker-compose.yml` file for development and testing.
 
 To use it run:
 
@@ -83,7 +82,7 @@ Then browse to <http://localhost:3000>
 
 ## Enable Grafana TestData
 
-`Grafana TestData` is not enabled by default. 
+`Grafana TestData` is not enabled by default.
 
 To enable it, navigate to the Plugins section in your Grafana main menu. Click the Apps tabs in the Plugins section and select the Grafana TestData App. Alternatively navigate directly to <http://your_grafana_instance/plugins/testdata/edit>. Finally click the enable button to enable.
 
