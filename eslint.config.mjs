@@ -30,7 +30,6 @@ export default defineConfig([
     },
 
     rules: {
-      '@grafana/plugins/import-is-compatible': ['warn'],
     },
   },
 ]);
