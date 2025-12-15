@@ -117,7 +117,7 @@
     "tslib": "2.5.3"
   },
   "engines": {
-    "node": ">= 22"
+    "node": ">= 24"
   },
   "resolutions": {
     "@types/react": "17.0.44",
