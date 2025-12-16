@@ -26,7 +26,7 @@ export default defineConfig([
   ...baseConfig,
   {
     plugins: {
-      'grafana/plugins': grafanaEslintPluginPlugins,
+      '@grafana/plugins': grafanaEslintPluginPlugins,
     },
 
     rules: {
