@@ -47,10 +47,18 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     setTracker([...orderedThresholds]);
   };
 
-  const updateThresholdColor = (index: number, color: string) => {
-    const useColor = theme2.visualization.getColorByName(color);
-    tracker[index].threshold.color = useColor;
-    setTracker([...tracker]);
+  const updateThresholdColor = (id: string, color: string) => {
+    setTracker(tracker.map(aThreshold => {
+      if (aThreshold.ID === id) {
+        const useColor = theme2.visualization.getColorByName(color);
+        aThreshold.threshold.color = useColor;
+        // Create a *new* object with changes
+        return { ...aThreshold };
+      } else {
+        // No changes
+        return aThreshold;
+      }
+    }));
   };
 
   const updateThresholdState = (index: number, state: any) => {
