@@ -126,7 +126,7 @@ function getTextSizeForWidthAndHeight(
 function getTextWidth(text: string, font: string) {
   // re-use canvas object for better performance
   // intentional use of deprecated function (no widely implemented alternative)
-  // eslint-disable-next-line deprecation/deprecation
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (context) {

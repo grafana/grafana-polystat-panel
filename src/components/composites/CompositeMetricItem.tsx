@@ -17,7 +17,7 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
       } else {
         if (aValue) {
           // use the old method if clipboard is not available
-          // eslint-disable-next-line deprecation/deprecation
+          // eslint-disable-next-line @typescript-eslint/no-deprecated
           return document.execCommand('copy', true, aValue);
         }
       }
