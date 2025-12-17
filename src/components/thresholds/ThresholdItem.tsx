@@ -59,7 +59,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
             value={threshold}
             onChange={(v) => {
               setThreshold(v);
-              options.stateSetter(options.index, v.value);
+              options.stateSetter(options.ID, v.value);
             }}
             options={ThresholdStates}
           />
