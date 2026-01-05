@@ -122,5 +122,5 @@
     "@types/react": "17.0.44",
     "uplot": "1.6.32"
   },
-  "packageManager": "yarn@4.9.2"
+  "packageManager": "yarn@4.12.0"
 }
