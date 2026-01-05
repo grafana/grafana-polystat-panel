@@ -62,10 +62,17 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
     return openStates;
   });
 
-  const updateOverride = (index: number, value: OverrideItemType) => {
-    tracker[index].override = value;
-    // works ... setTracker(tracker);
-    setTracker([...tracker]);
+  const updateOverride = (order: number, value: OverrideItemType) => {
+    setTracker(tracker.map(anOverride => {
+      if (anOverride.order === order) {
+        anOverride.override = value;
+        // Create a *new* object with changes
+        return { ...anOverride };
+      } else {
+        // No changes
+        return anOverride;
+      }
+    }));
   };
 
   const createDuplicate = (index: number) => {
@@ -116,25 +123,27 @@ export const OverrideEditor: React.FC<Props> = ({ item, context, onChange }) => 
 
   const moveDown = (index: number) => {
     if (index !== tracker.length - 1) {
-      arrayMove(tracker, index, index + 1);
+      const newTracker = [...tracker]
+      arrayMove(newTracker, index, index + 1);
       // reorder
-      for (let i = 0; i < tracker.length; i++) {
-        tracker[i].order = i;
-        tracker[i].override.order = i;
+      for (let i = 0; i < newTracker.length; i++) {
+        newTracker[i].order = i;
+        newTracker[i].override.order = i;
       }
-      setTracker([...tracker]);
+      setTracker(newTracker);
     }
   };
 
   const moveUp = (index: number) => {
     if (index > 0) {
-      arrayMove(tracker, index, index - 1);
+      const newTracker = [...tracker]
+      arrayMove(newTracker, index, index - 1);
       // reorder
-      for (let i = 0; i < tracker.length; i++) {
-        tracker[i].order = i;
-        tracker[i].override.order = i;
+      for (let i = 0; i < newTracker.length; i++) {
+        newTracker[i].order = i;
+        newTracker[i].override.order = i;
       }
-      setTracker([...tracker]);
+      setTracker(newTracker);
     }
   };
 
