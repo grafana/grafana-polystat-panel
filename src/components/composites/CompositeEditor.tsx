@@ -33,9 +33,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     }
   });
 
-  /**
-   * Animation Speed is applied to all composites
-   */
   const setTracker = (v: CompositeItemTracker[]) => {
     _setTracker(v);
     // update the panel config (only the composites themselves, not the tracker)
@@ -88,7 +85,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     }
   };
 
-
   const moveUp = (index: number) => {
     if (index > 0) {
       const newTracker = [...tracker]
@@ -135,18 +131,18 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     setIsOpen([...isOpen, true]);
   };
 
-    const updateComposite = (order: number, value: CompositeItemType) => {
-      setTracker(tracker.map(aComposite => {
-        if (aComposite.order === order) {
-          aComposite.composite = value;
-          // Create a *new* object with changes
-          return { ...aComposite };
-        } else {
-          // No changes
-          return aComposite;
-        }
-      }));
-    };
+  const updateComposite = (order: number, value: CompositeItemType) => {
+    setTracker(tracker.map(aComposite => {
+      if (aComposite.order === order) {
+        aComposite.composite = value;
+        // Create a *new* object with changes
+        return { ...aComposite };
+      } else {
+        // No changes
+        return aComposite;
+      }
+    }));
+  };
 
   const removeComposite = (compositeIndex: number) => {
     // find the composite by the compositeIndex
