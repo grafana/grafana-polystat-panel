@@ -4,7 +4,8 @@
 
 ## v2.1.16
 
-- New docs now available
+- New docs now available!
+- Fixes metric hints for overrides and composites
 - Package dependencies updated
 
 ## v2.1.15
