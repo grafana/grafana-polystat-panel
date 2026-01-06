@@ -86,25 +86,28 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
 
   const moveDown = (index: number) => {
     if (index !== tracker.length - 1) {
-      arrayMove(tracker, index, index + 1);
+      const newTracker = [...tracker]
+      arrayMove(newTracker, index, index + 1);
       // reorder
-      for (let i = 0; i < tracker.length; i++) {
-        tracker[i].order = i;
-        tracker[i].composite.order = i;
+      for (let i = 0; i < newTracker.length; i++) {
+        newTracker[i].order = i;
+        newTracker[i].composite.order = i;
       }
-      setTracker([...tracker]);
+      setTracker(newTracker);
     }
   };
 
+
   const moveUp = (index: number) => {
     if (index > 0) {
-      arrayMove(tracker, index, index - 1);
+      const newTracker = [...tracker]
+      arrayMove(newTracker, index, index - 1);
       // reorder
-      for (let i = 0; i < tracker.length; i++) {
-        tracker[i].order = i;
-        tracker[i].composite.order = i;
+      for (let i = 0; i < newTracker.length; i++) {
+        newTracker[i].order = i;
+        newTracker[i].composite.order = i;
       }
-      setTracker([...tracker]);
+      setTracker(newTracker);
     }
   };
 
