@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import {
   IconName,
@@ -21,7 +21,18 @@ import { SelectableValue } from '@grafana/data';
 import { getMetricHints } from '../metric_hints';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
-  const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
+    const metricHints = useMemo(() => {
+    let hints: CascaderOption[] = [];
+    let allHints = getMetricHints(props.context.data);
+    for (const metricName of allHints) {
+      hints.push({
+        label: metricName,
+        value: metricName,
+      });
+    }
+    return hints;
+  }, [props.context.data]);
+
   const [override, _setOverride] = useState(props.override);
 
   const setOverride = (value: OverrideItemType) => {
@@ -59,21 +70,6 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
   const setThresholds = (val: PolystatThreshold[]) => {
     setOverride({ ...override, thresholds: val });
   };
-
-  useEffect(() => {
-    if (props.context.data) {
-      const frames = props.context.data;
-      let hints: CascaderOption[] = [];
-      let metricHints = getMetricHints(frames);
-      for (const metricName of metricHints) {
-        hints.push({
-          label: metricName,
-          value: metricName,
-        });
-      }
-      setMetricHints(hints);
-    }
-  }, [props.context.data]);
 
   return (
     <Card key={`override-card-${props.ID}`}>

@@ -38,14 +38,14 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
       type="number"
       step="1.0"
       key={options.ID}
-      onChange={(e) => options.valueSetter(options.index, Number(e.currentTarget.value))}
+      onChange={(e) => options.valueSetter(options.ID, Number(e.currentTarget.value))}
       value={options.threshold.value}
       prefix={
         <div className={styles.inputPrefix}>
           <div className={styles.colorPicker}>
             <ColorPicker
               color={options.threshold.color}
-              onChange={(color) => options.colorSetter(options.index, color)}
+              onChange={(color) => options.colorSetter(options.ID, color)}
               enableNamedColors={true}
             />
           </div>
@@ -59,7 +59,7 @@ export const ThresholdItem: React.FC<ThresholdItemProps> = (options: ThresholdIt
             value={threshold}
             onChange={(v) => {
               setThreshold(v);
-              options.stateSetter(options.index, v.value);
+              options.stateSetter(options.ID, v.value);
             }}
             options={ThresholdStates}
           />

@@ -39,27 +39,51 @@ export const ThresholdsEditor: React.FC<Props> = (options) => {
     options.setter(allThresholds);
   };
 
-  const updateThresholdValue = (index: number, value: number) => {
-    tracker[index].threshold.value = Number(value);
+  const updateThresholdValue = (id: string, value: number) => {
+    const updatedThresholds = tracker.map(aThreshold => {
+      if (aThreshold.ID === id) {
+        aThreshold.threshold.value = Number(value);
+        // Create a *new* object with changes
+        return { ...aThreshold };
+      } else {
+        // No changes
+        return aThreshold;
+      }
+    });
     // reorder
-    const allThresholds = [...tracker];
-    const orderedThresholds = orderBy(allThresholds, ['threshold.value'], ['asc']);
+    const orderedThresholds = orderBy(updatedThresholds, ['threshold.value'], ['asc']);
     setTracker([...orderedThresholds]);
   };
 
-  const updateThresholdColor = (index: number, color: string) => {
-    const useColor = theme2.visualization.getColorByName(color);
-    tracker[index].threshold.color = useColor;
-    setTracker([...tracker]);
+  const updateThresholdColor = (id: string, color: string) => {
+    setTracker(tracker.map(aThreshold => {
+      if (aThreshold.ID === id) {
+        const useColor = theme2.visualization.getColorByName(color);
+        aThreshold.threshold.color = useColor;
+        // Create a *new* object with changes
+        return { ...aThreshold };
+      } else {
+        // No changes
+        return aThreshold;
+      }
+    }));
   };
 
-  const updateThresholdState = (index: number, state: any) => {
-    tracker[index].threshold.state = state;
-    // set the color if it is not a custom state
-    if (state < 3) {
-      tracker[index].threshold.color = colorForThresholdState(state);
-    }
-    setTracker([...tracker]);
+  const updateThresholdState = (id: string, state: any) => {
+    setTracker(tracker.map(aThreshold => {
+      if (aThreshold.ID === id) {
+        aThreshold.threshold.state = state;
+        // set the color if it is not a custom state
+        if (aThreshold.threshold.state < 3) {
+          aThreshold.threshold.color = colorForThresholdState(state);
+        }
+        // Create a *new* object with changes
+        return { ...aThreshold };
+      } else {
+        // No changes
+        return aThreshold;
+      }
+    }));
   };
 
   const colorForThresholdState = (state: number) => {
