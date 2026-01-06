@@ -16,9 +16,7 @@ export interface CompositeEditorSettings {
 interface Props extends StandardEditorProps<string | string[] | null, CompositeEditorSettings> {}
 
 export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
-  const [settings] = useState(context.options.compositeConfig);
-  const [animationSpeed, _setAnimationSpeed] = useState(context.options.compositeConfig.animationSpeed);
-  const [compositesEnabled, _setCompositesEnabled] = useState(context.options.compositeConfig.enabled);
+  const [settings, setSettings] = useState<CompositeEditorSettings>(context.options.compositeConfig);
   const [tracker, _setTracker] = useState((): CompositeItemTracker[] => {
     if (settings.composites) {
       const items: CompositeItemTracker[] = [];
@@ -35,16 +33,9 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     }
   });
 
-  const setAnimationSpeed = (val: any) => {
-    _setAnimationSpeed(val);
-    settings.animationSpeed = val;
-    onChange(settings);
-  };
-  const setCompositesEnabled = (val: any) => {
-    _setCompositesEnabled(val);
-    settings.enabled = val;
-    onChange(settings);
-  };
+  /**
+   * Animation Speed is applied to all composites
+   */
   const setTracker = (v: CompositeItemTracker[]) => {
     _setTracker(v);
     // update the panel config (only the composites themselves, not the tracker)
@@ -144,10 +135,18 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
     setIsOpen([...isOpen, true]);
   };
 
-  const updateComposite = (index: number, value: CompositeItemType) => {
-    tracker[index].composite = value;
-    setTracker([...tracker]);
-  };
+    const updateComposite = (order: number, value: CompositeItemType) => {
+      setTracker(tracker.map(aComposite => {
+        if (aComposite.order === order) {
+          aComposite.composite = value;
+          // Create a *new* object with changes
+          return { ...aComposite };
+        } else {
+          // No changes
+          return aComposite;
+        }
+      }));
+    };
 
   const removeComposite = (compositeIndex: number) => {
     // find the composite by the compositeIndex
@@ -212,15 +211,33 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
         <Field label="Enable Composites" description="Enable/Disable Composites Globally">
           <Switch
             transparent={true}
-            value={compositesEnabled}
-            onChange={() => setCompositesEnabled(!compositesEnabled)}
+            value={settings.enabled}
+            onChange={(e: any) => {
+              const newSettings = {...settings};
+              newSettings.enabled = e.currentTarget.checked;
+              setSettings(newSettings);
+              // onChange MUST be called with the entire config or nothing will be modified in the UI
+              onChange(newSettings as any);
+            }}
           />
         </Field>
         <Field label="Animation Speed (ms)" description="Animation Speed in milliseconds" disabled={!settings.enabled}>
           <Input
-            value={animationSpeed}
+            value={settings.animationSpeed}
             placeholder="500"
-            onChange={(e: any) => setAnimationSpeed(e.currentTarget.value)}
+            onChange={(e: any) => {
+              // make sure the value is >= 200ms
+              let speed = parseInt(e.currentTarget.value, 10);
+              if (speed < 200 || isNaN(speed)) {
+                console.log(`WARNING: speed in configuration is too fast, setting to 200ms`);
+                speed = 200;
+              }
+              const newSettings = {...settings};
+              newSettings.animationSpeed = speed.toString();
+              setSettings(newSettings);
+              // onChange MUST be called with the entire config or nothing will be modified in the UI
+              onChange(newSettings as any);
+            }}
           />
         </Field>
       </FieldSet>
