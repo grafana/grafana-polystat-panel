@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { Input, Field, IconButton, HorizontalGroup, Cascader, CascaderOption, FieldSet } from '@grafana/ui';
 import { CompositeMetricItemProps } from './types';
 import { getMetricHints } from '../metric_hints';
 
 export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) => {
-  const [metricHints, setMetricHints] = useState<CascaderOption[]>([]);
+  const metricHints = useMemo(() => {
+    let hints: CascaderOption[] = [];
+    let allHints = getMetricHints(props.context.data);
+    for (const metricName of allHints) {
+      hints.push({
+        label: metricName,
+        value: metricName,
+      });
+    }
+    return hints;
+  }, [props.context.data]);
 
   async function copySelectedMetricToClipboard(index: number) {
     if (props.metric.seriesMatch) {
@@ -30,21 +40,6 @@ export const CompositeMetricItem: React.FC<CompositeMetricItemProps> = (props) =
   const updateMetricAlias = (alias: string) => {
     props.updateMetricAlias(props.index, alias);
   };
-
-  useEffect(() => {
-    if (props.context.data) {
-      const frames = props.context.data;
-      let hints: CascaderOption[] = [];
-      let metricHints = getMetricHints(frames);
-      for (const metricName of metricHints) {
-        hints.push({
-          label: metricName,
-          value: metricName,
-        });
-      }
-      setMetricHints(hints);
-    }
-  }, [props.context.data]);
 
   return (
     <FieldSet>
