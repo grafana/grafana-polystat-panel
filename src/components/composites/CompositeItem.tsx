@@ -54,13 +54,13 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
   };
 
   const updateMetric = (index: number, value: string) => {
-    const allMetrics = props.composite.metrics;
+    const allMetrics = { ...props.composite.metrics };
     allMetrics[index].seriesMatch = value;
     setComposite({ ...props.composite, metrics: allMetrics });
   };
 
   const updateMetricAlias = (index: number, alias: string) => {
-    const allMetrics = props.composite.metrics;
+    const allMetrics = { ...props.composite.metrics };
     allMetrics[index].alias = alias;
     setComposite({ ...props.composite, metrics: allMetrics });
   };
