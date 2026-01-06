@@ -39,6 +39,8 @@ export const getMetricHints = (frames: any) => {
           hintValue = aField.config?.displayNameFromDS;
         }
         metricHints.add(hintValue);
+        // clear it
+        hintValue = '';
       }
     }
   }
