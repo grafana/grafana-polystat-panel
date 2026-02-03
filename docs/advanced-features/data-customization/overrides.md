@@ -15,15 +15,15 @@ Use overrides to apply additional rendering options for metrics, including custo
 
 This is an example override that sets the unit for metrics that match a regular expression:
 
-![Override without Thresholds](assets/overrides/polystat-v2-overrides-no-thresholds.png)
+![Override without Thresholds](../../assets/overrides/polystat-v2-overrides-no-thresholds.png)
 
 Below is the same override with thresholds added:
 
-![Override with Thresholds](assets/overrides/polystat-v2-overrides-with-thresholds.png)
+![Override with Thresholds](../../assets/overrides/polystat-v2-overrides-with-thresholds.png)
 
 The final result of the above override with thresholds applied:
 
-![Override with Thresholds Rendered](assets/overrides/polystat-v2-overrides-rendered-thresholds.png)
+![Override with Thresholds Rendered](../../assets/overrides/polystat-v2-overrides-rendered-thresholds.png)
 
 ## Override settings
 
@@ -49,7 +49,7 @@ The final result of the above override with thresholds applied:
 
 See the menu at the bottom right side of the override for additional controls.
 
-![Override Menu](assets/overrides/polystat-v2-override-bottom-menu.png)
+![Override Menu](../../assets/overrides/polystat-v2-override-bottom-menu.png)
 
 - **Ordering**: Allows you to move the override so you can force a different evaluation priority or simply to group similar overrides together.
 

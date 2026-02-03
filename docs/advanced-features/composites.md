@@ -15,15 +15,15 @@ Composites allow you to combine multiple metrics into a single representation th
 
 When there are multiple metrics to be displayed by a composite, the polygon will cycle through each of them depending on the composite configuration.
 
-![Composites Options All](assets/composites/polystat-v2-composites-all.png)
+![Composites Options All](../assets/composites/polystat-v2-composites-all.png)
 
 This is what two composites look like once they are rendered:
 
-![Composite Rendered](assets/composites/polystat-v2-composite-rendered.png)
+![Composite Rendered](../assets/composites/polystat-v2-composite-rendered.png)
 
 This is the tooltip that is displayed when hovering over the composite:
 
-![Composite Rendered with Tooltip](assets/composites/polystat-v2-composite-with-tooltip.png)
+![Composite Rendered with Tooltip](../assets/composites/polystat-v2-composite-with-tooltip.png)
 
 ## Animation Example
 
@@ -31,7 +31,7 @@ When there are multiple metrics the rendered polygon will cycle through each of 
 
 Here's an example of two composites and their animation sequence:
 
-![Animation Example](assets/composites/polystat-v2-composite-animated.gif)
+![Animation Example](../assets/composites/polystat-v2-composite-animated.gif)
 
 ## Global Settings for Composites
 
@@ -91,7 +91,7 @@ For drill-down dashboards, disabling this is recommended.
 
 ### Enable Custom URL Target (composite)
 
-![Custom URL Target](assets/composites/polystat-v2-custom-clickthrough-target.png)
+![Custom URL Target](../assets/composites/polystat-v2-custom-clickthrough-target.png)
 
 When checked, this will allow you to set a custom value for the `target` attribute of the clickthrough.
 NOTE: This is only visible when `Open URL in New Tab` is disabled.
@@ -106,7 +106,7 @@ Typical values are: _blank|_self|_parent|_top|
 
 There is a menu at the bottom right side of the composite that provides additional controls.
 
-![Composite Bottom Menu](assets/composites/polystat-v2-composite-bottom-menu.png)
+![Composite Bottom Menu](../assets/composites/polystat-v2-composite-bottom-menu.png)
 
 ### Ordering (composite)
 
@@ -128,7 +128,7 @@ This button will delete the composite completely.
 
 The "Add Metric" button is used to append to the list of metrics to be included in the composite.
 
-![Composite Add Metric](assets/composites/polystat-v2-composite-add-metric.png)
+![Composite Add Metric](../assets/composites/polystat-v2-composite-add-metric.png)
 
 ### Metric/Regex (composite)
 

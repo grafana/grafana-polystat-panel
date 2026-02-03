@@ -14,7 +14,7 @@ keywords:
 
 The following settings are available in the Global section, and are detailed below.
 
-![Global](assets/settings/polystat-v2-global-all.png)
+![Global](../assets/settings/polystat-v2-global-all.png)
 
 Main settings include:
 
@@ -51,19 +51,19 @@ Main settings include:
 
 Currently there are three shapes that can be selected, and each use a best fit method to maximize size to the panel.
 
-![Polygon Shapes](assets/settings/polystat-v2-global-shapes.png)
+![Polygon Shapes](../assets/settings/polystat-v2-global-shapes.png)
 
 **Hexagon Pointed Top**
 
-![Polygon Hexagon Pointed Top](assets/settings/polystat-v2-shape-hexagon-pointed-top.png)
+![Polygon Hexagon Pointed Top](../assets/settings/polystat-v2-shape-hexagon-pointed-top.png)
 
 **Circle**
 
-![Polygon Circle](assets/settings/polystat-v2-shape-circle.png)
+![Polygon Circle](../assets/settings/polystat-v2-shape-circle.png)
 
 **Square**
 
-![Polygon Square](assets/settings/polystat-v2-shape-square.png)
+![Polygon Square](../assets/settings/polystat-v2-shape-square.png)
 
 ## Global Aliasing
 
@@ -77,8 +77,8 @@ If you have these 3 queries, returning the following series:
 - Bar-B, values 4,5,6
 - Misc, values 7,8,9
 
-![Before Aliasing](assets/settings/regex-alias-before.png)
+![Before Aliasing](../assets/settings/regex-alias-before.png)
 
 If you add the regular expression `/(Foo|Bar)/`, the result is:
 
-![After Aliasing](assets/settings/regex-alias-after.png)
+![After Aliasing](../assets/settings/regex-alias-after.png)
