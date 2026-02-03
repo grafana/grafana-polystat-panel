@@ -1,0 +1,78 @@
+{
+  "title": "Polystat Panel Documentation",
+  "pages": [
+    {
+      "title": "Overview",
+      "slug": "overview",
+      "file": "overview.md"
+    },
+    {
+      "title": "Configuration",
+      "slug": "configuration",
+      "file": "configuration.md",
+      "children": [
+        {
+          "title": "Global Settings",
+          "slug": "settings",
+          "file": "configuration/settings.md"
+        },
+        {
+          "title": "Display Options",
+          "slug": "display-options",
+          "file": "configuration/display-options.md",
+          "children": [
+            {
+              "title": "Customization Options",
+              "slug": "options",
+              "file": "configuration/display-options/options.md"
+            },
+            {
+              "title": "Layout Guide",
+              "slug": "layout-guide",
+              "file": "configuration/display-options/layout-guide.md"
+            }
+          ]
+        },
+        {
+          "title": "Thresholds",
+          "slug": "thresholds",
+          "file": "configuration/thresholds.md"
+        }
+      ]
+    },
+    {
+      "title": "Advanced Features",
+      "slug": "advanced-features",
+      "file": "advanced-features.md",
+      "children": [
+        {
+          "title": "Data Customization",
+          "slug": "data-customization",
+          "file": "advanced-features/data-customization.md",
+          "children": [
+            {
+              "title": "Overrides",
+              "slug": "overrides",
+              "file": "advanced-features/data-customization/overrides.md"
+            },
+            {
+              "title": "Value Formatting",
+              "slug": "value-formatting",
+              "file": "advanced-features/data-customization/value-formatting.md"
+            }
+          ]
+        },
+        {
+          "title": "Composites",
+          "slug": "composites",
+          "file": "advanced-features/composites.md"
+        },
+        {
+          "title": "Clickthrough URLs",
+          "slug": "clickthrough-urls",
+          "file": "advanced-features/clickthrough-urls.md"
+        }
+      ]
+    }
+  ]
+}
