@@ -1,6 +1,19 @@
+---
+title: Clickthrough URLs
+description: Configure clickthrough URLs with template variables and regex capture groups for interactive navigation.
+sidebar_position: 2
+keywords:
+  - clickthrough
+  - urls
+  - navigation
+  - template variables
+  - regex
+  - drilldown
+---
+
 # Use Clickthrough URLs
 
-Use this setting to indicate the URL to open when clicking the polygon. 
+Use this setting to indicate the URL to open when clicking the polygon.
 
 Options include:
 
@@ -14,26 +27,26 @@ Options include:
 
 ## Form clickthrough URLs using regex and template variables
 
-You can form URLs using regular expression capture groups and [template variables](#use-template-variables).
+You can form URLs using regular expression capture groups and template variables.
 
 **Example 1**
 
 For example, if you have multiple metrics like this:
 
-```TEXT
+```text
 hera_memutil
 plex_memutil
 ```
 
 And a regular expression for the override:
 
-```REGEX
+```regex
 /(.*)_mem/
 ```
 
 You can use the capture group `$1` in the URL:
 
-```TEXT
+```text
 /dashboard/detail-dash?var-HOSTNAME=$1
 ```
 
@@ -47,9 +60,9 @@ You have a text in your metric legend:
 
 To parse, it use the expression:
 
-```
+```regex
 ([^+]*)\+([^+]*)\s+(.*)
-``` 
+```
 
 ## Use template variables
 
@@ -57,7 +70,7 @@ To parse, it use the expression:
 
 Template variables are available in the `clickThroughUrl` setting, specified by using ${varname}. They can also be passed to another dashboard by appending var-VARNAME=value to the URL:
 
-```URL
+```text
 /dashboard/xyz?var-VARNAME=${VARNAME}
 ```
 
@@ -74,7 +87,7 @@ Each polygon represents either a single metric, or a composite metric.
 
 You can specify a drilldown clickthrough URL like this:
 
-```URL
+```text
 dashboard/db/drilldown?var-HOSTNAME=${__cell_name}
 ```
 
@@ -86,7 +99,7 @@ The name and value of a polygon can be referenced using the following syntax:
 
 * Metric Name: `${__cell_name}`
 * Metric Value: `${__cell}`
-* Metric Raw Value: `${__cell:raw}` syntax. 
+* Metric Raw Value: `${__cell:raw}` syntax.
 
 By default values are URI encoded. Use this syntax to *disable* encoding.
 
