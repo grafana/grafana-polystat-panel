@@ -1,6 +1,7 @@
 ---
 title: Layout Guide
 description: Best practices and tips for organizing metrics in your Polystat panel.
+sidebar_position: 2
 keywords:
   - layout
   - organization

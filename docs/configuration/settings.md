@@ -1,6 +1,7 @@
 ---
 title: Global Settings
 description: Configure global settings for the Polystat panel including display mode, shapes, colors, thresholds, and aliasing.
+sidebar_position: 1
 keywords:
   - settings
   - configuration

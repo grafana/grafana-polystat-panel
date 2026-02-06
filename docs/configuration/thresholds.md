@@ -1,6 +1,7 @@
 ---
 title: Thresholds
 description: Configure ranged thresholds to define state-based coloring for metrics in the Polystat panel.
+sidebar_position: 2
 keywords:
   - thresholds
   - states

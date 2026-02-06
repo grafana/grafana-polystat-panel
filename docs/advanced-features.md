@@ -1,6 +1,7 @@
 ---
 title: Advanced Features
 description: Learn about advanced features including overrides, composites, and clickthrough URLs for enhanced interactivity.
+sidebar_position: 3
 keywords:
   - advanced
   - features

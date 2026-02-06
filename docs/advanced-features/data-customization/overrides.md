@@ -1,6 +1,7 @@
 ---
 title: Overrides
 description: Apply metric-specific rendering options including custom thresholds, units, and clickthrough URLs using overrides.
+sidebar_position: 1
 keywords:
   - overrides
   - metric

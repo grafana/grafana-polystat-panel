@@ -1,6 +1,7 @@
 ---
 title: Display Options
 description: Customize the visual presentation of your Polystat panel including layout, sizing, text, and tooltips.
+sidebar_position: 3
 keywords:
   - display
   - layout

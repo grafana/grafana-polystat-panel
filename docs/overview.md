@@ -1,6 +1,7 @@
 ---
 title: Polystat Panel
 description: The Polystat panel plugin provides a D3-based multi-stat panel for Grafana dashboards.
+sidebar_position: 1
 keywords:
   - polystat
   - panel

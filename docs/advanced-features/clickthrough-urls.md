@@ -1,6 +1,7 @@
 ---
 title: Clickthrough URLs
 description: Configure clickthrough URLs with template variables and regex capture groups for interactive navigation.
+sidebar_position: 2
 keywords:
   - clickthrough
   - urls

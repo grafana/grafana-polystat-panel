@@ -1,6 +1,7 @@
 ---
 title: Data Customization
 description: Apply metric-specific customization including overrides and value formatting rules.
+sidebar_position: 3
 keywords:
   - data
   - customization

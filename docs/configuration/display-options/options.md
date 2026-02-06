@@ -1,6 +1,7 @@
 ---
 title: Customization Options
 description: Customize layout, sizing, text, sorting, and tooltip options for the Polystat panel.
+sidebar_position: 1
 keywords:
   - customization
   - options

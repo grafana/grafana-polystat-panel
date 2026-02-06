@@ -1,6 +1,7 @@
 ---
 title: Composites
 description: Combine multiple metrics into a single composite representation that reflects the worst state of all combined metrics.
+sidebar_position: 1
 keywords:
   - composites
   - aggregation

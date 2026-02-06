@@ -1,6 +1,7 @@
 ---
 title: Configuration
 description: Configure global settings, display options, and thresholds for the Polystat panel.
+sidebar_position: 2
 keywords:
   - configuration
   - settings

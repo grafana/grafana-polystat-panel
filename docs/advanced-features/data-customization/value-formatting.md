@@ -1,6 +1,7 @@
 ---
 title: Value Formatting
 description: Control how metric values are formatted and displayed in the Polystat panel.
+sidebar_position: 2
 keywords:
   - formatting
   - values
