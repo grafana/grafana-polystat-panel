@@ -12,6 +12,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@axe-core/playwright@npm:^4.11.1":
+  version: 4.11.1
+  resolution: "@axe-core/playwright@npm:4.11.1"
+  dependencies:
+    axe-core: "npm:~4.11.1"
+  peerDependencies:
+    playwright-core: ">= 1.0.0"
+  checksum: 10c0/8c916cd2dd831d91f8c2ab9e3a07ef19837415bb41d40439e4acb88ed0009af2479696b865670199b13ccad984a247868610fbb34d520fca9f7c02de0f7a9439
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
@@ -1358,6 +1369,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@grafana/e2e-selectors@npm:12.4.0-21983999378":
+  version: 12.4.0-21983999378
+  resolution: "@grafana/e2e-selectors@npm:12.4.0-21983999378"
+  dependencies:
+    semver: "npm:^7.7.0"
+    tslib: "npm:2.8.1"
+    typescript: "npm:5.9.2"
+  checksum: 10c0/aace6e99dc0b594d617879053c081aaeac64a97294f48e950b8795510b592474ca87a0d5b341dc15cb5c8267d2d5595662f155196e6e36186301007add3ae53b
+  languageName: node
+  linkType: hard
+
 "@grafana/e2e-selectors@npm:9.5.21":
   version: 9.5.21
   resolution: "@grafana/e2e-selectors@npm:9.5.21"
@@ -1366,17 +1388,6 @@ __metadata:
     tslib: "npm:2.5.0"
     typescript: "npm:4.8.4"
   checksum: 10c0/7aec3456ef421a2993bcbd674fb24a9d02cb499d3288abf34b876d16843190a622951339e2d2707d2d31c91fe665e966bea2758185b0400d2594cf4978160d20
-  languageName: node
-  linkType: hard
-
-"@grafana/e2e-selectors@npm:^12.2.0-255920":
-  version: 12.3.1
-  resolution: "@grafana/e2e-selectors@npm:12.3.1"
-  dependencies:
-    semver: "npm:^7.7.0"
-    tslib: "npm:2.8.1"
-    typescript: "npm:5.9.2"
-  checksum: 10c0/b0566d933c5a352234bae4b161fd001d98f33dd513610b355dedf052994eb9e2584205d7be5af4b45c77d5c0a6eeac042606daf2088c52e206fb578eaec1535b
   languageName: node
   linkType: hard
 
@@ -1457,17 +1468,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/plugin-e2e@npm:^2.2.0":
-  version: 2.2.3
-  resolution: "@grafana/plugin-e2e@npm:2.2.3"
+"@grafana/plugin-e2e@npm:3.4.1-canary.2485.22416356262.0":
+  version: 3.4.1-canary.2485.22416356262.0
+  resolution: "@grafana/plugin-e2e@npm:3.4.1-canary.2485.22416356262.0"
   dependencies:
-    "@grafana/e2e-selectors": "npm:^12.2.0-255920"
+    "@grafana/e2e-selectors": "npm:12.4.0-21983999378"
     semver: "npm:^7.5.4"
     uuid: "npm:^13.0.0"
     yaml: "npm:^2.3.4"
   peerDependencies:
+    "@axe-core/playwright": ^4.11.1
     "@playwright/test": ^1.52.0
-  checksum: 10c0/da1bcf35e3a94c815884a58805293e208a2bfd2c4b21b37efff60393e54a96a153ac4b48ff32af120811996ec1a669f34cf2925b6c6b58ea26c426814cbca305
+    axe-core: ^4.11.1
+  peerDependenciesMeta:
+    "@axe-core/playwright":
+      optional: true
+    axe-core:
+      optional: true
+  checksum: 10c0/28fe7771678970080cf93b686d2f69ad63ae8d2de6aeadb116961734fb1bccbdd3dfd149a37ca4aaf0467a00967f4e8b8d7df6928f9dc0bba9ce8ecd6d33fac0
   languageName: node
   linkType: hard
 
@@ -4864,6 +4882,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axe-core@npm:~4.11.1":
+  version: 4.11.1
+  resolution: "axe-core@npm:4.11.1"
+  checksum: 10c0/1e6997454b61c7c9a4d740f395952835dcf87f2c04fd81577217d68634d197d602c224f9e8f17b22815db4c117a2519980cfc8911fc0027c54a6d8ebca47c6a7
+  languageName: node
+  linkType: hard
+
 "babel-jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "babel-jest@npm:29.7.0"
@@ -8006,6 +8031,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "grafana-polystat-panel@workspace:."
   dependencies:
+    "@axe-core/playwright": "npm:^4.11.1"
     "@babel/core": "npm:^7.21.4"
     "@babel/helper-validator-option": "npm:7.27.1"
     "@braintree/sanitize-url": "npm:^7.0.1"
@@ -8014,7 +8040,7 @@ __metadata:
     "@grafana/data": "npm:^9.5.21"
     "@grafana/eslint-config": "npm:^9.0.0"
     "@grafana/eslint-plugin-plugins": "npm:^0.6.0"
-    "@grafana/plugin-e2e": "npm:^2.2.0"
+    "@grafana/plugin-e2e": "npm:3.4.1-canary.2485.22416356262.0"
     "@grafana/plugin-meta-extractor": "npm:^0.11.0"
     "@grafana/runtime": "npm:^9.5.21"
     "@grafana/schema": "npm:^12.2.0"
