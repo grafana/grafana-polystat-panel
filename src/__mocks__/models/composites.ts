@@ -1,5 +1,4 @@
-import { ShowTimestampFormats } from 'components/types';
-import { CompositeItemType } from '../../components/composites/types';
+import { CompositeItemType, DEFAULT_COMPOSITE_TIMESTAMP_FORMAT } from '@grafana/polystat-composites/core';
 
 export const compositeA: CompositeItemType = {
   name: 'composite-a',
@@ -13,7 +12,7 @@ export const compositeA: CompositeItemType = {
   showValue: true,
   showComposite: true,
   showTimestampEnabled: false,
-  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampFormat: DEFAULT_COMPOSITE_TIMESTAMP_FORMAT,
   showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,
@@ -40,7 +39,7 @@ export const compositeB: CompositeItemType = {
   showValue: true,
   showComposite: true,
   showTimestampEnabled: false,
-  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampFormat: DEFAULT_COMPOSITE_TIMESTAMP_FORMAT,
   showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,
@@ -67,7 +66,7 @@ export const compositeC: CompositeItemType = {
   showValue: true,
   showComposite: true,
   showTimestampEnabled: false,
-  showTimestampFormat: ShowTimestampFormats[0].value,
+  showTimestampFormat: DEFAULT_COMPOSITE_TIMESTAMP_FORMAT,
   showTimestampYOffset: 0,
   clickThrough: '',
   clickThroughOpenNewTab: true,

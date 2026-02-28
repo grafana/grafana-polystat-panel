@@ -1,5 +1,5 @@
 import { SelectableValue, ValueMapping } from '@grafana/data';
-import { CompositeItemType } from 'components/composites/types';
+import { CompositeItemType } from '@grafana/polystat-composites/core';
 import { OverrideItemType } from './overrides/types';
 import { PolystatThreshold } from './thresholds/types';
 

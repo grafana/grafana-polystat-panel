@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { FontFamilies, SortOptions } from '../types';
-import { ApplyComposites } from '../../data/composite_processor';
+import { ApplyComposites } from '@grafana/polystat-composites/core';
 
 import { Tooltip, TooltipProps } from './Tooltip';
 

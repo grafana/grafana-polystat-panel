@@ -4,13 +4,12 @@ import { config } from "@grafana/runtime";
 import {
   PolystatPanelMigrationHandler,
   migrateDefaults,
-  migrateComposites,
   migrateOverrides,
-  AngularSavedComposites,
   AngularSavedOverrides,
   migrateValueAndRangeMaps,
   hasRobotoFont,
 } from './migrations';
+import { AngularSavedComposites, migrateComposites } from '@grafana/polystat-composites/migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
   it('only migrates old polystat', () => {

@@ -12,7 +12,8 @@ import {
   SortByFieldOptions,
   SortOptions,
 } from './components/types';
-import { CompositeItemType } from './components/composites/types';
+import { CompositeEditor } from '@grafana/polystat-composites/editor';
+import { CompositeItemType } from '@grafana/polystat-composites/core';
 import { OverrideEditor } from './components/overrides/OverrideEditor';
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatPanel } from './components/PolystatPanel';
@@ -25,7 +26,6 @@ import {
   GLOBAL_TEXT_FONT_FAMILY_LEGACY,
   GLOBAL_TOOLTIP_FONT_FAMILY_LEGACY,
 } from './components/defaults';
-import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from './components/suggestions';

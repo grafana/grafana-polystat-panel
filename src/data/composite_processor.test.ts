@@ -2,15 +2,15 @@ import { PolystatModel, ShowTimestampFormats } from '../components/types';
 import { FieldType, InterpolateFunction, ScopedVars, toDataFrame, TypedVariableModel } from '@grafana/data';
 import { DataFrameToPolystat } from './processor';
 import { getWorstSeries } from './threshold_processor';
-import { CompositeItemType } from 'components/composites/types';
 import {
   ApplyComposites,
+  CompositeItemType,
+  customFormatter,
   resolveCompositeTemplates,
   resolveMemberTemplates,
-  customFormatter,
-} from './composite_processor';
+  CUSTOM_SPLIT_DELIMITER,
+} from '@grafana/polystat-composites/core';
 import { getTemplateSrv } from '@grafana/runtime';
-import { CUSTOM_SPLIT_DELIMITER } from './types';
 
 jest.mock('@grafana/runtime', () => {
   const original = jest.requireActual('@grafana/runtime');

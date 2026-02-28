@@ -2,9 +2,13 @@
   "name": "grafana-polystat-panel",
   "version": "2.1.16",
   "description": "Grafana Polystat Panel",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
-    "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
+    "build": "yarn build:packages && webpack -c ./.config/webpack/webpack.config.ts --env production",
+    "build:packages": "yarn workspace @grafana/polystat-composites build",
+    "dev": "yarn build:packages && webpack -w -c ./.config/webpack/webpack.config.ts --env development",
     "lint": "eslint --cache .",
     "lint:fix": "yarn run lint --fix && prettier --write --list-different .",
     "playwright:test": "npx playwright test",
@@ -13,10 +17,10 @@
     "server": "docker compose up --build",
     "sign": "npx --yes @grafana/sign-plugin@latest",
     "spellcheck": "cspell -c cspell.config.json \"**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}\"",
-    "test": "jest --watch --onlyChanged",
-    "test:ci": "jest --passWithNoTests --maxWorkers 4",
-    "test:coverage": "jest --maxWorkers 4 --coverage",
-    "typecheck": "tsc --noEmit",
+    "test": "yarn build:packages && jest --watch --onlyChanged",
+    "test:ci": "yarn build:packages && jest --passWithNoTests --maxWorkers 4",
+    "test:coverage": "yarn build:packages && jest --maxWorkers 4 --coverage",
+    "typecheck": "yarn build:packages && tsc --noEmit",
     "e2e": "playwright test"
   },
   "repository": {
@@ -103,6 +107,7 @@
     "@emotion/css": "11.13.5",
     "@emotion/react": "11.14.0",
     "@grafana/data": "^9.5.21",
+    "@grafana/polystat-composites": "workspace:*",
     "@grafana/runtime": "^9.5.21",
     "@grafana/schema": "^12.2.0",
     "@grafana/ui": "^9.5.21",

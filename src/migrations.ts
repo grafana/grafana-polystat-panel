@@ -1,11 +1,16 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
 import { config } from "@grafana/runtime";
 import { satisfies, coerce } from "semver";
-import { CompositeItemType, CompositeMetric } from 'components/composites/types';
+import {
+  migrateComposites,
+  type AngularSavedComposites,
+  type LegacyCompositeItem as CompositeItem,
+  type CompositeMembers,
+} from '@grafana/polystat-composites/migrations';
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
 
-import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats, ShowTimestampPositions } from './components/types';
+import { FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats, ShowTimestampPositions } from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -76,30 +81,7 @@ export interface AngularOverride {
 export interface AngularSavedOverrides {
   savedOverrides: AngularOverride[];
 }
-
-export interface CompositeMembers {
-  seriesName: string;
-}
-export interface CompositeItem {
-  animateMode: string;
-  clickThrough: string;
-  compositeName: string;
-  displayName: string;
-  enabled: boolean;
-  hideMembers: boolean;
-  label: string;
-  members: CompositeMembers[];
-  newTabEnabled: boolean;
-  sanitizeURLEnabled: boolean;
-  sanitizedURL: string;
-  showName: boolean;
-  showValue: boolean;
-  thresholdLevel: number;
-}
-
-export interface AngularSavedComposites {
-  savedComposites: CompositeItem[];
-}
+export type { AngularSavedComposites, CompositeItem, CompositeMembers };
 
 /**
  * This is called when the panel is imported or reloaded
@@ -548,116 +530,7 @@ export const migrateValueAndRangeMaps = (panel: any) => {
   return [...new Map(newMappings.map((v) => [JSON.stringify(v), v])).values()];
 };
 
-export const migrateComposites = (angular: AngularSavedComposites, animationSpeed: string) => {
-  let options = {} as any;
-  // Composites
-  options.compositeConfig = {
-    composites: [],
-    enabled: true,
-    animationSpeed: animationSpeed,
-  };
-
-  if (angular.savedComposites?.length) {
-    let index = 0;
-    for (const composite of angular.savedComposites) {
-      let aComposite: CompositeItemType = {
-        name: `COMPOSITE-${index}`,
-        label: `COMPOSITE-${index}`,
-        order: index,
-        isTemplated: false,
-        displayMode: DisplayModes[0].value,
-        enabled: true,
-        showName: true,
-        showValue: true,
-        showComposite: true,
-        showMembers: false,
-        showTimestampEnabled: false,
-        showTimestampFormat: ShowTimestampFormats[0].value,
-        showTimestampYOffset: 0,
-        metrics: [],
-        clickThrough: '',
-        clickThroughSanitize: true,
-        clickThroughOpenNewTab: true,
-        clickThroughCustomTargetEnabled: false,
-        clickThroughCustomTarget: ''
-      };
-      index++;
-      for (const p of Object.keys(composite)) {
-        // @ts-ignore
-        const v = composite[p];
-        switch (p) {
-          // Ignore
-          case '$$hashKey':
-            break;
-          case 'animateMode':
-            if (v !== 'all') {
-              aComposite.displayMode = DisplayModes[1].value;
-            }
-            break;
-          case 'clickThrough':
-            aComposite.clickThrough = v;
-            break;
-          case 'compositeName':
-            aComposite.name = v;
-            break;
-          // Ignore
-          case 'displayName':
-            break;
-          case 'enabled':
-            // this is now .showComposite
-            aComposite.showComposite = v;
-            break;
-          case 'hideMembers':
-            aComposite.showMembers = !v;
-            break;
-          case 'label':
-            aComposite.label = v;
-            break;
-          case 'members':
-            /*
-              {
-                "$$hashKey": "object:150",
-                "seriesName": "/P2/"
-              }
-              */
-            let memberIndex = 0;
-            let members: CompositeMetric[] = [];
-            // not sure about this...
-            for (const aMember of Object.keys(v)) {
-              const x = v[aMember];
-              let member: CompositeMetric = {
-                seriesMatch: x.seriesName,
-                order: memberIndex,
-              };
-              members.push(member);
-              memberIndex++;
-            }
-            aComposite.metrics = members;
-            break;
-          case 'newTabEnabled':
-            aComposite.clickThroughOpenNewTab = v;
-            break;
-          case 'sanitizeURLEnabled':
-            aComposite.clickThroughSanitize = v;
-            break;
-          // Ignore
-          case 'sanitizedURL':
-            break;
-          case 'showName':
-            aComposite.showName = v;
-            break;
-          case 'showValue':
-            aComposite.showValue = v;
-            break;
-          default:
-            console.log('Ignore composite migration:', p, v);
-        }
-      }
-      options.compositeConfig.composites.push(aComposite);
-    }
-  }
-  return options;
-};
+export { migrateComposites };
 
 /**
  * This is called when the panel changes from another panel

@@ -1,8 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import { CompositeMetricItem } from './CompositeMetricItem';
-import { CompositeMetricItemProps, CompositeMetric } from './types';
+import { CompositeMetric, CompositeMetricItem, CompositeMetricItemProps } from '@grafana/polystat-composites/editor';
 import { FieldType, toDataFrame } from '@grafana/data';
 
 describe('Test CompositeMetricItem', () => {

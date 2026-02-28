@@ -1,0 +1,63 @@
+{
+  "name": "@grafana/polystat-composites",
+  "version": "0.1.0",
+  "description": "Composite processing, editor UI, and migration helpers for Polystat",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/grafana/grafana-polystat-panel.git",
+    "directory": "packages/polystat-composites"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "core": [
+        "./dist/core/index.d.ts"
+      ],
+      "editor": [
+        "./dist/editor/index.d.ts"
+      ],
+      "migrations": [
+        "./dist/migrations/index.d.ts"
+      ],
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "default": "./dist/core/index.js"
+    },
+    "./editor": {
+      "types": "./dist/editor/index.d.ts",
+      "default": "./dist/editor/index.js"
+    },
+    "./migrations": {
+      "types": "./dist/migrations/index.d.ts",
+      "default": "./dist/migrations/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "peerDependencies": {
+    "@grafana/data": "^9.5.21",
+    "@grafana/runtime": "^9.5.21",
+    "@grafana/ui": "^9.5.21",
+    "react": "^17.0.2"
+  }
+}
