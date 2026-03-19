@@ -159,38 +159,51 @@ export class LayoutManager {
       useLimit = dataSize;
     }
     if (rowAutoSize && columnAutoSize) {
-      // sqrt of # data items
-      const squared = Math.sqrt(useLimit);
-      // favor columns when width is greater than height
-      // favor rows when width is less than height
-      if (this.width > this.height) {
-        this.numColumns = Math.ceil((this.width / this.height) * squared * 0.75);
-        // always at least 1 column and max. data.length columns
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
-        } else if (this.numColumns > useLimit) {
+      if (this.shape === PolygonShapes.RECTANGLE) {
+        // Optimal columns for 2:1 bricks: derived from filling panel area with N bricks
+        // each of width 2h and height h  →  cols = sqrt(N * panelWidth / (2 * panelHeight))
+        this.numColumns = Math.max(1, Math.ceil(Math.sqrt(useLimit * this.width / (2 * this.height))));
+        if (this.numColumns > useLimit) {
           this.numColumns = useLimit;
         }
-
-        // Align rows count to computed columns count
         this.numRows = Math.ceil(useLimit / this.numColumns);
-        // always at least 1 row
         if (this.numRows < 1) {
           this.numRows = 1;
         }
       } else {
-        this.numRows = Math.ceil((this.height / this.width) * squared * 0.75);
-        // always at least 1 row and max. data.length rows
-        if (this.numRows < 1) {
-          this.numRows = 1;
-        } else if (this.numRows > useLimit) {
-          this.numRows = useLimit;
-        }
-        // Align columns count to computed rows count
-        this.numColumns = Math.ceil(useLimit / this.numRows);
-        // always at least 1 column
-        if (this.numColumns < 1) {
-          this.numColumns = 1;
+        // sqrt of # data items
+        const squared = Math.sqrt(useLimit);
+        // favor columns when width is greater than height
+        // favor rows when width is less than height
+        if (this.width > this.height) {
+          this.numColumns = Math.ceil((this.width / this.height) * squared * 0.75);
+          // always at least 1 column and max. data.length columns
+          if (this.numColumns < 1) {
+            this.numColumns = 1;
+          } else if (this.numColumns > useLimit) {
+            this.numColumns = useLimit;
+          }
+
+          // Align rows count to computed columns count
+          this.numRows = Math.ceil(useLimit / this.numColumns);
+          // always at least 1 row
+          if (this.numRows < 1) {
+            this.numRows = 1;
+          }
+        } else {
+          this.numRows = Math.ceil((this.height / this.width) * squared * 0.75);
+          // always at least 1 row and max. data.length rows
+          if (this.numRows < 1) {
+            this.numRows = 1;
+          } else if (this.numRows > useLimit) {
+            this.numRows = useLimit;
+          }
+          // Align columns count to computed rows count
+          this.numColumns = Math.ceil(useLimit / this.numRows);
+          // always at least 1 column
+          if (this.numColumns < 1) {
+            this.numColumns = 1;
+          }
         }
       }
     } else if (rowAutoSize) {
@@ -241,6 +254,31 @@ export class LayoutManager {
     this.maxColumnsUsed = maxColumnsUsed;
   }
 
+  /**
+   * Returns the pixel width of a single 2:1 brick.
+   * Takes the smaller of:
+   *   - width-driven:  panelWidth  / numColumns        (fits horizontally)
+   *   - height-driven: panelHeight / numRows * 2       (fits vertically while keeping 2:1)
+   */
+  getBrickWidth(): number {
+    if (!this.autoSize && this.radius > 0) {
+      // Manual size: user sets "polygon size" which maps to half the brick width
+      return this.truncateFloat(this.radius * 2);
+    }
+    const cols = Math.max(1, this.maxColumnsUsed);
+    const rows = Math.max(1, this.maxRowsUsed);
+    const byWidth  = this.width / cols;
+    const byHeight = (this.height / rows) * 2;
+    return this.truncateFloat(Math.min(byWidth, byHeight));
+  }
+
+  /**
+   * Returns the pixel height of a single 2:1 brick (always half of getBrickWidth).
+   */
+  getBrickHeight(): number {
+    return this.truncateFloat(this.getBrickWidth() / 2);
+  }
+
   shapeToCoordinates(shape: PolygonShapes, radius: number, column: number, row: number) {
     switch (shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
@@ -255,6 +293,8 @@ export class LayoutManager {
         return [radius * column * 2, radius * row * 2];
       case PolygonShapes.SQUARE:
         return [radius * column * 2, radius * row * 2];
+      case PolygonShapes.RECTANGLE:
+        return [this.getBrickWidth() * column, this.getBrickHeight() * row];
       default:
         return [radius * column * 1.75, radius * row * 1.5];
     }
@@ -364,6 +404,11 @@ export class LayoutManager {
       case PolygonShapes.SQUARE:
         radius = this.getUniformRadius();
         break;
+      case PolygonShapes.RECTANGLE:
+        // radius is not used for rectangle rendering, but the auto-font scaler
+        // needs a value — use half the brick width as an approximation
+        radius = this.getBrickWidth() / 2;
+        break;
       default:
         radius = this.getHexFlatTopRadius();
         break;
@@ -398,6 +443,17 @@ export class LayoutManager {
         return this.getOffsetsSquare(useLimit);
       case PolygonShapes.CIRCLE:
         return this.getOffsetsUniform(useLimit);
+      case PolygonShapes.RECTANGLE: {
+        // Bricks have a fixed 2:1 ratio and may not fill the full panel.
+        // Center the grid inside the panel.
+        const bW = this.getBrickWidth();
+        const bH = this.getBrickHeight();
+        const usedW = this.maxColumnsUsed * bW;
+        const usedH = this.maxRowsUsed * bH;
+        const xoffset = -((this.width  - usedW) / 2);
+        const yoffset = -((this.height - usedH) / 2);
+        return { xoffset, yoffset };
+      }
       default:
         return this.getOffsetsUniform(useLimit);
     }
@@ -486,6 +542,8 @@ export class LayoutManager {
         return this.getUniformDiameters();
       case PolygonShapes.CIRCLE:
         return this.getUniformDiameters();
+      case PolygonShapes.RECTANGLE:
+        return { diameterX: this.getBrickWidth(), diameterY: this.getBrickHeight() };
       default:
         return this.getUniformDiameters();
     }
