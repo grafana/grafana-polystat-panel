@@ -215,7 +215,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   // compute text area size (used to calculate the fontsize)
   const textAreaWidth = diameterX;
-  const textAreaHeight = diameterY / 2; // Top and bottom of hexagon are not used
+  // For hexagon/circle the top and bottom tips are unusable — use half height.
+  // For rectangle every pixel is available, so use the full height.
+  const textAreaHeight = options.globalShape === PolygonShapes.RECTANGLE ? diameterY : diameterY / 2;
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
   // use the smallest of diameterX or Y
@@ -377,6 +379,23 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             height={useRadius * 2}
             width={useRadius * 2}
             fill={fillColor}
+          />
+        );
+      case PolygonShapes.RECTANGLE:
+        return (
+          <rect
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
+            data-tooltip-content={index}
+            data-tooltip-position-strategy='fixed'
+            key={`polystat-brick-${uniquePanelId}-${index}`}
+            className={svgPathStyles}
+            x={coords.x}
+            y={coords.y}
+            width={lm.getBrickWidth()}
+            height={lm.getBrickHeight()}
+            fill={fillColor}
+            stroke={options.globalPolygonBorderColor}
+            strokeWidth={options.globalPolygonBorderSize + 'px'}
           />
         );
       default:

@@ -108,12 +108,14 @@ export enum PolygonShapes {
   HEXAGON_POINTED_TOP = 'hexagon_pointed_top',
   CIRCLE = 'circle',
   SQUARE = 'square',
+  RECTANGLE = 'rectangle',
 };
 
 export const PolygonNamedShapes = [
   { value: 'hexagon_pointed_top', label: 'Hexagon Pointed Top' },
   { value: 'circle', label: 'Circle' },
   { value: 'square', label: 'Square' },
+  { value: 'rectangle', label: 'Rectangle (Brick)' },
 ];
 
 export interface PolystatDiameters {
