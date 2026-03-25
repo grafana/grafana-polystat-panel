@@ -1358,6 +1358,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@grafana/e2e-selectors@npm:13.0.0-23251034887":
+  version: 13.0.0-23251034887
+  resolution: "@grafana/e2e-selectors@npm:13.0.0-23251034887"
+  dependencies:
+    semver: "npm:^7.7.0"
+    tslib: "npm:2.8.1"
+    typescript: "npm:5.9.2"
+  checksum: 10c0/6f5f974fb1c030dae3fce42b7849d62b4ca78462a58842f14cf3087fb4c17f740fa32ab33221043d9e81a50ffcceeeaf89571e0d6ba9269ff04fd2723f22b0fb
+  languageName: node
+  linkType: hard
+
 "@grafana/e2e-selectors@npm:9.5.21":
   version: 9.5.21
   resolution: "@grafana/e2e-selectors@npm:9.5.21"
@@ -1366,17 +1377,6 @@ __metadata:
     tslib: "npm:2.5.0"
     typescript: "npm:4.8.4"
   checksum: 10c0/7aec3456ef421a2993bcbd674fb24a9d02cb499d3288abf34b876d16843190a622951339e2d2707d2d31c91fe665e966bea2758185b0400d2594cf4978160d20
-  languageName: node
-  linkType: hard
-
-"@grafana/e2e-selectors@npm:^12.2.0-255920":
-  version: 12.3.1
-  resolution: "@grafana/e2e-selectors@npm:12.3.1"
-  dependencies:
-    semver: "npm:^7.7.0"
-    tslib: "npm:2.8.1"
-    typescript: "npm:5.9.2"
-  checksum: 10c0/b0566d933c5a352234bae4b161fd001d98f33dd513610b355dedf052994eb9e2584205d7be5af4b45c77d5c0a6eeac042606daf2088c52e206fb578eaec1535b
   languageName: node
   linkType: hard
 
@@ -1457,17 +1457,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/plugin-e2e@npm:^2.2.0":
-  version: 2.2.3
-  resolution: "@grafana/plugin-e2e@npm:2.2.3"
+"@grafana/plugin-e2e@npm:^3.4.8":
+  version: 3.4.8
+  resolution: "@grafana/plugin-e2e@npm:3.4.8"
   dependencies:
-    "@grafana/e2e-selectors": "npm:^12.2.0-255920"
+    "@grafana/e2e-selectors": "npm:13.0.0-23251034887"
     semver: "npm:^7.5.4"
     uuid: "npm:^13.0.0"
     yaml: "npm:^2.3.4"
   peerDependencies:
+    "@axe-core/playwright": ^4.11.1
     "@playwright/test": ^1.52.0
-  checksum: 10c0/da1bcf35e3a94c815884a58805293e208a2bfd2c4b21b37efff60393e54a96a153ac4b48ff32af120811996ec1a669f34cf2925b6c6b58ea26c426814cbca305
+  peerDependenciesMeta:
+    "@axe-core/playwright":
+      optional: true
+  checksum: 10c0/8e459733cff00c59d37cd57f78d1d14a2b35e24621010905aa2e452de0708e882291664d321b4e5d77af922664936e2b37f6703e4ecb883727ffa1e22106ceff
   languageName: node
   linkType: hard
 
@@ -8014,7 +8018,7 @@ __metadata:
     "@grafana/data": "npm:^9.5.21"
     "@grafana/eslint-config": "npm:^9.0.0"
     "@grafana/eslint-plugin-plugins": "npm:^0.6.0"
-    "@grafana/plugin-e2e": "npm:^2.2.0"
+    "@grafana/plugin-e2e": "npm:^3.4.8"
     "@grafana/plugin-meta-extractor": "npm:^0.11.0"
     "@grafana/runtime": "npm:^9.5.21"
     "@grafana/schema": "npm:^12.2.0"
