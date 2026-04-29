@@ -25,7 +25,7 @@ permissions: {}
 jobs:
   cd:
     name: CD
-    uses: grafana/plugin-ci-workflows/.github/workflows/cd.yml@ci-cd-workflows/v5.0.0
+    uses: grafana/plugin-ci-workflows/.github/workflows/cd.yml@e62d1bb2cac32d9de65197c7b11eb9f6010bfc14 # ci-cd-workflows/v7.2.0
     permissions:
       contents: write
       id-token: write
