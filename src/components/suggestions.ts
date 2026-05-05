@@ -1,6 +1,6 @@
-import { FieldType, VisualizationSuggestionScore } from '@grafana/data';
+import { FieldType, PanelDataSummary, VisualizationSuggestionScore } from '@grafana/data';
 
-export const polystatSuggestionsSupplier = (dataSummary: any) => {
+export const polystatSuggestionsSupplier = (dataSummary: PanelDataSummary) => {
   if (!dataSummary.hasData) {
     return;
   }
