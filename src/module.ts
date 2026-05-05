@@ -28,7 +28,7 @@ import {
 import { CompositeEditor } from './components/composites/CompositeEditor';
 import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
-import { PolystatDataSuggestionsSupplier } from './components/suggestions';
+import { polystatSuggestionsSupplier } from './components/suggestions';
 import { hasRobotoFont, PolystatPanelMigrationHandler } from './migrations';
 
 
@@ -619,4 +619,4 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Composites'],
       });
   })
-  .setSuggestionsSupplier(new PolystatDataSuggestionsSupplier());
+  .setSuggestionsSupplier(polystatSuggestionsSupplier as any);

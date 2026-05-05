@@ -12,17 +12,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@axe-core/playwright@npm:^4.11.1":
-  version: 4.11.1
-  resolution: "@axe-core/playwright@npm:4.11.1"
-  dependencies:
-    axe-core: "npm:~4.11.1"
-  peerDependencies:
-    playwright-core: ">= 1.0.0"
-  checksum: 10c0/8c916cd2dd831d91f8c2ab9e3a07ef19837415bb41d40439e4acb88ed0009af2479696b865670199b13ccad984a247868610fbb34d520fca9f7c02de0f7a9439
-  languageName: node
-  linkType: hard
-
 "@babel/code-frame@npm:^7.0.0, @babel/code-frame@npm:^7.10.4, @babel/code-frame@npm:^7.12.13, @babel/code-frame@npm:^7.16.7, @babel/code-frame@npm:^7.27.1":
   version: 7.27.1
   resolution: "@babel/code-frame@npm:7.27.1"
@@ -1369,14 +1358,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/e2e-selectors@npm:12.4.0-21983999378":
-  version: 12.4.0-21983999378
-  resolution: "@grafana/e2e-selectors@npm:12.4.0-21983999378"
+"@grafana/e2e-selectors@npm:13.1.0-24448182242":
+  version: 13.1.0-24448182242
+  resolution: "@grafana/e2e-selectors@npm:13.1.0-24448182242"
   dependencies:
     semver: "npm:^7.7.0"
     tslib: "npm:2.8.1"
     typescript: "npm:5.9.2"
-  checksum: 10c0/aace6e99dc0b594d617879053c081aaeac64a97294f48e950b8795510b592474ca87a0d5b341dc15cb5c8267d2d5595662f155196e6e36186301007add3ae53b
+  checksum: 10c0/248c9c689d943cfc5f5a5d5db23ac41dafbec8cd41b6ce2b9d125105ee1e42c2e4f6fa78115844e7ebf741ea712e66fbbd04dd087384fa53318f82a3fb2f63ff
   languageName: node
   linkType: hard
 
@@ -1468,24 +1457,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/plugin-e2e@npm:3.4.1-canary.2485.22416356262.0":
-  version: 3.4.1-canary.2485.22416356262.0
-  resolution: "@grafana/plugin-e2e@npm:3.4.1-canary.2485.22416356262.0"
+"@grafana/plugin-e2e@npm:3.7.1":
+  version: 3.7.1
+  resolution: "@grafana/plugin-e2e@npm:3.7.1"
   dependencies:
-    "@grafana/e2e-selectors": "npm:12.4.0-21983999378"
+    "@grafana/e2e-selectors": "npm:13.1.0-24448182242"
     semver: "npm:^7.5.4"
     uuid: "npm:^13.0.0"
     yaml: "npm:^2.3.4"
   peerDependencies:
     "@axe-core/playwright": ^4.11.1
     "@playwright/test": ^1.52.0
-    axe-core: ^4.11.1
   peerDependenciesMeta:
     "@axe-core/playwright":
       optional: true
-    axe-core:
-      optional: true
-  checksum: 10c0/28fe7771678970080cf93b686d2f69ad63ae8d2de6aeadb116961734fb1bccbdd3dfd149a37ca4aaf0467a00967f4e8b8d7df6928f9dc0bba9ce8ecd6d33fac0
+  checksum: 10c0/ac108a7991d6d0514cadd9d62131cad89f31d9b805afc5fe2c0673ee68cbdfd1d9de0308aaa72738a39e5600c6b41c7cbc19286a0723cc6b4fcd10b3d23e1ea8
   languageName: node
   linkType: hard
 
@@ -4882,13 +4868,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:~4.11.1":
-  version: 4.11.1
-  resolution: "axe-core@npm:4.11.1"
-  checksum: 10c0/1e6997454b61c7c9a4d740f395952835dcf87f2c04fd81577217d68634d197d602c224f9e8f17b22815db4c117a2519980cfc8911fc0027c54a6d8ebca47c6a7
-  languageName: node
-  linkType: hard
-
 "babel-jest@npm:^29.7.0":
   version: 29.7.0
   resolution: "babel-jest@npm:29.7.0"
@@ -8031,7 +8010,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "grafana-polystat-panel@workspace:."
   dependencies:
-    "@axe-core/playwright": "npm:^4.11.1"
     "@babel/core": "npm:^7.21.4"
     "@babel/helper-validator-option": "npm:7.27.1"
     "@braintree/sanitize-url": "npm:^7.0.1"
@@ -8040,7 +8018,7 @@ __metadata:
     "@grafana/data": "npm:^9.5.21"
     "@grafana/eslint-config": "npm:^9.0.0"
     "@grafana/eslint-plugin-plugins": "npm:^0.6.0"
-    "@grafana/plugin-e2e": "npm:3.4.1-canary.2485.22416356262.0"
+    "@grafana/plugin-e2e": "npm:3.7.1"
     "@grafana/plugin-meta-extractor": "npm:^0.11.0"
     "@grafana/runtime": "npm:^9.5.21"
     "@grafana/schema": "npm:^12.2.0"
