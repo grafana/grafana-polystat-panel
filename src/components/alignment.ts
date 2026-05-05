@@ -54,6 +54,19 @@ export const GetAlignments = (
         timestampAlignment = diameterY / 1.5 - (activeTimestampFontSize * 0.67);
       }
       break;
+    case PolygonShapes.RECTANGLE:
+      // Rectangle bricks: anchor is top-left corner, text fills the entire cell.
+      // Label sits in the top half, value in the bottom half.
+      valueWithLabelTextAlignment = diameterY * 0.67 + activeValueFontSize / 2;
+      valueOnlyTextAlignment = diameterY / 2 + activeValueFontSize * 0.37;
+      labelWithValueTextAlignment = diameterY * 0.28 + activeLabelFontSize / 2;
+      labelOnlyTextAlignment = diameterY / 2 + activeLabelFontSize * 0.37;
+      labelTextAlignmentX = diameterX / 2;
+      labelValueAlignmentX = diameterX / 2;
+      if (showTimestampEnabled && activeTimestampFontSize > 0) {
+        timestampAlignment = diameterY * 0.67 - (activeTimestampFontSize * 0.67);
+      }
+      break;
   }
   return {
     valueWithLabelTextAlignment,
