@@ -1,5 +1,6 @@
 {
   "type": "panel",
+  "suggestions": true,
   "name": "Polystat",
   "id": "grafana-polystat-panel",
   "info": {
