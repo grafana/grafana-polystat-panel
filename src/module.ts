@@ -619,4 +619,4 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         category: ['Composites'],
       });
   })
-  .setSuggestionsSupplier(polystatSuggestionsSupplier as any);
+  .setSuggestionsSupplier(polystatSuggestionsSupplier);
