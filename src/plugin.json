@@ -2,6 +2,7 @@
     "type": "panel",
     "name": "Polystat",
     "id": "grafana-polystat-panel",
+    "suggestions": true,
     "info": {
         "description": "Polystat panel for Grafana",
         "author": {
@@ -54,7 +55,7 @@
 
     "dependencies": {
         "grafanaVersion": "9.5.x",
-        "grafanaDependency": ">=9.5.0",
+        "grafanaDependency": ">=12.4.0",
         "plugins": []
     }
 }
