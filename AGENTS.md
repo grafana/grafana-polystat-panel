@@ -1,7 +1,7 @@
 # AGENTS.md - Coding Agent Guidelines for grafana-polystat-panel
 
 Grafana Polystat Panel plugin. React + TypeScript frontend panel plugin built with
-`@grafana/create-plugin` scaffolding (v6.4.4). Uses Yarn 4 (Berry), Node >= 24, React 17.
+`@grafana/create-plugin` scaffolding (v7.6.0). Uses Yarn 4 (Berry), Node >= 24, React 17.
 
 ## Build / Lint / Test Commands
 

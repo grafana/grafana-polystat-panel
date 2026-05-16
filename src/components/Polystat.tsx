@@ -1,4 +1,4 @@
-import React, { useEffect, createRef, useCallback } from 'react';
+import React, { useEffect, createRef, useCallback, useRef } from 'react';
 import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
@@ -104,6 +104,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.globalShowValueEnabled,
   ]);
 
+  const animateCompositeRef = useRef(animateComposite);
+  useEffect(() => {
+    animateCompositeRef.current = animateComposite;
+  }, [animateComposite]);
+
   /*
     Determine which items should be animated
   */
@@ -132,7 +137,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         console.log(`WARNING: speed in configuration is too fast, setting to 200ms`);
         speed = 200;
       }
-      tick = setInterval(animateComposite, speed);
+      tick = setInterval(() => animateCompositeRef.current(), speed);
     }
     return () => {
       clearInterval(tick);
