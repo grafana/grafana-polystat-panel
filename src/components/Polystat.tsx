@@ -706,7 +706,7 @@ export const getTextToDisplay = (
             </span>
 */
 
-const buildTriggerCache = (item: any) => {
+export const buildTriggerCache = (item: any) => {
   let triggerCache = [];
   for (let i = 0; i < item.members.length; i++) {
     const aMember = item.members[i];
@@ -726,7 +726,7 @@ const buildTriggerCache = (item: any) => {
   return triggerCache;
 };
 
-const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
+export const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
   // TODO: if just one value, could speed this up
   let content = item.valueFormatted;
   let timestampContent = item.timestampFormatted;
