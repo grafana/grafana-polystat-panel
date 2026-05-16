@@ -10,7 +10,10 @@
     "provisioning/**",
     "src/dashboards/**",
     "tests/__mocks__/**",
-    "yarn.lock"
+    "yarn.lock",
+    "playwright-report/**",
+    "provisioning-private/**",
+    "test-results/**"
   ],
   "words": [
     "Abbrevation",
