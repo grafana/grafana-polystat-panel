@@ -31,7 +31,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
   // this MUST be unique for gradients to work properly
-  const [uniquePanelId] = React.useState<string>(`polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString());
+  const [uniquePanelId] = React.useState<string>(() => `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString());
 
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
@@ -57,9 +57,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     This is the animation method that will cycle through the metrics for a composite
    */
   const animateComposite = useCallback(() => {
+    const newMetricIndexes = [...animationMetricIndexes];
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
-      let metricIndex = animationMetricIndexes[index];
+      let metricIndex = newMetricIndexes[index];
 
       // composites can have animated values displayed
       let isValueAnimated = false;
@@ -72,6 +73,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
         if (animationRefs[index].current.innerHTML !== null) {
+          // eslint-disable-next-line react-hooks/immutability
           animationRefs[index].current.innerHTML = val;
         }
       }
@@ -80,6 +82,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
         if (animationTimestampRefs[index].current.innerHTML !== null) {
+          // eslint-disable-next-line react-hooks/immutability
           animationTimestampRefs[index].current.innerHTML = ts;
         }
       }
@@ -87,9 +90,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
         metricIndex %= options.processedData[index].members.length;
       }
-      animationMetricIndexes[index] = metricIndex;
-      setAnimationMetricIndexes(animationMetricIndexes);
+      newMetricIndexes[index] = metricIndex;
     }
+    setAnimationMetricIndexes(newMetricIndexes);
   }, [
     animationMetricIndexes,
     animationRefs,
@@ -117,6 +120,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // check array content equality
     if (JSON.stringify(animatedItems) !== JSON.stringify(animate)) {
       if (options.processedData) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         updateAnimation(options.processedData);
         setAnimatedItems(animate);
       }
@@ -471,10 +475,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // check if showTimeStamp is enabled
     // TODO: the show value should be inside the item also
     if (options.globalShowTimestampEnabled) {
-      // TODO: the offset should be put inside the item also to handle overrides and composites correctly
-      if (isNaN(options.globalShowTimestampYOffset)) {
-        options.globalShowTimestampYOffset = 0;
-      }
       switch (options.globalShowTimestampPosition) {
         case TimestampPositions.ABOVE_VALUE:
           verticalAlignment = alignments.valueWithLabelTextAlignment;
@@ -526,26 +526,24 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
   const getTimestampForValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
     // TODO: the offset should be put inside the item also to handle overrides and composites correctly
-    if (isNaN(options.globalShowTimestampYOffset)) {
-      options.globalShowTimestampYOffset = 0;
-    }
-    let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+    const timestampYOffset = isNaN(options.globalShowTimestampYOffset) ? 0 : options.globalShowTimestampYOffset;
+    let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + timestampYOffset;
     switch (options.globalShowTimestampPosition) {
       case TimestampPositions.ABOVE_VALUE:
         if (item.showValue) {
-          verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + options.globalShowTimestampYOffset;
+          verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + timestampYOffset;
           if (item.isComposite) {
-            verticalAlignment = alignments.timestampAlignment - compositeTimestampLineSpacing + options.globalShowTimestampYOffset;
+            verticalAlignment = alignments.timestampAlignment - compositeTimestampLineSpacing + timestampYOffset;
           }
         } else {
           // the below calc can be used when value is not displayed
-          verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+          verticalAlignment = alignments.valueWithLabelTextAlignment + timestampYOffset;
         }
         break;
       case TimestampPositions.BELOW_VALUE:
-        verticalAlignment = alignments.valueWithLabelTextAlignment + options.globalShowTimestampYOffset;
+        verticalAlignment = alignments.valueWithLabelTextAlignment + timestampYOffset;
         if (item.isComposite && item.showValue) {
-          verticalAlignment = activeCompositeValueFontSize + compositeTimestampLineSpacing + options.globalShowTimestampYOffset;
+          verticalAlignment = activeCompositeValueFontSize + compositeTimestampLineSpacing + timestampYOffset;
         }
         break;
     }
@@ -605,7 +603,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);
-            let clickableUrl: JSX.Element;
+            let clickableUrl: React.JSX.Element;
             // only add target attribute when there is one specified
             if ((resolvedClickthroughTarget.length > 0) && (useUrl.length > 0)) {
               clickableUrl = <a target={resolvedClickthroughTarget} href={useUrl}>
