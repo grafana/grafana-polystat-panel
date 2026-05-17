@@ -12,3 +12,5 @@ ignores:
   - .config
   - docs
   - README.md
+  - test-results
+  - provisioning

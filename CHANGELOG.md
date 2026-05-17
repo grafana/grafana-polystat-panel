@@ -13,6 +13,10 @@
 - Fix pre-commit checklist to use `yarn` instead of `npm run`
 - Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
   Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
+- Tighten ambiguous AGENTS.md rules: concrete 20-line threshold, stronger subagent directive, clarify
+  console.log as legacy pattern
+- Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
+- Add test-results and provisioning to markdownlint ignores
 
 ## v2.1.16
 

@@ -37,8 +37,7 @@ Goal: understand problem + codebase before diff.
 - Read files you touch. Read callers. Subagents for exploration (keep main context clean).
 - Match existing patterns. Project uses X → use X, even if you'd do differently greenfield.
 - Surface assumptions: "Assuming X, Y, Z. Wrong → say so." Don't bury in implementation.
-- Two approaches: present both with tradeoffs. Don't pick silently. Exception: trivial tasks where diff fits one
-  sentence.
+- Two approaches: present both with tradeoffs. Don't pick silently. Exception: changes under ~20 lines.
 
 ---
 
@@ -271,7 +270,8 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 - Use fallback/default values rather than throwing exceptions
 - Guard with null/undefined checks and early returns
-- `console.log('WARNING: ...')` for runtime warnings (no structured error framework)
+- Existing code uses `console.log('WARNING: ...')` for runtime warnings — these are stripped in production builds.
+  New code should avoid `console.log` (`no-console` is an ESLint error); use `eslint-disable` only when necessary.
 - Silent `try/catch` with fallback values for version-compatibility workarounds
 
 #### Testing
@@ -322,8 +322,7 @@ Run all of these and fix issues before committing:
 
 1. `yarn typecheck` — when any `src/` files are changed
 2. `yarn lint` — fix errors with `yarn lint:fix`
-3. `yarn markdownlint` (or `npx markdownlint-cli2`) — on any `.md` file created or modified (AGENTS.md,
-   CHANGELOG.md, README.md)
+3. `yarn markdownlint` — on any `.md` file created or modified (AGENTS.md, CHANGELOG.md, README.md)
 4. `yarn spellcheck` (or `npx cspell ...`) — fix issues, add legit words to `cspell.config.json`
 5. **Always update `CHANGELOG.md`** — include the entry in the same commit
 
@@ -348,7 +347,7 @@ Flat config (ESLint 9). Common rules applied:
   - After pushing, always update the PR summary using `gh pr edit` with title and body reflecting all changes
     across the entire branch.
 - **No AI attribution** in PR summaries, commits, or any other output.
-- **Prefer subagents** for research, code exploration, and multi-step work. Use the Task tool with `explore` or
+- **Use subagents** for research, code exploration, and multi-step work. Use the Task tool with `explore` or
   `general` agents rather than running many search/read commands directly. Launch multiple agents in parallel when
   tasks are independent.
 
