@@ -1,5 +1,5 @@
 import { PolystatModel } from './types';
-import { AutoFontScalar } from './auto_font_scaler';
+import { AutoFontScaler } from './auto_font_scaler';
 
 describe('Test AutoFontScaler', () => {
   beforeEach(() => {

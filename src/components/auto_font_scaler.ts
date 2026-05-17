@@ -2,7 +2,7 @@ import { PolystatModel } from "./types";
 import { getTextSizeForWidthAndHeight } from '../utils';
 
 
-export const AutoFontScalar = (
+export const AutoFontScaler = (
   fontFamily: string,
   textAreaWidth: number,
   textAreaHeight: number,
@@ -26,9 +26,9 @@ export const AutoFontScalar = (
   // estimate how big of a font can be used
   // Two lines of text must fit with vertical spacing included
   // if it is too small, hide everything
-  // console.log(`AutoFontScalar maxLabel ${maxLabel}`);
-  // console.log(`AutoFontScalar textAreaWidth ${textAreaWidth}`);
-  // console.log(`AutoFontScalar textAreaHeight ${textAreaHeight}`);
+  // console.log(`AutoFontScaler maxLabel ${maxLabel}`);
+  // console.log(`AutoFontScaler textAreaWidth ${textAreaWidth}`);
+  // console.log(`AutoFontScaler textAreaHeight ${textAreaHeight}`);
   let activeLabelFontSize = computeTextFontSize(
     maxLabel,
     fontFamily,
@@ -81,7 +81,7 @@ export const AutoFontScalar = (
 
   // same for the value and timestamp option, also check for sub metrics size in case of composite
   let {maxValue, maxTimestamp} = getMaxValueAndTimestamp(data);
-  //console.log(`AutoFontScalar maxValue ${maxValue}`);
+  //console.log(`AutoFontScaler maxValue ${maxValue}`);
   // assume no timestamp
   let activeValueFontSize = computeTextFontSize(
     maxValue,
