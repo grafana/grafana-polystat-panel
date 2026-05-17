@@ -381,7 +381,8 @@ Flat config (ESLint 9). Common rules applied:
 
 ## 10. Project Learnings
 
-- (empty)
+- `override_processor.test.ts` uses `renderHook` + `useTheme()`/`useTheme2()` to get theme objects. Refactor to use
+  `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
 
 ---
 
