@@ -11,6 +11,8 @@
 - Fix long lines in CHANGELOG.md for markdownlint compliance
 - Add cspell dictionary words: Agentic, funcs, negotiables, unrequested
 - Fix pre-commit checklist to use `yarn` instead of `npm run`
+- Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
+  Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
 
 ## v2.1.16
 

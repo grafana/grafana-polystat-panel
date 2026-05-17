@@ -97,7 +97,7 @@ Every task:
 - Never "done" from plausible-looking diff. Plausibility ≠ correctness.
 - Debugging: root causes, not symptoms. Suppressing error ≠ fixing error.
 - UI changes: screenshot before+after, describe diff.
-- Use CLI tools (`gh`, `aws`, `gcloud`, `kubectl`) when available. More efficient than reading docs.
+- Use CLI tools (`gh`) when available. More efficient than reading docs.
 - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
 
 ---
@@ -107,7 +107,8 @@ Every task:
 - Context = constraint. Long sessions with failed attempts < fresh session with sharper prompt.
 - Two failed corrections same issue → stop. Summarize, ask user reset session with sharper prompt.
 - Subagents for exploration (don't pollute main context with file reads).
-- Commit messages: subject under 72 chars, body explains why. No "update file"/"fix bug". No "Co-Authored-By" lines.
+- Commit messages: subject under 72 chars. Body wrapped at 120 chars, bulleted, organized by file or topic. Explains
+  why, not what. No "update file"/"fix bug".
 
 ---
 
@@ -138,20 +139,7 @@ Proceed when:
 
 ---
 
-## 9. Self-improvement loop
-
-File is living. Keep short by keeping honest.
-
-After session where agent erred:
-
-1. Missing rule or ignored rule?
-2. Missing → add under "Project Learnings", concrete ("Always use X for Y", not "be careful with Y").
-3. Ignored → rule too long/vague/buried. Tighten or move up.
-4. Prune every few weeks. Per line: "removing this → agent mistake?" No → delete.
-
----
-
-## 10. Project Context
+## 9. Project Context
 
 ### Build / Lint / Test Commands
 
@@ -345,21 +333,17 @@ Flat config (ESLint 9). Common rules applied:
 - Unused variables are errors (except rest siblings)
 - Test files, mocks, config files, and server dirs are excluded from linting
 
-### Changelog Policy
-
-Add entries under the current `[Unreleased]` section in `CHANGELOG.md`. Categorize under `### Added`,
-`### Changed`, `### Removed`, `### Fixed`, or `### Project Updates` as appropriate.
-
 ### Critical Rules
 
 - **Always update `CHANGELOG.md` before committing.** Every commit must include the corresponding changelog entry.
+  Add entries under `[Unreleased]`, categorized as `### Added`, `### Changed`, `### Removed`, `### Fixed`, or
+  `### Project Updates`.
 - **NEVER commit unless the user explicitly asks.**
 - **NEVER push unless the user explicitly asks.** Never chain `git commit && git push`. Always wait for explicit push
   instruction.
 - **After pushing, always update the PR summary** if a PR exists. Use `gh pr edit` to update title and body
   reflecting all changes across the entire branch.
-- **Do not add a `Co-Authored-By` line** to commit messages.
-- **Never add "Generated with Claude" or similar attribution** to PR summaries, commit messages, or any other output.
+- **No AI attribution** in PR summaries, commits, or any other output.
 - **Prefer subagents** for research, code exploration, and multi-step work. Use the Task tool with `explore` or
   `general` agents rather than running many search/read commands directly. Launch multiple agents in parallel when
   tasks are independent.
@@ -371,14 +355,11 @@ Add entries under the current `[Unreleased]` section in `CHANGELOG.md`. Categori
 - **Always create pull requests as drafts** (`gh pr create --draft`).
 - When checking out a branch or `main`, always `git fetch` and `git pull` first.
 - **Always run `git status`** before constructing `git add` commands.
-
-### PR Summary Policy
-
-- **Use categories** to organize changes: `### Added`, `### Fixed`, `### Changed`, `### Removed`,
+- **Use categories** in PR summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`,
   `### Dependencies`, `### CI/CD`, `### Documentation`, `### Tooling`.
-- Always include a `## Test plan` section with a checklist of verification steps.
+- Always include a `## Test plan` section in PRs with a checklist of verification steps.
 
-## 11. Project Learnings
+## 10. Project Learnings
 
 - (empty)
 
@@ -386,7 +367,15 @@ Add entries under the current `[Unreleased]` section in `CHANGELOG.md`. Categori
 
 ## Maintaining this file
 
-Sections 0–9 = general agent behavioral rules.
-Section 10 = project context
-Section 11 = Project Learnings
-Prune 0–9 as rules become obvious to team.
+Sections 0–8 = general agent behavioral rules.
+Section 9 = project context.
+Section 10 = project learnings.
+
+File is living. Keep short by keeping honest.
+
+After session where agent erred:
+
+1. Missing rule or ignored rule?
+2. Missing → add under "Project Learnings", concrete ("Always use X for Y", not "be careful with Y").
+3. Ignored → rule too long/vague/buried. Tighten or move up.
+4. Prune every few weeks. Per line: "removing this → agent mistake?" No → delete.
