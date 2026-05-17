@@ -33,7 +33,8 @@ Override everything else when conflict:
 
 Goal: understand problem + codebase before diff.
 
-- State plan 1-2 sentences before edit. Non-trivial: numbered steps + verification per step.
+- State plan 1-2 sentences before edit. Non-trivial: bulleted plan, one line per step, ask for approval before
+  starting.
 - Read files you touch. Read callers. Subagents for exploration (keep main context clean).
 - Match existing patterns. Project uses X → use X, even if you'd do differently greenfield.
 - Surface assumptions: "Assuming X, Y, Z. Wrong → say so." Don't bury in implementation.
@@ -106,6 +107,7 @@ Every task:
   - Root causes, not symptoms. Suppressing error ≠ fixing error.
   - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
   - Use CLI tools (`gh`) when available. More efficient than reading docs.
+  - Build/lint/test failure during work: fix it before moving on. Don't defer broken state.
 
 ---
 
@@ -126,6 +128,8 @@ Every task:
 - Clear answer → give it. No clear answer → say so + best tradeoff read.
 - Celebrate: shipping, solving hard problems, metrics moved. Not feature ideas, scope creep, "wouldn't it be cool."
 - No excessive bullets, unprompted headers, emoji. Prose > structure for short answers.
+- Match depth to question. Quick fix → short answer. Design question → thorough analysis.
+- When task is complete, state what changed and stop. Don't suggest follow-up work unless asked.
 
 ---
 
@@ -292,7 +296,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
 ### Key Technical Details
 
 - **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `^9.5.21`
-- **React 17** (not 18) with `@types/react` pinned to `17.0.44`
+- **React 17** (not 18) with `@types/react` pinned to `17.0.91`
 - **Webpack 5** with SWC loader, AMD library output format
 - **Production build** drops `console.log` and `console.info` via TerserPlugin
 - **ESLint 9** flat config extending `@grafana/eslint-config/flat.js`
@@ -326,7 +330,7 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (v7.3.1):
 
 ### Pre-commit Checklist
 
-Run all of these and fix issues before committing:
+Run all and fix issues before committing. Fix blockers (typecheck, lint) before cosmetic (spellcheck, markdownlint):
 
 1. `yarn typecheck` — when any `src/` files are changed
 2. `yarn lint` — fix errors with `yarn lint:fix`
