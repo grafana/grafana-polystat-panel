@@ -107,8 +107,8 @@ Every task:
 - Context = constraint. Long sessions with failed attempts < fresh session with sharper prompt.
 - Two failed corrections same issue → stop. Summarize, ask user reset session with sharper prompt.
 - Subagents for exploration (don't pollute main context with file reads).
-- Commit messages: subject under 72 chars. Body wrapped at 120 chars, bulleted, organized by file or topic. Explains
-  why, not what. No "update file"/"fix bug".
+- Commit messages: subject under 72 chars. Body grouped by filename with bulleted changes under each, wrapped at 120
+  chars. Explains why, not what. No "update file"/"fix bug".
 
 ---
 
