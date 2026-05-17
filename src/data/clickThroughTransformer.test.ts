@@ -228,4 +228,42 @@ describe('ClickThroughTransformer', () => {
       expect(result).toBe('https://test.grafana.net/dashboard/test?orgId=1&var-COMPOSITE=CompositeA&var-port=9100');
     });
   });
+
+  describe('Regex: transformByRegex', () => {
+    it('replaces numbered capture groups with ${N} syntax', () => {
+      const url = '/dashboard/test?full=${0}&prefix=${1}&suffix=${2}';
+      const result = ClickThroughTransformer.transformByRegex('/(A)-(series)/', modelA, url);
+      expect(result).toBe('/dashboard/test?full=A-series&prefix=A&suffix=series');
+    });
+
+    it('replaces numbered capture groups with $N syntax', () => {
+      const url = '/dashboard/test?full=$0&prefix=$1&suffix=$2';
+      const result = ClickThroughTransformer.transformByRegex('/(A)-(series)/', modelA, url);
+      expect(result).toBe('/dashboard/test?full=A-series&prefix=A&suffix=series');
+    });
+
+    it('replaces named capture groups with ${name} syntax', () => {
+      const url = '/dashboard/test?prefix=${letter}&suffix=${rest}';
+      const result = ClickThroughTransformer.transformByRegex('/(?<letter>A)-(?<rest>series)/', modelA, url);
+      expect(result).toBe('/dashboard/test?prefix=A&suffix=series');
+    });
+
+    it('replaces named capture groups with $name syntax', () => {
+      const url = '/dashboard/test?prefix=$letter&suffix=$rest';
+      const result = ClickThroughTransformer.transformByRegex('/(?<letter>A)-(?<rest>series)/', modelA, url);
+      expect(result).toBe('/dashboard/test?prefix=A&suffix=series');
+    });
+
+    it('returns url unchanged when regex does not match', () => {
+      const url = '/dashboard/test?var=${1}';
+      const result = ClickThroughTransformer.transformByRegex('/NOMATCH/', modelA, url);
+      expect(result).toBe('/dashboard/test?var=${1}');
+    });
+
+    it('handles pattern without capture groups', () => {
+      const url = '/dashboard/test?full=${0}';
+      const result = ClickThroughTransformer.transformByRegex('/A-series/', modelA, url);
+      expect(result).toBe('/dashboard/test?full=A-series');
+    });
+  });
 });
