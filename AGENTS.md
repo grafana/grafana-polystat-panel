@@ -82,6 +82,7 @@ Rewrite vague asks before starting:
 - "Fix bug" → "Write failing test reproducing symptom, make it pass."
 - "Refactor X" → "Test suite passes before+after. No public API changes."
 - "Make faster" → "Benchmark hot path, profile bottleneck, change it, show benchmark improved."
+- "Update docs" → "Identify what's stale, fix it, run linters, verify no broken links."
 
 Every task:
 
@@ -324,7 +325,7 @@ Run all of these and fix issues before committing:
 2. `yarn lint` — fix errors with `yarn lint:fix`
 3. `yarn markdownlint` — on any `.md` file created or modified (AGENTS.md, CHANGELOG.md, README.md)
 4. `yarn spellcheck` (or `npx cspell ...`) — fix issues, add legit words to `cspell.config.json`
-5. **Always update `CHANGELOG.md`** — include the entry in the same commit
+5. Update `CHANGELOG.md` — see Critical Rules for format
 
 ### ESLint Rules
 
