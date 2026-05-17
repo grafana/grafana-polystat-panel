@@ -114,8 +114,7 @@ describe('Color', () => {
       const startHex = asHex(aColorStart);
       const endHex = asHex(aColorEnd);
       expect(startHex).toBe('#ed8128');
-      expect(endHex).toBeDefined();
-      expect(endHex).toMatch(/^#[0-9a-f]{6}$/);
+      expect(endHex).toBe('#a65a1c');
     });
   });
 });
