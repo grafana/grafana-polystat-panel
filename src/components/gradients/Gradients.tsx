@@ -12,7 +12,6 @@ export const Gradients: React.FC<GradientProps> = (options) => {
 
   const createGradients = (data: any): any => {
     const gradients = [];
-    const light = createColor(255, 255, 255);
     for (let i = 0; i < data.length; i++) {
       // color can be in hex or in rgb
       let useColor: string = data[i].color;
@@ -20,7 +19,7 @@ export const Gradients: React.FC<GradientProps> = (options) => {
         useColor = rgbaToHex(useColor);
       }
       const aColorStart = fromHex(useColor);
-      const aColorEnd = mul(aColorStart, light, 0.7);
+      const aColorEnd = mul(aColorStart, pureLight, 0.7);
       gradients.push({ start: asHex(aColorStart), end: asHex(aColorEnd) });
     }
     return gradients;
