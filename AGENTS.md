@@ -51,6 +51,7 @@ Goal: min code that solves stated problem. Nothing speculative.
 - 200 lines that could be 50 → rewrite first.
 - "For future extensibility" → stop. Future = future decision.
 - Delete > add. Less = better.
+- Add to existing files unless a new module boundary is justified. Don't create new files for small additions.
 
 Test: would senior engineer call diff overcomplicated? Yes → simplify.
 
@@ -83,6 +84,8 @@ Rewrite vague asks before starting:
 - "Refactor X" → "Test suite passes before+after. No public API changes."
 - "Make faster" → "Benchmark hot path, profile bottleneck, change it, show benchmark improved."
 - "Update docs" → "Identify what's stale, fix it, run linters, verify no broken links."
+
+**When to write tests:** code changes that alter behavior need a test. Refactors and docs don't.
 
 Every task:
 
@@ -315,6 +318,10 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (v7.3.1):
   - Use webpack from `.config/` for builds; no custom bundler.
   - Use `@grafana/plugin-e2e` for E2E tests.
   - Pin all other GitHub Actions to SHAs.
+- **Dependencies (Yarn 4):**
+  - `yarn add -D` for build/test/lint tools. `yarn add` for runtime deps shipped in the bundle.
+  - Use `resolutions` in package.json to pin transitive deps when needed (e.g., `uplot`, `@types/react`).
+  - Peer dependency warnings are expected — don't add workarounds unless something actually breaks.
 - Grafana API docs: <https://grafana.com/developers/plugin-tools/llms.txt>
 
 ### Pre-commit Checklist
