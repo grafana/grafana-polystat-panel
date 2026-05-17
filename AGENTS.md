@@ -165,6 +165,7 @@ yarn test               # Jest in watch mode (changed files only)
 yarn test:ci            # Jest CI mode (all tests, 4 workers)
 yarn test:coverage      # Jest with coverage report
 yarn spellcheck         # cspell across all source files
+yarn markdownlint       # markdownlint-cli2 across all .md files
 ```
 
 #### Running a Single Test
@@ -330,13 +331,15 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (v7.3.1):
 
 ### Pre-commit Checklist
 
-Run all and fix issues before committing. Fix blockers (typecheck, lint) before cosmetic (spellcheck, markdownlint):
+Run all and fix issues before committing. Fix blockers (typecheck, lint, test) before cosmetic (spellcheck,
+markdownlint):
 
 1. `yarn typecheck` — when any `src/` files are changed
-2. `yarn lint` — fix errors with `yarn lint:fix`
-3. `yarn markdownlint` — on any `.md` file created or modified (AGENTS.md, CHANGELOG.md, README.md)
-4. `yarn spellcheck` (or `npx cspell ...`) — fix issues, add legit words to `cspell.config.json`
-5. Update `CHANGELOG.md` — see Critical Rules for format
+2. `yarn test:ci` — when any `src/` files are changed
+3. `yarn lint` — fix errors with `yarn lint:fix`
+4. `yarn markdownlint` — on any `.md` file created or modified (AGENTS.md, CHANGELOG.md, README.md)
+5. `yarn spellcheck` (or `npx cspell ...`) — fix issues, add legit words to `cspell.config.json`
+6. Update `CHANGELOG.md` — see Critical Rules for format
 
 ### ESLint Rules
 
