@@ -1,5 +1,5 @@
 import { DEFAULT_CRITICAL_COLOR, DEFAULT_OK_COLOR, DEFAULT_WARNING_COLOR } from '../defaults';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { createColor, fromHex, rgbaToHex, asHex, mul } from './color';
 
@@ -16,11 +16,11 @@ export interface GradientProps {
   gradientId: string;
 }
 export const Gradients: React.FC<GradientProps> = (options) => {
-  const createGradients = (data: any): any => {
+  const colorGradients = useMemo(() => {
     const gradients = [];
-    for (let i = 0; i < data.length; i++) {
+    for (let i = 0; i < options.data.length; i++) {
       // color can be in hex or in rgb
-      let useColor: string = data[i].color;
+      let useColor: string = options.data[i].color;
       if (useColor.startsWith('rgba')) {
         useColor = rgbaToHex(useColor);
       }
@@ -29,8 +29,7 @@ export const Gradients: React.FC<GradientProps> = (options) => {
       gradients.push({ start: asHex(aColorStart), end: asHex(aColorEnd) });
     }
     return gradients;
-  };
-  const colorGradients = createGradients(options.data);
+  }, [options.data]);
 
   const gradientId = options.gradientId;
   return (
