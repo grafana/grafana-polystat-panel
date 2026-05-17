@@ -384,6 +384,8 @@ Flat config (ESLint 9). Common rules applied:
 - `override_processor.test.ts` uses `renderHook` + `useTheme()`/`useTheme2()` to get theme objects. Refactor to use
   `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
 - ~~`Color` class refactor~~ — Done. Converted to interface + standalone functions. Dead `RGBToHex` removed.
+- Preserve all comments when refactoring. Comments documenting color values, URLs, workarounds, or alternate values
+  are intentional — do not strip them during mechanical transforms.
 
 ---
 
