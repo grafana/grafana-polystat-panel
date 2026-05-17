@@ -61,11 +61,13 @@ Test: would senior engineer call diff overcomplicated? Yes → simplify.
 
 Goal: clean, reviewable diffs. Change only what request requires.
 
-- Don't "improve" adjacent code/comments/formatting/imports not in task.
-- Don't refactor working code just because you're in file.
-- Don't delete pre-existing dead code unless asked. Notice it → mention in summary.
-- Do clean up orphans your changes created (unused imports, vars, funcs your edit made obsolete).
-- Match project style exactly: indent, quotes, naming, layout.
+- **Don't touch:**
+  - Adjacent code/comments/formatting/imports not in task.
+  - Working code just because you're in file.
+  - Pre-existing dead code unless asked. Notice it → mention in summary.
+- **Do touch:**
+  - Orphans your changes created (unused imports, vars, funcs your edit made obsolete).
+  - Match project style exactly: indent, quotes, naming, layout.
 
 Test: every changed line traces to request. Fails → revert.
 
@@ -93,12 +95,14 @@ Every task:
 
 ## 5. Tool use and verification
 
-- Run code > guess about code. Test suite exists → run it. Linter → run it. Type checker → run it.
-- Never "done" from plausible-looking diff. Plausibility ≠ correctness.
-- Debugging: root causes, not symptoms. Suppressing error ≠ fixing error.
-- UI changes: screenshot before+after, describe diff.
-- Use CLI tools (`gh`) when available. More efficient than reading docs.
-- Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
+- **Verification:**
+  - Run code > guess. Test suite → run it. Linter → run it. Type checker → run it.
+  - Never "done" from plausible-looking diff. Plausibility ≠ correctness.
+  - UI changes: screenshot before+after, describe diff.
+- **Debugging:**
+  - Root causes, not symptoms. Suppressing error ≠ fixing error.
+  - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
+  - Use CLI tools (`gh`) when available. More efficient than reading docs.
 
 ---
 
@@ -302,14 +306,14 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (v7.3.1):
 
 ### Plugin Tooling Rules
 
-- **Never modify anything inside `.config/`** — managed by Grafana plugin tooling (`@grafana/create-plugin`). Extend
-  configs at the repo root only.
-- **Never change `id` or `type`** in `src/plugin.json`. Changes require a Grafana server restart.
-- Use webpack from `.config/` for builds; do not add a custom bundler.
-- Use `@grafana/plugin-e2e` for E2E tests.
-- **Do NOT pin `grafana/plugin-ci-workflows` to a commit SHA.** Grafana's CI enforces tagged releases only (e.g.,
-  `@ci-cd-workflows/v7`). SHA pinning will fail the "Check for release channel" job. All other GitHub Actions
-  **should** be pinned to SHAs.
+- **Never:**
+  - Modify anything inside `.config/` — managed by `@grafana/create-plugin`. Extend at repo root only.
+  - Change `id` or `type` in `src/plugin.json`. Requires Grafana server restart.
+  - Pin `grafana/plugin-ci-workflows` to a commit SHA. Use tagged releases only (e.g., `@ci-cd-workflows/v7`).
+- **Always:**
+  - Use webpack from `.config/` for builds; no custom bundler.
+  - Use `@grafana/plugin-e2e` for E2E tests.
+  - Pin all other GitHub Actions to SHAs.
 - Grafana API docs: <https://grafana.com/developers/plugin-tools/llms.txt>
 
 ### Pre-commit Checklist
