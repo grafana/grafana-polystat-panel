@@ -383,9 +383,7 @@ Flat config (ESLint 9). Common rules applied:
 
 - `override_processor.test.ts` uses `renderHook` + `useTheme()`/`useTheme2()` to get theme objects. Refactor to use
   `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
-- `Color` class in `src/components/gradients/color.ts` can be refactored to interface + standalone functions. `fromHex`
-  mutates `this` (should return new object). `RGBToHex` instance method is dead code (no return, never uses `this`).
-  `blendWith` is unused in production. Consumers: `defaults.ts` (5 constants), `Gradients.tsx` (gradient generation).
+- ~~`Color` class refactor~~ — Done. Converted to interface + standalone functions. Dead `RGBToHex` removed.
 
 ---
 
