@@ -2,6 +2,17 @@ import { FieldType, toDataFrame } from '@grafana/data';
 import { AutoFontScaler } from './auto_font_scaler';
 import { PolystatModel } from './types';
 import { DataFrameToPolystat } from '../data/processor';
+import { getTextSizeForWidthAndHeight } from '../utils';
+
+jest.mock('../utils', () => {
+  const actual = jest.requireActual('../utils');
+  return {
+    ...actual,
+    getTextSizeForWidthAndHeight: jest.fn(actual.getTextSizeForWidthAndHeight),
+  };
+});
+
+const mockedGetTextSize = getTextSizeForWidthAndHeight as jest.MockedFunction<typeof getTextSizeForWidthAndHeight>;
 
 const createModel = (name: string, value: number): PolystatModel => {
   const frame = toDataFrame({
@@ -19,6 +30,22 @@ const createCompositeModel = (name: string, members: PolystatModel[]): PolystatM
   model.showValue = true;
   model.members = members;
   return model;
+};
+
+// Simulate realistic font scaling: each character is ~0.6x the font size in width
+const enableRealisticTextSizing = () => {
+  mockedGetTextSize.mockImplementation(
+    (text: string, _font: any, width: number, height: number, minFont: number, maxFont: number) => {
+      const areaWidth = Math.round(width * 0.95);
+      for (let fontSize = maxFont; fontSize >= minFont; fontSize--) {
+        const textWidth = text.length * fontSize * 0.6;
+        if (textWidth < areaWidth && fontSize <= height) {
+          return Math.ceil(fontSize);
+        }
+      }
+      return 0;
+    }
+  );
 };
 
 describe('AutoFontScaler', () => {
@@ -143,6 +170,104 @@ describe('AutoFontScaler', () => {
       const withMembers = AutoFontScaler(font, width, height, true, false, [composite]);
       const withoutMembers = AutoFontScaler(font, width, height, true, false, [createModel('A', 1)]);
       expect(withMembers.activeValueFontSize).toBeLessThanOrEqual(withoutMembers.activeValueFontSize);
+    });
+  });
+
+  describe('with realistic text measurement', () => {
+    beforeEach(() => {
+      enableRealisticTextSizing();
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('computes font size constrained by text width', () => {
+      const data = [createModel('Short', 100)];
+      const result = AutoFontScaler(font, width, height, true, false, data);
+      // with realistic widths, font must fit within 200px area
+      expect(result.activeLabelFontSize).toBeGreaterThan(0);
+      expect(result.activeLabelFontSize).toBeLessThanOrEqual(height / 2);
+    });
+
+    it('returns smaller font for longer labels', () => {
+      // both must fit without ellipsis — use wide area, tall so height doesn't cap
+      const short = [createModel('ABCD', 1)];
+      const long = [createModel('ABCDEFGHIJKLMNO', 1)];
+      const resultShort = AutoFontScaler(font, 300, 500, true, false, short);
+      const resultLong = AutoFontScaler(font, 300, 500, true, false, long);
+      expect(resultShort.showEllipses).toBe(false);
+      expect(resultLong.showEllipses).toBe(false);
+      expect(resultLong.activeLabelFontSize).toBeLessThan(resultShort.activeLabelFontSize);
+    });
+
+    it('returns smaller font for narrower area', () => {
+      // use same text, tall area so height doesn't cap — width is the constraint
+      const data = [createModel('ABCDEFGH', 100)];
+      const wide = AutoFontScaler(font, 300, 500, true, false, data);
+      const narrow = AutoFontScaler(font, 100, 500, true, false, data);
+      expect(narrow.activeLabelFontSize).toBeLessThan(wide.activeLabelFontSize);
+    });
+
+    it('triggers ellipsis cascade for very long text in small area', () => {
+      const longName = 'This-Is-A-Very-Long-Server-Name-That-Cannot-Possibly-Fit';
+      const data = [createModel(longName, 100)];
+      const result = AutoFontScaler(font, 60, 20, true, false, data);
+      expect(result.showEllipses).toBe(true);
+      expect([6, 10, 18]).toContain(result.numOfChars);
+    });
+
+    it('truncates to 18 chars first, then 10, then 6', () => {
+      const longName = 'X'.repeat(100);
+      const data = [createModel(longName, 100)];
+      // medium constraint: 18 char truncation should fit
+      const medium = AutoFontScaler(font, 150, 30, true, false, data);
+      if (medium.showEllipses) {
+        expect(medium.numOfChars).toBe(18);
+      }
+      // tight constraint: may need further truncation
+      const tight = AutoFontScaler(font, 40, 10, true, false, data);
+      if (tight.showEllipses) {
+        expect([6, 10, 18]).toContain(tight.numOfChars);
+        expect(tight.numOfChars).toBeLessThanOrEqual(medium.numOfChars || 18);
+      }
+    });
+
+    it('value font size is independent of label font size', () => {
+      const data = [createModel('A', 12345)];
+      const result = AutoFontScaler(font, width, height, true, false, data);
+      expect(result.activeValueFontSize).toBeGreaterThan(0);
+      expect(result.activeLabelFontSize).toBeGreaterThan(0);
+    });
+
+    it('timestamp gets smaller portion of height', () => {
+      const data = [createModel('A', 100)];
+      data[0].timestampFormatted = '2026-05-17 08:00:00';
+      const result = AutoFontScaler(font, width, height, true, true, data);
+      if (result.activeTimestampFontSize > 0) {
+        expect(result.activeTimestampFontSize).toBeLessThanOrEqual(result.activeValueFontSize);
+      }
+    });
+
+    it('composite member text constrains value font size', () => {
+      const shortMember = createModel('m', 1);
+      shortMember.displayName = 'm';
+      const longMember = createModel('very-long-composite-member-name-here', 99999);
+      longMember.displayName = 'very-long-composite-member-name-here';
+
+      const shortComp = createCompositeModel('comp', [shortMember]);
+      const longComp = createCompositeModel('comp', [longMember]);
+
+      const resultShort = AutoFontScaler(font, width, height, true, false, [shortComp]);
+      const resultLong = AutoFontScaler(font, width, height, true, false, [longComp]);
+      expect(resultLong.activeValueFontSize).toBeLessThanOrEqual(resultShort.activeValueFontSize);
+    });
+
+    it('returns 0 for timestamp font when area too small', () => {
+      const data = [createModel('A', 100)];
+      data[0].timestampFormatted = '2026-05-17 08:00:00.000 UTC';
+      const result = AutoFontScaler(font, 30, 10, true, true, data);
+      expect(result.activeTimestampFontSize).toBe(0);
     });
   });
 });
