@@ -335,14 +335,14 @@ Flat config (ESLint 9). Common rules applied:
 
 ### Critical Rules
 
-- **Always update `CHANGELOG.md` before committing.** Every commit must include the corresponding changelog entry.
-  Add entries under `[Unreleased]`, categorized as `### Added`, `### Changed`, `### Removed`, `### Fixed`, or
-  `### Project Updates`.
-- **NEVER commit unless the user explicitly asks.**
-- **NEVER push unless the user explicitly asks.** Never chain `git commit && git push`. Always wait for explicit push
-  instruction.
-- **After pushing, always update the PR summary** if a PR exists. Use `gh pr edit` to update title and body
-  reflecting all changes across the entire branch.
+- **Commits:**
+  - NEVER commit unless the user explicitly asks.
+  - Always update `CHANGELOG.md` in the same commit. Add entries under `[Unreleased]`, categorized as
+    `### Added`, `### Changed`, `### Removed`, `### Fixed`, or `### Project Updates`.
+- **Pushing:**
+  - NEVER push unless the user explicitly asks. Never chain `git commit && git push`.
+  - After pushing, always update the PR summary using `gh pr edit` with title and body reflecting all changes
+    across the entire branch.
 - **No AI attribution** in PR summaries, commits, or any other output.
 - **Prefer subagents** for research, code exploration, and multi-step work. Use the Task tool with `explore` or
   `general` agents rather than running many search/read commands directly. Launch multiple agents in parallel when
@@ -350,14 +350,16 @@ Flat config (ESLint 9). Common rules applied:
 
 ### Branching Policy
 
-- **Never commit directly to `main`.** Always create a new branch for changes.
-- Use descriptive branch names (`feat/add-feature`, `fix/bug-description`).
-- **Always create pull requests as drafts** (`gh pr create --draft`).
-- When checking out a branch or `main`, always `git fetch` and `git pull` first.
-- **Always run `git status`** before constructing `git add` commands.
-- **Use categories** in PR summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`,
-  `### Dependencies`, `### CI/CD`, `### Documentation`, `### Tooling`.
-- Always include a `## Test plan` section in PRs with a checklist of verification steps.
+- **Branches:**
+  - Never commit directly to `main`. Always create a new branch.
+  - Use descriptive branch names (`feat/add-feature`, `fix/bug-description`).
+  - When checking out a branch or `main`, always `git fetch` and `git pull` first.
+  - Always run `git status` before constructing `git add` commands.
+- **Pull requests:**
+  - Always create as drafts (`gh pr create --draft`).
+  - Use categories in summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`, `### Dependencies`,
+    `### CI/CD`, `### Documentation`, `### Tooling`.
+  - Always include a `## Test plan` section with a verification checklist.
 
 ## 10. Project Learnings
 
