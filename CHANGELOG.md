@@ -13,7 +13,7 @@
 - Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`,
   `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`,
   coordinate generation, and all switch branches
-- Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaWidth * 0.75`, `drawShape` case
+- Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaWidth * 0.70`, `drawShape` case
 
 ### Fixed
 
@@ -22,8 +22,8 @@
 - Reduce `getTextSizeForWidthAndHeight` width reduction from 5% to 2%
 - Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
   `numColumns`/`numRows` (configured max)
-- Fix `textAreaWidth` for `HEXAGON_FLAT_TOP` to `diameterX * 0.75` — angled sides narrow
-  the usable width at the top/bottom of the text block; full `diameterX` caused text overflow
+- Fix `textAreaWidth` for `HEXAGON_FLAT_TOP` to `diameterX * 0.70` and use full `diameterY`
+  for `textAreaHeight`; add alignment case to center text near y=0 where hex is widest
 
 ### Changed
 
