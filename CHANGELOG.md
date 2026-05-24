@@ -4,10 +4,18 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
+
 ### Fixed
 
+- Replace hardcoded 20px padding with proportional `max(2, round(width * 0.05))` in `getTextSizeForWidth` — reduces
+  waste at small polygon sizes while preserving behavior at width=400px
+- Reduce `getTextSizeForWidthAndHeight` width reduction from 5% to 2%
 - Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
   `numColumns`/`numRows` (configured max)
+- Increase hex pointed-top `textAreaHeight` from `diameterY * 0.5` to `diameterY * 0.6` — uses more of the flat middle band for text rendering
 
 ### Changed
 
