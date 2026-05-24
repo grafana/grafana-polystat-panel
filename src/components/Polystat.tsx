@@ -2,7 +2,6 @@ import React, { useEffect, createRef, useCallback, useRef } from 'react';
 import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
-import { hexbin } from 'd3-hexbin';
 import { orderBy as lodashOrderBy } from 'lodash';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
@@ -21,6 +20,18 @@ import { Tooltip } from './tooltips/Tooltip';
 import { AutoFontScaler } from './auto_font_scaler';
 import { GetAlignments } from './alignment';
 import { getTemplateSrv } from '@grafana/runtime';
+
+function hexPointedTopPath(radius: number): string {
+  // Points at 12 and 6 o'clock; flat sides at 3 and 9 o'clock
+  const w = (Math.sqrt(3) / 2) * radius; // half-width = SQRT3/2 * R
+  return `M0,${-radius} L${w},${-radius / 2} L${w},${radius / 2} L0,${radius} L${-w},${radius / 2} L${-w},${-radius / 2}Z`;
+}
+
+function hexFlatTopPath(radius: number): string {
+  // Flat sides at 12 and 6 o'clock; points at 3 and 9 o'clock
+  const h = (Math.sqrt(3) / 2) * radius; // half-height = SQRT3/2 * R
+  return `M${radius},0 L${radius / 2},${-h} L${-radius / 2},${-h} L${-radius},0 L${-radius / 2},${h} L${radius / 2},${h}Z`;
+}
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
@@ -232,12 +243,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
   const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
-  const aHexbin = hexbin()
-    .radius(radius)
-    .extent([
-      [0, 0],
-      [options.panelWidth, options.panelHeight],
-    ]);
   const { diameterX, diameterY } = lm.getDiameters();
   const { xoffset, yoffset } = lm.getOffsets(
     options.globalShape,
@@ -254,7 +259,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       ? diameterY
       : options.globalShape === PolygonShapes.HEXAGON_POINTED_TOP
         ? diameterY * 0.6
-        : diameterY / 2; // circle / square
+        : options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP
+          ? diameterY * 0.8 // flat-top: flat sides at top/bottom, more usable height
+          : diameterY / 2; // circle / square
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
   // use the smallest of diameterX or Y
@@ -267,19 +274,22 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // square and circle do not use this
   const symbol = d3symbol().size(innerArea);
 
-  let customShape: any;
+  let customShape: string;
   switch (options.globalShape) {
     case PolygonShapes.HEXAGON_POINTED_TOP:
-      customShape = aHexbin.hexagon(radius);
+      customShape = hexPointedTopPath(radius);
+      break;
+    case PolygonShapes.HEXAGON_FLAT_TOP:
+      customShape = hexFlatTopPath(radius);
       break;
     case PolygonShapes.CIRCLE:
-      customShape = symbol.type(symbolCircle);
+      customShape = symbol.type(symbolCircle)() ?? '';
       break;
     case PolygonShapes.SQUARE:
-      customShape = symbol.type(symbolSquare);
+      customShape = symbol.type(symbolSquare)() ?? '';
       break;
     default:
-      customShape = aHexbin.hexagon(radius);
+      customShape = hexPointedTopPath(radius);
       break;
   }
 
@@ -374,6 +384,21 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
+        return (
+          <path
+            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
+            data-tooltip-content={index}
+            data-tooltip-position-strategy="fixed"
+            className={svgPathStyles}
+            key={`polystat-tooltip-${uniquePanelId}`}
+            transform={`translate(${coords.x}, ${coords.y})`}
+            d={customShape}
+            fill={fillColor}
+            stroke={options.globalPolygonBorderColor}
+            strokeWidth={options.globalPolygonBorderSize + 'px'}
+          />
+        );
+      case PolygonShapes.HEXAGON_FLAT_TOP:
         return (
           <path
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}

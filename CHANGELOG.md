@@ -8,6 +8,7 @@
 
 - Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
 - Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`, `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`, coordinate generation, and all switch branches
+- Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaHeight * 0.8`, `drawShape` case
 
 ### Fixed
 
@@ -20,6 +21,7 @@
 
 ### Changed
 
+- Remove `d3-hexbin` dependency from `Polystat.tsx`; replace with pure SVG path functions `hexPointedTopPath` and `hexFlatTopPath`
 - Rename `getHexFlatTopRadius` → `getHexPointedTopRadius` and `getHexFlatTopDiameters` → `getHexPointedTopDiameters`
   in `LayoutManager` to correctly reflect pointed-top geometry
 - Replace `(W/H) * sqrt(N) * 0.75` column heuristic with `findOptimalColumns` for `HEXAGON_POINTED_TOP` auto-sizing
