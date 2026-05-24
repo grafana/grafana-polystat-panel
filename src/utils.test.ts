@@ -2,7 +2,7 @@
  * Tests for utils
  */
 
-import { GetDecimalsForValue, SortVariableValuesByField, getTextOrValue } from './utils';
+import { GetDecimalsForValue, SortVariableValuesByField, getTextOrValue, getTextSizeForWidth, getTextSizeForWidthAndHeight } from './utils';
 
 describe('Utils GetDecimalsForValue', () => {
   describe('With decimals', () => {
@@ -491,5 +491,26 @@ describe('Utils SortVariableValuesByField', () => {
         expect(result[3].name).toBe('web_server_01');
       });
     });
+  });
+});
+
+describe('getTextSizeForWidth proportional padding', () => {
+  it('returns a non-negative font size for a short string in a 50px wide area', () => {
+    const result = getTextSizeForWidth('A', '?px sans-serif', 50, 6, 240);
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+
+  it('returns a non-negative font size for a short string in a 400px wide area', () => {
+    const result = getTextSizeForWidth('A', '?px sans-serif', 400, 6, 240);
+    expect(result).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe('getTextSizeForWidthAndHeight', () => {
+  it('returns maxFontPx when text has zero measured width and font fits height', () => {
+    // canvas mock in test env returns width=0, so any font fits width constraint
+    // maxFontPx=24 fits height=240, so result should be maxFontPx
+    const result = getTextSizeForWidthAndHeight('A', '?px sans-serif', 100, 240, 6, 24);
+    expect(result).toBe(24);
   });
 });

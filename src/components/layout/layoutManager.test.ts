@@ -205,6 +205,12 @@ describe('Layout Manager', () => {
     });
   });
 
+  describe('HEXAGON_FLAT_TOP shape exists in PolygonShapes', () => {
+    it('enum value equals hexagon_flat_top', () => {
+      expect(PolygonShapes.HEXAGON_FLAT_TOP).toBe('hexagon_flat_top');
+    });
+  });
+
   describe('getOffsetsHexagonPointedTop — uses maxColumnsUsed not numColumns', () => {
     it('centering uses actual columns, not the configured max', () => {
       // 4 items on an 8-col panel: maxColumnsUsed should be 4 (all in row 0)
