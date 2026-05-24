@@ -345,6 +345,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
+    // Flat-top: label is above center where hex narrows toward the side tips.
+    // Short labels (3 chars) get a larger font than 5-char values, which overflows
+    // the upper angles. Cap label to value font — both fit at that size.
+    if (options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP && activeLabelFontSize > activeValueFontSize) {
+      activeLabelFontSize = activeValueFontSize;
+    }
   }
 
   const alignments = GetAlignments(
