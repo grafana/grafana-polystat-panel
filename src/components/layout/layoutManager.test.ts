@@ -225,4 +225,87 @@ describe('Layout Manager', () => {
       expect(Math.abs(xoffset)).toBeLessThan(800);
     });
   });
+
+  describe('With flat-top hexagon layout', () => {
+    describe('getHexFlatTopRadius', () => {
+      it('returns a positive radius for a 400x200 panel', () => {
+        const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        expect(lm.getHexFlatTopRadius()).toBeGreaterThan(0);
+      });
+
+      it('returns a larger radius with fewer actual cols/rows', () => {
+        const lm = new LayoutManager(400, 200, 8, 8, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        const rDefault = lm.getHexFlatTopRadius();
+        const rActual = lm.getHexFlatTopRadius(2, 2);
+        expect(rActual).toBeGreaterThan(rDefault);
+      });
+    });
+
+    describe('getHexFlatTopDiameters', () => {
+      it('diameterX = 2R and diameterY = SQRT3*R', () => {
+        const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        lm.maxColumnsUsed = 4;
+        lm.maxRowsUsed = 2;
+        const { diameterX, diameterY } = lm.getHexFlatTopDiameters();
+        const r = lm.getHexFlatTopRadius(4, 2);
+        const SQRT3 = 1.7320508075688772;
+        expect(diameterX).toBeCloseTo(r * 2, 1);
+        expect(diameterY).toBeCloseTo(r * SQRT3, 1);
+      });
+    });
+
+    describe('findOptimalColumnsFlatTop', () => {
+      it('produces a larger radius than the 0.75 heuristic on a 4:1 panel', () => {
+        const lm = new LayoutManager(2000, 500, 8, 8, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        const SQRT3 = 1.7320508075688772;
+        const heuristicCols = Math.ceil((2000 / 500) * Math.sqrt(20) * 0.75);
+        const heuristicRows = Math.ceil(20 / heuristicCols);
+        const heuristicRadius = Math.min(
+          2000 / ((heuristicCols + 1 / 3) * 1.5),
+          500 / ((heuristicRows + 0.5) * SQRT3)
+        );
+        const optCols = lm.findOptimalColumnsFlatTop(20, 2000, 500);
+        const optRows = Math.ceil(20 / optCols);
+        const optRadius = Math.min(
+          2000 / ((optCols + 1 / 3) * 1.5),
+          500 / ((optRows + 0.5) * SQRT3)
+        );
+        expect(optRadius).toBeGreaterThan(heuristicRadius);
+      });
+    });
+
+    describe('shapeToCoordinates — flat-top', () => {
+      it('col 0 row 0 is at (0, 0)', () => {
+        const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        expect(lm.shapeToCoordinates(PolygonShapes.HEXAGON_FLAT_TOP, 50, 0, 0)).toEqual([0, 0]);
+      });
+
+      it('col 1 row 0 is shifted right by 1.5R and down by SQRT3*R/2 (odd column offset)', () => {
+        const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        const SQRT3 = 1.7320508075688772;
+        const r = 50;
+        const [x, y] = lm.shapeToCoordinates(PolygonShapes.HEXAGON_FLAT_TOP, r, 1, 0);
+        expect(x).toBeCloseTo(1.5 * r, 1);
+        expect(y).toBeCloseTo((SQRT3 / 2) * r, 1);
+      });
+
+      it('col 2 row 0 is at (3R, 0) — even column, no vertical offset', () => {
+        const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        const r = 50;
+        const [x, y] = lm.shapeToCoordinates(PolygonShapes.HEXAGON_FLAT_TOP, r, 2, 0);
+        expect(x).toBeCloseTo(3 * r, 1);
+        expect(y).toBeCloseTo(0, 1);
+      });
+    });
+
+    describe('generatePossibleColumnAndRowsSizes — flat-top auto-size', () => {
+      it('covers all items and uses at least 1 col/row', () => {
+        const lm = new LayoutManager(800, 400, 8, 8, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+        lm.generatePossibleColumnAndRowsSizes(true, true, 100, 20);
+        expect(lm.numColumns * lm.numRows).toBeGreaterThanOrEqual(20);
+        expect(lm.numColumns).toBeGreaterThanOrEqual(1);
+        expect(lm.numRows).toBeGreaterThanOrEqual(1);
+      });
+    });
+  });
 });

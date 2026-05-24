@@ -7,6 +7,7 @@
 ### Added
 
 - Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
+- Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`, `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`, coordinate generation, and all switch branches
 
 ### Fixed
 
