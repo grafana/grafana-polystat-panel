@@ -76,50 +76,50 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     This is the animation method that will cycle through the metrics for a composite
    */
   const animateComposite = useCallback(() => {
-    const newMetricIndexes = [...animationMetricIndexes];
-    for (let i = 0; i < animatedItems.length; i++) {
-      let index = animatedItems[i];
-      let metricIndex = newMetricIndexes[index];
+    setAnimationMetricIndexes((prev: number[]) => {
+      const next = [...prev];
+      for (let i = 0; i < animatedItems.length; i++) {
+        let index = animatedItems[i];
+        let metricIndex = next[index];
 
-      // composites can have animated values displayed
-      let isValueAnimated = false;
-      if (
-        options.globalShowValueEnabled ||
-        (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
-      ) {
-        isValueAnimated = true;
-      }
-      if (isValueAnimated && options.processedData && animationRefs.length > 0 && animationRefs[index].current) {
-        const item = options.processedData[index];
-        const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
-        if (animationRefs[index].current.innerHTML !== null) {
-          // eslint-disable-next-line react-hooks/immutability
-          animationRefs[index].current.innerHTML = val;
+        // composites can have animated values displayed
+        let isValueAnimated = false;
+        if (
+          options.globalShowValueEnabled ||
+          (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
+        ) {
+          isValueAnimated = true;
         }
-      }
-      // currently global setting determines if timestamp is animated
-      if (
-        options.globalShowTimestampEnabled &&
-        options.processedData &&
-        animationTimestampRefs.length > 0 &&
-        animationTimestampRefs[index].current
-      ) {
-        const item = options.processedData[index];
-        const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
-        if (animationTimestampRefs[index].current.innerHTML !== null) {
-          // eslint-disable-next-line react-hooks/immutability
-          animationTimestampRefs[index].current.innerHTML = ts;
+        if (isValueAnimated && options.processedData && animationRefs.length > 0 && animationRefs[index].current) {
+          const item = options.processedData[index];
+          const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
+          if (animationRefs[index].current.innerHTML !== null) {
+            animationRefs[index].current.innerHTML = val;
+          }
         }
+        // currently global setting determines if timestamp is animated
+        if (
+          options.globalShowTimestampEnabled &&
+          options.processedData &&
+          animationTimestampRefs.length > 0 &&
+          animationTimestampRefs[index].current
+        ) {
+          const item = options.processedData[index];
+          const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
+          if (animationTimestampRefs[index].current.innerHTML !== null) {
+            animationTimestampRefs[index].current.innerHTML = ts;
+          }
+        }
+        metricIndex++;
+        if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
+          metricIndex %= options.processedData[index].members.length;
+        }
+        next[index] = metricIndex;
       }
-      metricIndex++;
-      if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
-        metricIndex %= options.processedData[index].members.length;
-      }
-      newMetricIndexes[index] = metricIndex;
-    }
-    setAnimationMetricIndexes(newMetricIndexes);
+      return next;
+    });
   }, [
-    animationMetricIndexes,
+    // animationMetricIndexes REMOVED — functional updater reads from prev
     animationRefs,
     animationTimestampRefs,
     animatedItems,
@@ -345,12 +345,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     activeTimestampFontSize = result.activeTimestampFontSize;
     showEllipses = result.showEllipses;
     numOfChars = result.numOfChars;
-    // Flat-top: label is above center where hex narrows toward the side tips.
-    // Short labels (3 chars) get a larger font than 5-char values, which overflows
-    // the upper angles. Cap label to value font — both fit at that size.
-    if (options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP && activeLabelFontSize > activeValueFontSize) {
-      activeLabelFontSize = activeValueFontSize;
-    }
+  }
+
+  // Flat-top: label above center where hex narrows toward side tips.
+  // Cap label ≤ value font so short labels don't overflow the upper angles.
+  // Applied unconditionally so it also fires when auto-scale is off.
+  if (options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP && activeLabelFontSize > activeValueFontSize) {
+    activeLabelFontSize = activeValueFontSize;
   }
 
   const alignments = GetAlignments(
@@ -385,7 +386,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       // TODO: safari needs the location.href
       fillColor = `url(#${uniquePanelId}_linear_gradient_state_data_${index})`;
     }
-    const useRadius = lm.generateRadius(options.globalShape);
+    const useRadius = radius;  // computed once at line 240
     const coords = getCoords(index);
     if (!coords) {
       return;
@@ -393,20 +394,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
-        return (
-          <path
-            data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
-            data-tooltip-content={index}
-            data-tooltip-position-strategy="fixed"
-            className={svgPathStyles}
-            key={`polystat-tooltip-${uniquePanelId}`}
-            transform={`translate(${coords.x}, ${coords.y})`}
-            d={customShape}
-            fill={fillColor}
-            stroke={options.globalPolygonBorderColor}
-            strokeWidth={options.globalPolygonBorderSize + 'px'}
-          />
-        );
       case PolygonShapes.HEXAGON_FLAT_TOP:
         return (
           <path

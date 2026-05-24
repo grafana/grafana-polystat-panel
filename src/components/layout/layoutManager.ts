@@ -123,6 +123,32 @@ export class LayoutManager {
   }
 
   /**
+   * Core neighbour-search used by findOptimalColumns and findOptimalColumnsFlatTop.
+   * Evaluates 5 integer candidates near `approx` and returns the column count
+   * that maximises the radius returned by `calcRadius`.
+   */
+  private findOptimalColumnsImpl(
+    n: number,
+    approx: number,
+    calcRadius: (cols: number, rows: number) => number
+  ): number {
+    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
+      Math.max(1, Math.min(n, Math.round(c)))
+    );
+    const unique = [...new Set(candidates)];
+    let bestCols = unique[0];
+    let bestRadius = -1;
+    for (const cols of unique) {
+      const r = calcRadius(cols, Math.ceil(n / cols));
+      if (r > bestRadius) {
+        bestRadius = r;
+        bestCols = cols;
+      }
+    }
+    return bestCols;
+  }
+
+  /**
    * Finds the optimal number of columns for HEXAGON_POINTED_TOP auto-sizing.
    * Uses a closed-form estimate derived by equating width and height hex constraints,
    * then searches 5 neighbouring integer candidates to find the column count that
@@ -134,24 +160,11 @@ export class LayoutManager {
    * @returns   optimal column count (1 ≤ result ≤ n)
    */
   findOptimalColumns(n: number, w: number, h: number): number {
-    // Closed-form estimate: equates width and height hex constraints
     // cols^2 = n * w * 1.5 / (h * SQRT3)
     const approx = Math.sqrt((n * w * 1.5) / (h * this.SQRT3));
-    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
-      Math.max(1, Math.min(n, Math.round(c)))
+    return this.findOptimalColumnsImpl(n, approx, (cols, rows) =>
+      Math.min(w / ((cols + 0.5) * this.SQRT3), h / ((rows + 1 / 3) * 1.5))
     );
-    const unique = [...new Set(candidates)];
-    let bestCols = unique[0];
-    let bestRadius = -1;
-    for (const cols of unique) {
-      const rows = Math.ceil(n / cols);
-      const r = Math.min(w / ((cols + 0.5) * this.SQRT3), h / ((rows + 1 / 3) * 1.5));
-      if (r > bestRadius) {
-        bestRadius = r;
-        bestCols = cols;
-      }
-    }
-    return bestCols;
   }
 
   /**
@@ -165,23 +178,11 @@ export class LayoutManager {
    * @returns   optimal column count (1 ≤ result ≤ n)
    */
   findOptimalColumnsFlatTop(n: number, w: number, h: number): number {
-    // Closed-form estimate: cols^2 = n * w * SQRT3 / (h * 1.5)
+    // cols^2 = n * w * SQRT3 / (h * 1.5)
     const approx = Math.sqrt((n * w * this.SQRT3) / (h * 1.5));
-    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
-      Math.max(1, Math.min(n, Math.round(c)))
+    return this.findOptimalColumnsImpl(n, approx, (cols, rows) =>
+      Math.min(w / ((cols + 1 / 3) * 1.5), h / ((rows + 0.5) * this.SQRT3))
     );
-    const unique = [...new Set(candidates)];
-    let bestCols = unique[0];
-    let bestRadius = -1;
-    for (const cols of unique) {
-      const rows = Math.ceil(n / cols);
-      const r = Math.min(w / ((cols + 1 / 3) * 1.5), h / ((rows + 0.5) * this.SQRT3));
-      if (r > bestRadius) {
-        bestRadius = r;
-        bestCols = cols;
-      }
-    }
-    return bestCols;
   }
 
   /**
@@ -586,7 +587,7 @@ export class LayoutManager {
     }
   }
 
-  getOffsetsHexagonPointedTop(dataSize: number): any {
+  getOffsetsHexagonPointedTop(dataSize: number): { xoffset: number; yoffset: number } {
     // Use actual grid dimensions, not the configured max
     const hexRadius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
@@ -616,7 +617,7 @@ export class LayoutManager {
     return { xoffset, yoffset };
   }
 
-  getOffsetsHexagonFlatTop(dataSize: number): any {
+  getOffsetsHexagonFlatTop(dataSize: number): { xoffset: number; yoffset: number } {
     const hexRadius = this.getHexFlatTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
     const shapeWidth = this.truncateFloat(hexRadius * 2);
     const shapeHeight = this.truncateFloat(hexRadius * this.SQRT3);
