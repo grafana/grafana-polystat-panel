@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Rename `getHexFlatTopRadius` → `getHexPointedTopRadius` and `getHexFlatTopDiameters` → `getHexPointedTopDiameters`
+  in `LayoutManager` to correctly reflect pointed-top geometry
+
 ### Project Updates
 
 - Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width

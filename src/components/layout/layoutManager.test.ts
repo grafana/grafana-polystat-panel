@@ -28,6 +28,20 @@ describe('Layout Manager', () => {
     });
   });
 
+  describe('getHexPointedTopRadius', () => {
+    it('returns a positive radius for a 400x200 panel with 4 cols and 2 rows', () => {
+      const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      const r = lm.getHexPointedTopRadius();
+      expect(r).toBeGreaterThan(0);
+    });
+    it('returns a larger radius when given fewer actual cols/rows', () => {
+      const lm = new LayoutManager(400, 200, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      const rDefault = lm.getHexPointedTopRadius();
+      const rActual = lm.getHexPointedTopRadius(2, 2);
+      expect(rActual).toBeGreaterThan(rDefault);
+    });
+  });
+
   describe('With rectangle (brick) layout', () => {
     describe('getBrickWidth and getBrickHeight enforce 2:1 ratio', () => {
       it('width is twice the height in a square panel', () => {
