@@ -123,6 +123,40 @@ export class LayoutManager {
   }
 
   /**
+   * Finds the optimal number of columns for HEXAGON_POINTED_TOP auto-sizing.
+   * Uses a closed-form estimate derived by equating width and height hex constraints,
+   * then searches 5 neighbouring integer candidates to find the column count that
+   * maximises the hexagon radius.
+   *
+   * @param n   total number of items to display
+   * @param w   panel width in pixels
+   * @param h   panel height in pixels
+   * @returns   optimal column count (1 ≤ result ≤ n)
+   */
+  findOptimalColumns(n: number, w: number, h: number): number {
+    // Closed-form estimate: equates width and height hex constraints
+    // cols^2 = n * w * 1.5 / (h * SQRT3)
+    const approx = Math.sqrt((n * w * 1.5) / (h * this.SQRT3));
+    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2]
+      .map(c => Math.max(1, Math.min(n, Math.round(c))));
+    const unique = [...new Set(candidates)];
+    let bestCols = unique[0];
+    let bestRadius = -1;
+    for (const cols of unique) {
+      const rows = Math.ceil(n / cols);
+      const r = Math.min(
+        w / ((cols + 0.5) * this.SQRT3),
+        h / ((rows + 1 / 3) * 1.5)
+      );
+      if (r > bestRadius) {
+        bestRadius = r;
+        bestCols = cols;
+      }
+    }
+    return bestCols;
+  }
+
+  /**
    * Helper method to return rendered width and height of a circle/square shapes
    */
   getUniformDiameters(): PolystatDiameters {
@@ -180,8 +214,17 @@ export class LayoutManager {
         if (this.numRows < 1) {
           this.numRows = 1;
         }
+      } else if (this.shape === PolygonShapes.HEXAGON_POINTED_TOP) {
+        this.numColumns = this.findOptimalColumns(useLimit, this.width, this.height);
+        if (this.numColumns > useLimit) {
+          this.numColumns = useLimit;
+        }
+        this.numRows = Math.ceil(useLimit / this.numColumns);
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
       } else {
-        // sqrt of # data items
+        // circle / square — keep existing sqrt heuristic unchanged
         const squared = Math.sqrt(useLimit);
         // favor columns when width is greater than height
         // favor rows when width is less than height

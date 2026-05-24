@@ -156,4 +156,52 @@ describe('Layout Manager', () => {
       });
     });
   });
+
+  describe('findOptimalColumns', () => {
+    it('produces a larger radius than the 0.75 heuristic on a wide panel', () => {
+      // 0.75 heuristic: cols = ceil(4 * sqrt(20) * 0.75) = ceil(13.4) = 14 → radius ≈ 79.6
+      const lm = new LayoutManager(2000, 500, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      const optCols = lm.findOptimalColumns(20, 2000, 500);
+      const optRows = Math.ceil(20 / optCols);
+      const SQRT3 = 1.7320508075688772;
+      const optRadius = Math.min(
+        2000 / ((optCols + 0.5) * SQRT3),
+        500  / ((optRows + 1 / 3) * 1.5)
+      );
+      expect(optRadius).toBeGreaterThan(79.6);
+    });
+
+    it('handles a square panel without regression', () => {
+      const lm = new LayoutManager(400, 400, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      const cols = lm.findOptimalColumns(16, 400, 400);
+      expect(cols).toBeGreaterThanOrEqual(1);
+      expect(cols).toBeLessThanOrEqual(16);
+    });
+
+    it('returns 1 for a single item', () => {
+      const lm = new LayoutManager(400, 200, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      expect(lm.findOptimalColumns(1, 400, 200)).toBe(1);
+    });
+
+    it('caps at n for large panels', () => {
+      const lm = new LayoutManager(5000, 100, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      expect(lm.findOptimalColumns(5, 5000, 100)).toBeLessThanOrEqual(5);
+    });
+  });
+
+  describe('generatePossibleColumnAndRowsSizes — hex auto-size', () => {
+    it('produces more space-efficient column count than 0.75 heuristic on 4:1 panel', () => {
+      const lm = new LayoutManager(2000, 500, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      lm.generatePossibleColumnAndRowsSizes(true, true, 100, 20);
+      // old heuristic: cols = ceil(4 * sqrt(20) * 0.75) = 14
+      // new optimizer must beat radius achieved with 14 cols
+      const SQRT3 = 1.7320508075688772;
+      const oldRadius = Math.min(2000 / ((14 + 0.5) * SQRT3), 500 / ((2 + 1/3) * 1.5));
+      const newRadius = Math.min(
+        2000 / ((lm.numColumns + 0.5) * SQRT3),
+        500  / ((lm.numRows    + 1/3) * 1.5)
+      );
+      expect(newRadius).toBeGreaterThan(oldRadius);
+    });
+  });
 });
