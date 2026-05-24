@@ -520,3 +520,50 @@ describe('getTextSizeForWidthAndHeight', () => {
     expect(result).toBe(24);
   });
 });
+
+describe('getTextSizeForWidth', () => {
+  // jest-canvas-mock TextMetrics returns width = text.length (number of chars).
+  // 'Hello World' has 11 chars → w=11. 'A' has 1 char → w=1.
+
+  it('returns maxFontPx when text width fits within the available width (early return)', () => {
+    // w=11, width=50 → 11 <= 50 → early return maxFontPx
+    expect(getTextSizeForWidth('Hello World', '?px sans-serif', 50, 6, 100)).toBe(100);
+    // w=11, width=100 → 11 <= 100 → early return
+    expect(getTextSizeForWidth('Hello World', '?px sans-serif', 100, 6, 100)).toBe(100);
+  });
+
+  it('returns maxFontPx when text width exactly equals the available width', () => {
+    // w=11 ('Hello World'), width=11 → 11 <= 11 → early return maxFontPx
+    expect(getTextSizeForWidth('Hello World', '?px sans-serif', 11, 6, 100)).toBe(100);
+  });
+
+  it('returns 0 when text width exceeds available width and loop finds no fit', () => {
+    // w=11 ('Hello World'), width=1 → 11 > 1 → falls through; loop checks w < (1-2)=-1 → never true → 0
+    expect(getTextSizeForWidth('Hello World', '?px sans-serif', 1, 6, 100)).toBe(0);
+  });
+
+  it('returns 0 when width is negative', () => {
+    // w=1 ('A'), width=-1 → 1 <= -1 is false → loop, w < (-1-2)=-3 → never true → 0
+    expect(getTextSizeForWidth('A', '?px sans-serif', -1, 6, 240)).toBe(0);
+  });
+});
+
+describe('getTextSizeForWidthAndHeight height-constraint behavior', () => {
+  // jest-canvas-mock TextMetrics returns width = text.length.
+  // 'test text' has 9 chars → w=9. width is adjusted: Math.round(width * 0.98).
+  // With width=200: adjusted=196 → 9 <= 196 (width satisfied), so height is the binding constraint.
+  // getTextSizeForWidthAndHeight checks: w <= width && maxFontPx <= height → early return maxFontPx.
+  // If not, linear scan: w <= width && fontSize <= height → return fontSize.
+  const testCases = [
+    { name: 'returns maxFontPx when height >= maxFontPx', width: 200, height: 240, min: 6, max: 100, expected: 100 },
+    { name: 'returns height when height < maxFontPx', width: 200, height: 50, min: 6, max: 100, expected: 50 },
+    { name: 'returns minFontPx when height = minFontPx', width: 200, height: 6, min: 6, max: 100, expected: 6 },
+    { name: 'returns 0 when height < minFontPx', width: 200, height: 5, min: 6, max: 100, expected: 0 },
+    { name: 'caps at maxFontPx even with generous height', width: 200, height: 500, min: 6, max: 100, expected: 100 },
+  ];
+  testCases.forEach(({ name, width, height, min, max, expected }) => {
+    it(name, () => {
+      expect(getTextSizeForWidthAndHeight('test text', '?px sans-serif', width, height, min, max)).toBe(expected);
+    });
+  });
+});
