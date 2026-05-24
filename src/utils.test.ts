@@ -2,7 +2,13 @@
  * Tests for utils
  */
 
-import { GetDecimalsForValue, SortVariableValuesByField, getTextOrValue, getTextSizeForWidth, getTextSizeForWidthAndHeight } from './utils';
+import {
+  GetDecimalsForValue,
+  SortVariableValuesByField,
+  getTextOrValue,
+  getTextSizeForWidth,
+  getTextSizeForWidthAndHeight,
+} from './utils';
 
 describe('Utils GetDecimalsForValue', () => {
   describe('With decimals', () => {

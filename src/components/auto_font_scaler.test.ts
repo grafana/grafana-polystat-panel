@@ -75,13 +75,18 @@ describe('AutoFontScaler', () => {
 
   describe('label sizing', () => {
     it('returns positive label font size for normal text', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel({ name: 'Server-A', displayName: 'Server-A' })]);
+      const result = AutoFontScaler(font, width, height, true, false, [
+        makeModel({ name: 'Server-A', displayName: 'Server-A' }),
+      ]);
       expect(result.activeLabelFontSize).toBeGreaterThan(0);
     });
 
     it('uses longest displayName across all data items', () => {
       const short = makeModel({ name: 'A', displayName: 'A' });
-      const long = makeModel({ name: 'Very-Long-Server-Name-That-Takes-Space', displayName: 'Very-Long-Server-Name-That-Takes-Space' });
+      const long = makeModel({
+        name: 'Very-Long-Server-Name-That-Takes-Space',
+        displayName: 'Very-Long-Server-Name-That-Takes-Space',
+      });
       const resultShort = AutoFontScaler(font, width, height, true, false, [short]);
       const resultLong = AutoFontScaler(font, width, height, true, false, [short, long]);
       expect(resultLong.activeLabelFontSize).toBeLessThanOrEqual(resultShort.activeLabelFontSize);
@@ -162,7 +167,11 @@ describe('AutoFontScaler', () => {
 
   describe('composite member value sizing', () => {
     it('accounts for composite member displayName + value length', () => {
-      const member = makeModel({ name: 'very-long-member-name', displayName: 'very-long-member-name', valueFormatted: '99999' });
+      const member = makeModel({
+        name: 'very-long-member-name',
+        displayName: 'very-long-member-name',
+        valueFormatted: '99999',
+      });
       const composite = makeComposite('comp', [member]);
       const withMembers = AutoFontScaler(font, width, height, true, false, [composite]);
       const withoutMembers = AutoFontScaler(font, width, height, true, false, [makeModel()]);
@@ -180,7 +189,9 @@ describe('AutoFontScaler', () => {
     });
 
     it('computes font size constrained by text width', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel({ name: 'Short', displayName: 'Short' })]);
+      const result = AutoFontScaler(font, width, height, true, false, [
+        makeModel({ name: 'Short', displayName: 'Short' }),
+      ]);
       expect(result.activeLabelFontSize).toBeGreaterThan(0);
       expect(result.activeLabelFontSize).toBeLessThanOrEqual(height / 2);
     });

@@ -164,10 +164,7 @@ describe('Layout Manager', () => {
       const optCols = lm.findOptimalColumns(20, 2000, 500);
       const optRows = Math.ceil(20 / optCols);
       const SQRT3 = 1.7320508075688772;
-      const optRadius = Math.min(
-        2000 / ((optCols + 0.5) * SQRT3),
-        500  / ((optRows + 1 / 3) * 1.5)
-      );
+      const optRadius = Math.min(2000 / ((optCols + 0.5) * SQRT3), 500 / ((optRows + 1 / 3) * 1.5));
       expect(optRadius).toBeGreaterThan(79.6);
     });
 
@@ -196,11 +193,8 @@ describe('Layout Manager', () => {
       // old heuristic: cols = ceil(4 * sqrt(20) * 0.75) = 14
       // new optimizer must beat radius achieved with 14 cols
       const SQRT3 = 1.7320508075688772;
-      const oldRadius = Math.min(2000 / ((14 + 0.5) * SQRT3), 500 / ((2 + 1/3) * 1.5));
-      const newRadius = Math.min(
-        2000 / ((lm.numColumns + 0.5) * SQRT3),
-        500  / ((lm.numRows    + 1/3) * 1.5)
-      );
+      const oldRadius = Math.min(2000 / ((14 + 0.5) * SQRT3), 500 / ((2 + 1 / 3) * 1.5));
+      const newRadius = Math.min(2000 / ((lm.numColumns + 0.5) * SQRT3), 500 / ((lm.numRows + 1 / 3) * 1.5));
       expect(newRadius).toBeGreaterThan(oldRadius);
     });
   });
@@ -260,16 +254,10 @@ describe('Layout Manager', () => {
         const SQRT3 = 1.7320508075688772;
         const heuristicCols = Math.ceil((2000 / 500) * Math.sqrt(20) * 0.75);
         const heuristicRows = Math.ceil(20 / heuristicCols);
-        const heuristicRadius = Math.min(
-          2000 / ((heuristicCols + 1 / 3) * 1.5),
-          500 / ((heuristicRows + 0.5) * SQRT3)
-        );
+        const heuristicRadius = Math.min(2000 / ((heuristicCols + 1 / 3) * 1.5), 500 / ((heuristicRows + 0.5) * SQRT3));
         const optCols = lm.findOptimalColumnsFlatTop(20, 2000, 500);
         const optRows = Math.ceil(20 / optCols);
-        const optRadius = Math.min(
-          2000 / ((optCols + 1 / 3) * 1.5),
-          500 / ((optRows + 0.5) * SQRT3)
-        );
+        const optRadius = Math.min(2000 / ((optCols + 1 / 3) * 1.5), 500 / ((optRows + 0.5) * SQRT3));
         expect(optRadius).toBeGreaterThan(heuristicRadius);
       });
     });

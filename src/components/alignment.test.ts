@@ -1,13 +1,9 @@
 import { GetAlignments } from './alignment';
 
 describe('Test GetAlignments', () => {
-  beforeEach(() => {
-
-  });
+  beforeEach(() => {});
 
   describe('Label Only', () => {
-    it('returns alignment when just label is showing', () => {
-    });
+    it('returns alignment when just label is showing', () => {});
   });
-
 });

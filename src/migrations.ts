@@ -1,11 +1,18 @@
 import { PanelModel, convertOldAngularValueMappings, ValueMapping } from '@grafana/data';
-import { config } from "@grafana/runtime";
-import { satisfies, coerce } from "semver";
+import { config } from '@grafana/runtime';
+import { satisfies, coerce } from 'semver';
 import { CompositeItemType, CompositeMetric } from 'components/composites/types';
 import { OverrideItemType } from './components/overrides/types';
 import { PolystatThreshold } from './components/thresholds/types';
 
-import { DisplayModes, FontFamilies, PolygonShapes, PolystatOptions, ShowTimestampFormats, ShowTimestampPositions } from './components/types';
+import {
+  DisplayModes,
+  FontFamilies,
+  PolygonShapes,
+  PolystatOptions,
+  ShowTimestampFormats,
+  ShowTimestampPositions,
+} from './components/types';
 interface AngularPolystatOptions {
   animationSpeed: number;
   columnAutoSize: boolean;
@@ -19,7 +26,7 @@ interface AngularPolystatOptions {
   fontAutoColor: boolean;
   fontAutoScale: boolean;
   fontSize: number;
-  fontType: string,
+  fontType: string;
   globalDecimals: number;
   globalDisplayMode: string;
   globalDisplayTextTriggeredEmpty: string;
@@ -43,7 +50,7 @@ interface AngularPolystatOptions {
   tooltipDisplayTextTriggeredEmpty: string;
   tooltipEnabled: boolean;
   tooltipFontSize: number;
-  tooltipFontType: string,
+  tooltipFontType: string;
   tooltipPrimarySortDirection: number;
   tooltipPrimarySortField: string;
   tooltipSecondarySortDirection: number;
@@ -579,7 +586,7 @@ export const migrateComposites = (angular: AngularSavedComposites, animationSpee
         clickThroughSanitize: true,
         clickThroughOpenNewTab: true,
         clickThroughCustomTargetEnabled: false,
-        clickThroughCustomTarget: ''
+        clickThroughCustomTarget: '',
       };
       index++;
       for (const p of Object.keys(composite)) {
@@ -683,7 +690,7 @@ export const PolystatPanelChangedHandler = (
 export const hasRobotoFont = () => {
   const version = coerce(config.buildInfo.version);
   if (version !== null) {
-    if (satisfies(version, "<9.4.0")) {
+    if (satisfies(version, '<9.4.0')) {
       return true;
     }
   }

@@ -137,17 +137,15 @@ export class LayoutManager {
     // Closed-form estimate: equates width and height hex constraints
     // cols^2 = n * w * 1.5 / (h * SQRT3)
     const approx = Math.sqrt((n * w * 1.5) / (h * this.SQRT3));
-    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2]
-      .map(c => Math.max(1, Math.min(n, Math.round(c))));
+    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
+      Math.max(1, Math.min(n, Math.round(c)))
+    );
     const unique = [...new Set(candidates)];
     let bestCols = unique[0];
     let bestRadius = -1;
     for (const cols of unique) {
       const rows = Math.ceil(n / cols);
-      const r = Math.min(
-        w / ((cols + 0.5) * this.SQRT3),
-        h / ((rows + 1 / 3) * 1.5)
-      );
+      const r = Math.min(w / ((cols + 0.5) * this.SQRT3), h / ((rows + 1 / 3) * 1.5));
       if (r > bestRadius) {
         bestRadius = r;
         bestCols = cols;
@@ -169,17 +167,15 @@ export class LayoutManager {
   findOptimalColumnsFlatTop(n: number, w: number, h: number): number {
     // Closed-form estimate: cols^2 = n * w * SQRT3 / (h * 1.5)
     const approx = Math.sqrt((n * w * this.SQRT3) / (h * 1.5));
-    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2]
-      .map(c => Math.max(1, Math.min(n, Math.round(c))));
+    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
+      Math.max(1, Math.min(n, Math.round(c)))
+    );
     const unique = [...new Set(candidates)];
     let bestCols = unique[0];
     let bestRadius = -1;
     for (const cols of unique) {
       const rows = Math.ceil(n / cols);
-      const r = Math.min(
-        w / ((cols + 1 / 3) * 1.5),
-        h / ((rows + 0.5) * this.SQRT3)
-      );
+      const r = Math.min(w / ((cols + 1 / 3) * 1.5), h / ((rows + 0.5) * this.SQRT3));
       if (r > bestRadius) {
         bestRadius = r;
         bestCols = cols;
@@ -197,10 +193,7 @@ export class LayoutManager {
   getHexFlatTopRadius(cols?: number, rows?: number): number {
     const c = cols ?? this.numColumns;
     const r = rows ?? this.numRows;
-    const hexRadius = d3.min([
-      this.width / ((c + 1 / 3) * 1.5),
-      this.height / ((r + 0.5) * this.SQRT3),
-    ]);
+    const hexRadius = d3.min([this.width / ((c + 1 / 3) * 1.5), this.height / ((r + 0.5) * this.SQRT3)]);
     return hexRadius !== undefined ? this.truncateFloat(hexRadius) : 40;
   }
 

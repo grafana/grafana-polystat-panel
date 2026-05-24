@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
-import {StandardEditorProps} from '@grafana/data';
-import {Button, Collapse, Field, FieldSet, Input, Switch} from '@grafana/ui';
+import React, { useState } from 'react';
+import { StandardEditorProps } from '@grafana/data';
+import { Button, Collapse, Field, FieldSet, Input, Switch } from '@grafana/ui';
 
-import {CompositeItem} from './CompositeItem';
-import {CompositeItemTracker, CompositeItemType, CompositeMetric, DisplayModes} from './types';
-import {v4 as UUIdv4} from 'uuid';
+import { CompositeItem } from './CompositeItem';
+import { CompositeItemTracker, CompositeItemType, CompositeMetric, DisplayModes } from './types';
+import { v4 as UUIdv4 } from 'uuid';
 import { ShowTimestampFormats } from 'components/types';
 
 export interface CompositeEditorSettings {
@@ -74,7 +74,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
 
   const moveDown = (index: number) => {
     if (index !== tracker.length - 1) {
-      const newTracker = [...tracker]
+      const newTracker = [...tracker];
       arrayMove(newTracker, index, index + 1);
       // reorder
       for (let i = 0; i < newTracker.length; i++) {
@@ -87,7 +87,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
 
   const moveUp = (index: number) => {
     if (index > 0) {
-      const newTracker = [...tracker]
+      const newTracker = [...tracker];
       arrayMove(newTracker, index, index - 1);
       // reorder
       for (let i = 0; i < newTracker.length; i++) {
@@ -120,7 +120,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       clickThroughOpenNewTab: original.clickThroughOpenNewTab,
       clickThroughSanitize: original.clickThroughSanitize,
       clickThroughCustomTargetEnabled: original.clickThroughCustomTargetEnabled,
-      clickThroughCustomTarget: original.clickThroughCustomTarget
+      clickThroughCustomTarget: original.clickThroughCustomTarget,
     };
     const aTracker: CompositeItemTracker = {
       composite: aComposite,
@@ -132,16 +132,18 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
   };
 
   const updateComposite = (order: number, value: CompositeItemType) => {
-    setTracker(tracker.map(aComposite => {
-      if (aComposite.order === order) {
-        aComposite.composite = value;
-        // Create a *new* object with changes
-        return { ...aComposite };
-      } else {
-        // No changes
-        return aComposite;
-      }
-    }));
+    setTracker(
+      tracker.map((aComposite) => {
+        if (aComposite.order === order) {
+          aComposite.composite = value;
+          // Create a *new* object with changes
+          return { ...aComposite };
+        } else {
+          // No changes
+          return aComposite;
+        }
+      })
+    );
   };
 
   const removeComposite = (compositeIndex: number) => {
@@ -189,7 +191,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       clickThroughSanitize: true,
       clickThroughCustomTargetEnabled: false,
       clickThroughCustomTarget: '',
-      order: order
+      order: order,
     };
     const aTracker: CompositeItemTracker = {
       composite: aComposite,
@@ -209,7 +211,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
             transparent={true}
             value={settings.enabled}
             onChange={(e: any) => {
-              const newSettings = {...settings};
+              const newSettings = { ...settings };
               newSettings.enabled = e.currentTarget.checked;
               setSettings(newSettings);
               // onChange MUST be called with the entire config or nothing will be modified in the UI
@@ -228,7 +230,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
                 console.log(`WARNING: speed in configuration is too fast, setting to 200ms`);
                 speed = 200;
               }
-              const newSettings = {...settings};
+              const newSettings = { ...settings };
               newSettings.animationSpeed = speed.toString();
               setSettings(newSettings);
               // onChange MUST be called with the entire config or nothing will be modified in the UI

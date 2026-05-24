@@ -86,12 +86,7 @@ describe('Test Polystat', () => {
       ]);
       const cache = buildTriggerCache(item);
       expect(cache).toHaveLength(4);
-      expect(cache.map((c: any) => c.name)).toEqual([
-        'crit-high',
-        'crit-low',
-        'a-warn',
-        'b-warn',
-      ]);
+      expect(cache.map((c: any) => c.name)).toEqual(['crit-high', 'crit-low', 'a-warn', 'b-warn']);
     });
   });
 

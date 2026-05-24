@@ -28,7 +28,7 @@ There are two global settings that apply to all composites.
 
 ### Enable Composites
 
-A toggle is provided to quickly disable all composites from being rendered.  Additionally each composite has a hide icon to toggle its visibility.
+A toggle is provided to quickly disable all composites from being rendered. Additionally each composite has a hide icon to toggle its visibility.
 
 ### Animation Speed (ms)
 
@@ -59,10 +59,10 @@ When this is enabled, the composite is shown along with all of the metrics. Typi
 This will override the global display mode for just this composite.
 As with the global setting, you can choose to display only metrics that have triggered a threshold or display all metrics.
 
-| Display Mode |                                                        |
-|--------------|--------------------------------------------------------|
-| All          | All metrics are displayed                              |
-| Triggered    | Only metrics with a threshold triggered are displayed  |
+| Display Mode |                                                       |
+| ------------ | ----------------------------------------------------- |
+| All          | All metrics are displayed                             |
+| Triggered    | Only metrics with a threshold triggered are displayed |
 
 ## Clickthrough URL (composite)
 
@@ -89,7 +89,7 @@ NOTE: This is only visible when `Open URL in New Tab` is disabled.
 
 Specify the content for the `target` attribute of the clickthrough URL.
 
-Typical values are: _blank|_self|_parent|_top|
+Typical values are: \_blank|\_self|\_parent|\_top|
 
 ## Bottom Menu (composite)
 
@@ -107,7 +107,7 @@ Use the "eye" icon to enable/disable the composite.
 
 ### Duplicate (composite)
 
-This button will make a copy of the current composite and append it to the end of the list.  It will have a new name with "Copy" at the end.
+This button will make a copy of the current composite and append it to the end of the list. It will have a new name with "Copy" at the end.
 
 ### Delete (composite)
 
