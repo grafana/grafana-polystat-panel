@@ -6,8 +6,13 @@
 
 ### Added
 
+- Add provisioned dashboard `Layout-Space-Optimization.json` with 4 panels (wide/square/tall/flat-top)
+  for E2E visual regression screenshots
+- Add `layout-space-optimization.spec.ts` Playwright spec for before/after layout comparison
 - Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
-- Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`, `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`, coordinate generation, and all switch branches
+- Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`,
+  `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`,
+  coordinate generation, and all switch branches
 - Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaHeight * 0.8`, `drawShape` case
 
 ### Fixed
@@ -17,7 +22,8 @@
 - Reduce `getTextSizeForWidthAndHeight` width reduction from 5% to 2%
 - Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
   `numColumns`/`numRows` (configured max)
-- Increase hex pointed-top `textAreaHeight` from `diameterY * 0.5` to `diameterY * 0.6` — uses more of the flat middle band for text rendering
+- Increase hex pointed-top `textAreaHeight` from `diameterY * 0.5` to `diameterY * 0.6`
+  — uses more of the flat middle band for text rendering
 
 ### Changed
 

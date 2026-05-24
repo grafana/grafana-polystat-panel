@@ -1,0 +1,94 @@
+{
+  "id": null,
+  "uid": "layout-space-opt",
+  "title": "Layout Space Optimization",
+  "tags": ["polystat", "layout-test"],
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Wide panel (4:1) — 20 items",
+      "type": "grafana-polystat-panel",
+      "gridPos": { "h": 6, "w": 24, "x": 0, "y": 0 },
+      "options": {
+        "autoSizeColumns": true,
+        "autoSizePolygons": true,
+        "autoSizeRows": true,
+        "globalAutoScaleFonts": true,
+        "globalShape": "hexagon_pointed_top",
+        "globalFillColor": "rgba(71, 212, 149, 0.15)"
+      },
+      "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+      "targets": [{
+        "refId": "A",
+        "scenarioId": "csv_content",
+        "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+        "csvContent": "m01,m02,m03,m04,m05,m06,m07,m08,m09,m10,m11,m12,m13,m14,m15,m16,m17,m18,m19,m20\n1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"
+      }]
+    },
+    {
+      "id": 2,
+      "title": "Square panel (1:1) — 16 items",
+      "type": "grafana-polystat-panel",
+      "gridPos": { "h": 12, "w": 12, "x": 0, "y": 6 },
+      "options": {
+        "autoSizeColumns": true,
+        "autoSizePolygons": true,
+        "autoSizeRows": true,
+        "globalAutoScaleFonts": true,
+        "globalShape": "hexagon_pointed_top",
+        "globalFillColor": "rgba(71, 212, 149, 0.15)"
+      },
+      "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+      "targets": [{
+        "refId": "A",
+        "scenarioId": "csv_content",
+        "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+        "csvContent": "m01,m02,m03,m04,m05,m06,m07,m08,m09,m10,m11,m12,m13,m14,m15,m16\n1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+      }]
+    },
+    {
+      "id": 3,
+      "title": "Tall panel (1:4) — 20 items",
+      "type": "grafana-polystat-panel",
+      "gridPos": { "h": 24, "w": 6, "x": 12, "y": 6 },
+      "options": {
+        "autoSizeColumns": true,
+        "autoSizePolygons": true,
+        "autoSizeRows": true,
+        "globalAutoScaleFonts": true,
+        "globalShape": "hexagon_pointed_top",
+        "globalFillColor": "rgba(71, 212, 149, 0.15)"
+      },
+      "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+      "targets": [{
+        "refId": "A",
+        "scenarioId": "csv_content",
+        "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+        "csvContent": "m01,m02,m03,m04,m05,m06,m07,m08,m09,m10,m11,m12,m13,m14,m15,m16,m17,m18,m19,m20\n1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"
+      }]
+    },
+    {
+      "id": 4,
+      "title": "Flat-top — wide (4:1) — 20 items",
+      "type": "grafana-polystat-panel",
+      "gridPos": { "h": 6, "w": 18, "x": 0, "y": 30 },
+      "options": {
+        "autoSizeColumns": true,
+        "autoSizePolygons": true,
+        "autoSizeRows": true,
+        "globalAutoScaleFonts": true,
+        "globalShape": "hexagon_flat_top",
+        "globalFillColor": "rgba(110, 159, 255, 0.15)"
+      },
+      "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+      "targets": [{
+        "refId": "A",
+        "scenarioId": "csv_content",
+        "datasource": { "type": "grafana-testdata-datasource", "uid": "trlxrdZVk" },
+        "csvContent": "m01,m02,m03,m04,m05,m06,m07,m08,m09,m10,m11,m12,m13,m14,m15,m16,m17,m18,m19,m20\n1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20"
+      }]
+    }
+  ]
+}
