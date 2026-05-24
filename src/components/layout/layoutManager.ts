@@ -123,9 +123,9 @@ export class LayoutManager {
   }
 
   /**
-   * Core neighbour-search used by findOptimalColumns and findOptimalColumnsFlatTop.
+   * Core neighbor-search used by findOptimalColumns and findOptimalColumnsFlatTop.
    * Evaluates 5 integer candidates near `approx` and returns the column count
-   * that maximises the radius returned by `calcRadius`.
+   * that maximizes the radius returned by `calcRadius`.
    */
   private findOptimalColumnsImpl(
     n: number,
@@ -151,8 +151,8 @@ export class LayoutManager {
   /**
    * Finds the optimal number of columns for HEXAGON_POINTED_TOP auto-sizing.
    * Uses a closed-form estimate derived by equating width and height hex constraints,
-   * then searches 5 neighbouring integer candidates to find the column count that
-   * maximises the hexagon radius.
+   * then searches 5 neighboring integer candidates to find the column count that
+   * maximizes the hexagon radius.
    *
    * @param n   total number of items to display
    * @param w   panel width in pixels
