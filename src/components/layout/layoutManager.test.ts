@@ -204,4 +204,19 @@ describe('Layout Manager', () => {
       expect(newRadius).toBeGreaterThan(oldRadius);
     });
   });
+
+  describe('getOffsetsHexagonPointedTop — uses maxColumnsUsed not numColumns', () => {
+    it('centering uses actual columns, not the configured max', () => {
+      // 4 items on an 8-col panel: maxColumnsUsed should be 4 (all in row 0)
+      const lm = new LayoutManager(800, 200, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      lm.maxColumnsUsed = 4;
+      lm.maxRowsUsed = 1;
+      const { xoffset } = lm.getOffsets(PolygonShapes.HEXAGON_POINTED_TOP, 100, 4);
+      // With 4 actual cols on an 800px panel, radius ≈ 800/((4+0.5)*SQRT3) ≈ 102.6
+      // The xoffset must be negative (content centered, not left-aligned)
+      expect(xoffset).toBeLessThan(0);
+      // And the magnitude must reflect centering (gap / 2 < panel width)
+      expect(Math.abs(xoffset)).toBeLessThan(800);
+    });
+  });
 });

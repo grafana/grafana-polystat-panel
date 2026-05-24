@@ -513,11 +513,8 @@ export class LayoutManager {
   }
 
   getOffsetsHexagonPointedTop(dataSize: number): any {
-    let hexRadius = d3.min([
-      this.width / ((this.numColumns + 0.5) * this.SQRT3),
-      this.height / ((this.numRows + 1 / 3) * 1.5),
-    ]);
-    hexRadius = this.truncateFloat(hexRadius as number);
+    // Use actual grid dimensions, not the configured max
+    const hexRadius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
 
@@ -532,13 +529,14 @@ export class LayoutManager {
     const offsetToViewX = shapeWidth * 0.5;
     // columns have a half-width offset if there are more than 1 rows
     let widthOffset = 0;
-    if (this.numRows > 1) {
+    if (this.maxRowsUsed > 1) {
       // if the dataSize is equal to or larger than the 2*Columns, there is an additional offset needed
       if (dataSize >= this.maxColumnsUsed * 2) {
         widthOffset = 0.5;
       }
     }
-    const actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
+    // Use maxColumnsUsed (actual data) not numColumns (configured max)
+    const actualWidthUsed = (this.maxColumnsUsed + widthOffset) * shapeWidth;
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
     return { xoffset, yoffset };

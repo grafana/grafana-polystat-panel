@@ -4,6 +4,11 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
+  `numColumns`/`numRows` (configured max)
+
 ### Changed
 
 - Rename `getHexFlatTopRadius` → `getHexPointedTopRadius` and `getHexFlatTopDiameters` → `getHexPointedTopDiameters`
