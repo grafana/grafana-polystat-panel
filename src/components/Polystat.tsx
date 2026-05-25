@@ -647,7 +647,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);
-            let clickableUrl: React.JSX.Element;
+            let clickableUrl: JSX.Element;
             // only add target attribute when there is one specified
             if (resolvedClickthroughTarget.length > 0 && useUrl.length > 0) {
               clickableUrl = (
