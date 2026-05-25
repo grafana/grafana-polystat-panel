@@ -5,5 +5,21 @@
   "tags": [],
   "schemaVersion": 36,
   "version": 1,
-  "panels": []
+  "panels": [
+    {
+      "id": 1,
+      "type": "grafana-polystat-panel",
+      "title": "Test Panel",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "options": {},
+      "datasource": { "type": "datasource", "uid": "grafana" },
+      "targets": [
+        {
+          "datasource": { "type": "datasource", "uid": "grafana" },
+          "queryType": "randomWalk",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
 }
