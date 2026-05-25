@@ -374,7 +374,7 @@ Flat config (ESLint 9). Common rules applied:
   - When checking out a branch or `main`, always `git fetch` and `git pull` first.
   - Always run `git status` before constructing `git add` commands.
 - **Pull requests:**
-  - Always create as drafts (`gh pr create --draft`).
+  - Always create as drafts (`gh pr create --draft`). Never call `gh pr ready` — only the author marks PRs ready.
   - Use categories in summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`, `### Dependencies`,
     `### CI/CD`, `### Documentation`, `### Tooling`.
   - Always include a `## Test plan` section with a verification checklist.
