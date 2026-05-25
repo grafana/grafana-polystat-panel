@@ -1,6 +1,6 @@
 # Overrides
 
-Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs.
+Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs. 
 
 This is an example override that sets the unit for metrics that match a regular expression:
 

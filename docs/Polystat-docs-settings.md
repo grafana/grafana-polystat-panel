@@ -1,3 +1,4 @@
+
 # Global settings
 
 The following settings are available in the Global section, and are detailed below.
@@ -7,8 +8,9 @@ The following settings are available in the Global section, and are detailed bel
 Main settings include:
 
 - **Display Mode**: Display only metrics that have triggered a threshold or display all metrics.
-  - **All**: Displays metrics from all polygons
-  - **Triggered**: Only polygons with a threshold triggered are displayed
+  
+  - **All**: Displays metrics from all polygons                       
+  - **Triggered**: Only polygons with a threshold triggered are displayed 
 
 - **Non Triggered State Text**: Text to be displayed in polygon when there are no triggered thresholds and global display mode is set to triggered.
 
@@ -24,7 +26,7 @@ Main settings include:
 
 - **Unit**: All of the unit types are available in this selector and will be applied to the value displayed.
 
-- **Stat**: Select which statistic to display for the value. The full set of statistics that Grafana provides are available.
+- **Stat**: Select which statistic to display for the value.  The full set of statistics that Grafana provides are available.
 
 - **Decimals**: This limits the number of decimals displayed.
 
@@ -54,7 +56,7 @@ Currently there are three shapes that can be selected, and each use a best fit m
 
 ## Global Aliasing
 
-This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name.
+This field allows you to specify a regular expression to pick a portion of matching metric names to be rendered instead of the full name. 
 
 ### Example
 
@@ -69,3 +71,5 @@ If you have these 3 queries, returning the following series:
 If you add the regular expression `/(Foo|Bar)/`, the result is:
 
 ![After Aliasing](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/regex-alias-after.png)
+
+

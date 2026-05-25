@@ -1,3 +1,4 @@
+
 # Customization options
 
 This panel provides a large number of customization options, which are searchable from the menu.
@@ -8,7 +9,7 @@ By default the plugin automatically sizes the displayed polygons using a "best f
 
 ![Auto Layout](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-options-layout.png)
 
-Alternatively, you can specify the number of columns and/or rows manually. If both columns and rows are set, only `rows*columns` is displayed.
+Alternatively, you can specify the number of columns and/or rows manually. If both columns and rows are set, only `rows*columns` is displayed. 
 
 - **Columns**: Maximum amount of columns to create.
 
@@ -90,14 +91,14 @@ The following options are available:
 
 ## Tooltip Sorting
 
-If you're using _composites_ with multiple metrics to be displayed, tooltips have a wider set of sort options to aid in displaying important data "at the top" of the tooltip.
+If you're using *composites* with multiple metrics to be displayed, tooltips have a wider set of sort options to aid in displaying important data "at the top" of the tooltip. 
 
 You can specify a field and direction to first sort by, plus a secondary field and direction. You can also disable sorting if needed.
 
 ![Tooltip Sort Directions](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-tooltips-sort-directions.png)
 
 | Sort Direction                        |                                          |
-| ------------------------------------- | ---------------------------------------- |
+|---------------------------------------|------------------------------------------|
 | Disabled                              | No sorting is performed                  |
 | Alphabetical (asc)                    | Ascending Alphabetical                   |
 | Alphabetical (desc)                   | Descending Alphabetical                  |
@@ -108,12 +109,12 @@ You can specify a field and direction to first sort by, plus a secondary field a
 
 ### Primary Sorting
 
-Set the primary sorting direction for tooltip metrics as explained in the table above.
+Set the primary sorting direction for tooltip metrics as explained in the table above. 
 
 You can also sort by field:
 
 | Sort By Field   |                                        |
-| --------------- | -------------------------------------- |
+|-----------------|----------------------------------------|
 | Name            | name of the field - after all aliasing |
 | Threshold Level | from lowest to highest                 |
 | Value           | raw value                              |
@@ -122,7 +123,7 @@ You can also sort by field:
 
 ### Secondary Sorting
 
-Secondary sorting works like primary sorting, but you can set a different direction using a different field/threshold/value. It's applied _after_ primary sorting is performed.
+Secondary sorting works like primary sorting, but you can set a different direction using a different field/threshold/value. It's applied *after* primary sorting is performed.
 
 - **Show Timestamp**: Displays the time of the metric in the polygon.
 

@@ -1,6 +1,6 @@
 # Use Clickthrough URLs
 
-Use this setting to indicate the URL to open when clicking the polygon.
+Use this setting to indicate the URL to open when clicking the polygon. 
 
 Options include:
 
@@ -49,7 +49,7 @@ To parse, it use the expression:
 
 ```
 ([^+]*)\+([^+]*)\s+(.*)
-```
+``` 
 
 ## Use template variables
 
@@ -84,19 +84,19 @@ Metrics are sorted using the global options "Sorting" settings. Global filters a
 
 The name and value of a polygon can be referenced using the following syntax:
 
-- Metric Name: `${__cell_name}`
-- Metric Value: `${__cell}`
-- Metric Raw Value: `${__cell:raw}` syntax.
+* Metric Name: `${__cell_name}`
+* Metric Value: `${__cell}`
+* Metric Raw Value: `${__cell:raw}` syntax. 
 
-By default values are URI encoded. Use this syntax to _disable_ encoding.
+By default values are URI encoded. Use this syntax to *disable* encoding.
 
 #### Composite Metric Variables
 
 The names and values of a composite polygon can be referenced using the following syntax:
 
-- Composite Name: `${__composite_name}`
-- Metric Name: `${__cell_name_n}`
-- Metric Value: `${__cell_n}`
-- Metric Raw Value: `${__cell_n:raw}` syntax.
+* Composite Name: `${__composite_name}`
+* Metric Name: `${__cell_name_n}`
+* Metric Value: `${__cell_n}`
+* Metric Raw Value: `${__cell_n:raw}` syntax.
 
-By default values are URI encoded. Use this syntax to _disable_ encoding.
+By default values are URI encoded. Use this syntax to *disable* encoding.
