@@ -8071,7 +8071,7 @@ __metadata:
     jest-canvas-mock: "npm:2.5.2"
     jest-environment-jsdom: "npm:29.7.0"
     jshint: "npm:2.13.6"
-    markdownlint-cli2: "npm:^0.22.1"
+    markdownlint-cli2: "npm:0.22.1"
     moment-timezone: "npm:0.6.0"
     prettier: "npm:3.7.4"
     react: "npm:17.0.2"
@@ -10075,7 +10075,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdownlint-cli2@npm:^0.22.1":
+"markdownlint-cli2@npm:0.22.1":
   version: 0.22.1
   resolution: "markdownlint-cli2@npm:0.22.1"
   dependencies:
