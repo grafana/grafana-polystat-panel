@@ -307,7 +307,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### CI Workflow
 
-CI runs via `grafana/plugin-ci-workflows` reusable workflow (v7.3.1):
+CI runs via `grafana/plugin-ci-workflows` reusable workflow (v8.0.1):
 
 - Lint, typecheck, unit tests, build
 - Playwright E2E against `grafana-enterprise@latest` matching `>=12.3.0`
