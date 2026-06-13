@@ -4,6 +4,35 @@
 
 ## [Unreleased]
 
+### Added
+
+- Add provisioned dashboard `Layout-Space-Optimization.json` with 4 panels (wide/square/tall/flat-top)
+  for E2E visual regression screenshots
+- Add `layout-space-optimization.spec.ts` Playwright spec for before/after layout comparison
+- Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
+- Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`,
+  `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`,
+  coordinate generation, and all switch branches
+- Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaWidth * 0.70`, `drawShape` case
+
+### Fixed
+
+- Replace hardcoded 20px padding with proportional `max(2, round(width * 0.05))` in `getTextSizeForWidth` — reduces
+  waste at small polygon sizes while preserving behavior at width=400px
+- Reduce `getTextSizeForWidthAndHeight` width reduction from 5% to 2%
+- Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
+  `numColumns`/`numRows` (configured max)
+- Fix `textAreaWidth` for `HEXAGON_FLAT_TOP` to `diameterX * 0.70` and use full `diameterY`
+  for `textAreaHeight`; add alignment case to center text near y=0 where hex is widest
+
+### Changed
+
+- Remove `d3-hexbin` dependency from `Polystat.tsx`; replace with pure SVG path functions `hexPointedTopPath` and `hexFlatTopPath`
+- Rename `getHexFlatTopRadius` → `getHexPointedTopRadius` and `getHexFlatTopDiameters` → `getHexPointedTopDiameters`
+  in `LayoutManager` to correctly reflect pointed-top geometry
+- Replace `(W/H) * sqrt(N) * 0.75` column heuristic with `findOptimalColumns` for `HEXAGON_POINTED_TOP` auto-sizing
+  — up to 38% radius gain on wide panels
+
 ### Project Updates
 
 - Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width
@@ -58,7 +87,7 @@
 
 ## v2.1.11
 
-- Fix for show/hide metric value in composites  [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
+- Fix for show/hide metric value in composites [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
 - Fix for value toggle in tooltips [#381](https://github.com/grafana/grafana-polystat-panel/issues/381)
 - NEW: Tooltips now have a toggle for showing values
 
@@ -82,7 +111,7 @@
 
 ## v2.1.7
 
-- Fix for using ${__composite_name} in clickthrough
+- Fix for using ${\_\_composite_name} in clickthrough
 - Update dependencies
 
 ## v2.1.6
@@ -158,13 +187,13 @@
 ## v2.0.4
 
 - Fix for Issue #242 (wide data conversion)
-    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model
-    did not handle this scenario. This is seen with CSV Content and other datasources. This fix will detect wide
-    data received in this format and convert as expected.
+  Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model
+  did not handle this scenario. This is seen with CSV Content and other datasources. This fix will detect wide
+  data received in this format and convert as expected.
 - Fix for Issue #247 (composite template variables)
-    Advanced use of template variables in composites were not functioning as intended. Composites can once again
-    use template variables as the composite name, and reference the composite name inside the list of member
-    metrics.
+  Advanced use of template variables in composites were not functioning as intended. Composites can once again
+  use template variables as the composite name, and reference the composite name inside the list of member
+  metrics.
 - Metric Hints in composites and overrides are now displaying correctly
 - Override Editor buttons are now left aligned for easier access and visibility
 - Composite Editor buttons are also left aligned, and are now visible

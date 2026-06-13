@@ -374,7 +374,7 @@ Flat config (ESLint 9). Common rules applied:
   - When checking out a branch or `main`, always `git fetch` and `git pull` first.
   - Always run `git status` before constructing `git add` commands.
 - **Pull requests:**
-  - Always create as drafts (`gh pr create --draft`).
+  - Always create as drafts (`gh pr create --draft`). Never call `gh pr ready` — only the author marks PRs ready.
   - Use categories in summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`, `### Dependencies`,
     `### CI/CD`, `### Documentation`, `### Tooling`.
   - Always include a `## Test plan` section with a verification checklist.
@@ -390,6 +390,9 @@ Flat config (ESLint 9). Common rules applied:
   font sizes render correctly. Add provisioned dashboard with polystat panels at various sizes and screenshot baselines.
 - `AutoFontScaler` refactor: flatten nested ellipsis cascade (3-deep if/else with repeated `computeTextFontSize` calls)
   into a loop over `[18, 10, 6]`. Blocked on E2E visual tests above.
+- `LayoutManager` class refactor: only class in the codebase; convert to a plain state type + pipeline of pure functions
+  (`createLayout` → `computeColumnRowSizes` → `computeActualUsage` → `computeRadius` → ...). Large dedicated PR —
+  use existing 301 tests as acceptance criteria. Do not mix with other changes.
 
 ---
 

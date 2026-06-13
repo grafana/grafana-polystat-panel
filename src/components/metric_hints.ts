@@ -14,11 +14,11 @@ export const getMetricHints = (frames: any) => {
     for (const aField of frames[i].fields) {
       if (aField.type === FieldType.number) {
         // update the hint to use the field Name if we didn't get a value from above
-        if ((aField.name) && (hintValue === '')) {
+        if (aField.name && hintValue === '') {
           hintValue = aField.name;
         }
         // check for a label with __name__ and use it instead
-        if (aField?.labels && ('__name__' in aField.labels)) {
+        if (aField?.labels && '__name__' in aField.labels) {
           hintValue = aField.labels['__name__'];
           // append the rest of the labels
           const appendLabels: string[] = [];
@@ -45,4 +45,4 @@ export const getMetricHints = (frames: any) => {
     }
   }
   return metricHints;
-}
+};

@@ -14,3 +14,4 @@ tests/.cache/
 playwright/
 playwright-report/
 test-results/
+docs/superpowers/

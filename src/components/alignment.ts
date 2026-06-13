@@ -1,4 +1,4 @@
-import { PolygonShapes } from "./types";
+import { PolygonShapes } from './types';
 
 export const GetAlignments = (
   shape: PolygonShapes,
@@ -8,7 +8,7 @@ export const GetAlignments = (
   activeValueFontSize: number,
   activeLabelFontSize: number,
   activeTimestampFontSize: number,
-  showTimestampEnabled: boolean,
+  showTimestampEnabled: boolean
 ) => {
   let valueWithLabelTextAlignment = textAreaHeight / 2 / 2 + activeValueFontSize / 2;
   let valueOnlyTextAlignment = activeValueFontSize / 2;
@@ -17,14 +17,24 @@ export const GetAlignments = (
   let labelTextAlignmentX = 0;
   let labelValueAlignmentX = 0;
   let valueWithTimestampAlignment = valueWithLabelTextAlignment / 2;
-  let timestampAlignment = textAreaHeight * 0.33 / 2 + activeTimestampFontSize / 2;
+  let timestampAlignment = (textAreaHeight * 0.33) / 2 + activeTimestampFontSize / 2;
   switch (shape) {
     case PolygonShapes.HEXAGON_POINTED_TOP:
       // offset when only showing label
       labelOnlyTextAlignment = activeLabelFontSize * 0.37;
       if (showTimestampEnabled && activeTimestampFontSize > 0) {
         // adjust value down
-        valueWithLabelTextAlignment = textAreaHeight * 0.67 / 2 + activeValueFontSize / 2;
+        valueWithLabelTextAlignment = (textAreaHeight * 0.67) / 2 + activeValueFontSize / 2;
+      }
+      break;
+    case PolygonShapes.HEXAGON_FLAT_TOP:
+      // Flat-top sides angle inward toward left/right tips as |y| increases.
+      // Keep text close to y=0 (hex center) where full width is available.
+      labelOnlyTextAlignment = activeLabelFontSize * 0.37;
+      valueWithLabelTextAlignment = activeValueFontSize * 0.85;
+      labelWithValueTextAlignment = -(activeValueFontSize * 0.25);
+      if (showTimestampEnabled && activeTimestampFontSize > 0) {
+        valueWithLabelTextAlignment = activeValueFontSize * 1.1;
       }
       break;
     case PolygonShapes.CIRCLE:
@@ -32,7 +42,7 @@ export const GetAlignments = (
       labelOnlyTextAlignment = activeLabelFontSize * 0.37;
       if (showTimestampEnabled && activeTimestampFontSize > 0) {
         // adjust value down
-        valueWithLabelTextAlignment = textAreaHeight * 0.67 / 2 + activeValueFontSize / 2;
+        valueWithLabelTextAlignment = (textAreaHeight * 0.67) / 2 + activeValueFontSize / 2;
       }
       break;
     case PolygonShapes.SQUARE:
@@ -51,7 +61,7 @@ export const GetAlignments = (
       labelValueAlignmentX = diameterX / 2;
       if (showTimestampEnabled && activeTimestampFontSize > 0) {
         // line spacing offset is needed
-        timestampAlignment = diameterY / 1.5 - (activeTimestampFontSize * 0.67);
+        timestampAlignment = diameterY / 1.5 - activeTimestampFontSize * 0.67;
       }
       break;
     case PolygonShapes.RECTANGLE:
@@ -64,7 +74,7 @@ export const GetAlignments = (
       labelTextAlignmentX = diameterX / 2;
       labelValueAlignmentX = diameterX / 2;
       if (showTimestampEnabled && activeTimestampFontSize > 0) {
-        timestampAlignment = diameterY * 0.67 - (activeTimestampFontSize * 0.67);
+        timestampAlignment = diameterY * 0.67 - activeTimestampFontSize * 0.67;
       }
       break;
   }

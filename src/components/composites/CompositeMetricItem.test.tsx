@@ -18,7 +18,7 @@ describe('Test CompositeMetricItem', () => {
   const aMetric: CompositeMetric = {
     seriesMatch: '.*',
     order: 0,
-  }
+  };
   const props: CompositeMetricItemProps = {
     metric: aMetric,
     index: 0,
@@ -28,13 +28,11 @@ describe('Test CompositeMetricItem', () => {
     updateMetricAlias: undefined,
     context: { data: [frameA] },
   };
-  beforeEach(() => { });
+  beforeEach(() => {});
 
   describe('Metric Hints', () => {
     it('returns set of hint from labels', () => {
-      const { container } = render(
-        <CompositeMetricItem {...props} />
-      );
+      const { container } = render(<CompositeMetricItem {...props} />);
       console.log(container.innerHTML);
       expect(container.innerHTML).toMatchSnapshot();
     });

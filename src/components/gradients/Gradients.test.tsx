@@ -24,10 +24,7 @@ describe('Test Gradients', () => {
 
   describe('Data-driven gradients', () => {
     it('renders gradient defs for each data item', () => {
-      const data = [
-        { color: '#ed8128' },
-        { color: 'rgba(245, 54, 54, 1)' },
-      ];
+      const data = [{ color: '#ed8128' }, { color: 'rgba(245, 54, 54, 1)' }];
       const { container } = render(
         <svg>
           <Gradients data={data} gradientId="test" />

@@ -74,7 +74,10 @@ export class LayoutManager {
    */
   generateHexagonPointedTopLayout(): any {
     const layout = {};
-    this.radius = this.getHexFlatTopRadius();
+    // Uses numColumns/numRows intentionally: maxColumnsUsed/maxRowsUsed are not yet
+    // populated when this layout generator runs. The main render path uses generateRadius()
+    // which passes maxColumnsUsed/maxRowsUsed after generateActualColumnAndRowUsage().
+    this.radius = this.getHexPointedTopRadius();
     return layout;
   }
 
@@ -93,11 +96,13 @@ export class LayoutManager {
    *  - Total width (rows > 1) = 1 small radius (sqrt(3) * R / 2) + columns * small diameter (sqrt(3) * R)
    *  - Total height = 1 pointy top (1/2 * R) + rows * size of the rest (3/2 * R)
    */
-  getHexFlatTopRadius(): number {
+  getHexPointedTopRadius(cols?: number, rows?: number): number {
     const polygonBorderSize = 0; // TODO: borderRadius should be configurable and part of the config
+    const effectiveCols = cols !== undefined ? cols : this.numColumns;
+    const effectiveRows = rows !== undefined ? rows : this.numRows;
     let hexRadius = d3.min([
-      this.width / ((this.numColumns + 0.5) * this.SQRT3),
-      this.height / ((this.numRows + 1 / 3) * 1.5),
+      this.width / ((effectiveCols + 0.5) * this.SQRT3),
+      this.height / ((effectiveRows + 1 / 3) * 1.5),
     ]);
     if (hexRadius !== undefined) {
       hexRadius = hexRadius - polygonBorderSize;
@@ -110,10 +115,96 @@ export class LayoutManager {
   /**
    * Helper method to return rendered width and height of hexagon shape
    */
-  getHexFlatTopDiameters(): PolystatDiameters {
-    const hexRadius = this.getHexFlatTopRadius();
+  getHexPointedTopDiameters(): PolystatDiameters {
+    const hexRadius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
     const diameterX = this.truncateFloat(hexRadius * this.SQRT3);
     const diameterY = this.truncateFloat(hexRadius * 2);
+    return { diameterX, diameterY };
+  }
+
+  /**
+   * Core neighbor-search used by findOptimalColumns and findOptimalColumnsFlatTop.
+   * Evaluates 5 integer candidates near `approx` and returns the column count
+   * that maximizes the radius returned by `calcRadius`.
+   */
+  private findOptimalColumnsImpl(
+    n: number,
+    approx: number,
+    calcRadius: (cols: number, rows: number) => number
+  ): number {
+    const candidates = [approx - 2, approx - 1, approx, approx + 1, approx + 2].map((c) =>
+      Math.max(1, Math.min(n, Math.round(c)))
+    );
+    const unique = [...new Set(candidates)];
+    let bestCols = unique[0];
+    let bestRadius = -1;
+    for (const cols of unique) {
+      const r = calcRadius(cols, Math.ceil(n / cols));
+      if (r > bestRadius) {
+        bestRadius = r;
+        bestCols = cols;
+      }
+    }
+    return bestCols;
+  }
+
+  /**
+   * Finds the optimal number of columns for HEXAGON_POINTED_TOP auto-sizing.
+   * Uses a closed-form estimate derived by equating width and height hex constraints,
+   * then searches 5 neighboring integer candidates to find the column count that
+   * maximizes the hexagon radius.
+   *
+   * @param n   total number of items to display
+   * @param w   panel width in pixels
+   * @param h   panel height in pixels
+   * @returns   optimal column count (1 ≤ result ≤ n)
+   */
+  findOptimalColumns(n: number, w: number, h: number): number {
+    // cols^2 = n * w * 1.5 / (h * SQRT3)
+    const approx = Math.sqrt((n * w * 1.5) / (h * this.SQRT3));
+    return this.findOptimalColumnsImpl(n, approx, (cols, rows) =>
+      Math.min(w / ((cols + 0.5) * this.SQRT3), h / ((rows + 1 / 3) * 1.5))
+    );
+  }
+
+  /**
+   * Finds the optimal number of columns for HEXAGON_FLAT_TOP auto-sizing.
+   * Mirrors findOptimalColumns but uses flat-top geometry: column step 1.5*R,
+   * row step SQRT3*R.
+   *
+   * @param n   total number of items to display
+   * @param w   panel width in pixels
+   * @param h   panel height in pixels
+   * @returns   optimal column count (1 ≤ result ≤ n)
+   */
+  findOptimalColumnsFlatTop(n: number, w: number, h: number): number {
+    // cols^2 = n * w * SQRT3 / (h * 1.5)
+    const approx = Math.sqrt((n * w * this.SQRT3) / (h * 1.5));
+    return this.findOptimalColumnsImpl(n, approx, (cols, rows) =>
+      Math.min(w / ((cols + 1 / 3) * 1.5), h / ((rows + 0.5) * this.SQRT3))
+    );
+  }
+
+  /**
+   * The maximum radius the flat-top hexagons can have to still fit the screen.
+   * Flat-top hexagons have:
+   *  - Total width  = (cols + 1/3) * 1.5 * R
+   *  - Total height = (rows + 0.5) * SQRT3 * R   (the +0.5 accounts for odd-column stagger)
+   */
+  getHexFlatTopRadius(cols?: number, rows?: number): number {
+    const c = cols ?? this.numColumns;
+    const r = rows ?? this.numRows;
+    const hexRadius = d3.min([this.width / ((c + 1 / 3) * 1.5), this.height / ((r + 0.5) * this.SQRT3)]);
+    return hexRadius !== undefined ? this.truncateFloat(hexRadius) : 40;
+  }
+
+  /**
+   * Helper method to return rendered width and height of flat-top hexagon shape
+   */
+  getHexFlatTopDiameters(): PolystatDiameters {
+    const hexRadius = this.getHexFlatTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
+    const diameterX = this.truncateFloat(hexRadius * 2);
+    const diameterY = this.truncateFloat(hexRadius * this.SQRT3);
     return { diameterX, diameterY };
   }
 
@@ -150,19 +241,42 @@ export class LayoutManager {
     return this.truncateFloat(uniformRadius);
   }
 
-  generatePossibleColumnAndRowsSizes(columnAutoSize: boolean, rowAutoSize: boolean, displayLimit: number, dataSize: number) {
+  generatePossibleColumnAndRowsSizes(
+    columnAutoSize: boolean,
+    rowAutoSize: boolean,
+    displayLimit: number,
+    dataSize: number
+  ) {
     if (isNaN(displayLimit) || displayLimit < 0) {
       displayLimit = 100;
     }
     let useLimit = displayLimit;
-    if ((displayLimit === 0) || (displayLimit > dataSize)) {
+    if (displayLimit === 0 || displayLimit > dataSize) {
       useLimit = dataSize;
     }
     if (rowAutoSize && columnAutoSize) {
       if (this.shape === PolygonShapes.RECTANGLE) {
         // Optimal columns for 2:1 bricks: derived from filling panel area with N bricks
         // each of width 2h and height h  →  cols = sqrt(N * panelWidth / (2 * panelHeight))
-        this.numColumns = Math.max(1, Math.ceil(Math.sqrt(useLimit * this.width / (2 * this.height))));
+        this.numColumns = Math.max(1, Math.ceil(Math.sqrt((useLimit * this.width) / (2 * this.height))));
+        if (this.numColumns > useLimit) {
+          this.numColumns = useLimit;
+        }
+        this.numRows = Math.ceil(useLimit / this.numColumns);
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
+      } else if (this.shape === PolygonShapes.HEXAGON_POINTED_TOP) {
+        this.numColumns = this.findOptimalColumns(useLimit, this.width, this.height);
+        if (this.numColumns > useLimit) {
+          this.numColumns = useLimit;
+        }
+        this.numRows = Math.ceil(useLimit / this.numColumns);
+        if (this.numRows < 1) {
+          this.numRows = 1;
+        }
+      } else if (this.shape === PolygonShapes.HEXAGON_FLAT_TOP) {
+        this.numColumns = this.findOptimalColumnsFlatTop(useLimit, this.width, this.height);
         if (this.numColumns > useLimit) {
           this.numColumns = useLimit;
         }
@@ -171,7 +285,7 @@ export class LayoutManager {
           this.numRows = 1;
         }
       } else {
-        // sqrt of # data items
+        // circle / square — keep existing sqrt heuristic unchanged
         const squared = Math.sqrt(useLimit);
         // favor columns when width is greater than height
         // favor rows when width is less than height
@@ -267,7 +381,7 @@ export class LayoutManager {
     }
     const cols = Math.max(1, this.maxColumnsUsed);
     const rows = Math.max(1, this.maxRowsUsed);
-    const byWidth  = this.width / cols;
+    const byWidth = this.width / cols;
     const byHeight = (this.height / rows) * 2;
     return this.truncateFloat(Math.min(byWidth, byHeight));
   }
@@ -295,6 +409,15 @@ export class LayoutManager {
         return [radius * column * 2, radius * row * 2];
       case PolygonShapes.RECTANGLE:
         return [this.getBrickWidth() * column, this.getBrickHeight() * row];
+      case PolygonShapes.HEXAGON_FLAT_TOP: {
+        const fx = radius * column * 1.5;
+        let fy = radius * row * this.SQRT3;
+        // Offset odd columns down by half a hex-height
+        if (column % 2 === 1) {
+          fy += (radius * this.SQRT3) / 2;
+        }
+        return [fx, fy];
+      }
       default:
         return [radius * column * 1.75, radius * row * 1.5];
     }
@@ -331,7 +454,7 @@ export class LayoutManager {
             const aPoint: LayoutPoint = {
               x: coords[0],
               y: coords[1],
-            }
+            };
             points.push(aPoint);
           }
         }
@@ -396,7 +519,10 @@ export class LayoutManager {
     let radius = 0;
     switch (shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
-        radius = this.getHexFlatTopRadius();
+        radius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
+        break;
+      case PolygonShapes.HEXAGON_FLAT_TOP:
+        radius = this.getHexFlatTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
         break;
       case PolygonShapes.CIRCLE:
         radius = this.getUniformRadius();
@@ -410,7 +536,7 @@ export class LayoutManager {
         radius = this.getBrickWidth() / 2;
         break;
       default:
-        radius = this.getHexFlatTopRadius();
+        radius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
         break;
     }
     this.radius = radius;
@@ -433,12 +559,14 @@ export class LayoutManager {
       displayLimit = 100;
     }
     let useLimit = displayLimit;
-    if ((displayLimit === 0) || (displayLimit > dataSize)) {
+    if (displayLimit === 0 || displayLimit > dataSize) {
       useLimit = dataSize;
     }
     switch (shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
         return this.getOffsetsHexagonPointedTop(useLimit);
+      case PolygonShapes.HEXAGON_FLAT_TOP:
+        return this.getOffsetsHexagonFlatTop(useLimit);
       case PolygonShapes.SQUARE:
         return this.getOffsetsSquare(useLimit);
       case PolygonShapes.CIRCLE:
@@ -450,7 +578,7 @@ export class LayoutManager {
         const bH = this.getBrickHeight();
         const usedW = this.maxColumnsUsed * bW;
         const usedH = this.maxRowsUsed * bH;
-        const xoffset = -((this.width  - usedW) / 2);
+        const xoffset = -((this.width - usedW) / 2);
         const yoffset = -((this.height - usedH) / 2);
         return { xoffset, yoffset };
       }
@@ -459,12 +587,9 @@ export class LayoutManager {
     }
   }
 
-  getOffsetsHexagonPointedTop(dataSize: number): any {
-    let hexRadius = d3.min([
-      this.width / ((this.numColumns + 0.5) * this.SQRT3),
-      this.height / ((this.numRows + 1 / 3) * 1.5),
-    ]);
-    hexRadius = this.truncateFloat(hexRadius as number);
+  getOffsetsHexagonPointedTop(dataSize: number): { xoffset: number; yoffset: number } {
+    // Use actual grid dimensions, not the configured max
+    const hexRadius = this.getHexPointedTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
     const shapeWidth = this.truncateFloat(hexRadius * this.SQRT3);
     const shapeHeight = this.truncateFloat(hexRadius * 2);
 
@@ -479,15 +604,40 @@ export class LayoutManager {
     const offsetToViewX = shapeWidth * 0.5;
     // columns have a half-width offset if there are more than 1 rows
     let widthOffset = 0;
-    if (this.numRows > 1) {
+    if (this.maxRowsUsed > 1) {
       // if the dataSize is equal to or larger than the 2*Columns, there is an additional offset needed
       if (dataSize >= this.maxColumnsUsed * 2) {
         widthOffset = 0.5;
       }
     }
-    const actualWidthUsed = (this.numColumns + widthOffset) * shapeWidth;
+    // Use maxColumnsUsed (actual data) not numColumns (configured max)
+    const actualWidthUsed = (this.maxColumnsUsed + widthOffset) * shapeWidth;
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
+    return { xoffset, yoffset };
+  }
+
+  getOffsetsHexagonFlatTop(dataSize: number): { xoffset: number; yoffset: number } {
+    const hexRadius = this.getHexFlatTopRadius(this.maxColumnsUsed, this.maxRowsUsed);
+    const shapeWidth = this.truncateFloat(hexRadius * 2);
+    const shapeHeight = this.truncateFloat(hexRadius * this.SQRT3);
+
+    // X: columns step by 1.5*R; total span = (cols + 1/3) * 1.5 * R
+    const offsetToViewX = shapeWidth * 0.5;
+    const actualWidthUsed = (this.maxColumnsUsed + 1 / 3) * 1.5 * hexRadius;
+    let xoffset = (this.width - actualWidthUsed) / 2;
+    xoffset = -(xoffset + offsetToViewX);
+
+    // Y: odd columns shift rows down by SQRT3*R/2; add half-height if 2+ cols with data
+    const offsetToViewY = shapeHeight * 0.5;
+    let heightOffset = 0;
+    if (this.maxColumnsUsed > 1 && dataSize >= this.maxRowsUsed + 1) {
+      heightOffset = 0.5;
+    }
+    const actualHeightUsed = (this.maxRowsUsed + heightOffset) * shapeHeight;
+    let yoffset = (this.height - actualHeightUsed) / 2;
+    yoffset = -(yoffset + offsetToViewY);
+
     return { xoffset, yoffset };
   }
 
@@ -537,6 +687,8 @@ export class LayoutManager {
   getDiameters(): PolystatDiameters {
     switch (this.shape) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
+        return this.getHexPointedTopDiameters();
+      case PolygonShapes.HEXAGON_FLAT_TOP:
         return this.getHexFlatTopDiameters();
       case PolygonShapes.SQUARE:
         return this.getUniformDiameters();

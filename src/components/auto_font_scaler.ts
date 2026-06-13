@@ -1,6 +1,5 @@
-import { PolystatModel } from "./types";
+import { PolystatModel } from './types';
 import { getTextSizeForWidthAndHeight } from '../utils';
-
 
 export const AutoFontScaler = (
   fontFamily: string,
@@ -80,7 +79,7 @@ export const AutoFontScaler = (
   }
 
   // same for the value and timestamp option, also check for sub metrics size in case of composite
-  let {maxValue, maxTimestamp} = getMaxValueAndTimestamp(data);
+  let { maxValue, maxTimestamp } = getMaxValueAndTimestamp(data);
   //console.log(`AutoFontScaler maxValue ${maxValue}`);
   // assume no timestamp
   let activeValueFontSize = computeTextFontSize(
@@ -102,7 +101,7 @@ export const AutoFontScaler = (
       maxFont,
       2,
       textAreaWidth,
-      (textAreaHeight * 0.67)
+      textAreaHeight * 0.67
     );
   }
   // timestamp shares the same space as the value, but is always smaller
@@ -113,7 +112,7 @@ export const AutoFontScaler = (
     maxFont,
     2,
     textAreaWidth,
-    (textAreaHeight * 0.33)
+    textAreaHeight * 0.33
   );
 
   if (activeTimestampFontSize < minFont) {
@@ -153,7 +152,8 @@ export const AutoFontScaler = (
     activeCompositeValueFontSize,
     activeTimestampFontSize,
     showEllipses,
-    numOfChars };
+    numOfChars,
+  };
 };
 
 /**
@@ -213,7 +213,7 @@ const getMaxValueAndTimestamp = (data: PolystatModel[]) => {
       }
     }
   }
-  return {maxValue, maxTimestamp};
+  return { maxValue, maxTimestamp };
 };
 
 const computeTextFontSize = (
@@ -233,5 +233,5 @@ const computeTextFontSize = (
     minFont,
     maxFont
   );
-  return (computedSize);
+  return computedSize;
 };

@@ -21,7 +21,7 @@ import { SelectableValue } from '@grafana/data';
 import { getMetricHints } from '../metric_hints';
 
 export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
-    const metricHints = useMemo(() => {
+  const metricHints = useMemo(() => {
     let hints: CascaderOption[] = [];
     let allHints = getMetricHints(props.context.data);
     for (const metricName of allHints) {
@@ -201,18 +201,31 @@ export const OverrideItem: React.FC<OverrideItemProps> = (props) => {
               onChange={() => setOverride({ ...override, clickThroughOpenNewTab: !override.clickThroughOpenNewTab })}
             />
           </Field>
-          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!override.enabled} hidden={override.clickThroughOpenNewTab}>
+          <Field
+            label="Enable Custom URL Target"
+            description="Enable custom target"
+            disabled={!override.enabled}
+            hidden={override.clickThroughOpenNewTab}
+          >
             <Switch
               transparent={false}
               value={override.clickThroughCustomTargetEnabled}
               disabled={!override.enabled}
-              onChange={() => setOverride({ ...override,
-                clickThroughCustomTargetEnabled: !override.clickThroughCustomTargetEnabled,
-                clickThroughCustomTarget: override.clickThroughCustomTarget || ''
-              })}
+              onChange={() =>
+                setOverride({
+                  ...override,
+                  clickThroughCustomTargetEnabled: !override.clickThroughCustomTargetEnabled,
+                  clickThroughCustomTarget: override.clickThroughCustomTarget || '',
+                })
+              }
             />
           </Field>
-          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!override.enabled} hidden={!override.clickThroughCustomTargetEnabled}>
+          <Field
+            label="Custom URL Target"
+            description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename"
+            disabled={!override.enabled}
+            hidden={!override.clickThroughCustomTargetEnabled}
+          >
             <Input
               value={override.clickThroughCustomTarget}
               placeholder="_self"
