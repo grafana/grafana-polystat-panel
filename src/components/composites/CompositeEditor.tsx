@@ -253,6 +253,7 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
               <CompositeItem
                 key={`composite-item-index-${item.ID}`}
                 ID={item.ID}
+                index={index}
                 composite={item.composite}
                 enabled={item.composite.enabled}
                 setter={updateComposite}
