@@ -1,0 +1,267 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with one metric 1`] = `
+<table
+  class="css-9iiucf"
+  style="font-family: Inter;"
+>
+  <thead>
+    <tr>
+      <th
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        composite-a
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="css-rmdaym"
+      >
+        Name
+      </th>
+      <th
+        class="css-dp6ifn"
+      >
+        Value
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        2022-10-01 10:28:00 
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        A-series02
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        210.00 MB/s
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with three metrics 1`] = `
+<table
+  class="css-9iiucf"
+  style="font-family: Inter;"
+>
+  <thead>
+    <tr>
+      <th
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        composite-a
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="css-rmdaym"
+      >
+        Name
+      </th>
+      <th
+        class="css-dp6ifn"
+      >
+        Value
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        2022-10-01 10:28:00 
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        A-series02
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        210.00 MB/s
+      </td>
+    </tr>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        C-series01
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        444.0000
+      </td>
+    </tr>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        B-series03
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        510.0000
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Test Tooltips Tooltip Generation returns tooltip for composite metric with two metrics 1`] = `
+<table
+  class="css-9iiucf"
+  style="font-family: Inter;"
+>
+  <thead>
+    <tr>
+      <th
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        composite-a
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="css-rmdaym"
+      >
+        Name
+      </th>
+      <th
+        class="css-dp6ifn"
+      >
+        Value
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        2022-10-01 10:28:00 
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        A-series02
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        210.00 MB/s
+      </td>
+    </tr>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        B-series03
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        510.0000
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;
+
+exports[`Test Tooltips Tooltip Generation returns tooltip for single metric 1`] = `
+<table
+  class="css-9iiucf"
+  style="font-family: Inter;"
+>
+  <thead>
+    <tr>
+      <th
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        composite-a
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="css-rmdaym"
+      >
+        Name
+      </th>
+      <th
+        class="css-dp6ifn"
+      >
+        Value
+      </th>
+    </tr>
+  </thead>
+  <tfoot>
+    <tr>
+      <td
+        class="css-cxgyzm"
+        colspan="2"
+      >
+        2022-10-01 10:28:00 
+      </td>
+    </tr>
+  </tfoot>
+  <tbody>
+    <tr
+      style="color: rgb(10, 85, 161);"
+    >
+      <td
+        class="css-1bpvq0r"
+      >
+        A-series02
+      </td>
+      <td
+        class="css-tydf9p"
+      >
+        210.00 MB/s
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;

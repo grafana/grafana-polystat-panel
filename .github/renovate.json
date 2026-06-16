@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>grafana/grafana-community-team//renovate/renovate"],
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "GitHub Actions",
+      "description": "Group GitHub Actions updates"
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "Grafana dependencies",
+      "description": "Group Grafana dependencies",
+      "matchPackageNames": ["/^@grafana//"]
+    },
+    {
+      "matchManagers": ["npm"],
+      "groupName": "npm dependencies",
+      "description": "Group all other npm dependencies",
+      "matchPackageNames": [
+        "!/^@grafana//",
+        "!/^react$/",
+        "!/^react-dom$/",
+        "!/^@types/react$/",
+        "!/^@types/react-dom$/"
+      ]
+    },
+    {
+      "matchManagers": ["docker-compose"],
+      "groupName": "Docker Compose",
+      "description": "Group Docker Compose updates"
+    }
+  ],
+  "labels": ["dependencies"]
+}

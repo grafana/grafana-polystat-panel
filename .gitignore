@@ -1,0 +1,16 @@
+node_modules
+dist
+provisioning-private
+coverage
+.DS_Store
+.vscode/*.log
+.yarn/install-state.gz
+.eslintcache
+.idea
+.stignore
+blob-report/
+tests/.auth
+tests/.cache/
+playwright/
+playwright-report/
+test-results/
