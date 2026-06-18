@@ -1397,9 +1397,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/eslint-plugin-plugins@npm:0.6.0":
-  version: 0.6.0
-  resolution: "@grafana/eslint-plugin-plugins@npm:0.6.0"
+"@grafana/eslint-plugin-plugins@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@grafana/eslint-plugin-plugins@npm:0.7.0"
   dependencies:
     "@grafana/levitate": "npm:^0.17.0"
     "@typescript-eslint/utils": "npm:^8.23.0"
@@ -1408,7 +1408,7 @@ __metadata:
   peerDependencies:
     "@types/eslint": ^8.56.10 || ^9.0.0
     eslint: ^8.56.0 || ^9.0.0
-  checksum: 10c0/d4a328f010fb008b06d043847ca054452e7061977c992887431be24bd933743904d35beb65f193d4ab0697cfe747d0c53e6c4bf739da94b1eca5b60bd26777f0
+  checksum: 10c0/04e6d5f50804d31dad21e60cd3e9c46f5629a35cd7640bfc9ca3205cacdb4399ef60b56386763de803c7c2890d11e662e794c67ebca69d1a5fd749e39e9f8c4d
   languageName: node
   linkType: hard
 
@@ -8019,7 +8019,7 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@grafana/data": "npm:9.5.21"
     "@grafana/eslint-config": "npm:9.0.0"
-    "@grafana/eslint-plugin-plugins": "npm:0.6.0"
+    "@grafana/eslint-plugin-plugins": "npm:^0.7.0"
     "@grafana/plugin-e2e": "npm:3.8.0"
     "@grafana/plugin-meta-extractor": "npm:0.11.0"
     "@grafana/runtime": "npm:9.5.21"
