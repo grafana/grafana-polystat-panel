@@ -156,6 +156,74 @@ describe('Composite Processor', () => {
       expect(templatedMembers[0].seriesName).toEqual('/API - ProjectA/');
     });
   });
+  describe('Composite clickthrough transforms', () => {
+    const identityReplace: InterpolateFunction = (value: string) => value;
+
+    it('replaces ${__composite_name} in clickthrough', () => {
+      const compositeWithClick: CompositeItemType = {
+        ...compositeA,
+        clickThrough: '/d/test?composite=${__composite_name}',
+      };
+      const applied = ApplyComposites([compositeWithClick], [modelA, modelB], identityReplace, false, 'utc');
+      const matchedItem = applied.find((m) => m.clickThrough.length > 0);
+      expect(matchedItem).toBeDefined();
+      expect(matchedItem!.clickThrough).toContain('composite=composite-a');
+    });
+
+    it('replaces ${__cell_name} in clickthrough', () => {
+      const compositeWithClick: CompositeItemType = {
+        ...compositeA,
+        clickThrough: '/d/test?name=${__cell_name}',
+      };
+      const applied = ApplyComposites([compositeWithClick], [modelA, modelB], identityReplace, false, 'utc');
+      const matchedItems = applied.filter((m) => m.clickThrough.includes('/d/test?name='));
+      expect(matchedItems.length).toBeGreaterThan(0);
+      expect(matchedItems[0].clickThrough).not.toContain('${__cell_name}');
+    });
+
+    it('replaces nth metric placeholders in clickthrough', () => {
+      const compositeWithClick: CompositeItemType = {
+        ...compositeA,
+        clickThrough: '/d/test?name0=${__cell_name_0}&name1=${__cell_name_1}',
+      };
+      const applied = ApplyComposites([compositeWithClick], [modelA, modelB], identityReplace, false, 'utc');
+      const matchedItem = applied.find((m) => m.clickThrough.includes('/d/test?'));
+      expect(matchedItem).toBeDefined();
+      expect(matchedItem!.clickThrough).toContain('name0=A-series');
+      expect(matchedItem!.clickThrough).toContain('name1=B-series');
+    });
+
+    it('sets clickthrough side-effect properties', () => {
+      const compositeWithClick: CompositeItemType = {
+        ...compositeA,
+        clickThrough: '/d/test',
+        clickThroughCustomTargetEnabled: true,
+        clickThroughCustomTarget: '_blank',
+      };
+      const applied = ApplyComposites([compositeWithClick], [modelA, modelB], identityReplace, false, 'utc');
+      const matchedItem = applied.find((m) => m.clickThrough === '/d/test');
+      expect(matchedItem).toBeDefined();
+      expect(matchedItem!.sanitizedURL).toBeDefined();
+      expect(matchedItem!.customClickthroughTargetEnabled).toBe(true);
+      expect(matchedItem!.customClickthroughTarget).toBe('_blank');
+    });
+
+    it('combines composite name, single, and nth transforms', () => {
+      const compositeWithClick: CompositeItemType = {
+        ...compositeA,
+        clickThrough: '/d/test?comp=${__composite_name}&cell=${__cell_name}&nth=${__cell_name_0}',
+      };
+      const applied = ApplyComposites([compositeWithClick], [modelA, modelB], identityReplace, false, 'utc');
+      const matchedItem = applied.find((m) => m.clickThrough.includes('/d/test?'));
+      expect(matchedItem).toBeDefined();
+      expect(matchedItem!.clickThrough).toContain('comp=composite-a');
+      expect(matchedItem!.clickThrough).toContain('nth=A-series');
+      expect(matchedItem!.clickThrough).not.toContain('${__composite_name}');
+      expect(matchedItem!.clickThrough).not.toContain('${__cell_name}');
+      expect(matchedItem!.clickThrough).not.toContain('${__cell_name_0}');
+    });
+  });
+
   describe('Custom Formatter returns expected data', () => {
     it('returns string unchanged', () => {
       const formatted = customFormatter('MetricA');

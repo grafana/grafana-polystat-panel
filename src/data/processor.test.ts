@@ -140,6 +140,7 @@ describe('Main Processor', () => {
     const replaceVariables = (str: string) => {
       return str.replace(/\${machine}/g, 'machineA');
     }
+    const identityReplace = (str: string) => str;
     const globalClickthrough = '/d/dashboard?var-machine=${machine}';
     it('returns polystat model with global clickthrough applied', () => {
       // ensure not set
@@ -166,6 +167,57 @@ describe('Main Processor', () => {
         replaceVariables
         );
       expect(applied[0].clickThrough).toEqual('/d/dashboard-other?var-machine=${machine}');
+    });
+
+    it('replaces ${__cell_name} with encoded series name', () => {
+      const url = processDefaultClickThrough(
+        0,
+        '/d/test?name=${__cell_name}',
+        models,
+        identityReplace
+      );
+      expect(url).toBe('/d/test?name=A-series');
+    });
+
+    it('replaces ${__cell} with encoded formatted value', () => {
+      const url = processDefaultClickThrough(
+        0,
+        '/d/test?val=${__cell}',
+        models,
+        identityReplace
+      );
+      expect(url).toContain('/d/test?val=');
+      expect(url).not.toContain('${__cell}');
+    });
+
+    it('replaces ${__cell:raw} with encoded raw value', () => {
+      const url = processDefaultClickThrough(
+        0,
+        '/d/test?raw=${__cell:raw}',
+        models,
+        identityReplace
+      );
+      expect(url).toBe('/d/test?raw=210');
+    });
+
+    it('replaces nth metric placeholders', () => {
+      const url = processDefaultClickThrough(
+        0,
+        '/d/test?name0=${__cell_name_0}&name1=${__cell_name_1}',
+        models,
+        identityReplace
+      );
+      expect(url).toBe('/d/test?name0=A-series&name1=B-series');
+    });
+
+    it('replaces combined single and nth placeholders', () => {
+      const url = processDefaultClickThrough(
+        0,
+        '/d/test?current=${__cell_name}&other=${__cell_name_1}',
+        models,
+        identityReplace
+      );
+      expect(url).toBe('/d/test?current=A-series&other=B-series');
     });
   });
 });
