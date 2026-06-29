@@ -386,6 +386,10 @@ Flat config (ESLint 9). Common rules applied:
 - ~~`Color` class refactor~~ — Done. Converted to interface + standalone functions. Dead `RGBToHex` removed.
 - Preserve all comments when refactoring. Comments documenting color values, URLs, workarounds, or alternate values
   are intentional — do not strip them during mechanical transforms.
+- `AutoFontScaler` needs Playwright E2E visual regression tests — unit tests verify logic branching but cannot prove
+  font sizes render correctly. Add provisioned dashboard with polystat panels at various sizes and screenshot baselines.
+- `AutoFontScaler` refactor: flatten nested ellipsis cascade (3-deep if/else with repeated `computeTextFontSize` calls)
+  into a loop over `[18, 10, 6]`. Blocked on E2E visual tests above.
 
 ---
 

@@ -12,7 +12,7 @@ import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes, TimestampP
 
 import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
-import { AutoFontScalar } from './auto_font_scaler';
+import { AutoFontScaler } from './auto_font_scaler';
 import { GetAlignments } from './alignment';
 import { getTemplateSrv } from '@grafana/runtime';
 
@@ -290,7 +290,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let hasShowValueEnabled = options.globalShowValueEnabled;
 
   if (options.globalAutoScaleFonts) {
-    const result = AutoFontScalar(
+    const result = AutoFontScaler(
       options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
