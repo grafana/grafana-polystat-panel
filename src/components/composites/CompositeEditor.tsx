@@ -206,7 +206,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
       <FieldSet>
         <Field label="Enable Composites" description="Enable/Disable Composites Globally">
           <Switch
-            transparent={true}
             value={settings.enabled}
             onChange={(e: any) => {
               const newSettings = {...settings};
@@ -248,7 +247,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
               label={item.composite.name}
               isOpen={isOpen[index]}
               onToggle={() => toggleOpener(index)}
-              collapsible
             >
               <CompositeItem
                 key={`composite-item-index-${item.ID}`}
