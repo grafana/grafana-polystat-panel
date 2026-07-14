@@ -46,6 +46,7 @@ export interface CompositeItemTracker {
 export interface CompositeItemProps {
   composite: CompositeItemType;
   ID: string;
+  index: number;
   enabled: boolean;
   setter: any;
   remover: any;

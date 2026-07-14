@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { PanelProps, GrafanaTheme2, LoadingState } from '@grafana/data';
 import { PolystatOptions, PolystatModel } from './types';
@@ -32,43 +32,40 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
   const styles = useStyles2(getComponentStyles);
   const currentThemeV1 = useTheme(); // V8
   const currentThemeV2 = useTheme2(); // V9+
-  let [cachedProcessedData, setCachedProcessedData] = useState<PolystatModel[]>();
-  useEffect(() => {
-    if (data.state === LoadingState.Done) {
-      // each series is a converted to a model we can use
-      const processedData = ProcessDataFrames(
-        options.compositeConfig.enabled,
-        options.compositeConfig.composites,
-        options.overrideConfig.overrides,
-        data,
-        replaceVariables,
-        fieldConfig,
-        options.globalClickthrough,
-        options.globalClickthroughNewTabEnabled,
-        options.globalClickthroughSanitizedEnabled,
-        options.globalClickthroughCustomTargetEnabled,
-        options.globalClickthroughCustomTarget,
-        options.globalOperator,
-        options.globalDecimals,
-        options.globalDisplayMode,
-        options.globalRegexPattern,
-        options.globalFillColor,
-        options.globalThresholdsConfig,
-        options.globalUnitFormat,
-        true, // TODO: future configurable global option to not display label
-        options.globalShowValueEnabled,
-        options.globalShowTimestampEnabled,
-        options.globalShowTimestampFormat,
-        options.sortByDirection,
-        options.sortByField,
-        options.compositeGlobalAliasingEnabled,
-        timeZone,
-        currentThemeV1,
-        currentThemeV2,
-      );
-      setCachedProcessedData(processedData);
-
+  const cachedProcessedData = useMemo<PolystatModel[] | undefined>(() => {
+    if (data.state !== LoadingState.Done) {
+      return undefined;
     }
+    return ProcessDataFrames(
+      options.compositeConfig.enabled,
+      options.compositeConfig.composites,
+      options.overrideConfig.overrides,
+      data,
+      replaceVariables,
+      fieldConfig,
+      options.globalClickthrough,
+      options.globalClickthroughNewTabEnabled,
+      options.globalClickthroughSanitizedEnabled,
+      options.globalClickthroughCustomTargetEnabled,
+      options.globalClickthroughCustomTarget,
+      options.globalOperator,
+      options.globalDecimals,
+      options.globalDisplayMode,
+      options.globalRegexPattern,
+      options.globalFillColor,
+      options.globalThresholdsConfig,
+      options.globalUnitFormat,
+      true, // TODO: future configurable global option to not display label
+      options.globalShowValueEnabled,
+      options.globalShowTimestampEnabled,
+      options.globalShowTimestampFormat,
+      options.sortByDirection,
+      options.sortByField,
+      options.compositeGlobalAliasingEnabled,
+      timeZone,
+      currentThemeV1,
+      currentThemeV2,
+    );
   }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2, timeZone]);
 
   if (cachedProcessedData === undefined) {

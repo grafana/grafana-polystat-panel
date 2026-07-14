@@ -91,6 +91,7 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
             <Input
               value={composite.name}
               placeholder=""
+              data-testid={`composite-name-input-${props.index}`}
               onChange={(e) => setComposite({ ...composite, name: e.currentTarget.value })}
             />
           </Field>

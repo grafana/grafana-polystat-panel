@@ -2,6 +2,22 @@
 
 ## Entries
 
+## [Unreleased]
+
+### Project Updates
+
+- Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width
+- Add `.markdownlint-cli2.yaml` config with 120-char line limit
+- Fix long lines in CHANGELOG.md for markdownlint compliance
+- Add cspell dictionary words: Agentic, funcs, negotiables, unrequested
+- Fix pre-commit checklist to use `yarn` instead of `npm run`
+- Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
+  Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
+- Tighten ambiguous AGENTS.md rules: concrete 20-line threshold, stronger subagent directive, clarify
+  console.log as legacy pattern
+- Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
+- Add test-results and provisioning to markdownlint ignores
+
 ## v2.1.16
 
 - New docs now available!
@@ -23,7 +39,8 @@
 
 ## v2.1.14
 
-- Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This feature now requires an exact match instead of a wildcard.
+- Fix for auto-generation of composites. Depending on the format of metric names some groupings overlapped. This
+  feature now requires an exact match instead of a wildcard.
 - Fixes [#425](https://github.com/grafana/grafana-polystat-panel/issues/425)
 - Fixes [[#426](https://github.com/grafana/grafana-polystat-panel/issues/426)]
 - Minimum version of Grafana is now v9.5 due to API changes
@@ -35,7 +52,9 @@
 
 ## v2.1.12
 
-- Fix for runtime differences causing parsing errors [#387](https://github.com/grafana/grafana-polystat-panel/issues/387) and [#389](https://github.com/grafana/grafana-polystat-panel/issues/389)
+- Fix for runtime differences causing parsing errors
+  [#387](https://github.com/grafana/grafana-polystat-panel/issues/387) and
+  [#389](https://github.com/grafana/grafana-polystat-panel/issues/389)
 
 ## v2.1.11
 
@@ -80,8 +99,11 @@
 - Fix tooltips being displayed from wrong panel [#314](https://github.com/grafana/grafana-polystat-panel/issues/314) [#315](https://github.com/grafana/grafana-polystat-panel/issues/315)
 - Fix ellipses showing when they are not needed [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
 - Fix alignment based on shape [#322](https://github.com/grafana/grafana-polystat-panel/issues/322)
-  - When autoSizeRows or autoSizeColumns are disabled, the placement will be centered based on actual number of polygons rendered
-- NEW: Clickthrough target can be customized, allowing better behavior in Scene-based apps. [#316](https://github.com/grafana/grafana-polystat-panel/issues/316).  Set "open in new tab" to off to use this new setting.
+  - When autoSizeRows or autoSizeColumns are disabled, the placement will be centered based on actual number of
+    polygons rendered
+- NEW: Clickthrough target can be customized, allowing better behavior in Scene-based apps.
+  [#316](https://github.com/grafana/grafana-polystat-panel/issues/316). Set "open in new tab" to off to use this
+  new setting.
 
 ## v2.1.3
 
@@ -136,10 +158,13 @@
 ## v2.0.4
 
 - Fix for Issue #242 (wide data conversion)
-    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model did not handle this scenario.
-    This is seen with CSV Content and other datasources.  This fix will detect wide data received in this format and convert as expected.
+    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model
+    did not handle this scenario. This is seen with CSV Content and other datasources. This fix will detect wide
+    data received in this format and convert as expected.
 - Fix for Issue #247 (composite template variables)
-    Advanced use of template variables in composites were not functioning as intended. Composites can once again use template variables as the composite name, and reference the composite name inside the list of member metrics.
+    Advanced use of template variables in composites were not functioning as intended. Composites can once again
+    use template variables as the composite name, and reference the composite name inside the list of member
+    metrics.
 - Metric Hints in composites and overrides are now displaying correctly
 - Override Editor buttons are now left aligned for easier access and visibility
 - Composite Editor buttons are also left aligned, and are now visible

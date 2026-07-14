@@ -73,4 +73,57 @@ describe('Test Overrides', () => {
       expect(modified.color).toBe('#ffffff');
     });
   });
+
+  describe('Override clickthrough transforms', () => {
+    const fieldConfig: FieldConfigSource<any> = {
+      defaults: { mappings: [] },
+      overrides: [],
+    };
+
+    it('replaces ${__cell_name} in override clickthrough', () => {
+      const overrideWithClick: OverrideItemType = {
+        ...overrideA,
+        clickThrough: '/d/test?name=${__cell_name}',
+      };
+      const { result } = renderHook(() =>
+        ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+      );
+      const applied = result.all[0] as PolystatModel[];
+      expect(applied[0].clickThrough).toBe('/d/test?name=A-series');
+    });
+
+    it('applies transformByRegex with capture groups', () => {
+      const overrideWithRegex: OverrideItemType = {
+        ...overrideA,
+        metricName: '/(A)-(series)/',
+        clickThrough: '/d/test?full=${0}&prefix=${1}&suffix=${2}',
+      };
+      const { result } = renderHook(() =>
+        ApplyOverrides([overrideWithRegex], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+      );
+      const applied = result.all[0] as PolystatModel[];
+      expect(applied[0].clickThrough).toBe('/d/test?full=A-series&prefix=A&suffix=series');
+    });
+
+    it('sets clickthrough side-effect properties', () => {
+      const overrideWithClick: OverrideItemType = {
+        ...overrideA,
+        clickThrough: '/d/test',
+        clickThroughOpenNewTab: true,
+        clickThroughSanitize: true,
+        clickThroughCustomTargetEnabled: true,
+        clickThroughCustomTarget: '_self',
+      };
+      const { result } = renderHook(() =>
+        ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+      );
+      const applied = result.all[0] as PolystatModel[];
+      expect(applied[0].clickThrough).toBe('/d/test');
+      expect(applied[0].newTabEnabled).toBe(true);
+      expect(applied[0].sanitizeURLEnabled).toBe(true);
+      expect(applied[0].customClickthroughTargetEnabled).toBe(true);
+      expect(applied[0].customClickthroughTarget).toBe('_self');
+      expect(applied[0].sanitizedURL).toBeDefined();
+    });
+  });
 });

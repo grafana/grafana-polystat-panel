@@ -37,9 +37,7 @@ export const Tooltip = ({
   const styles = useStyles2(getTooltipStyles);
 
   // check for timestamp in data, override renderTime when present
-  if (data?.timestamp) {
-    renderTime = new Date(data?.timestamp);
-  }
+  const effectiveRenderTime = data?.timestamp ? new Date(data.timestamp) : renderTime;
   /* the name of the composite is shown at the top */
   const getCompositeHeader = (data: PolystatModel | null) => {
     if (data && data.members && data.members.length === 0) {
@@ -162,7 +160,7 @@ export const Tooltip = ({
           {showTime && (
             <tr>
               <td className={styles.tooltipTime} colSpan={2}>
-                {dateTimeFormatWithAbbrevation(renderTime)}
+                {dateTimeFormatWithAbbrevation(effectiveRenderTime)}
               </td>
             </tr>
           )}
