@@ -63,7 +63,7 @@ describe('Test Gradients', () => {
       );
       const stops = container.querySelectorAll('linearGradient#rgba_linear_gradient_state_data_0 stop');
       expect(stops.length).toBe(2);
-      // rgba gets converted through rgbaToHex → fromHex pipeline
+      // rgba gets converted through normalizeToHex → darken pipeline
       expect(stops[0].getAttribute('stop-color')).toBeDefined();
       expect(stops[1].getAttribute('stop-color')).toBeDefined();
       // start color should match the input

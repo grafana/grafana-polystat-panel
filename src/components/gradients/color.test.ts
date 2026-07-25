@@ -9,6 +9,9 @@ describe('normalizeToHex', () => {
     ['returns hex input unchanged', '#ed8128', '#ed8128'],
     ['converts rgba with full alpha to hex', 'rgba(41, 156, 70, 1)', '#299c46'],
     ['converts rgba with full alpha to hex for critical color', 'rgba(245, 54, 54, 1)', '#f53636'],
+    // colorManipulator.asHexString rounds the alpha byte differently than the old Color.RGBAToHex
+    // (which produced '#ed8128e2' for this input) — 1-unit alpha drift, accepted as visually negligible.
+    ['converts rgba with partial alpha to 8-digit hex', 'rgba(237, 129, 40, 0.89)', '#ed8128e3'],
   ])('%s', (_name, input, expected) => {
     expect(normalizeToHex(input)).toBe(expected);
   });
