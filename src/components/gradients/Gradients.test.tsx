@@ -23,7 +23,7 @@ describe('Test Gradients', () => {
   });
 
   describe('Data-driven gradients', () => {
-    it('renders gradient defs for each data item', () => {
+    it('renders one gradient per data item', () => {
       const data = [
         { color: '#ed8128' },
         { color: 'rgba(245, 54, 54, 1)' },

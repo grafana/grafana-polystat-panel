@@ -6,16 +6,10 @@
 */
 import { colorManipulator } from '@grafana/data';
 
-/**
- * Normalizes any CSS color (hex, rgb, rgba) to a hex string.
- */
 export function normalizeToHex(color: string): string {
   return colorManipulator.asHexString(color);
 }
 
-/**
- * Darkens a hex color by scaling each RGB channel by `factor` (0-1).
- */
 export function darken(hex: string, factor: number): string {
   let parts;
   try {
