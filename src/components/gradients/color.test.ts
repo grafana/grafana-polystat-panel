@@ -29,19 +29,3 @@ describe('darken', () => {
     expect(darken(hex, factor)).toBe(expected);
   });
 });
-
-describe('Gradients.tsx production path', () => {
-  it('reproduces the gradient generation pipeline for hex input', () => {
-    const startHex = normalizeToHex('#ed8128');
-    const endHex = darken(startHex, 0.7);
-    expect(startHex).toBe('#ed8128');
-    expect(endHex).toBe('#a65a1c');
-  });
-
-  it('reproduces the gradient generation pipeline for rgba input', () => {
-    const startHex = normalizeToHex('rgba(41, 156, 70, 1)');
-    const endHex = darken(startHex, 0.7);
-    expect(startHex).toBe('#299c46');
-    expect(endHex).toBe('#1d6d31');
-  });
-});

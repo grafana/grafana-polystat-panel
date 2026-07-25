@@ -26,6 +26,8 @@ export function darken(hex: string, factor: number): string {
   if (parts.type.indexOf('rgb') === -1) {
     return hex;
   }
-  const values = parts.values.map((value: number, index: number) => (index < 3 ? Math.round(value * factor) : value));
-  return colorManipulator.asHexString(colorManipulator.recomposeColor({ ...parts, values }));
+  for (let i = 0; i < 3; i++) {
+    parts.values[i] = Math.round(parts.values[i] * factor);
+  }
+  return colorManipulator.asHexString(colorManipulator.recomposeColor(parts));
 }
