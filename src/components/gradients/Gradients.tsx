@@ -1,15 +1,15 @@
-import { DEFAULT_CRITICAL_COLOR, DEFAULT_OK_COLOR, DEFAULT_WARNING_COLOR } from '../defaults';
+import { DEFAULT_CRITICAL_COLOR_HEX, DEFAULT_OK_COLOR_HEX, DEFAULT_WARNING_COLOR_HEX } from '../defaults';
 import React, { useMemo } from 'react';
 
-import { createColor, fromHex, rgbaToHex, asHex, mul } from './color';
+import { normalizeToHex, darken } from './color';
 
-const PURE_LIGHT = createColor(255, 255, 255);
-const OK_COLOR_END_HEX = asHex(mul(DEFAULT_OK_COLOR, PURE_LIGHT, 0.7)); // '#299c46' darkened
-const WARNING_COLOR_END_HEX = asHex(mul(DEFAULT_WARNING_COLOR, PURE_LIGHT, 0.7)); // '#ed8128' darkened
-const CRITICAL_COLOR_END_HEX = asHex(mul(DEFAULT_CRITICAL_COLOR, PURE_LIGHT, 0.7)); // '#f53636' darkened
-const OK_COLOR_START_HEX = asHex(DEFAULT_OK_COLOR); // '#299c46', // "rgba(50, 172, 45, 1)", // green
-const WARNING_COLOR_START_HEX = asHex(DEFAULT_WARNING_COLOR); // #FFC837 // '#e5ac0e', // "rgba(237, 129, 40, 1)", // yellow
-const CRITICAL_COLOR_START_HEX = asHex(DEFAULT_CRITICAL_COLOR); // #e52d27 // '#bf1b00', // "rgba(245, 54, 54, 1)", // red
+const DARKEN_FACTOR = 0.7;
+const OK_COLOR_END_HEX = darken(DEFAULT_OK_COLOR_HEX, DARKEN_FACTOR); // '#299c46' darkened
+const WARNING_COLOR_END_HEX = darken(DEFAULT_WARNING_COLOR_HEX, DARKEN_FACTOR); // '#ed8128' darkened
+const CRITICAL_COLOR_END_HEX = darken(DEFAULT_CRITICAL_COLOR_HEX, DARKEN_FACTOR); // '#f53636' darkened
+const OK_COLOR_START_HEX = DEFAULT_OK_COLOR_HEX; // '#299c46', // "rgba(50, 172, 45, 1)", // green
+const WARNING_COLOR_START_HEX = DEFAULT_WARNING_COLOR_HEX; // #FFC837 // '#e5ac0e', // "rgba(237, 129, 40, 1)", // yellow
+const CRITICAL_COLOR_START_HEX = DEFAULT_CRITICAL_COLOR_HEX; // #e52d27 // '#bf1b00', // "rgba(245, 54, 54, 1)", // red
 
 export interface GradientProps {
   data: any;
@@ -19,14 +19,10 @@ export const Gradients: React.FC<GradientProps> = (options) => {
   const colorGradients = useMemo(() => {
     const gradients = [];
     for (let i = 0; i < options.data.length; i++) {
-      // color can be in hex or in rgb
-      let useColor: string = options.data[i].color;
-      if (useColor.startsWith('rgba')) {
-        useColor = rgbaToHex(useColor);
-      }
-      const aColorStart = fromHex(useColor);
-      const aColorEnd = mul(aColorStart, PURE_LIGHT, 0.7);
-      gradients.push({ start: asHex(aColorStart), end: asHex(aColorEnd) });
+      // color can be in hex or in rgb(a)
+      const startHex = normalizeToHex(options.data[i].color);
+      const endHex = darken(startHex, DARKEN_FACTOR);
+      gradients.push({ start: startHex, end: endHex });
     }
     return gradients;
   }, [options.data]);

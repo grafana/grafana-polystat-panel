@@ -4,62 +4,28 @@
   Based on https://codepen.io/anon/pen/wWxGkr
 
 */
-export interface Color {
-  r: number;
-  g: number;
-  b: number;
+import { colorManipulator } from '@grafana/data';
+
+const HEX_CHANNEL_RE = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i;
+
+/**
+ * Normalizes any CSS color (hex, rgb, rgba) to a hex string.
+ */
+export function normalizeToHex(color: string): string {
+  return colorManipulator.asHexString(color);
 }
 
-export function createColor(r: number, g: number, b: number): Color {
-  return { r, g, b };
-}
-
-export function asHex(c: Color): string {
-  return '#' + ((1 << 24) + (c.r << 16) + (c.g << 8) + c.b).toString(16).slice(1);
-}
-
-export function asRGB(c: Color): string {
-  return 'rgb(' + c.r + ',' + c.g + ',' + c.b + ')';
-}
-
-export function blendWith(c: Color, col: Color, a: number): Color {
-  const r = Math.round(col.r * (1 - a) + c.r * a);
-  const g = Math.round(col.g * (1 - a) + c.g * a);
-  const b = Math.round(col.b * (1 - a) + c.b * a);
-  return { r, g, b };
-}
-
-export function mul(c: Color, col: Color, a: number): Color {
-  const r = Math.round((col.r / 255) * c.r * a);
-  const g = Math.round((col.g / 255) * c.g * a);
-  const b = Math.round((col.b / 255) * c.b * a);
-  return { r, g, b };
-}
-
-// http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-export function fromHex(hex: string): Color {
-  hex = hex.substring(1, 7);
-  const bigint = parseInt(hex, 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return { r, g, b };
-}
-
-export function rgbaToHex(orig: string): string {
-  const rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+),?([^,\s)]+)?/i);
-  const alpha = ((rgb && rgb[4]) || '').trim();
-  let hex = rgb
-    ? (parseInt(rgb[1], 10) | (1 << 8)).toString(16).slice(1) +
-      (parseInt(rgb[2], 10) | (1 << 8)).toString(16).slice(1) +
-      (parseInt(rgb[3], 10) | (1 << 8)).toString(16).slice(1)
-    : orig;
-
-  let a = '1';
-  if (alpha !== '') {
-    const alphaVal = parseFloat(alpha);
-    // multiply before convert to HEX
-    a = ((alphaVal * 255) | (1 << 8)).toString(16).slice(1);
+/**
+ * Darkens a hex color by scaling each RGB channel by `factor` (0-1).
+ */
+export function darken(hex: string, factor: number): string {
+  const match = HEX_CHANNEL_RE.exec(hex);
+  if (!match) {
+    return hex;
   }
-  return '#' + hex + a;
+  const [, rHex, gHex, bHex] = match;
+  const r = Math.round(parseInt(rHex, 16) * factor);
+  const g = Math.round(parseInt(gHex, 16) * factor);
+  const b = Math.round(parseInt(bHex, 16) * factor);
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
