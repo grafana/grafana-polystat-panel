@@ -24,6 +24,7 @@ describe('darken', () => {
     ['black unchanged', '#000000', 0.7, '#000000'],
     ['white unchanged at factor 1', '#ffffff', 1, '#ffffff'],
     ['invalid color unchanged', 'not-a-color', 0.7, 'not-a-color'],
+    ['non-rgb color unchanged', 'hsl(120, 100%, 50%)', 0.7, 'hsl(120, 100%, 50%)'],
   ])('%s', (_name, hex, factor, expected) => {
     expect(darken(hex, factor)).toBe(expected);
   });
