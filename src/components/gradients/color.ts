@@ -18,7 +18,7 @@ export function darken(hex: string, factor: number): string {
   } catch {
     return hex;
   }
-  if (parts.type.indexOf('rgb') === -1) {
+  if (!parts.type.startsWith('rgb')) {
     return hex;
   }
   for (let i = 0; i < 3; i++) {
