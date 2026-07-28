@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Test Gradients Gradient Generation returns set of gradients 1`] = `"<svg><defs></defs></svg>"`;
