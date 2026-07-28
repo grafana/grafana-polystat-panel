@@ -51,4 +51,16 @@ describe('Test Gradients', () => {
     expect(stops[0].getAttribute('stop-color')).toBe('#299c46');
     expect(stops[1].getAttribute('stop-color')).toBe('#1d6d31');
   });
+
+  it('keeps partial alpha on both stops', () => {
+    const data = [{ color: 'rgba(245, 54, 54, 0.5)' }];
+    const { container } = render(
+      <svg>
+        <Gradients data={data} gradientId="alpha" />
+      </svg>
+    );
+    const stops = container.querySelectorAll('linearGradient#alpha_linear_gradient_state_data_0 stop');
+    expect(stops[0].getAttribute('stop-color')).toBe('#f5363680');
+    expect(stops[1].getAttribute('stop-color')).toBe('#ac262680');
+  });
 });

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
+import { colorManipulator } from '@grafana/data';
 
-import { normalizeToHex, darken } from './color';
+import { darken } from './color';
 
 const DARKEN_FACTOR = 0.7;
 
@@ -12,7 +13,7 @@ export const Gradients: React.FC<GradientProps> = (options) => {
   const colorGradients = useMemo(() => {
     // color can be in hex or in rgb(a)
     return options.data.map((item: any) => {
-      const startHex = normalizeToHex(item.color);
+      const startHex = colorManipulator.asHexString(item.color);
       return { start: startHex, end: darken(startHex, DARKEN_FACTOR) };
     });
   }, [options.data]);
