@@ -1,5 +1,8 @@
 import { PolystatModel } from '../components/types';
 
+// fixtures share one fixed instant so anything rendering a timestamp stays deterministic
+export const FIXTURE_TIMESTAMP = new Date('01 October 2022 10:28 UTC').getTime();
+
 /**
  * Builds a PolystatModel without going through a DataFrame, for tests that need to set
  * individual fields. Defaults are neutral, override whatever the test is about.
@@ -13,7 +16,7 @@ export const createPolystatModel = (overrides: Partial<PolystatModel> = {}): Pol
   stats: {},
   name: 'metric',
   displayName: 'metric',
-  timestamp: Date.now(),
+  timestamp: FIXTURE_TIMESTAMP,
   timestampFormatted: '',
   prefix: '',
   suffix: '',

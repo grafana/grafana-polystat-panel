@@ -1,13 +1,14 @@
 import { FieldConfig, FieldType, toDataFrame } from '@grafana/data';
 import { DataFrameToPolystat } from '../data/processor';
 import { PolystatModel } from '../components/types';
+import { FIXTURE_TIMESTAMP } from './factory';
 
 const field: FieldConfig = {
   decimals: 2,
   unit: 'MBs',
 };
 
-const time = new Date('01 October 2022 10:28 UTC').getTime();
+const time = FIXTURE_TIMESTAMP;
 //
 const frameA = toDataFrame({
   fields: [
