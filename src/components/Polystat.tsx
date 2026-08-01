@@ -288,14 +288,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let hasShowValueEnabled = options.globalShowValueEnabled;
 
   if (options.globalAutoScaleFonts) {
-    const result = AutoFontScaler(
-      options.globalTextFontFamily,
+    const result = AutoFontScaler({
+      fontFamily: options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
-      hasShowValueEnabled,
-      hasShowTimeStampEnabled,
-      options.processedData!
-    );
+      valueEnabled: hasShowValueEnabled,
+      showTimestamp: hasShowTimeStampEnabled,
+      data: options.processedData!,
+    });
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
     activeCompositeValueFontSize = result.activeCompositeValueFontSize;

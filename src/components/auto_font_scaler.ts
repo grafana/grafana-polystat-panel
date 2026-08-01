@@ -3,14 +3,23 @@ import { getTextSizeForWidthAndHeight } from '../utils';
 import { ELLIPSIS } from './defaults';
 
 
-export const AutoFontScaler = (
-  fontFamily: string,
-  textAreaWidth: number,
-  textAreaHeight: number,
-  valueEnabled: boolean,
-  showTimestamp: boolean,
-  data: PolystatModel[]
-) => {
+export interface AutoFontScalerOptions {
+  fontFamily: string;
+  textAreaWidth: number;
+  textAreaHeight: number;
+  valueEnabled: boolean;
+  showTimestamp: boolean;
+  data: PolystatModel[];
+}
+
+export const AutoFontScaler = ({
+  fontFamily,
+  textAreaWidth,
+  textAreaHeight,
+  valueEnabled,
+  showTimestamp,
+  data,
+}: AutoFontScalerOptions) => {
   // TODO: 6 is VERY small, perhaps 10 as a min?
   // A hint from the config could be used (max characters)
   const minFont = 6;
