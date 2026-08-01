@@ -73,7 +73,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
         if (animationRefs[index].current.innerHTML !== null) {
-          // eslint-disable-next-line react-hooks/immutability
           animationRefs[index].current.innerHTML = val;
         }
       }
@@ -82,7 +81,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
         if (animationTimestampRefs[index].current.innerHTML !== null) {
-          // eslint-disable-next-line react-hooks/immutability
           animationTimestampRefs[index].current.innerHTML = ts;
         }
       }
@@ -125,7 +123,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // check array content equality
     if (JSON.stringify(animatedItems) !== JSON.stringify(animate)) {
       if (options.processedData) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         updateAnimation(options.processedData);
         setAnimatedItems(animate);
       }

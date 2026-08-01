@@ -1,78 +1,28 @@
 /*
-  Generic class to provide gradient colors
+  Generic module to provide gradient colors
 
   Based on https://codepen.io/anon/pen/wWxGkr
 
 */
-export class Color {
-  r: number;
-  g: number;
-  b: number;
+import { colorManipulator } from '@grafana/data';
 
-  constructor(r: number, g: number, b: number) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
+/**
+ * Scales each RGB channel by factor, rounding to nearest. Not colorManipulator.darken(),
+ * which truncates and shifts every channel by 1 (#299c46 becomes #1c6d31, not #1d6d31).
+ * Alpha is carried through untouched.
+ */
+export function darken(hex: string, factor: number): string {
+  let parts;
+  try {
+    parts = colorManipulator.decomposeColor(hex);
+  } catch {
+    return hex;
   }
-
-  asHex() {
-    return '#' + ((1 << 24) + (this.r << 16) + (this.g << 8) + this.b).toString(16).slice(1);
+  if (!parts.type.startsWith('rgb')) {
+    return hex;
   }
-
-  asRGB() {
-    return 'rgb(' + this.r + ',' + this.g + ',' + this.b + ')';
+  for (let i = 0; i < 3; i++) {
+    parts.values[i] = Math.round(parts.values[i] * factor);
   }
-
-  blendWith(col: Color, a: number) {
-    const r = Math.round(col.r * (1 - a) + this.r * a);
-    const g = Math.round(col.g * (1 - a) + this.g * a);
-    const b = Math.round(col.b * (1 - a) + this.b * a);
-    return new Color(r, g, b);
-  }
-
-  Mul(col: Color, a: number) {
-    const r = Math.round((col.r / 255) * this.r * a);
-    const g = Math.round((col.g / 255) * this.g * a);
-    const b = Math.round((col.b / 255) * this.b * a);
-    return new Color(r, g, b);
-  }
-
-  RGBToHex(rgb: any) {
-    let sep = rgb.indexOf(',') > -1 ? ',' : ' ';
-    rgb = rgb.substr(4).split(')')[0].split(sep);
-    // Convert %s to 0–255
-    for (let R in rgb) {
-      let r = rgb[R];
-      if (r.indexOf('%') > -1) {
-        rgb[R] = Math.round((r.substr(0, r.length - 1) / 100) * 255);
-      }
-    }
-  }
-
-  static RGBAToHex(orig: string) {
-    const rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+),?([^,\s)]+)?/i);
-    const alpha = ((rgb && rgb[4]) || '').trim();
-    let hex = rgb
-      ? (parseInt(rgb[1], 10) | (1 << 8)).toString(16).slice(1) +
-        (parseInt(rgb[2], 10) | (1 << 8)).toString(16).slice(1) +
-        (parseInt(rgb[3], 10) | (1 << 8)).toString(16).slice(1)
-      : orig;
-
-    let a = '1';
-    if (alpha !== '') {
-      const alphaVal = parseFloat(alpha);
-      // multiply before convert to HEX
-      a = ((alphaVal * 255) | (1 << 8)).toString(16).slice(1);
-    }
-    return '#' + hex + a;
-  }
-
-  fromHex(hex: string) {
-    // http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-    hex = hex.substring(1, 7);
-    const bigint = parseInt(hex, 16);
-    this.r = (bigint >> 16) & 255;
-    this.g = (bigint >> 8) & 255;
-    this.b = bigint & 255;
-  }
+  return colorManipulator.asHexString(colorManipulator.recomposeColor(parts));
 }
