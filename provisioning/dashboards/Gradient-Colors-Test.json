@@ -1,0 +1,51 @@
+{
+  "uid": "gradient-colors-test",
+  "title": "Gradient Colors Test",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "grafana-polystat-panel",
+      "title": "Default colors, gradients on",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "globalGradientsEnabled": true
+      },
+      "datasource": {
+        "type": "datasource",
+        "uid": "grafana"
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "randomWalk",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "randomWalk",
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "datasource",
+            "uid": "grafana"
+          },
+          "queryType": "randomWalk",
+          "refId": "C"
+        }
+      ]
+    }
+  ]
+}
