@@ -35,10 +35,9 @@ test('label font size shrinks with the polygon, and labels too long to fit are t
   // identical text in a narrower polygon has to be drawn smaller
   expect(narrow.fontSize).toBeLessThan(wide.fontSize);
 
-  // Polystat renders substring(0, numOfChars) + '...', so the painted text is a genuine prefix of
-  // the metric name followed by an ellipsis, cut at one of the cascade lengths
-  expect(tooLong.text.endsWith('...')).toBe(true);
-  const shown = tooLong.text.slice(0, -'...'.length);
-  expect(LONG_LABEL.startsWith(shown)).toBe(true);
-  expect([6, 10, 18]).toContain(shown.length);
+  // Polystat renders substring(0, numOfChars) + '...'. The viewport is pinned by Desktop Chrome, so
+  // the panel geometry is fixed and the cascade settles on the first rung: 18 characters, painting
+  // 21. Asserting the exact string pins which rung fired — a shorter rung means the font search
+  // changed, which is the regression worth catching.
+  expect(tooLong.text).toBe(LONG_LABEL.slice(0, 18) + '...');
 });
