@@ -1,8 +1,8 @@
 import { FontFamilies } from './types';
 
 /**
- * Appended to a truncated label. AutoFontScaler sizes the label for these characters too,
- * so both sides have to agree on the length.
+ * Appended to a label that Polystat has truncated. When fonts are auto-scaled, AutoFontScaler
+ * also sizes the label for these characters, so both sides have to agree on the length.
  */
 export const ELLIPSIS = '...';
 

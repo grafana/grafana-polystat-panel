@@ -1,4 +1,4 @@
-import { ShowTimestampFormats } from 'components/types';
+import { ShowTimestampFormats } from '../components/types';
 import { CompositeItemType } from '../components/composites/types';
 
 export const compositeA: CompositeItemType = {

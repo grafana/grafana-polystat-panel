@@ -1,7 +1,6 @@
 import { expect, test } from '@grafana/plugin-e2e';
 import type { Page } from '@playwright/test';
 
-import { ELLIPSIS } from '../../../src/components/defaults';
 import { gotoProvisionedDashboard, RENDER_TIMEOUT } from './helpers';
 
 // Checks AutoFontScaler against real browser text metrics. The unit tests mock measureText, so they
@@ -38,8 +37,9 @@ test('a label too long to fit is truncated at a cascade length', async ({ page }
   const tooLong = await readText(page, 'polystat-label-3-0');
 
   // Desktop Chrome pins the viewport, so the panel geometry is fixed and the cascade always settles
-  // on the first rung. Asserting the exact string pins which rung fired.
-  expect(tooLong.text).toBe(LONG_LABEL.slice(0, 18) + ELLIPSIS);
+  // on the first rung. Asserting the exact string pins which rung fired. The '...' is written out
+  // rather than imported from src, so this stays a black box check of what the browser painted.
+  expect(tooLong.text).toBe(LONG_LABEL.slice(0, 18) + '...');
   expect(tooLong.fontSize).toBeGreaterThan(0);
 });
 
