@@ -146,14 +146,12 @@ export const AutoFontScaler = ({
   let activeCompositeValueFontSize = activeValueFontSize;
   let haveCompositeValueEnabled = false;
   // check if there are any composites with value enabled
-  if (data) {
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      if (item.isComposite && item.showValue) {
-        // at least one composite has showValue set
-        haveCompositeValueEnabled = true;
-        break;
-      }
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    if (item.isComposite && item.showValue) {
+      // at least one composite has showValue set
+      haveCompositeValueEnabled = true;
+      break;
     }
   }
   if (!valueEnabled) {
