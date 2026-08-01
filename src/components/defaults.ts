@@ -1,6 +1,12 @@
 import { FontFamilies } from './types';
 
 /**
+ * Appended to a label that has been truncated. AutoFontScaler sizes the label for these characters,
+ * so both sides must agree on the length.
+ */
+export const ELLIPSIS = '...';
+
+/**
  * Color to use when rendering without any thresholds/overrides
  */
 export const GLOBAL_FILL_COLOR_RGBA = 'rgba(10, 85, 161, 1)'; // "#0a55a1"

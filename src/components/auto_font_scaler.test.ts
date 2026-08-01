@@ -15,6 +15,10 @@ beforeEach(() => {
   ) {
     return { width: text.length * parseFloat(this.font) * CHAR_WIDTH_RATIO } as TextMetrics;
   });
+  // getTextWidth builds a canvas per call and the font search calls it once per size from 240 down
+  // to 6, so a fresh context each time dominates the runtime of this file. Hand back the same one.
+  const sharedContext = document.createElement('canvas').getContext('2d');
+  jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(sharedContext);
 });
 
 afterEach(() => {
@@ -195,14 +199,16 @@ describe('AutoFontScaler', () => {
       expect(result.activeLabelFontSize).toBe(8);
     });
 
-    it('truncates to 6 characters when 10 will not fit at 6px', () => {
+    it('truncates to 6 characters when 10 will not fit at 6px, leaving the value alone', () => {
       const result = AutoFontScaler(font, 45, height, true, false, [longLabel]);
       expect(result.numOfChars).toBe(6);
       expect(result.activeLabelFontSize).toBe(7);
+      // truncating the label does not shrink the value, which is sized on its own
+      expect(result.activeValueFontSize).toBe(50);
     });
 
     it('sizes the truncated label for the 3 ellipsis characters Polystat appends', () => {
-      // Polystat renders substring(0, numOfChars) + '...', so 18 characters paint as 21.
+      // Polystat renders substring(0, numOfChars) + ELLIPSIS, so 18 characters paint as 21.
       // Sizing for 20 characters instead returns 21px, one step too large for the polygon.
       const result = AutoFontScaler(font, 267, height, true, false, [makeLabel('X'.repeat(80))]);
       expect(result.numOfChars).toBe(18);
@@ -224,14 +230,6 @@ describe('AutoFontScaler', () => {
       expect(result.activeValueFontSize).toBe(33);
       // 8 characters at 6px measure 28.8px, just inside the 29px usable width
       expect(result.activeTimestampFontSize).toBe(6);
-    });
-
-    it('keeps the value once the label fits at the shortest truncation', () => {
-      // 45px is the narrowest width where the 6-character rung still fits, so nothing is hidden
-      const model = makeModel({ name: 'X'.repeat(60), displayName: 'X'.repeat(60) });
-      const result = AutoFontScaler(font, 45, height, true, false, [model]);
-      expect(result.activeLabelFontSize).toBe(7);
-      expect(result.activeValueFontSize).toBe(50);
     });
   });
 

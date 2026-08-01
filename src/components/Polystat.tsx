@@ -13,6 +13,7 @@ import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes, TimestampP
 import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
 import { AutoFontScaler } from './auto_font_scaler';
+import { ELLIPSIS } from './defaults';
 import { GetAlignments } from './alignment';
 import { getTemplateSrv } from '@grafana/runtime';
 
@@ -690,11 +691,11 @@ export const getTextToDisplay = (
   }
   if (showEllipses) {
     if (text.length > numOfChars) {
-      return text.substring(0, numOfChars) + '...';
+      return text.substring(0, numOfChars) + ELLIPSIS;
     }
   }
   if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
-    return text.substring(0, ellipseCharacters) + '...';
+    return text.substring(0, ellipseCharacters) + ELLIPSIS;
   }
   return text;
 };
