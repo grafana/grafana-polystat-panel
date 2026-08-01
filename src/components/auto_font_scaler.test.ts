@@ -178,7 +178,7 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes the truncated label for the 3 ellipsis characters Polystat appends', () => {
-      // 18 characters paint as 21 with the ellipsis; sizing for 20 returns 21px, one step too large
+      // the label is sized with the ellipsis appended; sizing one character short returns 21px
       const result = AutoFontScaler(font, 267, height, true, false, [makeLabel('X'.repeat(80))]);
       expect(result.numOfChars).toBe(18);
       expect(result.activeLabelFontSize).toBe(20);
