@@ -1,8 +1,8 @@
 import { PolystatModel } from '../components/types';
 
 /**
- * Builds a PolystatModel without going through a DataFrame, for tests that need to control
- * individual fields. Defaults are neutral — override whatever the test is about.
+ * Builds a PolystatModel without going through a DataFrame, for tests that need to set
+ * individual fields. Defaults are neutral, override whatever the test is about.
  */
 export const createPolystatModel = (overrides: Partial<PolystatModel> = {}): PolystatModel => ({
   displayMode: 'all',

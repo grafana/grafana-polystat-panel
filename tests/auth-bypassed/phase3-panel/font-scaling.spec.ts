@@ -3,10 +3,8 @@ import type { Page } from '@playwright/test';
 
 import { gotoProvisionedDashboard, RENDER_TIMEOUT } from './helpers';
 
-// Exercises AutoFontScaler against real browser text metrics. The unit tests in
-// src/components/auto_font_scaler.test.ts mock CanvasRenderingContext2D.measureText, so they pin the
-// search arithmetic but cannot prove the font sizes hold up against real glyph widths. Exact pixel
-// sizes are not asserted here — those depend on the machine's fonts.
+// Checks AutoFontScaler against real browser text metrics. The unit tests mock measureText, so they
+// pin the arithmetic but not the real glyph widths. Pixel sizes are not asserted, they vary by machine.
 //
 // Panel ids come from provisioning/dashboards/Font-Scaling-Test.json:
 //   1 = wide panel, 2 = narrow panel (both labelled ServerAlpha), 3 = label too long to fit,
@@ -38,10 +36,8 @@ test('label font size shrinks with the polygon', async ({ page }) => {
 test('a label too long to fit is truncated at a cascade length', async ({ page }) => {
   const tooLong = await readText(page, 'polystat-label-3-0');
 
-  // Polystat renders substring(0, numOfChars) + '...'. The viewport is pinned by Desktop Chrome, so
-  // the panel geometry is fixed and the cascade settles on the first rung: 18 characters, painting
-  // 21. Asserting the exact string pins which rung fired — a shorter rung means the font search
-  // changed, which is the regression worth catching.
+  // Desktop Chrome pins the viewport, so the panel geometry is fixed and the cascade always settles
+  // on the first rung. Asserting the exact string pins which rung fired.
   expect(tooLong.text).toBe(LONG_LABEL.slice(0, 18) + '...');
   expect(tooLong.fontSize).toBeGreaterThan(0);
 });

@@ -1,8 +1,8 @@
 import { FontFamilies } from './types';
 
 /**
- * Appended to a label that has been truncated. AutoFontScaler sizes the label for these characters,
- * so both sides must agree on the length.
+ * Appended to a truncated label. AutoFontScaler sizes the label for these characters too,
+ * so both sides have to agree on the length.
  */
 export const ELLIPSIS = '...';
 

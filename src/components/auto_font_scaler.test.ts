@@ -3,23 +3,19 @@ import { PolystatModel } from './types';
 import { getTextWidth } from '../utils';
 import { createPolystatModel } from '../test-utils/factory';
 
-// jsdom has no text metrics, and jest-canvas-mock's measureText returns text.length while ignoring
-// the font size entirely. That makes every width comparison inside getTextSizeForWidthAndHeight
-// identical, so the font search degenerates to the height cap and every case returns the same
-// number. Measuring at 0.6em per character is the smallest mock that lets the real search run.
+// jest-canvas-mock measures every string as text.length regardless of font size, which makes the
+// font search in getTextSizeForWidthAndHeight return the same number for every input. Measure
+// 0.6em per character instead so the search actually varies.
 const CHAR_WIDTH_RATIO = 0.6;
 
 beforeEach(() => {
-  jest.spyOn(CanvasRenderingContext2D.prototype, 'measureText').mockImplementation(function (
-    this: CanvasRenderingContext2D,
-    text: string
-  ) {
-    return { width: text.length * parseFloat(this.font) * CHAR_WIDTH_RATIO } as TextMetrics;
+  // getTextWidth builds a canvas per call, and the search calls it once per size from 240 down to 6
+  const context = document.createElement('canvas').getContext('2d')!;
+  jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(context);
+  jest.spyOn(context, 'measureText').mockImplementation((text: string) => {
+    const fontSize = parseFloat(context.font);
+    return { width: text.length * fontSize * CHAR_WIDTH_RATIO } as TextMetrics;
   });
-  // getTextWidth builds a canvas per call and the font search calls it once per size from 240 down
-  // to 6, so a fresh context each time dominates the runtime of this file. Hand back the same one.
-  const sharedContext = document.createElement('canvas').getContext('2d');
-  jest.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(sharedContext);
 });
 
 afterEach(() => {
@@ -35,6 +31,8 @@ describe('AutoFontScaler', () => {
   const font = 'Inter';
   const width = 200;
   const height = 100;
+  // long enough that it cannot fit at 6px in any of the areas used below
+  const longLabelText = 'X'.repeat(60);
 
   it('measures text width proportional to the font size', () => {
     // guards the mock itself: without it every width below collapses to the character count
@@ -150,7 +148,7 @@ describe('AutoFontScaler', () => {
   });
 
   describe('ellipsis cascade', () => {
-    const longLabel = makeLabel('X'.repeat(60));
+    const longLabel = makeLabel(longLabelText);
 
     it('does not truncate a label that fits', () => {
       const result = AutoFontScaler(font, width, height, true, false, [createPolystatModel()]);
@@ -180,8 +178,7 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes the truncated label for the 3 ellipsis characters Polystat appends', () => {
-      // Polystat renders substring(0, numOfChars) + ELLIPSIS, so 18 characters paint as 21.
-      // Sizing for 20 characters instead returns 21px, one step too large for the polygon.
+      // 18 characters paint as 21 with the ellipsis; sizing for 20 returns 21px, one step too large
       const result = AutoFontScaler(font, 267, height, true, false, [makeLabel('X'.repeat(80))]);
       expect(result.numOfChars).toBe(18);
       expect(result.activeLabelFontSize).toBe(20);
@@ -190,11 +187,10 @@ describe('AutoFontScaler', () => {
 
   describe('label that cannot fit at any truncation', () => {
     it('hides the label but still sizes the value and timestamp', () => {
-      // 30px wide leaves no room even for the 6-character rung. The value and timestamp are sized
-      // independently of the label, so the polygon keeps showing them.
+      // 30px wide leaves no room even for the 6-character rung
       const model = createPolystatModel({
-        name: 'X'.repeat(60),
-        displayName: 'X'.repeat(60),
+        name: longLabelText,
+        displayName: longLabelText,
         timestampFormatted: '12:34:56',
       });
       const result = AutoFontScaler(font, 30, height, true, true, [model]);

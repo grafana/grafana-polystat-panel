@@ -13,16 +13,15 @@ const createMember = (overrides: Partial<PolystatModel> = {}): PolystatModel =>
     ...overrides,
   });
 
-const createComposite = (members: PolystatModel[], overrides: Partial<PolystatModel> = {}): PolystatModel => ({
-  ...createMember({
+const createComposite = (members: PolystatModel[], overrides: Partial<PolystatModel> = {}): PolystatModel =>
+  createMember({
     name: 'composite-a',
     displayName: 'composite-a',
     isComposite: true,
     displayMode: 'all',
     members,
     ...overrides,
-  }),
-});
+  });
 
 describe('Test Polystat', () => {
   describe('Ellipse Generation', () => {
