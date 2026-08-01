@@ -1,6 +1,8 @@
 import { expect, test } from '@grafana/plugin-e2e';
 import type { Page } from '@playwright/test';
 
+import { gotoProvisionedDashboard, RENDER_TIMEOUT } from './helpers';
+
 // Exercises AutoFontScaler against real browser text metrics. The unit tests in
 // src/components/auto_font_scaler.test.ts mock CanvasRenderingContext2D.measureText, so they pin the
 // search arithmetic but cannot prove the font sizes hold up against real glyph widths. Exact pixel
@@ -18,9 +20,9 @@ const readText = (page: Page, testId: string) =>
   }));
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/d/font-scaling-test/font-scaling-test?kiosk');
+  await gotoProvisionedDashboard(page, 'font-scaling-test');
   // every panel has painted, not just the first
-  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(4, { timeout: 30000 });
+  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(4, { timeout: RENDER_TIMEOUT });
 });
 
 test('label font size shrinks with the polygon', async ({ page }) => {

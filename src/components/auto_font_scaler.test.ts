@@ -1,6 +1,7 @@
 import { AutoFontScaler } from './auto_font_scaler';
 import { PolystatModel } from './types';
 import { getTextWidth } from '../utils';
+import { createPolystatModel } from '../__mocks__/models/factory';
 
 // jsdom has no text metrics, and jest-canvas-mock's measureText returns text.length while ignoring
 // the font size entirely. That makes every width comparison inside getTextSizeForWidthAndHeight
@@ -25,39 +26,10 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-const makeModel = (overrides: Partial<PolystatModel> = {}): PolystatModel => ({
-  displayMode: 'all',
-  thresholdLevel: 0,
-  value: 0,
-  valueFormatted: '0',
-  valueRounded: 0,
-  stats: {},
-  name: 'metric',
-  displayName: 'metric',
-  timestamp: Date.now(),
-  timestampFormatted: '',
-  prefix: '',
-  suffix: '',
-  color: '#000000',
-  clickThrough: '',
-  operatorName: 'mean',
-  newTabEnabled: false,
-  customClickthroughTargetEnabled: false,
-  customClickthroughTarget: '',
-  sanitizedURL: '',
-  sanitizeURLEnabled: false,
-  showName: true,
-  showValue: true,
-  showTimestamp: false,
-  isComposite: false,
-  members: [],
-  ...overrides,
-});
-
 const makeComposite = (name: string, members: PolystatModel[]): PolystatModel =>
-  makeModel({ name, displayName: name, isComposite: true, showValue: true, members });
+  createPolystatModel({ name, displayName: name, isComposite: true, showValue: true, members });
 
-const makeLabel = (label: string): PolystatModel => makeModel({ name: label, displayName: label });
+const makeLabel = (label: string): PolystatModel => createPolystatModel({ name: label, displayName: label });
 
 describe('AutoFontScaler', () => {
   const font = 'Inter';
@@ -95,24 +67,24 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes on displayName in preference to name', () => {
-      const model = makeModel({ name: 'A', displayName: 'Server-A' });
+      const model = createPolystatModel({ name: 'A', displayName: 'Server-A' });
       expect(AutoFontScaler(font, width, height, true, false, [model]).activeLabelFontSize).toBe(39);
     });
   });
 
   describe('value sizing', () => {
     it('sizes a 1-character value to the 50px half-height', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
+      const result = AutoFontScaler(font, width, height, true, false, [createPolystatModel()]);
       expect(result.activeValueFontSize).toBe(50);
     });
 
     it('returns 0 for the value font when valueEnabled is false', () => {
-      const result = AutoFontScaler(font, width, height, false, false, [makeModel()]);
+      const result = AutoFontScaler(font, width, height, false, false, [createPolystatModel()]);
       expect(result.activeValueFontSize).toBe(0);
     });
 
     it('sizes on the longest valueFormatted in the set', () => {
-      const models = [makeModel({ valueFormatted: '1' }), makeModel({ valueFormatted: '1234567890' })];
+      const models = [createPolystatModel({ valueFormatted: '1' }), createPolystatModel({ valueFormatted: '1234567890' })];
       expect(AutoFontScaler(font, width, height, true, false, models).activeValueFontSize).toBe(31);
     });
   });
@@ -120,19 +92,19 @@ describe('AutoFontScaler', () => {
   describe('composite value sizing', () => {
     it('sizes the composite value on "displayName: valueFormatted" of the member', () => {
       // 'member-1: 0' is 11 characters, so 190 / (11 * 0.6) settles at 28px
-      const composite = makeComposite('comp', [makeModel({ name: 'member-1', displayName: 'member-1' })]);
+      const composite = makeComposite('comp', [createPolystatModel({ name: 'member-1', displayName: 'member-1' })]);
       const result = AutoFontScaler(font, width, height, false, false, [composite]);
       expect(result.activeCompositeValueFontSize).toBe(28);
     });
 
     it('returns 0 for the composite value font when no composite has showValue', () => {
-      const result = AutoFontScaler(font, width, height, false, false, [makeModel()]);
+      const result = AutoFontScaler(font, width, height, false, false, [createPolystatModel()]);
       expect(result.activeCompositeValueFontSize).toBe(0);
     });
 
     it('sizes on the longest composite member, not the parent value', () => {
-      const shortMember = makeModel({ name: 'm', displayName: 'm', valueFormatted: '1' });
-      const longMember = makeModel({
+      const shortMember = createPolystatModel({ name: 'm', displayName: 'm', valueFormatted: '1' });
+      const longMember = createPolystatModel({
         name: 'very-long-composite-member-name-here',
         displayName: 'very-long-composite-member-name-here',
         valueFormatted: '99999',
@@ -147,13 +119,13 @@ describe('AutoFontScaler', () => {
   describe('timestamp sizing', () => {
     it('sizes the timestamp within the lower 33% of the text area', () => {
       // 200 * 0.33 = 66px split over two lines = 33px, and 19 chars fit at 24px in 285px
-      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
       const result = AutoFontScaler(font, 300, 200, true, true, [model]);
       expect(result.activeTimestampFontSize).toBe(24);
     });
 
     it('shrinks the value font into the upper 67% when the timestamp is shown', () => {
-      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
       const withoutTimestamp = AutoFontScaler(font, 300, 200, true, false, [model]);
       const withTimestamp = AutoFontScaler(font, 300, 200, true, true, [model]);
       expect(withoutTimestamp.activeValueFontSize).toBe(100);
@@ -162,16 +134,16 @@ describe('AutoFontScaler', () => {
 
     it('returns 0 for the timestamp font when its band is below the 6px minimum', () => {
       // 30 * 0.33 = 9.9px split over two lines leaves under 5px per line
-      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
       const result = AutoFontScaler(font, 300, 30, true, true, [model]);
       expect(result.activeTimestampFontSize).toBe(0);
     });
 
     it('sizes on the longest composite member timestamp, not the parent timestamp', () => {
       const withMemberTimestamp = makeComposite('comp', [
-        makeModel({ timestampFormatted: '2026-05-17 08:00:00' }),
+        createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' }),
       ]);
-      const withoutMemberTimestamp = makeComposite('comp', [makeModel()]);
+      const withoutMemberTimestamp = makeComposite('comp', [createPolystatModel()]);
       expect(AutoFontScaler(font, 300, 200, true, true, [withMemberTimestamp]).activeTimestampFontSize).toBe(24);
       expect(AutoFontScaler(font, 300, 200, true, true, [withoutMemberTimestamp]).activeTimestampFontSize).toBe(33);
     });
@@ -181,7 +153,7 @@ describe('AutoFontScaler', () => {
     const longLabel = makeLabel('X'.repeat(60));
 
     it('does not truncate a label that fits', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
+      const result = AutoFontScaler(font, width, height, true, false, [createPolystatModel()]);
       expect(result.showEllipses).toBe(false);
       expect(result.numOfChars).toBe(0);
     });
@@ -220,7 +192,7 @@ describe('AutoFontScaler', () => {
     it('hides the label but still sizes the value and timestamp', () => {
       // 30px wide leaves no room even for the 6-character rung. The value and timestamp are sized
       // independently of the label, so the polygon keeps showing them.
-      const model = makeModel({
+      const model = createPolystatModel({
         name: 'X'.repeat(60),
         displayName: 'X'.repeat(60),
         timestampFormatted: '12:34:56',
