@@ -210,6 +210,31 @@ describe('AutoFontScaler', () => {
     });
   });
 
+  describe('label that cannot fit at any truncation', () => {
+    it('hides the label but still sizes the value and timestamp', () => {
+      // 30px wide leaves no room even for the 6-character rung. The value and timestamp are sized
+      // independently of the label, so the polygon keeps showing them.
+      const model = makeModel({
+        name: 'X'.repeat(60),
+        displayName: 'X'.repeat(60),
+        timestampFormatted: '12:34:56',
+      });
+      const result = AutoFontScaler(font, 30, height, true, true, [model]);
+      expect(result.activeLabelFontSize).toBe(0);
+      expect(result.activeValueFontSize).toBe(33);
+      // 8 characters at 6px measure 28.8px, just inside the 29px usable width
+      expect(result.activeTimestampFontSize).toBe(6);
+    });
+
+    it('keeps the value once the label fits at the shortest truncation', () => {
+      // 45px is the narrowest width where the 6-character rung still fits, so nothing is hidden
+      const model = makeModel({ name: 'X'.repeat(60), displayName: 'X'.repeat(60) });
+      const result = AutoFontScaler(font, 45, height, true, false, [model]);
+      expect(result.activeLabelFontSize).toBe(7);
+      expect(result.activeValueFontSize).toBe(50);
+    });
+  });
+
   describe('empty data', () => {
     it('sizes an empty data set to the half-height with no truncation', () => {
       const result = AutoFontScaler(font, width, height, true, false, []);

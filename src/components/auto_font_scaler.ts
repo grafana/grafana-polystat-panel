@@ -25,7 +25,8 @@ export const AutoFontScaler = (
   let maxLabel = getMaxLabel(data);
   // estimate how big of a font can be used
   // Two lines of text must fit with vertical spacing included
-  // if it is too small, hide everything
+  // if it is too small the label is hidden, but the value and timestamp are sized
+  // independently below and can still be displayed
   // console.log(`AutoFontScaler maxLabel ${maxLabel}`);
   // console.log(`AutoFontScaler textAreaWidth ${textAreaWidth}`);
   // console.log(`AutoFontScaler textAreaHeight ${textAreaHeight}`);

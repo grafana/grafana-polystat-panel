@@ -15,6 +15,8 @@
 
 - Unit tests for `auto_font_scaler.ts`, driven by a `CanvasRenderingContext2D.measureText` mock that scales
   with the font size. Coverage of the file goes from 0 to 100% of statements, branches, functions, and lines.
+  Includes a test pinning the behaviour when a label cannot fit at all: the label is hidden while the value
+  and timestamp are still sized and displayed.
 - Playwright spec `font-scaling.spec.ts` and its provisioned `Font-Scaling-Test` dashboard, covering the
   font search against real browser text metrics
 
