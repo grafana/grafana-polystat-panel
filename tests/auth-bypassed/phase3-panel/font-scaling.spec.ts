@@ -4,37 +4,41 @@ import { expect, test } from '@grafana/plugin-e2e';
 // src/components/auto_font_scaler.test.ts mock CanvasRenderingContext2D.measureText, so they pin the
 // search arithmetic but cannot prove the font sizes hold up against real glyph widths. Exact font
 // sizes are not asserted here — they depend on the machine's fonts.
+//
+// Panel ids come from provisioning/dashboards/Font-Scaling-Test.json:
+//   1 = wide panel, 2 = narrow panel (both labelled ServerAlpha), 3 = label too long to fit
+const labelOf = (panelId: number) => `[data-testid="polystat-label-${panelId}-0"]`;
+const LONG_LABEL = 'AVeryLongServerNameThatCannotPossiblyFitInsideThisPolygon';
+
 test('label font size shrinks with the polygon, and labels too long to fit are truncated', async ({ page }) => {
   await page.goto('/d/font-scaling-test/font-scaling-test?kiosk');
-  await expect(page.locator('[data-testid^="polystat-label-"]').first()).toBeAttached({ timeout: 30000 });
-  // all three panels have painted, not just the first
+  // every panel has painted, not just the first
   await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(3, { timeout: 30000 });
 
-  const labels = await page.evaluate(() =>
-    Array.from(document.querySelectorAll<SVGTextElement>('[data-testid^="polystat-label-"]')).map((label) => ({
+  const read = (panelId: number) =>
+    page.locator(labelOf(panelId)).evaluate((label) => ({
       text: label.textContent ?? '',
       fontSize: parseFloat(label.getAttribute('font-size') ?? ''),
-      // the polygon each label belongs to, used to tell the wide panel from the narrow one
-      svgWidth: label.closest('svg')!.getBoundingClientRect().width,
-    }))
-  );
+    }));
 
-  for (const label of labels) {
+  const wide = await read(1);
+  const narrow = await read(2);
+  const tooLong = await read(3);
+
+  for (const label of [wide, narrow, tooLong]) {
     expect(Number.isNaN(label.fontSize)).toBe(false);
     expect(label.fontSize).not.toBe(0);
   }
 
-  const [wide, narrow] = labels
-    .filter((label) => label.text === 'ServerAlpha')
-    .sort((a, b) => b.svgWidth - a.svgWidth);
-
-  expect(wide).toBeTruthy();
-  expect(narrow).toBeTruthy();
+  expect(wide.text).toBe('ServerAlpha');
+  expect(narrow.text).toBe('ServerAlpha');
   // identical text in a narrower polygon has to be drawn smaller
   expect(narrow.fontSize).toBeLessThan(wide.fontSize);
 
-  const truncated = labels.find((label) => label.text.endsWith('...'));
-  expect(truncated).toBeTruthy();
-  // Polystat renders substring(0, numOfChars) + '...', and the cascade stops at 18, 10 or 6
-  expect([9, 13, 21]).toContain(truncated!.text.length);
+  // Polystat renders substring(0, numOfChars) + '...', so the painted text is a genuine prefix of
+  // the metric name followed by an ellipsis, cut at one of the cascade lengths
+  expect(tooLong.text.endsWith('...')).toBe(true);
+  const shown = tooLong.text.slice(0, -'...'.length);
+  expect(LONG_LABEL.startsWith(shown)).toBe(true);
+  expect([6, 10, 18]).toContain(shown.length);
 });

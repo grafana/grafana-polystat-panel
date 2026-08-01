@@ -444,7 +444,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     return (
       <text
         className="toplabel"
-        data-testid={`polystat-label-${index}`}
+        data-testid={`polystat-label-${options.panelId}-${index}`}
         x={coords.x + alignments.labelTextAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
@@ -510,7 +510,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       <text
         ref={animationRefs[index]}
         className={`valueLabel${index}`}
-        data-testid={`polystat-value-${index}`}
+        data-testid={`polystat-value-${options.panelId}-${index}`}
         x={coords.x + alignments.labelValueAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
@@ -555,7 +555,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       <text
         ref={animationTimestampRefs[index]}
         className={`timestampLabel${index}`}
-        data-testid={`polystat-timestamp-${index}`}
+        data-testid={`polystat-timestamp-${options.panelId}-${index}`}
         x={coords.x + alignments.labelValueAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
