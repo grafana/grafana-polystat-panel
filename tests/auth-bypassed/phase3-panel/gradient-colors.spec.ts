@@ -1,14 +1,12 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
-import { gotoProvisionedDashboard, RENDER_TIMEOUT } from './helpers';
-
 // Guards the coarse gradient failures: polygons painted all black (a stop-color the browser
 // could not parse, or a fill pointing at a gradient that is not in defs) and polygons painted
 // one solid color (both stops identical, so no gradient at all). Exact channel math belongs to
 // src/components/gradients/color.test.ts, so no color values are asserted here.
 test('polygons are filled with a real two-tone gradient', async ({ page }) => {
-  await gotoProvisionedDashboard(page, 'gradient-colors-test');
-  await expect(page.locator('path[fill^="url(#"]').first()).toBeAttached({ timeout: RENDER_TIMEOUT });
+  await page.goto('/d/gradient-colors-test/gradient-colors-test?kiosk');
+  await expect(page.locator('path[fill^="url(#"]').first()).toBeAttached({ timeout: 30000 });
 
   const fills = await page.evaluate(() =>
     Array.from(document.querySelectorAll<SVGPathElement>('path[fill^="url(#"]')).map((path) => {
