@@ -41,7 +41,8 @@ export const AutoFontScaler = (
   if (activeLabelFontSize < minFont) {
     showEllipses = true;
     numOfChars = 18;
-    maxLabel = maxLabel.substring(0, numOfChars + 2);
+    // Polystat renders substring(0, numOfChars) + '...', so size for the 3 ellipsis characters too
+    maxLabel = maxLabel.substring(0, numOfChars + 3);
     activeLabelFontSize = computeTextFontSize(
       maxLabel,
       fontFamily,
@@ -53,7 +54,7 @@ export const AutoFontScaler = (
     );
     if (activeLabelFontSize < minFont) {
       numOfChars = 10;
-      maxLabel = maxLabel.substring(0, numOfChars + 2);
+      maxLabel = maxLabel.substring(0, numOfChars + 3);
       activeLabelFontSize = computeTextFontSize(
         maxLabel,
         fontFamily,
@@ -65,7 +66,7 @@ export const AutoFontScaler = (
       );
       if (activeLabelFontSize < minFont) {
         numOfChars = 6;
-        maxLabel = maxLabel.substring(0, numOfChars + 2);
+        maxLabel = maxLabel.substring(0, numOfChars + 3);
         activeLabelFontSize = computeTextFontSize(
           maxLabel,
           fontFamily,

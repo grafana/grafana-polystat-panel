@@ -385,10 +385,6 @@ Flat config (ESLint 9). Common rules applied:
   `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
 - Never drop comments during a mechanical refactor. Comments recording color values, source URLs, workarounds, or
   alternate values are intentional — carry them over to the new code.
-- `AutoFontScaler` needs Playwright E2E visual regression tests — unit tests verify logic branching but cannot prove
-  font sizes render correctly. Add provisioned dashboard with polystat panels at various sizes and screenshot baselines.
-- `AutoFontScaler` refactor: flatten nested ellipsis cascade (3-deep if/else with repeated `computeTextFontSize` calls)
-  into a loop over `[18, 10, 6]`. Blocked on E2E visual tests above.
 
 ---
 

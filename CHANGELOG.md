@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
+- Truncated labels were sized one font step too large. `Polystat` renders `substring(0, numOfChars) + '...'`,
+  but the scaler measured only `numOfChars + 2` characters, so the label could overflow its polygon. It now
+  measures `numOfChars + 3` to account for all three ellipsis characters.
+
+### Added
+
+- Unit tests for `auto_font_scaler.ts`, driven by a `CanvasRenderingContext2D.measureText` mock that scales
+  with the font size. Coverage of the file goes from 0 to 100% of statements, branches, functions, and lines.
+- Playwright spec `font-scaling.spec.ts` and its provisioned `Font-Scaling-Test` dashboard, covering the
+  font search against real browser text metrics
+
+### Tooling
+
+- Import `jest-canvas-mock` in `jest-setup.js`. Without it jsdom returns `null` from `getContext('2d')` and
+  `getTextWidth` falls back to a fixed 40px, so no text-measuring code can be tested.
+
 ### Project Updates
 
 - Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width

@@ -1,16 +1,25 @@
 import { AutoFontScaler } from './auto_font_scaler';
 import { PolystatModel } from './types';
-import { getTextSizeForWidthAndHeight } from '../utils';
+import { getTextWidth } from '../utils';
 
-jest.mock('../utils', () => {
-  const actual = jest.requireActual('../utils');
-  return {
-    ...actual,
-    getTextSizeForWidthAndHeight: jest.fn(actual.getTextSizeForWidthAndHeight),
-  };
+// jsdom has no text metrics, and jest-canvas-mock's measureText returns text.length while ignoring
+// the font size entirely. That makes every width comparison inside getTextSizeForWidthAndHeight
+// identical, so the font search degenerates to the height cap and every case returns the same
+// number. Measuring at 0.6em per character is the smallest mock that lets the real search run.
+const CHAR_WIDTH_RATIO = 0.6;
+
+beforeEach(() => {
+  jest.spyOn(CanvasRenderingContext2D.prototype, 'measureText').mockImplementation(function (
+    this: CanvasRenderingContext2D,
+    text: string
+  ) {
+    return { width: text.length * parseFloat(this.font) * CHAR_WIDTH_RATIO } as TextMetrics;
+  });
 });
 
-const mockedGetTextSize = getTextSizeForWidthAndHeight as jest.MockedFunction<typeof getTextSizeForWidthAndHeight>;
+afterEach(() => {
+  jest.restoreAllMocks();
+});
 
 const makeModel = (overrides: Partial<PolystatModel> = {}): PolystatModel => ({
   displayMode: 'all',
@@ -44,216 +53,169 @@ const makeModel = (overrides: Partial<PolystatModel> = {}): PolystatModel => ({
 const makeComposite = (name: string, members: PolystatModel[]): PolystatModel =>
   makeModel({ name, displayName: name, isComposite: true, showValue: true, members });
 
-// O(1) font size calculation: largest font where text fits width and height
-const enableRealisticTextSizing = () => {
-  mockedGetTextSize.mockImplementation(
-    (text: string, _font: string, width: number, height: number, minFont: number, maxFont: number) => {
-      const areaWidth = Math.round(width * 0.95);
-      const fitted = Math.floor(areaWidth / (text.length * 0.6));
-      const capped = Math.min(fitted, height, maxFont);
-      return capped >= minFont ? Math.ceil(capped) : 0;
-    }
-  );
-};
+const makeLabel = (label: string): PolystatModel => makeModel({ name: label, displayName: label });
 
 describe('AutoFontScaler', () => {
   const font = 'Inter';
   const width = 200;
   const height = 100;
 
-  describe('return shape', () => {
-    it('returns all expected properties', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
-      expect(result).toHaveProperty('activeLabelFontSize');
-      expect(result).toHaveProperty('activeValueFontSize');
-      expect(result).toHaveProperty('activeCompositeValueFontSize');
-      expect(result).toHaveProperty('activeTimestampFontSize');
-      expect(result).toHaveProperty('showEllipses');
-      expect(result).toHaveProperty('numOfChars');
-    });
+  it('measures text width proportional to the font size', () => {
+    // guards the mock itself: without it every width below collapses to the character count
+    expect(getTextWidth('AAAA', '50px Inter')).toBe(120);
+    expect(getTextWidth('AAAA', '100px Inter')).toBe(240);
   });
 
   describe('label sizing', () => {
-    it('returns positive label font size for normal text', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel({ name: 'Server-A', displayName: 'Server-A' })]);
-      expect(result.activeLabelFontSize).toBeGreaterThan(0);
+    it('sizes an 8-character label to 39px in a 200x100 area', () => {
+      // 190px usable width over two lines of 50px; 8 chars at 39px measure 187.2px
+      const result = AutoFontScaler(font, width, height, true, false, [makeLabel('Server-A')]);
+      expect(result.activeLabelFontSize).toBe(39);
     });
 
-    it('uses longest displayName across all data items', () => {
-      const short = makeModel({ name: 'A', displayName: 'A' });
-      const long = makeModel({ name: 'Very-Long-Server-Name-That-Takes-Space', displayName: 'Very-Long-Server-Name-That-Takes-Space' });
-      const resultShort = AutoFontScaler(font, width, height, true, false, [short]);
-      const resultLong = AutoFontScaler(font, width, height, true, false, [short, long]);
-      expect(resultLong.activeLabelFontSize).toBeLessThanOrEqual(resultShort.activeLabelFontSize);
+    it('caps a 1-character label at the 50px half-height rather than the width', () => {
+      const result = AutoFontScaler(font, width, height, true, false, [makeLabel('A')]);
+      expect(result.activeLabelFontSize).toBe(50);
+    });
+
+    it('clamps to the 240px maximum font when width and height both allow more', () => {
+      const result = AutoFontScaler(font, 2000, 1000, true, false, [makeLabel('A')]);
+      expect(result.activeLabelFontSize).toBe(240);
+    });
+
+    it('sizes on the longest displayName in the set, not the first', () => {
+      const short = makeLabel('A');
+      const long = makeLabel('Very-Long-Server-Name-That-Takes-Space');
+      expect(AutoFontScaler(font, width, height, true, false, [short]).activeLabelFontSize).toBe(50);
+      expect(AutoFontScaler(font, width, height, true, false, [short, long]).activeLabelFontSize).toBe(8);
+    });
+
+    it('sizes on displayName in preference to name', () => {
+      const model = makeModel({ name: 'A', displayName: 'Server-A' });
+      expect(AutoFontScaler(font, width, height, true, false, [model]).activeLabelFontSize).toBe(39);
     });
   });
 
   describe('value sizing', () => {
-    it('returns positive value font size when valueEnabled', () => {
+    it('sizes a 1-character value to the 50px half-height', () => {
       const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
-      expect(result.activeValueFontSize).toBeGreaterThan(0);
+      expect(result.activeValueFontSize).toBe(50);
     });
 
-    it('returns zero value font size when valueEnabled is false', () => {
+    it('returns 0 for the value font when valueEnabled is false', () => {
       const result = AutoFontScaler(font, width, height, false, false, [makeModel()]);
       expect(result.activeValueFontSize).toBe(0);
+    });
+
+    it('sizes on the longest valueFormatted in the set', () => {
+      const models = [makeModel({ valueFormatted: '1' }), makeModel({ valueFormatted: '1234567890' })];
+      expect(AutoFontScaler(font, width, height, true, false, models).activeValueFontSize).toBe(31);
     });
   });
 
   describe('composite value sizing', () => {
-    it('returns positive composite value font size when composite has showValue', () => {
+    it('sizes the composite value on "displayName: valueFormatted" of the member', () => {
+      // 'member-1: 0' is 11 characters, so 190 / (11 * 0.6) settles at 28px
       const composite = makeComposite('comp', [makeModel({ name: 'member-1', displayName: 'member-1' })]);
       const result = AutoFontScaler(font, width, height, false, false, [composite]);
-      expect(result.activeCompositeValueFontSize).toBeGreaterThan(0);
+      expect(result.activeCompositeValueFontSize).toBe(28);
     });
 
-    it('returns zero composite value font size when no composite has showValue', () => {
+    it('returns 0 for the composite value font when no composite has showValue', () => {
       const result = AutoFontScaler(font, width, height, false, false, [makeModel()]);
       expect(result.activeCompositeValueFontSize).toBe(0);
     });
-  });
 
-  describe('timestamp sizing', () => {
-    it('returns non-negative timestamp font size when showTimestamp', () => {
-      const model = makeModel({ timestampFormatted: '12:34:56' });
-      const result = AutoFontScaler(font, width, height, true, true, [model]);
-      expect(result.activeTimestampFontSize).toBeGreaterThanOrEqual(0);
-    });
-
-    it('reduces value font size when timestamp is shown', () => {
-      const model = makeModel({ timestampFormatted: '12:34:56' });
-      const withoutTimestamp = AutoFontScaler(font, width, height, true, false, [model]);
-      const withTimestamp = AutoFontScaler(font, width, height, true, true, [model]);
-      expect(withTimestamp.activeValueFontSize).toBeLessThanOrEqual(withoutTimestamp.activeValueFontSize);
-    });
-  });
-
-  describe('ellipsis behavior', () => {
-    it('does not show ellipses for short labels in large area', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
-      expect(result.showEllipses).toBe(false);
-      expect(result.numOfChars).toBe(0);
-    });
-
-    it('shows ellipses when label cannot fit', () => {
-      const model = makeModel({ name: 'A'.repeat(200), displayName: 'A'.repeat(200) });
-      const result = AutoFontScaler(font, 20, 10, true, false, [model]);
-      expect(result.showEllipses).toBe(true);
-      expect(result.numOfChars).toBeGreaterThan(0);
-    });
-  });
-
-  describe('scaling with dimensions', () => {
-    it('returns smaller font for smaller area', () => {
-      const model = makeModel({ name: 'Server-Name', displayName: 'Server-Name' });
-      const large = AutoFontScaler(font, 400, 200, true, false, [model]);
-      const small = AutoFontScaler(font, 50, 25, true, false, [model]);
-      expect(small.activeLabelFontSize).toBeLessThanOrEqual(large.activeLabelFontSize);
-    });
-  });
-
-  describe('empty data', () => {
-    it('handles empty data array', () => {
-      const result = AutoFontScaler(font, width, height, true, false, []);
-      expect(result.activeLabelFontSize).toBeGreaterThanOrEqual(0);
-      expect(result.activeValueFontSize).toBeGreaterThanOrEqual(0);
-    });
-  });
-
-  describe('composite member value sizing', () => {
-    it('accounts for composite member displayName + value length', () => {
-      const member = makeModel({ name: 'very-long-member-name', displayName: 'very-long-member-name', valueFormatted: '99999' });
-      const composite = makeComposite('comp', [member]);
-      const withMembers = AutoFontScaler(font, width, height, true, false, [composite]);
-      const withoutMembers = AutoFontScaler(font, width, height, true, false, [makeModel()]);
-      expect(withMembers.activeValueFontSize).toBeLessThanOrEqual(withoutMembers.activeValueFontSize);
-    });
-  });
-
-  describe('with realistic text measurement', () => {
-    beforeEach(() => {
-      enableRealisticTextSizing();
-    });
-
-    afterEach(() => {
-      mockedGetTextSize.mockRestore();
-    });
-
-    it('computes font size constrained by text width', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeModel({ name: 'Short', displayName: 'Short' })]);
-      expect(result.activeLabelFontSize).toBeGreaterThan(0);
-      expect(result.activeLabelFontSize).toBeLessThanOrEqual(height / 2);
-    });
-
-    it('returns smaller font for longer labels', () => {
-      const short = [makeModel({ name: 'ABCD', displayName: 'ABCD' })];
-      const long = [makeModel({ name: 'ABCDEFGHIJKLMNO', displayName: 'ABCDEFGHIJKLMNO' })];
-      const resultShort = AutoFontScaler(font, 300, 500, true, false, short);
-      const resultLong = AutoFontScaler(font, 300, 500, true, false, long);
-      expect(resultShort.showEllipses).toBe(false);
-      expect(resultLong.showEllipses).toBe(false);
-      expect(resultLong.activeLabelFontSize).toBeLessThan(resultShort.activeLabelFontSize);
-    });
-
-    it('returns smaller font for narrower area', () => {
-      const model = makeModel({ name: 'ABCDEFGH', displayName: 'ABCDEFGH' });
-      const wide = AutoFontScaler(font, 300, 500, true, false, [model]);
-      const narrow = AutoFontScaler(font, 100, 500, true, false, [model]);
-      expect(narrow.activeLabelFontSize).toBeLessThan(wide.activeLabelFontSize);
-    });
-
-    it('triggers ellipsis cascade for very long text in small area', () => {
-      const longName = 'This-Is-A-Very-Long-Server-Name-That-Cannot-Possibly-Fit';
-      const model = makeModel({ name: longName, displayName: longName });
-      const result = AutoFontScaler(font, 60, 20, true, false, [model]);
-      expect(result.showEllipses).toBe(true);
-      expect([6, 10, 18]).toContain(result.numOfChars);
-    });
-
-    it('truncates to progressively shorter lengths', () => {
-      const longName = 'X'.repeat(100);
-      const model = makeModel({ name: longName, displayName: longName });
-      // tight constraint forces ellipsis
-      const result = AutoFontScaler(font, 40, 10, true, false, [model]);
-      expect(result.showEllipses).toBe(true);
-      expect([6, 10, 18]).toContain(result.numOfChars);
-    });
-
-    it('value font size is independent of label font size', () => {
-      const model = makeModel({ name: 'A', displayName: 'A', valueFormatted: '12345' });
-      const result = AutoFontScaler(font, width, height, true, false, [model]);
-      expect(result.activeValueFontSize).toBeGreaterThan(0);
-      expect(result.activeLabelFontSize).toBeGreaterThan(0);
-    });
-
-    it('timestamp gets smaller portion of height', () => {
-      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
-      // use large enough area that both value and timestamp get positive sizes
-      const result = AutoFontScaler(font, 300, 200, true, true, [model]);
-      expect(result.activeTimestampFontSize).toBeGreaterThan(0);
-      expect(result.activeTimestampFontSize).toBeLessThanOrEqual(result.activeValueFontSize);
-    });
-
-    it('composite member text constrains value font size', () => {
+    it('sizes on the longest composite member, not the parent value', () => {
       const shortMember = makeModel({ name: 'm', displayName: 'm', valueFormatted: '1' });
       const longMember = makeModel({
         name: 'very-long-composite-member-name-here',
         displayName: 'very-long-composite-member-name-here',
         valueFormatted: '99999',
       });
+      const short = AutoFontScaler(font, width, height, true, false, [makeComposite('comp', [shortMember])]);
+      const long = AutoFontScaler(font, width, height, true, false, [makeComposite('comp', [longMember])]);
+      expect(short.activeValueFontSize).toBe(50);
+      expect(long.activeValueFontSize).toBe(7);
+    });
+  });
 
-      const shortComp = makeComposite('comp', [shortMember]);
-      const longComp = makeComposite('comp', [longMember]);
-
-      const resultShort = AutoFontScaler(font, width, height, true, false, [shortComp]);
-      const resultLong = AutoFontScaler(font, width, height, true, false, [longComp]);
-      expect(resultLong.activeValueFontSize).toBeLessThanOrEqual(resultShort.activeValueFontSize);
+  describe('timestamp sizing', () => {
+    it('sizes the timestamp within the lower 33% of the text area', () => {
+      // 200 * 0.33 = 66px split over two lines = 33px, and 19 chars fit at 24px in 285px
+      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const result = AutoFontScaler(font, 300, 200, true, true, [model]);
+      expect(result.activeTimestampFontSize).toBe(24);
     });
 
-    it('returns 0 for timestamp font when area too small', () => {
-      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00.000 UTC' });
-      const result = AutoFontScaler(font, 30, 10, true, true, [model]);
+    it('shrinks the value font into the upper 67% when the timestamp is shown', () => {
+      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const withoutTimestamp = AutoFontScaler(font, 300, 200, true, false, [model]);
+      const withTimestamp = AutoFontScaler(font, 300, 200, true, true, [model]);
+      expect(withoutTimestamp.activeValueFontSize).toBe(100);
+      expect(withTimestamp.activeValueFontSize).toBe(67);
+    });
+
+    it('returns 0 for the timestamp font when its band is below the 6px minimum', () => {
+      // 30 * 0.33 = 9.9px split over two lines leaves under 5px per line
+      const model = makeModel({ timestampFormatted: '2026-05-17 08:00:00' });
+      const result = AutoFontScaler(font, 300, 30, true, true, [model]);
       expect(result.activeTimestampFontSize).toBe(0);
+    });
+
+    it('sizes on the longest composite member timestamp, not the parent timestamp', () => {
+      const withMemberTimestamp = makeComposite('comp', [
+        makeModel({ timestampFormatted: '2026-05-17 08:00:00' }),
+      ]);
+      const withoutMemberTimestamp = makeComposite('comp', [makeModel()]);
+      expect(AutoFontScaler(font, 300, 200, true, true, [withMemberTimestamp]).activeTimestampFontSize).toBe(24);
+      expect(AutoFontScaler(font, 300, 200, true, true, [withoutMemberTimestamp]).activeTimestampFontSize).toBe(33);
+    });
+  });
+
+  describe('ellipsis cascade', () => {
+    const longLabel = makeLabel('X'.repeat(60));
+
+    it('does not truncate a label that fits', () => {
+      const result = AutoFontScaler(font, width, height, true, false, [makeModel()]);
+      expect(result.showEllipses).toBe(false);
+      expect(result.numOfChars).toBe(0);
+    });
+
+    it('truncates to 18 characters when the full label will not fit at 6px', () => {
+      const result = AutoFontScaler(font, width, height, true, false, [longLabel]);
+      expect(result.showEllipses).toBe(true);
+      expect(result.numOfChars).toBe(18);
+      expect(result.activeLabelFontSize).toBe(15);
+    });
+
+    it('truncates to 10 characters when 18 will not fit at 6px', () => {
+      const result = AutoFontScaler(font, 70, height, true, false, [longLabel]);
+      expect(result.numOfChars).toBe(10);
+      expect(result.activeLabelFontSize).toBe(8);
+    });
+
+    it('truncates to 6 characters when 10 will not fit at 6px', () => {
+      const result = AutoFontScaler(font, 45, height, true, false, [longLabel]);
+      expect(result.numOfChars).toBe(6);
+      expect(result.activeLabelFontSize).toBe(7);
+    });
+
+    it('sizes the truncated label for the 3 ellipsis characters Polystat appends', () => {
+      // Polystat renders substring(0, numOfChars) + '...', so 18 characters paint as 21.
+      // Sizing for 20 characters instead returns 21px, one step too large for the polygon.
+      const result = AutoFontScaler(font, 267, height, true, false, [makeLabel('X'.repeat(80))]);
+      expect(result.numOfChars).toBe(18);
+      expect(result.activeLabelFontSize).toBe(20);
+    });
+  });
+
+  describe('empty data', () => {
+    it('sizes an empty data set to the half-height with no truncation', () => {
+      const result = AutoFontScaler(font, width, height, true, false, []);
+      expect(result.activeLabelFontSize).toBe(50);
+      expect(result.activeValueFontSize).toBe(50);
+      expect(result.showEllipses).toBe(false);
     });
   });
 });

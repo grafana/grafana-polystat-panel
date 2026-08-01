@@ -1,0 +1,94 @@
+{
+  "uid": "font-scaling-test",
+  "title": "Font Scaling Test",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "grafana-polystat-panel",
+      "title": "Wide panel, short label",
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "globalAutoScaleFonts": true
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,ServerAlpha\n1621987000000,42",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "grafana-polystat-panel",
+      "title": "Narrow panel, same label",
+      "gridPos": {
+        "h": 10,
+        "w": 2,
+        "x": 12,
+        "y": 0
+      },
+      "options": {
+        "globalAutoScaleFonts": true
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,ServerAlpha\n1621987000000,42",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "grafana-polystat-panel",
+      "title": "Label too long to fit",
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 10
+      },
+      "options": {
+        "globalAutoScaleFonts": true
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,AVeryLongServerNameThatCannotPossiblyFitInsideThisPolygon\n1621987000000,42",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
+    }
+  ]
+}
