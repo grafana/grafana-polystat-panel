@@ -3,6 +3,9 @@ import { getTextSizeForWidthAndHeight } from '../utils';
 import { ELLIPSIS } from './defaults';
 
 
+// how many characters of the label to keep, tried longest first, when the whole label will not fit
+const TRUNCATION_LENGTHS = [18, 10, 6];
+
 export interface AutoFontScalerOptions {
   fontFamily: string;
   textAreaWidth: number;
@@ -54,24 +57,14 @@ export const AutoFontScaler = ({
     textAreaWidth,
     textAreaHeight
   );
+  // the label does not fit, so try progressively shorter truncations and keep the first that does
   if (activeLabelFontSize < minFont) {
     showEllipses = true;
-    numOfChars = 18;
-    // Polystat appends ELLIPSIS to the truncated label, so size for those characters too. This
-    // measures label characters as a stand-in for the ellipsis glyphs, which over-estimates slightly
-    // because periods are narrower, so the label is sized a little small rather than too large.
-    maxLabel = maxLabel.substring(0, numOfChars + ELLIPSIS.length);
-    activeLabelFontSize = computeTextFontSize(
-      maxLabel,
-      fontFamily,
-      minFont,
-      maxFont,
-      maxLinesToDisplay,
-      textAreaWidth,
-      textAreaHeight
-    );
-    if (activeLabelFontSize < minFont) {
-      numOfChars = 10;
+    for (const truncationLength of TRUNCATION_LENGTHS) {
+      numOfChars = truncationLength;
+      // Polystat appends ELLIPSIS to the truncated label, so size for those characters too. This
+      // measures label characters as a stand-in for the ellipsis glyphs, which over-estimates slightly
+      // because periods are narrower, so the label is sized a little small rather than too large.
       maxLabel = maxLabel.substring(0, numOfChars + ELLIPSIS.length);
       activeLabelFontSize = computeTextFontSize(
         maxLabel,
@@ -82,18 +75,8 @@ export const AutoFontScaler = ({
         textAreaWidth,
         textAreaHeight
       );
-      if (activeLabelFontSize < minFont) {
-        numOfChars = 6;
-        maxLabel = maxLabel.substring(0, numOfChars + ELLIPSIS.length);
-        activeLabelFontSize = computeTextFontSize(
-          maxLabel,
-          fontFamily,
-          minFont,
-          maxFont,
-          maxLinesToDisplay,
-          textAreaWidth,
-          textAreaHeight
-        );
+      if (activeLabelFontSize >= minFont) {
+        break;
       }
     }
   }
