@@ -18,13 +18,14 @@ import {
   casedModelC,
 } from '../../test-utils/models';
 import { compositeA, compositeB, compositeC } from '../../test-utils/composites';
+import { FIXTURE_TIMESTAMP } from '../../test-utils/factory';
 
 describe('Test Tooltips', () => {
   let renderTime: Date;
   let props: TooltipProps;
   let timeZone = 'utc';
   beforeAll(() => {
-    renderTime = new Date('01 October 2022 10:28 UTC');
+    renderTime = new Date(FIXTURE_TIMESTAMP);
     props = {
       data: undefined,
       valueEnabled: true,

@@ -1,3 +1,6 @@
+// jsdom has no canvas, so getContext returns null without this and getTextWidth cannot be exercised
+import 'jest-canvas-mock';
+
 import { AutoFontScaler, AutoFontScalerOptions } from './auto_font_scaler';
 import { PolystatModel } from './types';
 import { getTextWidth } from '../utils';
@@ -22,8 +25,8 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-const makeComposite = (name: string, members: PolystatModel[]): PolystatModel =>
-  createPolystatModel({ name, displayName: name, isComposite: true, showValue: true, members });
+const makeComposite = (members: PolystatModel[]): PolystatModel =>
+  createPolystatModel({ name: 'comp', displayName: 'comp', isComposite: true, showValue: true, members });
 
 const makeLabel = (label: string): PolystatModel => createPolystatModel({ name: label, displayName: label });
 
@@ -54,13 +57,18 @@ describe('AutoFontScaler', () => {
 
   describe('label sizing', () => {
     // a 200x100 area gives 190px of usable width and two lines of 50px
-    it.each([
-      ['39px when the width runs out first', 'Server-A', defaultAreaWidth, defaultAreaHeight, 39],
-      ['50px when half the height runs out first', 'A', defaultAreaWidth, defaultAreaHeight, 50],
-      ['240px, the maximum, when neither runs out', 'A', 2000, 1000, 240],
-    ])('sizes the label to %s', (_name, label, areaWidth, areaHeight, expected) => {
-      const result = scale([makeLabel(label)], { textAreaWidth: areaWidth, textAreaHeight: areaHeight });
-      expect(result.activeLabelFontSize).toBe(expected);
+    it('sizes the label to 39px when the width runs out first', () => {
+      // 8 characters at 39px measure 187.2px
+      expect(scale([makeLabel('Server-A')]).activeLabelFontSize).toBe(39);
+    });
+
+    it('sizes the label to 50px when half the height runs out first', () => {
+      expect(scale([makeLabel('A')]).activeLabelFontSize).toBe(50);
+    });
+
+    it('sizes the label to 240px, the maximum, when neither runs out', () => {
+      const result = scale([makeLabel('A')], { textAreaWidth: 2000, textAreaHeight: 1000 });
+      expect(result.activeLabelFontSize).toBe(240);
     });
 
     it('sizes on the longest displayName in the set, not the first', () => {
@@ -99,7 +107,7 @@ describe('AutoFontScaler', () => {
   describe('composite value sizing', () => {
     it('sizes the composite value on "displayName: valueFormatted" of the member', () => {
       // 'member-1: 0' is 11 characters, so 190 / (11 * 0.6) settles at 28px
-      const composite = makeComposite('comp', [createPolystatModel({ name: 'member-1', displayName: 'member-1' })]);
+      const composite = makeComposite([createPolystatModel({ name: 'member-1', displayName: 'member-1' })]);
       const result = scale([composite], { valueEnabled: false });
       expect(result.activeCompositeValueFontSize).toBe(28);
     });
@@ -116,8 +124,8 @@ describe('AutoFontScaler', () => {
         displayName: 'very-long-composite-member-name-here',
         valueFormatted: '99999',
       });
-      const resultWithShortMember = scale([makeComposite('comp', [shortMember])]);
-      const resultWithLongMember = scale([makeComposite('comp', [longMember])]);
+      const resultWithShortMember = scale([makeComposite([shortMember])]);
+      const resultWithLongMember = scale([makeComposite([longMember])]);
       expect(resultWithShortMember.activeValueFontSize).toBe(50);
       expect(resultWithLongMember.activeValueFontSize).toBe(7);
     });
@@ -147,10 +155,10 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes on the longest composite member timestamp, not the parent timestamp', () => {
-      const withMemberTimestamp = makeComposite('comp', [
+      const withMemberTimestamp = makeComposite([
         createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' }),
       ]);
-      const withoutMemberTimestamp = makeComposite('comp', [createPolystatModel()]);
+      const withoutMemberTimestamp = makeComposite([createPolystatModel()]);
       const resultWithMemberTimestamp = scale([withMemberTimestamp], {
         textAreaWidth: 300,
         textAreaHeight: 200,

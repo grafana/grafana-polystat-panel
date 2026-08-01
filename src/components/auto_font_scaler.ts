@@ -57,7 +57,9 @@ export const AutoFontScaler = ({
   if (activeLabelFontSize < minFont) {
     showEllipses = true;
     numOfChars = 18;
-    // Polystat appends ELLIPSIS to the truncated label, so size for those characters too
+    // Polystat appends ELLIPSIS to the truncated label, so size for those characters too. This
+    // measures label characters as a stand-in for the ellipsis glyphs, which over-estimates slightly
+    // because periods are narrower, so the label is sized a little small rather than too large.
     maxLabel = maxLabel.substring(0, numOfChars + ELLIPSIS.length);
     activeLabelFontSize = computeTextFontSize(
       maxLabel,
