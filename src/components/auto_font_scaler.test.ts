@@ -41,20 +41,14 @@ describe('AutoFontScaler', () => {
   });
 
   describe('label sizing', () => {
-    it('sizes an 8-character label to 39px in a 200x100 area', () => {
-      // 190px usable width over two lines of 50px; 8 chars at 39px measure 187.2px
-      const result = AutoFontScaler(font, width, height, true, false, [makeLabel('Server-A')]);
-      expect(result.activeLabelFontSize).toBe(39);
-    });
-
-    it('caps a 1-character label at the 50px half-height rather than the width', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [makeLabel('A')]);
-      expect(result.activeLabelFontSize).toBe(50);
-    });
-
-    it('clamps to the 240px maximum font when width and height both allow more', () => {
-      const result = AutoFontScaler(font, 2000, 1000, true, false, [makeLabel('A')]);
-      expect(result.activeLabelFontSize).toBe(240);
+    // a 200x100 area gives 190px of usable width and two lines of 50px
+    it.each([
+      ['the width, 8 characters at 39px measure 187.2px', 'Server-A', width, height, 39],
+      ['the half-height, one character would otherwise go much larger', 'A', width, height, 50],
+      ['the 240px maximum, with width and height both allowing more', 'A', 2000, 1000, 240],
+    ])('sizes the label against %s', (_name, label, areaWidth, areaHeight, expected) => {
+      const result = AutoFontScaler(font, areaWidth, areaHeight, true, false, [makeLabel(label)]);
+      expect(result.activeLabelFontSize).toBe(expected);
     });
 
     it('sizes on the longest displayName in the set, not the first', () => {
@@ -156,24 +150,20 @@ describe('AutoFontScaler', () => {
       expect(result.numOfChars).toBe(0);
     });
 
-    it('truncates to 18 characters when the full label will not fit at 6px', () => {
-      const result = AutoFontScaler(font, width, height, true, false, [longLabel]);
+    // each rung is tried in turn, and the first one that fits at 6px or better wins
+    it.each([
+      ['18 characters when the full label will not fit', width, 18, 15],
+      ['10 characters when 18 will not fit', 70, 10, 8],
+      ['6 characters when 10 will not fit', 45, 6, 7],
+    ])('truncates to %s', (_name, areaWidth, numOfChars, fontSize) => {
+      const result = AutoFontScaler(font, areaWidth, height, true, false, [longLabel]);
       expect(result.showEllipses).toBe(true);
-      expect(result.numOfChars).toBe(18);
-      expect(result.activeLabelFontSize).toBe(15);
+      expect(result.numOfChars).toBe(numOfChars);
+      expect(result.activeLabelFontSize).toBe(fontSize);
     });
 
-    it('truncates to 10 characters when 18 will not fit at 6px', () => {
-      const result = AutoFontScaler(font, 70, height, true, false, [longLabel]);
-      expect(result.numOfChars).toBe(10);
-      expect(result.activeLabelFontSize).toBe(8);
-    });
-
-    it('truncates to 6 characters when 10 will not fit at 6px, leaving the value alone', () => {
+    it('does not shrink the value when the label is truncated', () => {
       const result = AutoFontScaler(font, 45, height, true, false, [longLabel]);
-      expect(result.numOfChars).toBe(6);
-      expect(result.activeLabelFontSize).toBe(7);
-      // truncating the label does not shrink the value, which is sized on its own
       expect(result.activeValueFontSize).toBe(50);
     });
 
