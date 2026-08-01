@@ -89,6 +89,36 @@
           }
         }
       ]
+    },
+    {
+      "id": 4,
+      "type": "grafana-polystat-panel",
+      "title": "Value and timestamp",
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 4,
+        "y": 10
+      },
+      "options": {
+        "globalAutoScaleFonts": true,
+        "globalShowTimestampEnabled": true
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,ServerBeta\n1621987000000,42",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
     }
   ]
 }
