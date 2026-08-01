@@ -6,7 +6,7 @@ import type { Page } from '@playwright/test';
 //
 // Panel ids come from provisioning/dashboards/Font-Scaling-Test.json:
 //   1 = wide panel, 2 = narrow panel (both labelled ServerAlpha), 3 = label too long to fit,
-//   4 = value and timestamp both shown
+//   4 = value and timestamp both shown, 5 = polygon too small for any text, 6 = composite
 const LONG_LABEL = 'AVeryLongServerNameThatCannotPossiblyFitInsideThisPolygon';
 
 const readText = (page: Page, testId: string) =>
@@ -18,7 +18,7 @@ const readText = (page: Page, testId: string) =>
 test.beforeEach(async ({ page }) => {
   await page.goto('/d/font-scaling-test/font-scaling-test?kiosk');
   // every panel has painted, not just the first
-  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(4, { timeout: 30000 });
+  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(6, { timeout: 30000 });
 });
 
 test('label font size shrinks with the polygon', async ({ page }) => {
@@ -53,4 +53,26 @@ test('the timestamp is drawn smaller than the value it shares space with', async
   // the value gets the upper 67% of the text area and the timestamp the lower 33%
   expect(timestamp.fontSize).toBeLessThan(value.fontSize);
   expect(timestamp.fontSize).toBeGreaterThan(0);
+});
+
+test('paints nothing when the polygon is too small for any text', async ({ page }) => {
+  // AutoFontScaler returns 0 for every font size here. The unit tests assert those zeroes; only a
+  // browser can confirm that a 0px font actually paints nothing rather than clamping to a minimum.
+  await expect(page.locator('[data-testid="polystat-label-5-0"]')).toBeHidden();
+  await expect(page.locator('[data-testid="polystat-value-5-0"]')).toBeHidden();
+
+  // the elements are still in the DOM, so this is measuring what was painted, not what was skipped
+  await expect(page.locator('[data-testid="polystat-label-5-0"]')).toBeAttached();
+});
+
+test('sizes a composite on its member text', async ({ page }) => {
+  const label = await readText(page, 'polystat-label-6-0');
+  const value = await readText(page, 'polystat-value-6-0');
+
+  expect(label.text).toBe('cluster-a');
+  // the scaler measures 'displayName: valueFormatted' of the member, not the composite's own value
+  expect(value.text).toBe('cpu: 42.00');
+  expect(value.fontSize).toBeGreaterThan(0);
+  // the member string is longer than the composite name, so it is drawn smaller
+  expect(value.fontSize).toBeLessThan(label.fontSize);
 });

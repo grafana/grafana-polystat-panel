@@ -119,6 +119,102 @@
           }
         }
       ]
+    },
+    {
+      "id": 5,
+      "type": "grafana-polystat-panel",
+      "title": "Polygon too small for any text",
+      "gridPos": {
+        "h": 6,
+        "w": 1,
+        "x": 12,
+        "y": 10
+      },
+      "options": {
+        "globalAutoScaleFonts": true
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,prod-us-east-1.kubernetes.worker-node-0417.cpu.usage.percent\n1621987000000,42",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "type": "grafana-polystat-panel",
+      "title": "Composite value sizing",
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 14,
+        "y": 10
+      },
+      "options": {
+        "globalAutoScaleFonts": true,
+        "compositeConfig": {
+          "animationSpeed": "1500",
+          "composites": [
+            {
+              "clickThrough": "",
+              "clickThroughCustomTarget": "",
+              "clickThroughCustomTargetEnabled": false,
+              "clickThroughOpenNewTab": true,
+              "clickThroughSanitize": true,
+              "displayMode": "all",
+              "enabled": true,
+              "isTemplated": false,
+              "label": "cluster-a",
+              "metrics": [
+                {
+                  "alias": "",
+                  "order": 0,
+                  "seriesMatch": "^cpu$"
+                },
+                {
+                  "alias": "",
+                  "order": 1,
+                  "seriesMatch": "^memory$"
+                }
+              ],
+              "name": "cluster-a",
+              "order": 0,
+              "showComposite": true,
+              "showMembers": false,
+              "showName": true,
+              "showTimestampEnabled": false,
+              "showTimestampFormat": "YYYY-MM-DD HH:mm:ss",
+              "showTimestampYOffset": 0,
+              "showValue": true
+            }
+          ],
+          "enabled": true
+        }
+      },
+      "datasource": {
+        "type": "testdata",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "csvContent": "Time,cpu,memory\n1621987000000,42,73",
+          "datasource": {
+            "type": "testdata",
+            "uid": "trlxrdZVk"
+          }
+        }
+      ]
     }
   ]
 }
