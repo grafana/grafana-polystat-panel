@@ -34,15 +34,15 @@ describe('AutoFontScaler', () => {
   // long enough that it cannot fit at 6px in any of the areas used below
   const longLabelText = 'X'.repeat(60);
 
-  // each test names only the options it cares about
-  const scale = (overrides: Partial<AutoFontScalerOptions> = {}) =>
+  // each test passes its data and names only the options it cares about
+  const scale = (data: PolystatModel[], overrides: Partial<AutoFontScalerOptions> = {}) =>
     AutoFontScaler({
       fontFamily: font,
       textAreaWidth: width,
       textAreaHeight: height,
       valueEnabled: true,
       showTimestamp: false,
-      data: [],
+      data,
       ...overrides,
     });
 
@@ -59,31 +59,31 @@ describe('AutoFontScaler', () => {
       ['the half-height, one character would otherwise go much larger', 'A', width, height, 50],
       ['the 240px maximum, with width and height both allowing more', 'A', 2000, 1000, 240],
     ])('sizes the label against %s', (_name, label, areaWidth, areaHeight, expected) => {
-      const result = scale({ textAreaWidth: areaWidth, textAreaHeight: areaHeight, data: [makeLabel(label)] });
+      const result = scale([makeLabel(label)], { textAreaWidth: areaWidth, textAreaHeight: areaHeight });
       expect(result.activeLabelFontSize).toBe(expected);
     });
 
     it('sizes on the longest displayName in the set, not the first', () => {
       const short = makeLabel('A');
       const long = makeLabel('Very-Long-Server-Name-That-Takes-Space');
-      expect(scale({ data: [short] }).activeLabelFontSize).toBe(50);
-      expect(scale({ data: [short, long] }).activeLabelFontSize).toBe(8);
+      expect(scale([short]).activeLabelFontSize).toBe(50);
+      expect(scale([short, long]).activeLabelFontSize).toBe(8);
     });
 
     it('sizes on displayName in preference to name', () => {
       const model = createPolystatModel({ name: 'A', displayName: 'Server-A' });
-      expect(scale({ data: [model] }).activeLabelFontSize).toBe(39);
+      expect(scale([model]).activeLabelFontSize).toBe(39);
     });
   });
 
   describe('value sizing', () => {
     it('sizes a 1-character value to the 50px half-height', () => {
-      const result = scale({ data: [createPolystatModel()] });
+      const result = scale([createPolystatModel()]);
       expect(result.activeValueFontSize).toBe(50);
     });
 
     it('returns 0 for the value font when valueEnabled is false', () => {
-      const result = scale({ valueEnabled: false, data: [createPolystatModel()] });
+      const result = scale([createPolystatModel()], { valueEnabled: false });
       expect(result.activeValueFontSize).toBe(0);
     });
 
@@ -92,7 +92,7 @@ describe('AutoFontScaler', () => {
         createPolystatModel({ valueFormatted: '1' }),
         createPolystatModel({ valueFormatted: '1234567890' }),
       ];
-      expect(scale({ data: models }).activeValueFontSize).toBe(31);
+      expect(scale(models).activeValueFontSize).toBe(31);
     });
   });
 
@@ -100,12 +100,12 @@ describe('AutoFontScaler', () => {
     it('sizes the composite value on "displayName: valueFormatted" of the member', () => {
       // 'member-1: 0' is 11 characters, so 190 / (11 * 0.6) settles at 28px
       const composite = makeComposite('comp', [createPolystatModel({ name: 'member-1', displayName: 'member-1' })]);
-      const result = scale({ valueEnabled: false, data: [composite] });
+      const result = scale([composite], { valueEnabled: false });
       expect(result.activeCompositeValueFontSize).toBe(28);
     });
 
     it('returns 0 for the composite value font when no composite has showValue', () => {
-      const result = scale({ valueEnabled: false, data: [createPolystatModel()] });
+      const result = scale([createPolystatModel()], { valueEnabled: false });
       expect(result.activeCompositeValueFontSize).toBe(0);
     });
 
@@ -116,8 +116,8 @@ describe('AutoFontScaler', () => {
         displayName: 'very-long-composite-member-name-here',
         valueFormatted: '99999',
       });
-      const short = scale({ data: [makeComposite('comp', [shortMember])] });
-      const long = scale({ data: [makeComposite('comp', [longMember])] });
+      const short = scale([makeComposite('comp', [shortMember])]);
+      const long = scale([makeComposite('comp', [longMember])]);
       expect(short.activeValueFontSize).toBe(50);
       expect(long.activeValueFontSize).toBe(7);
     });
@@ -130,14 +130,14 @@ describe('AutoFontScaler', () => {
     it('sizes the timestamp within the lower 33% of the text area', () => {
       // 200 * 0.33 = 66px split over two lines = 33px, and 19 chars fit at 24px in 285px
       const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
-      const result = scale({ ...bigArea, showTimestamp: true, data: [model] });
+      const result = scale([model], { ...bigArea, showTimestamp: true });
       expect(result.activeTimestampFontSize).toBe(24);
     });
 
     it('shrinks the value font into the upper 67% when the timestamp is shown', () => {
       const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
-      const withoutTimestamp = scale({ ...bigArea, data: [model] });
-      const withTimestamp = scale({ ...bigArea, showTimestamp: true, data: [model] });
+      const withoutTimestamp = scale([model], bigArea);
+      const withTimestamp = scale([model], { ...bigArea, showTimestamp: true });
       expect(withoutTimestamp.activeValueFontSize).toBe(100);
       expect(withTimestamp.activeValueFontSize).toBe(67);
     });
@@ -145,7 +145,7 @@ describe('AutoFontScaler', () => {
     it('returns 0 for the timestamp font when its band is below the 6px minimum', () => {
       // 30 * 0.33 = 9.9px split over two lines leaves under 5px per line
       const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
-      const result = scale({ textAreaWidth: 300, textAreaHeight: 30, showTimestamp: true, data: [model] });
+      const result = scale([model], { textAreaWidth: 300, textAreaHeight: 30, showTimestamp: true });
       expect(result.activeTimestampFontSize).toBe(0);
     });
 
@@ -154,8 +154,8 @@ describe('AutoFontScaler', () => {
         createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' }),
       ]);
       const withoutMemberTimestamp = makeComposite('comp', [createPolystatModel()]);
-      const withMember = scale({ ...bigArea, showTimestamp: true, data: [withMemberTimestamp] });
-      const withoutMember = scale({ ...bigArea, showTimestamp: true, data: [withoutMemberTimestamp] });
+      const withMember = scale([withMemberTimestamp], { ...bigArea, showTimestamp: true });
+      const withoutMember = scale([withoutMemberTimestamp], { ...bigArea, showTimestamp: true });
       expect(withMember.activeTimestampFontSize).toBe(24);
       expect(withoutMember.activeTimestampFontSize).toBe(33);
     });
@@ -165,7 +165,7 @@ describe('AutoFontScaler', () => {
     const longLabel = makeLabel(longLabelText);
 
     it('does not truncate a label that fits', () => {
-      const result = scale({ data: [createPolystatModel()] });
+      const result = scale([createPolystatModel()]);
       expect(result.showEllipses).toBe(false);
       expect(result.numOfChars).toBe(0);
     });
@@ -176,20 +176,20 @@ describe('AutoFontScaler', () => {
       ['10 characters when 18 will not fit', 70, 10, 8],
       ['6 characters when 10 will not fit', 45, 6, 7],
     ])('truncates to %s', (_name, areaWidth, numOfChars, fontSize) => {
-      const result = scale({ textAreaWidth: areaWidth, data: [longLabel] });
+      const result = scale([longLabel], { textAreaWidth: areaWidth });
       expect(result.showEllipses).toBe(true);
       expect(result.numOfChars).toBe(numOfChars);
       expect(result.activeLabelFontSize).toBe(fontSize);
     });
 
     it('does not shrink the value when the label is truncated', () => {
-      const result = scale({ textAreaWidth: 45, data: [longLabel] });
+      const result = scale([longLabel], { textAreaWidth: 45 });
       expect(result.activeValueFontSize).toBe(50);
     });
 
     it('sizes the truncated label for the 3 ellipsis characters Polystat appends', () => {
       // the label is sized with the ellipsis appended; sizing one character short returns 21px
-      const result = scale({ textAreaWidth: 267, data: [makeLabel('X'.repeat(80))] });
+      const result = scale([makeLabel('X'.repeat(80))], { textAreaWidth: 267 });
       expect(result.numOfChars).toBe(18);
       expect(result.activeLabelFontSize).toBe(20);
     });
@@ -203,7 +203,7 @@ describe('AutoFontScaler', () => {
         displayName: longLabelText,
         timestampFormatted: '12:34:56',
       });
-      const result = scale({ textAreaWidth: 30, showTimestamp: true, data: [model] });
+      const result = scale([model], { textAreaWidth: 30, showTimestamp: true });
       expect(result.activeLabelFontSize).toBe(0);
       expect(result.activeValueFontSize).toBe(33);
       // 8 characters at 6px measure 28.8px, just inside the 29px usable width
@@ -213,7 +213,7 @@ describe('AutoFontScaler', () => {
 
   describe('empty data', () => {
     it('sizes an empty data set to the half-height with no truncation', () => {
-      const result = scale({ data: [] });
+      const result = scale([]);
       expect(result.activeLabelFontSize).toBe(50);
       expect(result.activeValueFontSize).toBe(50);
       expect(result.showEllipses).toBe(false);
