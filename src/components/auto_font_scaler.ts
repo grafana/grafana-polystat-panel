@@ -17,6 +17,11 @@ export const AutoFontScaler = (
   const maxFont = 240;
   // this ensures we have space between label and value
   const maxLinesToDisplay = 2;
+  // when a timestamp is shown it splits the text area with the value. Keep these as literals that add
+  // up to 1 rather than deriving one from the other: 1 - 0.33 is 0.6699999999999999, which rounds a
+  // font size down by one.
+  const valueHeightShare = 0.67;
+  const timestampHeightShare = 0.33;
   let showEllipses = false;
   // number of characters to show on polygon
   let numOfChars = 0;
@@ -97,15 +102,15 @@ export const AutoFontScaler = (
   );
   //console.log(`calc activeValueFontSize ${activeValueFontSize}`);
   if (showTimestamp) {
-    // two lines to be displayed, sharing half of the normal space for the value
+    // two lines to be displayed, so the value gets its share of the space instead of all of it
     activeValueFontSize = computeTextFontSize(
       maxValue,
       fontFamily,
       minFont,
       maxFont,
-      2,
+      maxLinesToDisplay,
       textAreaWidth,
-      (textAreaHeight * 0.67)
+      (textAreaHeight * valueHeightShare)
     );
   }
   // timestamp shares the same space as the value, but is always smaller
@@ -114,9 +119,9 @@ export const AutoFontScaler = (
     fontFamily,
     minFont,
     maxFont,
-    2,
+    maxLinesToDisplay,
     textAreaWidth,
-    (textAreaHeight * 0.33)
+    (textAreaHeight * timestampHeightShare)
   );
 
   if (activeTimestampFontSize < minFont) {
