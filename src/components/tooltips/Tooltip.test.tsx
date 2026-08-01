@@ -16,8 +16,8 @@ import {
   casedModelA,
   casedModelB,
   casedModelC,
-} from '../../__mocks__/models/models';
-import { compositeA, compositeB, compositeC } from '../../__mocks__/models/composites';
+} from '../../test-utils/models';
+import { compositeA, compositeB, compositeC } from '../../test-utils/composites';
 
 describe('Test Tooltips', () => {
   let renderTime: Date;

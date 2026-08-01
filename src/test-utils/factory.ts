@@ -1,4 +1,4 @@
-import { PolystatModel } from '../../components/types';
+import { PolystatModel } from '../components/types';
 
 /**
  * Builds a PolystatModel without going through a DataFrame, for tests that need to control

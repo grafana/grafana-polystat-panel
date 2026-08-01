@@ -1,6 +1,6 @@
 import { FieldConfig, FieldType, toDataFrame } from '@grafana/data';
-import { DataFrameToPolystat } from '../../data/processor';
-import { PolystatModel } from '../../components/types';
+import { DataFrameToPolystat } from '../data/processor';
+import { PolystatModel } from '../components/types';
 
 const field: FieldConfig = {
   decimals: 2,

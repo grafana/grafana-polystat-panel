@@ -1,6 +1,6 @@
 import { getTextToDisplay, buildTriggerCache, formatCompositeValueAndTimestamp } from './Polystat';
 import { PolystatModel } from './types';
-import { createPolystatModel } from '../__mocks__/models/factory';
+import { createPolystatModel } from '../test-utils/factory';
 
 const createMember = (overrides: Partial<PolystatModel> = {}): PolystatModel =>
   createPolystatModel({

@@ -1,7 +1,7 @@
 import { AutoFontScaler } from './auto_font_scaler';
 import { PolystatModel } from './types';
 import { getTextWidth } from '../utils';
-import { createPolystatModel } from '../__mocks__/models/factory';
+import { createPolystatModel } from '../test-utils/factory';
 
 // jsdom has no text metrics, and jest-canvas-mock's measureText returns text.length while ignoring
 // the font size entirely. That makes every width comparison inside getTextSizeForWidthAndHeight
