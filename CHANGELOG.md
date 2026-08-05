@@ -4,40 +4,8 @@
 
 ## [Unreleased]
 
-### Fixed
-
 - Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
-- Truncated labels were sized one font step too large. `Polystat` renders `substring(0, numOfChars) + '...'`,
-  but the scaler measured only `numOfChars + 2` characters, so the label could overflow its polygon. It now
-  measures `numOfChars + 3` to account for all three ellipsis characters.
-
-### Added
-
-- Unit tests for `auto_font_scaler.ts`, driven by a `CanvasRenderingContext2D.measureText` mock that scales
-  with the font size. Coverage of the file goes from 0 to 100% of statements, branches, functions, and lines.
-  Includes a test pinning the behaviour when a label cannot fit at all: the label is hidden while the value
-  and timestamp are still sized and displayed.
-- Playwright spec `font-scaling.spec.ts` and its provisioned `Font-Scaling-Test` dashboard, covering the
-  font search against real browser text metrics
-
-### Tooling
-
-- Import `jest-canvas-mock` in `jest-setup.js`. Without it jsdom returns `null` from `getContext('2d')` and
-  `getTextWidth` falls back to a fixed 40px, so no text-measuring code can be tested.
-
-### Project Updates
-
-- Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width
-- Add `.markdownlint-cli2.yaml` config with 120-char line limit
-- Fix long lines in CHANGELOG.md for markdownlint compliance
-- Add cspell dictionary words: Agentic, funcs, negotiables, unrequested
-- Fix pre-commit checklist to use `yarn` instead of `npm run`
-- Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
-  Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
-- Tighten ambiguous AGENTS.md rules: concrete 20-line threshold, stronger subagent directive, clarify
-  console.log as legacy pattern
-- Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
-- Add test-results and provisioning to markdownlint ignores
+- Expand test coverage, update dev tooling
 
 ## v2.1.16
 
