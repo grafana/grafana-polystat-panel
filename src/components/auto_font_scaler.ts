@@ -1,21 +1,39 @@
 import { PolystatModel } from "./types";
 import { getTextSizeForWidthAndHeight } from '../utils';
+import { ELLIPSIS } from './defaults';
 
 
-export const AutoFontScalar = (
-  fontFamily: string,
-  textAreaWidth: number,
-  textAreaHeight: number,
-  valueEnabled: boolean,
-  showTimestamp: boolean,
-  data: PolystatModel[]
-) => {
+// how many characters of the label to keep, tried longest first, when the whole label will not fit
+const TRUNCATION_LENGTHS = [18, 10, 6];
+
+export interface AutoFontScalerOptions {
+  fontFamily: string;
+  textAreaWidth: number;
+  textAreaHeight: number;
+  valueEnabled: boolean;
+  showTimestamp: boolean;
+  data: PolystatModel[];
+}
+
+export const AutoFontScaler = ({
+  fontFamily,
+  textAreaWidth,
+  textAreaHeight,
+  valueEnabled,
+  showTimestamp,
+  data,
+}: AutoFontScalerOptions) => {
   // TODO: 6 is VERY small, perhaps 10 as a min?
   // A hint from the config could be used (max characters)
   const minFont = 6;
   const maxFont = 240;
   // this ensures we have space between label and value
   const maxLinesToDisplay = 2;
+  // when a timestamp is shown it splits the text area with the value. Keep these as literals that add
+  // up to 1 rather than deriving one from the other: 1 - 0.33 is 0.6699999999999999, which rounds a
+  // font size down by one.
+  const valueHeightShare = 0.67;
+  const timestampHeightShare = 0.33;
   let showEllipses = false;
   // number of characters to show on polygon
   let numOfChars = 0;
@@ -25,10 +43,11 @@ export const AutoFontScalar = (
   let maxLabel = getMaxLabel(data);
   // estimate how big of a font can be used
   // Two lines of text must fit with vertical spacing included
-  // if it is too small, hide everything
-  // console.log(`AutoFontScalar maxLabel ${maxLabel}`);
-  // console.log(`AutoFontScalar textAreaWidth ${textAreaWidth}`);
-  // console.log(`AutoFontScalar textAreaHeight ${textAreaHeight}`);
+  // if it is too small the label is hidden, but the value and timestamp are sized
+  // independently below and can still be displayed
+  // console.log(`AutoFontScaler maxLabel ${maxLabel}`);
+  // console.log(`AutoFontScaler textAreaWidth ${textAreaWidth}`);
+  // console.log(`AutoFontScaler textAreaHeight ${textAreaHeight}`);
   let activeLabelFontSize = computeTextFontSize(
     maxLabel,
     fontFamily,
@@ -38,22 +57,15 @@ export const AutoFontScalar = (
     textAreaWidth,
     textAreaHeight
   );
+  // the label does not fit, so try progressively shorter truncations and keep the first that does
   if (activeLabelFontSize < minFont) {
     showEllipses = true;
-    numOfChars = 18;
-    maxLabel = maxLabel.substring(0, numOfChars + 2);
-    activeLabelFontSize = computeTextFontSize(
-      maxLabel,
-      fontFamily,
-      minFont,
-      maxFont,
-      maxLinesToDisplay,
-      textAreaWidth,
-      textAreaHeight
-    );
-    if (activeLabelFontSize < minFont) {
-      numOfChars = 10;
-      maxLabel = maxLabel.substring(0, numOfChars + 2);
+    for (const truncationLength of TRUNCATION_LENGTHS) {
+      numOfChars = truncationLength;
+      // Polystat appends ELLIPSIS to the truncated label, so size for those characters too. This
+      // measures label characters as a stand-in for the ellipsis glyphs, which over-estimates slightly
+      // because periods are narrower, so the label is sized a little small rather than too large.
+      maxLabel = maxLabel.substring(0, numOfChars + ELLIPSIS.length);
       activeLabelFontSize = computeTextFontSize(
         maxLabel,
         fontFamily,
@@ -63,25 +75,15 @@ export const AutoFontScalar = (
         textAreaWidth,
         textAreaHeight
       );
-      if (activeLabelFontSize < minFont) {
-        numOfChars = 6;
-        maxLabel = maxLabel.substring(0, numOfChars + 2);
-        activeLabelFontSize = computeTextFontSize(
-          maxLabel,
-          fontFamily,
-          minFont,
-          maxFont,
-          maxLinesToDisplay,
-          textAreaWidth,
-          textAreaHeight
-        );
+      if (activeLabelFontSize >= minFont) {
+        break;
       }
     }
   }
 
   // same for the value and timestamp option, also check for sub metrics size in case of composite
   let {maxValue, maxTimestamp} = getMaxValueAndTimestamp(data);
-  //console.log(`AutoFontScalar maxValue ${maxValue}`);
+  //console.log(`AutoFontScaler maxValue ${maxValue}`);
   // assume no timestamp
   let activeValueFontSize = computeTextFontSize(
     maxValue,
@@ -94,15 +96,15 @@ export const AutoFontScalar = (
   );
   //console.log(`calc activeValueFontSize ${activeValueFontSize}`);
   if (showTimestamp) {
-    // two lines to be displayed, sharing half of the normal space for the value
+    // two lines to be displayed, so the value gets its share of the space instead of all of it
     activeValueFontSize = computeTextFontSize(
       maxValue,
       fontFamily,
       minFont,
       maxFont,
-      2,
+      maxLinesToDisplay,
       textAreaWidth,
-      (textAreaHeight * 0.67)
+      (textAreaHeight * valueHeightShare)
     );
   }
   // timestamp shares the same space as the value, but is always smaller
@@ -111,9 +113,9 @@ export const AutoFontScalar = (
     fontFamily,
     minFont,
     maxFont,
-    2,
+    maxLinesToDisplay,
     textAreaWidth,
-    (textAreaHeight * 0.33)
+    (textAreaHeight * timestampHeightShare)
   );
 
   if (activeTimestampFontSize < minFont) {
@@ -129,14 +131,12 @@ export const AutoFontScalar = (
   let activeCompositeValueFontSize = activeValueFontSize;
   let haveCompositeValueEnabled = false;
   // check if there are any composites with value enabled
-  if (data) {
-    for (let i = 0; i < data.length; i++) {
-      const item = data[i];
-      if (item.isComposite && item.showValue) {
-        // at least one composite has showValue set
-        haveCompositeValueEnabled = true;
-        break;
-      }
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    if (item.isComposite && item.showValue) {
+      // at least one composite has showValue set
+      haveCompositeValueEnabled = true;
+      break;
     }
   }
   if (!valueEnabled) {

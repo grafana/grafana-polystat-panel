@@ -4,19 +4,9 @@
 
 ## [Unreleased]
 
-### Project Updates
-
-- Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width
-- Add `.markdownlint-cli2.yaml` config with 120-char line limit
-- Fix long lines in CHANGELOG.md for markdownlint compliance
-- Add cspell dictionary words: Agentic, funcs, negotiables, unrequested
-- Fix pre-commit checklist to use `yarn` instead of `npm run`
-- Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
-  Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
-- Tighten ambiguous AGENTS.md rules: concrete 20-line threshold, stronger subagent directive, clarify
-  console.log as legacy pattern
-- Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
-- Add test-results and provisioning to markdownlint ignores
+- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
+- Expand test coverage, update dev tooling
+- Fixed edge case where ellipses truncation could escape polygon boundaries
 
 ## v2.1.16
 

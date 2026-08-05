@@ -1,7 +1,6 @@
 /**
  * Tests for utils
  */
-//import 'jest-canvas-mock';
 import { renderHook } from '@testing-library/react-hooks';
 
 import { ApplyOverrides, MatchOverride } from './override_processor';
