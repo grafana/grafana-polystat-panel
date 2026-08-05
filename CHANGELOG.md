@@ -6,6 +6,7 @@
 
 - Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
 - Expand test coverage, update dev tooling
+- Fixed edge case where ellipses truncation could escape polygon boundaries
 
 ## v2.1.16
 
