@@ -1,47 +1,27 @@
-import React from 'react';
-
 import { getTextToDisplay, buildTriggerCache, formatCompositeValueAndTimestamp } from './Polystat';
 import { PolystatModel } from './types';
+import { createPolystatModel } from '../test-utils/factory';
 
-const createMember = (overrides: Partial<PolystatModel> = {}): PolystatModel => ({
-  displayMode: 'all',
-  thresholdLevel: 0,
-  value: 100,
-  valueFormatted: '100.00',
-  valueRounded: 100,
-  stats: {},
-  name: 'member-a',
-  displayName: 'member-a',
-  timestamp: Date.now(),
-  timestampFormatted: '12:00:00',
-  prefix: '',
-  suffix: '',
-  color: '#000000',
-  clickThrough: '',
-  operatorName: 'mean',
-  newTabEnabled: false,
-  customClickthroughTargetEnabled: false,
-  customClickthroughTarget: '',
-  sanitizedURL: '',
-  sanitizeURLEnabled: false,
-  showName: true,
-  showValue: true,
-  showTimestamp: false,
-  isComposite: false,
-  members: [],
-  ...overrides,
-});
+const createMember = (overrides: Partial<PolystatModel> = {}): PolystatModel =>
+  createPolystatModel({
+    value: 100,
+    valueFormatted: '100.00',
+    valueRounded: 100,
+    name: 'member-a',
+    displayName: 'member-a',
+    timestampFormatted: '12:00:00',
+    ...overrides,
+  });
 
-const createComposite = (members: PolystatModel[], overrides: Partial<PolystatModel> = {}): PolystatModel => ({
-  ...createMember({
+const createComposite = (members: PolystatModel[], overrides: Partial<PolystatModel> = {}): PolystatModel =>
+  createMember({
     name: 'composite-a',
     displayName: 'composite-a',
     isComposite: true,
     displayMode: 'all',
     members,
     ...overrides,
-  }),
-});
+  });
 
 describe('Test Polystat', () => {
   describe('Ellipse Generation', () => {

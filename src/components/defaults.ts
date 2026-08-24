@@ -1,12 +1,16 @@
-import { createColor } from './gradients/color';
 import { FontFamilies } from './types';
+
+/**
+ * Appended to a label that Polystat has truncated. When fonts are auto-scaled, AutoFontScaler
+ * also sizes the label for these characters, so both sides have to agree on the length.
+ */
+export const ELLIPSIS = '...';
 
 /**
  * Color to use when rendering without any thresholds/overrides
  */
 export const GLOBAL_FILL_COLOR_RGBA = 'rgba(10, 85, 161, 1)'; // "#0a55a1"
 export const GLOBAL_FILL_COLOR_HEX = '#0a55a1';
-export const GLOBAL_FILL_COLOR = createColor(10, 85, 161);
 
 export const GLOBAL_BORDER_COLOR_RGBA = 'rgba(0, 0, 0, 0)'; // "#000000"
 /**
@@ -14,23 +18,19 @@ export const GLOBAL_BORDER_COLOR_RGBA = 'rgba(0, 0, 0, 0)'; // "#000000"
  */
 export const DEFAULT_OK_COLOR_RGBA = 'rgba(41, 156, 70, 1))'; // #299c46
 export const DEFAULT_OK_COLOR_HEX = '#299c46';
-export const DEFAULT_OK_COLOR = createColor(41, 156, 70);
 /**
  * Color for threshold Warning state
  */
 export const DEFAULT_WARNING_COLOR_RGBA = 'rgba(237, 129, 40, 1)'; // alternates // #FFC837 // '#e5ac0e'
 export const DEFAULT_WARNING_COLOR_HEX = '#ed8128'; // alternates // #FFC837 // '#e5ac0e'
-export const DEFAULT_WARNING_COLOR = createColor(237, 129, 40);
 /**
  * Color for threshold Critical state
  */
 export const DEFAULT_CRITICAL_COLOR_RGBA = 'rgba(245, 54, 54, 1)';
 export const DEFAULT_CRITICAL_COLOR_HEX = '#f53636';
-export const DEFAULT_CRITICAL_COLOR = createColor(245, 54, 54);
 
 export const DEFAULT_NO_THRESHOLD_COLOR_RGBA = GLOBAL_FILL_COLOR_RGBA;
 export const DEFAULT_NO_THRESHOLD_COLOR_HEX = GLOBAL_FILL_COLOR_HEX;
-export const DEFAULT_NO_THRESHOLD_COLOR = createColor(64, 64, 160);
 
 export const DEFAULT_NO_DATA_COLOR_HEX = '#808080'; // "grey"
 

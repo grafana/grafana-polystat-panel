@@ -47,6 +47,12 @@
 - Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
 - Add test-results and provisioning to markdownlint ignores
 
+### Other
+
+- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
+- Expand test coverage, update dev tooling
+- Fixed edge case where ellipses truncation could escape polygon boundaries
+
 ## v2.1.16
 
 - New docs now available!

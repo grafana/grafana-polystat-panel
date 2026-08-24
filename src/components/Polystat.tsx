@@ -18,6 +18,7 @@ import {
 } from './styles';
 import { Tooltip } from './tooltips/Tooltip';
 import { AutoFontScaler } from './auto_font_scaler';
+import { ELLIPSIS } from './defaults';
 import { GetAlignments } from './alignment';
 import { getTemplateSrv } from '@grafana/runtime';
 
@@ -150,7 +151,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // check array content equality
     if (JSON.stringify(animatedItems) !== JSON.stringify(animate)) {
       if (options.processedData) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         updateAnimation(options.processedData);
         setAnimatedItems(animate);
       }
@@ -331,14 +331,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   let hasShowValueEnabled = options.globalShowValueEnabled;
 
   if (options.globalAutoScaleFonts) {
-    const result = AutoFontScaler(
-      options.globalTextFontFamily,
+    const result = AutoFontScaler({
+      fontFamily: options.globalTextFontFamily,
       textAreaWidth,
       textAreaHeight,
-      hasShowValueEnabled,
-      hasShowTimeStampEnabled,
-      options.processedData!
-    );
+      valueEnabled: hasShowValueEnabled,
+      showTimestamp: hasShowTimeStampEnabled,
+      data: options.processedData!,
+    });
     activeLabelFontSize = result.activeLabelFontSize;
     activeValueFontSize = result.activeValueFontSize;
     activeCompositeValueFontSize = result.activeCompositeValueFontSize;
@@ -495,6 +495,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     return (
       <text
         className="toplabel"
+        data-testid={`polystat-label-${options.panelId}-${index}`}
         x={coords.x + alignments.labelTextAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
@@ -556,6 +557,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       <text
         ref={animationRefs[index]}
         className={`valueLabel${index}`}
+        data-testid={`polystat-value-${options.panelId}-${index}`}
         x={coords.x + alignments.labelValueAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
@@ -598,6 +600,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       <text
         ref={animationTimestampRefs[index]}
         className={`timestampLabel${index}`}
+        data-testid={`polystat-timestamp-${options.panelId}-${index}`}
         x={coords.x + alignments.labelValueAlignmentX}
         y={coords.y + verticalAlignment}
         textAnchor="middle"
@@ -725,11 +728,11 @@ export const getTextToDisplay = (
   }
   if (showEllipses) {
     if (text.length > numOfChars) {
-      return text.substring(0, numOfChars) + '...';
+      return text.substring(0, numOfChars) + ELLIPSIS;
     }
   }
   if (!autoSizeFonts && ellipseEnabled && text.length > ellipseCharacters) {
-    return text.substring(0, ellipseCharacters) + '...';
+    return text.substring(0, ellipseCharacters) + ELLIPSIS;
   }
   return text;
 };

@@ -1397,9 +1397,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@grafana/eslint-plugin-plugins@npm:0.6.0":
-  version: 0.6.0
-  resolution: "@grafana/eslint-plugin-plugins@npm:0.6.0"
+"@grafana/eslint-plugin-plugins@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@grafana/eslint-plugin-plugins@npm:0.7.0"
   dependencies:
     "@grafana/levitate": "npm:^0.17.0"
     "@typescript-eslint/utils": "npm:^8.23.0"
@@ -1408,7 +1408,7 @@ __metadata:
   peerDependencies:
     "@types/eslint": ^8.56.10 || ^9.0.0
     eslint: ^8.56.0 || ^9.0.0
-  checksum: 10c0/d4a328f010fb008b06d043847ca054452e7061977c992887431be24bd933743904d35beb65f193d4ab0697cfe747d0c53e6c4bf739da94b1eca5b60bd26777f0
+  checksum: 10c0/04e6d5f50804d31dad21e60cd3e9c46f5629a35cd7640bfc9ca3205cacdb4399ef60b56386763de803c7c2890d11e662e794c67ebca69d1a5fd749e39e9f8c4d
   languageName: node
   linkType: hard
 
@@ -2469,14 +2469,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:1.57.0":
-  version: 1.57.0
-  resolution: "@playwright/test@npm:1.57.0"
+"@playwright/test@npm:1.61.0":
+  version: 1.61.0
+  resolution: "@playwright/test@npm:1.61.0"
   dependencies:
-    playwright: "npm:1.57.0"
+    playwright: "npm:1.61.0"
   bin:
     playwright: cli.js
-  checksum: 10c0/35ba4b28be72bf0a53e33dbb11c6cff848fb9a37f49e893ce63a90675b5291ec29a1ba82c8a3b043abaead129400f0589623e9ace2e6a1c8eaa409721ecc3774
+  checksum: 10c0/993f5e30878f50c92c058f7a37f15bca456b794f2818a8c0b75bf09bc947657d56fee836ff4ebee83a869a3471663f0d61ca4eaaae31dd1bcf8bf4342344be35
   languageName: node
   linkType: hard
 
@@ -8019,14 +8019,14 @@ __metadata:
     "@emotion/react": "npm:11.14.0"
     "@grafana/data": "npm:9.5.21"
     "@grafana/eslint-config": "npm:9.0.0"
-    "@grafana/eslint-plugin-plugins": "npm:0.6.0"
+    "@grafana/eslint-plugin-plugins": "npm:^0.7.0"
     "@grafana/plugin-e2e": "npm:3.8.0"
     "@grafana/plugin-meta-extractor": "npm:0.11.0"
     "@grafana/runtime": "npm:9.5.21"
     "@grafana/schema": "npm:12.3.1"
     "@grafana/tsconfig": "npm:2.0.1"
     "@grafana/ui": "npm:9.5.21"
-    "@playwright/test": "npm:1.57.0"
+    "@playwright/test": "npm:1.61.0"
     "@stylistic/eslint-plugin-ts": "npm:4.4.1"
     "@swc/core": "npm:1.15.8"
     "@swc/helpers": "npm:0.5.18"
@@ -8073,6 +8073,7 @@ __metadata:
     jshint: "npm:2.13.6"
     markdownlint-cli2: "npm:0.22.1"
     moment-timezone: "npm:0.6.0"
+    playwright: "npm:1.61.0"
     prettier: "npm:3.7.4"
     react: "npm:17.0.2"
     react-dom: "npm:17.0.2"
@@ -11307,27 +11308,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright-core@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright-core@npm:1.57.0"
+"playwright-core@npm:1.61.0":
+  version: 1.61.0
+  resolution: "playwright-core@npm:1.61.0"
   bin:
     playwright-core: cli.js
-  checksum: 10c0/798e35d83bf48419a8c73de20bb94d68be5dde68de23f95d80a0ebe401e3b83e29e3e84aea7894d67fa6c79d2d3d40cc5bcde3e166f657ce50987aaa2421b6a9
+  checksum: 10c0/64cbf5e9f4ad81cbb005d59417e96435e324a6e3801f1c79b36850ad99f6bb90853c4b569a32c49b9eca1e07925bbb2a5a864babdba2178c3c395e0c589d5941
   languageName: node
   linkType: hard
 
-"playwright@npm:1.57.0":
-  version: 1.57.0
-  resolution: "playwright@npm:1.57.0"
+"playwright@npm:1.61.0":
+  version: 1.61.0
+  resolution: "playwright@npm:1.61.0"
   dependencies:
     fsevents: "npm:2.3.2"
-    playwright-core: "npm:1.57.0"
+    playwright-core: "npm:1.61.0"
   dependenciesMeta:
     fsevents:
       optional: true
   bin:
     playwright: cli.js
-  checksum: 10c0/ab03c99a67b835bdea9059f516ad3b6e42c21025f9adaa161a4ef6bc7ca716dcba476d287140bb240d06126eb23f889a8933b8f5f1f1a56b80659d92d1358899
+  checksum: 10c0/079dceebe8b745fa6062a3af928024d0c508177fbf15d61dba09ba173f277465ad3746fdc1b31788ade65428f4d3f92fc8083b44c07381b088721eaa2ea06513
   languageName: node
   linkType: hard
 
