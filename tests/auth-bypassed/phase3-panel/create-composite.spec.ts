@@ -3,9 +3,8 @@ import { expect, test } from '@grafana/plugin-e2e';
 test('test composite creation', async ({ page, panelEditPage }) => {
   await panelEditPage.datasource.set('TestData DB');
   await panelEditPage.setVisualization('Polystat');
-  await page.getByTestId('data-testid TestData series count').fill('10');
+  await page.locator('input[name="seriesCount"]').fill('10');
   await page.getByTestId('data-testid RefreshPicker run button').click();
-  await page.getByTestId('data-testid Composites Composites field property editor').click();
   await page.getByRole('button', { name: 'Add Composite' }).click();
 
   // Composite name — data-testid added to Input in CompositeItem.tsx
