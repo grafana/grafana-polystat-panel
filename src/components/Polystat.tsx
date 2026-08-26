@@ -473,19 +473,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
-  // allows the polygon to fill the horizontal space if the manually specified number of columns has not been used
-  let marginLeft = margin.left;
-  if (!options.autoSizeColumns && radius && lm.maxColumnsUsed < options.layoutNumColumns) {
-    let difference = options.layoutNumColumns - lm.maxColumnsUsed;
-    marginLeft += radius * difference;
-  }
-  // allows the polygon to fill the vertical space if the manually specified number of rows has not been used
-  let marginTop = margin.top;
-  if (!options.autoSizeRows && radius && lm.maxRowsUsed < options.layoutNumRows) {
-    let difference = options.layoutNumRows - lm.maxRowsUsed;
-    // always starts at zero, skip offset for first row used
-    marginTop += radius * (difference - 1);
-  }
+  // Centering is handled by the viewBox offsets from lm.getOffsets(), which size the used area
+  // from maxColumnsUsed/maxRowsUsed. Any additional nudge here would shift the group off-center.
+  const marginLeft = margin.left;
+  const marginTop = margin.top;
 
   const getLabelContent = (item: PolystatModel, index: number, coords: { x: number; y: number }) => {
     let verticalAlignment = alignments.labelWithValueTextAlignment;
