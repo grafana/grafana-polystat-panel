@@ -95,4 +95,47 @@ describe('composite value animation', () => {
     expect(generatePoints.mock.calls.length).toBe(rendersOnMount);
     generatePoints.mockRestore();
   });
+
+  it('animates the timestamp alongside the value', () => {
+    // the timestamp is written through a second ref, gated on globalShowTimestampEnabled
+    const stamped = [
+      createPolystatModel({ name: 'cpu', displayName: 'cpu', valueFormatted: '11.00', timestampFormatted: '10:00:00' }),
+      createPolystatModel({ name: 'mem', displayName: 'mem', valueFormatted: '22.00', timestampFormatted: '11:00:00' }),
+    ];
+    const { container } = render(
+      <Polystat
+        {...createPolystatOptions({
+          ...options,
+          globalShowTimestampEnabled: true,
+          processedData: [createPolystatModel({ ...composite, members: stamped })],
+        })}
+      />
+    );
+    const timestampText = () => container.querySelector('[data-testid="polystat-timestamp-1-0"]')!.innerHTML;
+
+    tick(2);
+    expect(timestampText()).toBe('11:00:00');
+    tick(1);
+    expect(timestampText()).toBe('10:00:00');
+  });
+
+  it('floors an animation speed below the minimum instead of spinning', () => {
+    const warn = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    const { container } = render(
+      <Polystat
+        {...createPolystatOptions({
+          ...options,
+          compositeConfig: { animationSpeed: '10', composites: [], enabled: true },
+        })}
+      />
+    );
+
+    // 10ms is clamped to 200ms, so a single 1000ms window advances 5 members, not 100
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
+    expect(valueText(container)).toBe('mem: 22.00');
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('too fast'));
+    warn.mockRestore();
+  });
 });
