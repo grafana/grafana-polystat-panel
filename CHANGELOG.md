@@ -6,9 +6,7 @@
 
 - New shape: Hexagon Flat Top, with flat edges at the top and bottom and points at the left and right
 - Polygons now use more of the panel, up to 38% larger on wide panels
-- Polygons are centered correctly when the number of rows or columns is set manually
-- Label and value text stays inside flat-top hexagons instead of crossing the angled edges
-- Labels no longer disappear on flat-top panels when Show Value is turned off
+- Setting rows or columns higher than the number of metrics no longer shrinks the polygons
 - Composite animation no longer skips a metric
 - Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
 - Expand test coverage, update dev tooling
