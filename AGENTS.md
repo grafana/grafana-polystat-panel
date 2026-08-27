@@ -103,6 +103,12 @@ Every task:
   - Run code > guess. Test suite → run it. Linter → run it. Type checker → run it.
   - Never "done" from plausible-looking diff. Plausibility ≠ correctness.
   - UI changes: screenshot before+after, describe diff.
+  - `yarn spellcheck` is NOT authoritative for CI. It runs the pinned cspell 8.19.4; CI runs
+    `npx cspell@6.13.3`, hardcoded in grafana/plugin-ci-workflows. cspell 8 accepts inflections of
+    words in `cspell.config.json` (a past-tense form of `typecheck` passes), 6.13.3 demands the
+    literal string, so local can pass while CI fails. Use a spelling already in the list, or run
+    `npx --yes cspell@6.13.3 -c cspell.config.json "**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}"`
+    to check what CI will see.
 - **Debugging:**
   - Root causes, not symptoms. Suppressing error ≠ fixing error.
   - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
