@@ -4,53 +4,12 @@
 
 ## [Unreleased]
 
-### Added
-
-- Add one provisioned dashboard per layout case, each a single panel sized to fit the default
-  viewport: `Layout-Wide-Pointed`, `Layout-Square-Pointed`, `Layout-Tall-Pointed`,
-  `Layout-Wide-Flat` and `Layout-Flat-Timestamp`
-  for E2E visual regression screenshots
-- Add `layout-space-optimization.spec.ts` Playwright spec for before/after layout comparison
-- Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown
-- Implement `HEXAGON_FLAT_TOP` geometry in `LayoutManager`: `findOptimalColumnsFlatTop`,
-  `getHexFlatTopRadius`, `getHexFlatTopDiameters`, `getOffsetsHexagonFlatTop`,
-  coordinate generation, and all switch branches
-- Wire `HEXAGON_FLAT_TOP` rendering through `Polystat.tsx`: SVG path generation, `textAreaWidth * 0.70`, `drawShape` case
-
-### Fixed
-
-- Replace hardcoded 20px padding with proportional `max(2, round(width * 0.05))` in `getTextSizeForWidth` — reduces
-  waste at small polygon sizes while preserving behavior at width=400px
-- Reduce `getTextSizeForWidthAndHeight` width reduction from 5% to 2%
-- Fix `getOffsetsHexagonPointedTop` to center grid using `maxColumnsUsed`/`maxRowsUsed` (actual data) instead of
-  `numColumns`/`numRows` (configured max)
-- Fix `textAreaWidth` for `HEXAGON_FLAT_TOP` to `diameterX * 0.70` and use full `diameterY`
-  for `textAreaHeight`; add alignment case to center text near y=0 where hex is widest
-
-### Changed
-
-- Remove `d3-hexbin` dependency from `Polystat.tsx`; replace with pure SVG path functions `hexPointedTopPath` and `hexFlatTopPath`
-- Rename `getHexFlatTopRadius` → `getHexPointedTopRadius` and `getHexFlatTopDiameters` → `getHexPointedTopDiameters`
-  in `LayoutManager` to correctly reflect pointed-top geometry
-- Replace `(W/H) * sqrt(N) * 0.75` column heuristic with `findOptimalColumns` for `HEXAGON_POINTED_TOP` auto-sizing
-  — up to 38% radius gain on wide panels
-
-### Project Updates
-
-- Clean up AGENTS.md: remove duplicate rules, fix truncated text, reformat to 120-char line width
-- Add `.markdownlint-cli2.yaml` config with 120-char line limit
-- Fix long lines in CHANGELOG.md for markdownlint compliance
-- Add cspell dictionary words: Agentic, funcs, negotiables, unrequested
-- Fix pre-commit checklist to use `yarn` instead of `npm run`
-- Consolidate AGENTS.md sections: merge self-improvement loop into maintaining, fold Changelog Policy into
-  Critical Rules, fold PR Summary Policy into Branching Policy, combine AI attribution rules into single bullet
-- Tighten ambiguous AGENTS.md rules: concrete 20-line threshold, stronger subagent directive, clarify
-  console.log as legacy pattern
-- Add `markdownlint-cli2` as devDependency with `yarn markdownlint` script
-- Add test-results and provisioning to markdownlint ignores
-
-### Other
-
+- New shape: Hexagon Flat Top, with flat edges at the top and bottom and points at the left and right
+- Polygons now use more of the panel, up to 38% larger on wide panels
+- Polygons are centered correctly when the number of rows or columns is set manually
+- Label and value text stays inside flat-top hexagons instead of crossing the angled edges
+- Labels no longer disappear on flat-top panels when Show Value is turned off
+- Composite animation no longer skips a metric
 - Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
 - Expand test coverage, update dev tooling
 - Fixed edge case where ellipses truncation could escape polygon boundaries
