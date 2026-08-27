@@ -6,6 +6,7 @@ import { LayoutManager } from './layoutManager';
 import { PolygonShapes } from '../types';
 
 describe('Layout Manager', () => {
+  const SQRT3 = 1.7320508075688772;
   describe('With hexagon layout', () => {
     const lm = new LayoutManager(100, 100, 1, 1, 100, false, PolygonShapes.HEXAGON_POINTED_TOP);
     const generated = lm.generateHexagonPointedTopLayout();
@@ -168,11 +169,26 @@ describe('Layout Manager', () => {
       expect(optRadius).toBeGreaterThan(79.6);
     });
 
-    it('handles a square panel without regression', () => {
+    it('picks a square grid for a square panel', () => {
       const lm = new LayoutManager(400, 400, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
-      const cols = lm.findOptimalColumns(16, 400, 400);
-      expect(cols).toBeGreaterThanOrEqual(1);
-      expect(cols).toBeLessThanOrEqual(16);
+      // clamped to [1, n] either way, so only the exact count distinguishes a real search
+      expect(lm.findOptimalColumns(16, 400, 400)).toBe(4);
+    });
+
+    it('pins the column count on the wide panel the optimizer was written for', () => {
+      const lm = new LayoutManager(2000, 500, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      expect(lm.findOptimalColumns(20, 2000, 500)).toBe(10);
+    });
+
+    // The closed-form estimate alone lands on the wrong integer here; only the neighbour search
+    // recovers the better count. These fail if findOptimalColumnsImpl degrades to round(approx).
+    it.each([
+      ['wide panel, 4 items', 4, 300, 100, 4, 3],
+      ['wide panel, 3 items', 3, 800, 400, 3, 2],
+    ])('searches past the closed-form estimate on a %s', (_name, n, width, height, expected, estimate) => {
+      const lm = new LayoutManager(width, height, 8, 8, 100, true, PolygonShapes.HEXAGON_POINTED_TOP);
+      expect(Math.round(Math.sqrt((n * width * 1.5) / (height * SQRT3)))).toBe(estimate);
+      expect(lm.findOptimalColumns(n, width, height)).toBe(expected);
     });
 
     it('returns 1 for a single item', () => {
@@ -196,6 +212,22 @@ describe('Layout Manager', () => {
       const oldRadius = Math.min(2000 / ((14 + 0.5) * SQRT3), 500 / ((2 + 1 / 3) * 1.5));
       const newRadius = Math.min(2000 / ((lm.numColumns + 0.5) * SQRT3), 500 / ((lm.numRows + 1 / 3) * 1.5));
       expect(newRadius).toBeGreaterThan(oldRadius);
+    });
+  });
+
+  describe('findOptimalColumnsFlatTop', () => {
+    it('pins the column count on a wide panel', () => {
+      const lm = new LayoutManager(2000, 500, 8, 8, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+      expect(lm.findOptimalColumnsFlatTop(20, 2000, 500)).toBe(10);
+    });
+
+    it.each([
+      ['4 items', 4, 400, 200, 4, 3],
+      ['3 items', 3, 600, 400, 3, 2],
+    ])('searches past the closed-form estimate with %s', (_name, n, width, height, expected, estimate) => {
+      const lm = new LayoutManager(width, height, 8, 8, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+      expect(Math.round(Math.sqrt((n * width * SQRT3) / (height * 1.5)))).toBe(estimate);
+      expect(lm.findOptimalColumnsFlatTop(n, width, height)).toBe(expected);
     });
   });
 
