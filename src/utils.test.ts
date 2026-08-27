@@ -502,8 +502,8 @@ describe('Utils SortVariableValuesByField', () => {
 
 describe('getTextSizeForWidthAndHeight', () => {
   it('returns maxFontPx when text has zero measured width and font fits height', () => {
-    // canvas mock in test env returns width=0, so any font fits width constraint
-    // maxFontPx=24 fits height=240, so result should be maxFontPx
+    // jest-canvas-mock measures 'A' as text.length = 1, which fits any width, so only the height
+    // constraint applies; maxFontPx=24 fits height=240, so the result is maxFontPx
     const result = getTextSizeForWidthAndHeight('A', '?px sans-serif', 100, 240, 6, 24);
     expect(result).toBe(24);
   });

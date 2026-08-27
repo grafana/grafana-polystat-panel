@@ -56,7 +56,8 @@ describe('AutoFontScaler', () => {
   });
 
   describe('label sizing', () => {
-    // a 200x100 area gives 190px of usable width and two lines of 50px
+    // a 200x100 area gives 196px of usable width (getTextSizeForWidthAndHeight keeps 98%)
+    // and two lines of 50px
     it('sizes the label to 40px when the width runs out first', () => {
       // 8 characters at 40px measure 192px
       expect(scale([makeLabel('Server-A')]).activeLabelFontSize).toBe(40);
