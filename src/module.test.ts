@@ -18,7 +18,7 @@ const registeredOptions = (): Map<string, any> => {
     {
       get: () => (config: any) => {
         if (config?.path) {
-          captured.set(config.path, config.defaultValue);
+          captured.set(config.path, config);
         }
         return builder;
       },
@@ -29,13 +29,34 @@ const registeredOptions = (): Map<string, any> => {
 };
 
 describe('panel option defaults', () => {
-  it('defaults the shape to the pointed-top hexagon', () => {
-    // not PolygonNamedShapes[0], which would move if a shape were inserted at the head of the list
-    expect(registeredOptions().get('globalShape')).toBe(PolygonShapes.HEXAGON_POINTED_TOP);
+  it('captures the options it claims to inspect', () => {
+    // guards the harness itself: a Proxy that recorded nothing would make every other case vacuous
+    const captured = registeredOptions();
+    expect(captured.size).toBeGreaterThan(40);
+    expect(captured.has('globalShape')).toBe(true);
   });
 
-  it('offers the default shape as a selectable option', () => {
-    const registeredDefault = registeredOptions().get('globalShape');
-    expect(PolygonNamedShapes.map((shape) => shape.value)).toContain(registeredDefault);
+  it('defaults the shape to the pointed-top hexagon', () => {
+    // not PolygonNamedShapes[0], which would move if a shape were inserted at the head of the list
+    expect(registeredOptions().get('globalShape').defaultValue).toBe(PolygonShapes.HEXAGON_POINTED_TOP);
+  });
+
+  it('offers every shape the renderer supports in the shape picker', () => {
+    // reads the settings actually wired onto the select, so pointing it at another option list
+    // or dropping a shape from the picker fails here
+    const offered = registeredOptions().get('globalShape').settings.options;
+    expect(offered).toEqual(PolygonNamedShapes);
+    expect(offered.map((shape: any) => shape.value).sort()).toEqual(Object.values(PolygonShapes).sort());
+  });
+
+  it.each([
+    ['autoSizeColumns', true],
+    ['autoSizeRows', true],
+    ['autoSizePolygons', true],
+    ['layoutNumColumns', 8],
+    ['layoutNumRows', 8],
+    ['globalShowValueEnabled', true],
+  ])('defaults %s to the value existing panels rely on', (path, expected) => {
+    expect(registeredOptions().get(path).defaultValue).toBe(expected);
   });
 });
