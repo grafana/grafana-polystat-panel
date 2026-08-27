@@ -8,8 +8,6 @@
 - Polygons now use more of the panel, up to 38% larger on wide panels
 - Setting rows or columns higher than the number of metrics no longer shrinks the polygons
 - Composite animation no longer skips a metric
-- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
-- Expand test coverage, update dev tooling
 - Fixed edge case where ellipses truncation could escape polygon boundaries
 
 ## v2.1.16
