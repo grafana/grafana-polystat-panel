@@ -155,9 +155,7 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes on the longest composite member timestamp, not the parent timestamp', () => {
-      const withMemberTimestamp = makeComposite([
-        createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' }),
-      ]);
+      const withMemberTimestamp = makeComposite([createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' })]);
       const withoutMemberTimestamp = makeComposite([createPolystatModel()]);
       const resultWithMemberTimestamp = scale([withMemberTimestamp], {
         textAreaWidth: 300,

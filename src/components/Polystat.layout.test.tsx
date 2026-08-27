@@ -27,7 +27,10 @@ describe('Polystat layout centering', () => {
       return [round2(origin.x + point.x), round2(origin.y + point.y)];
     });
     return {
-      viewBox: svg.getAttribute('viewBox')!.split(',').map((value) => round2(Number(value))),
+      viewBox: svg
+        .getAttribute('viewBox')!
+        .split(',')
+        .map((value) => round2(Number(value))),
       origin: [origin.x, origin.y],
       centers,
     };

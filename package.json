@@ -5,8 +5,8 @@
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
     "dev": "webpack -w -c ./.config/webpack/webpack.config.ts --env development",
-    "lint": "eslint --cache .",
-    "lint:fix": "yarn run lint --fix && prettier --write --list-different .",
+    "lint": "eslint --cache . && prettier --check .",
+    "lint:fix": "eslint --cache . --fix && prettier --write --list-different .",
     "playwright:test": "npx playwright test",
     "playwright:test:ui": "npx playwright test --ui",
     "playwright:showreport": "npx playwright show-report",

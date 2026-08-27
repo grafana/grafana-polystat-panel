@@ -380,7 +380,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       // TODO: safari needs the location.href
       fillColor = `url(#${uniquePanelId}_linear_gradient_state_data_${index})`;
     }
-    const useRadius = radius;  // computed once at line 240
     const coords = getCoords(index);
     if (!coords) {
       return;
@@ -413,7 +412,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             className={svgPathStyles}
             cx={coords.x}
             cy={coords.y}
-            r={useRadius}
+            r={radius}
             fill={fillColor}
           />
         );
@@ -427,8 +426,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             className={svgPathStyles}
             x={coords.x}
             y={coords.y}
-            height={useRadius * 2}
-            width={useRadius * 2}
+            height={radius * 2}
+            width={radius * 2}
             fill={fillColor}
           />
         );
