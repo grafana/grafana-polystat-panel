@@ -15,7 +15,7 @@ import {
 describe('Polystat -> PolystatV2 migrations', () => {
   describe('shape values round-trip', () => {
     // hexagon_flat_top is new on this branch, so no saved dashboard can predate it. The React
-    // migration path must pass it through: normalising or whitelisting shape values there would
+    // migration path must pass it through: normalizing or restricting shape values there would
     // silently rewrite panels that use it.
     it.each(['hexagon_flat_top', 'hexagon_pointed_top', 'circle', 'square', 'rectangle'])(
       'leaves globalShape %s untouched',

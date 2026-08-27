@@ -630,7 +630,7 @@ export class LayoutManager {
 
     // Y: odd columns are shifted down by SQRT3*R/2, so the grid reaches half a hex lower than the
     // row count suggests. That only happens if the last row actually reaches an odd column, which
-    // means holding at least two items. A last row with one item ends on column 0, unshifted.
+    // means holding at least two items. A last row with one item ends on column 0, which is not shifted.
     const offsetToViewY = shapeHeight * 0.5;
     // dataSize can exceed what the grid holds, so count only the polygons actually placed
     const placed = Math.min(dataSize, this.maxColumnsUsed * this.maxRowsUsed);
