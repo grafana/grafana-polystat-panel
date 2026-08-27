@@ -11,30 +11,31 @@ jest.mock('./Polystat', () => ({
 
 // Polystat itself is mocked, so only the fields that steer data processing matter here.
 // These are the values that differ from the factory's neutral defaults.
-const defaultOptions = createPolystatOptions({
-  globalClickthroughNewTabEnabled: true,
-  globalFillColor: 'rgba(10, 85, 161, 1)',
-  globalLabelFontSize: 14,
-  globalValueFontSize: 22,
-  globalCompositeValueFontSize: 22,
-  globalPolygonBorderSize: 2,
-  globalPolygonBorderColor: 'rgba(0, 0, 0, 0)',
-  globalShowTimestampFormat: 'HH:mm:ss',
-  globalTextFontAutoColorEnabled: true,
-  globalTextFontColor: '#000000',
-  globalTooltipsEnabled: true,
-  globalTooltipsShowTimestampEnabled: true,
-  layoutNumColumns: 6,
-  layoutNumRows: 6,
-  panelHeight: 400,
-  panelWidth: 600,
-  sortByDirection: 0,
-  compositeConfig: { animationSpeed: '1500', composites: [], enabled: false },
-  tooltipPrimarySortDirection: 0,
-  tooltipPrimarySortByField: 'threshold',
-  tooltipSecondarySortDirection: 0,
-  tooltipSecondarySortByField: 'value',
-});
+const makeOptions = () =>
+  createPolystatOptions({
+    globalClickthroughNewTabEnabled: true,
+    globalFillColor: 'rgba(10, 85, 161, 1)',
+    globalLabelFontSize: 14,
+    globalValueFontSize: 22,
+    globalCompositeValueFontSize: 22,
+    globalPolygonBorderSize: 2,
+    globalPolygonBorderColor: 'rgba(0, 0, 0, 0)',
+    globalShowTimestampFormat: 'HH:mm:ss',
+    globalTextFontAutoColorEnabled: true,
+    globalTextFontColor: '#000000',
+    globalTooltipsEnabled: true,
+    globalTooltipsShowTimestampEnabled: true,
+    layoutNumColumns: 6,
+    layoutNumRows: 6,
+    panelHeight: 400,
+    panelWidth: 600,
+    sortByDirection: 0,
+    compositeConfig: { animationSpeed: '1500', composites: [], enabled: false },
+    tooltipPrimarySortDirection: 0,
+    tooltipPrimarySortByField: 'threshold',
+    tooltipSecondarySortDirection: 0,
+    tooltipSecondarySortByField: 'value',
+  });
 
 const time = new Date('01 October 2022 10:28 UTC').getTime();
 
@@ -69,7 +70,7 @@ const createProps = (overrides: Record<string, any> = {}) => ({
     raw: { from: 'now-1h', to: 'now' },
   },
   timeZone: 'utc',
-  options: defaultOptions,
+  options: makeOptions(),
   transparent: false,
   width: 600,
   height: 400,
