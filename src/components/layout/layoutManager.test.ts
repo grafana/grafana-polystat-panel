@@ -290,16 +290,20 @@ describe('Layout Manager', () => {
       expect(round2(flatTop(400, 200, 2, 1).getOffsetsHexagonFlatTop(2).yoffset)).toBe(-66.67);
     });
 
-    it('heightOffset NOT added when dataSize < maxRowsUsed+1 (only 1 item with 2 cols)', () => {
-      const lmWith = new LayoutManager(400, 200, 2, 1, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
-      lmWith.maxColumnsUsed = 2;
-      lmWith.maxRowsUsed = 1;
-      // dataSize=1 < maxRowsUsed+1 (2) → heightOffset=0
-      const { yoffset: yoffsetNo } = lmWith.getOffsetsHexagonFlatTop(1);
-
-      // dataSize=2 >= maxRowsUsed+1 (2) → heightOffset=0.5
-      const { yoffset: yoffsetYes } = lmWith.getOffsetsHexagonFlatTop(2);
-      expect(yoffsetNo).not.toBeCloseTo(yoffsetYes, 1);
+    it('never sees a second column without enough items to reach the last row', () => {
+      // heightOffset keys off maxColumnsUsed alone. Rows fill left to right, so any layout the
+      // fill can actually produce with 2+ columns already has dataSize >= maxRowsUsed + 1.
+      for (let columns = 1; columns <= 12; columns++) {
+        for (let rows = 1; rows <= 12; rows++) {
+          for (let dataSize = 1; dataSize <= 40; dataSize++) {
+            const lm = new LayoutManager(800, 400, columns, rows, 0, true, PolygonShapes.HEXAGON_FLAT_TOP);
+            lm.generateActualColumnAndRowUsage(new Array(dataSize).fill(0), 0);
+            if (lm.maxColumnsUsed > 1) {
+              expect(dataSize).toBeGreaterThanOrEqual(lm.maxRowsUsed + 1);
+            }
+          }
+        }
+      }
     });
   });
 

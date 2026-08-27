@@ -628,12 +628,11 @@ export class LayoutManager {
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
 
-    // Y: odd columns shift rows down by SQRT3*R/2; add half-height if 2+ cols with data
+    // Y: odd columns shift rows down by SQRT3*R/2, so 2+ columns of data claim half a hex more.
+    // Rows fill left to right, so a second column already implies enough items to reach the last
+    // row; there is no need to also test dataSize against maxRowsUsed.
     const offsetToViewY = shapeHeight * 0.5;
-    let heightOffset = 0;
-    if (this.maxColumnsUsed > 1 && dataSize >= this.maxRowsUsed + 1) {
-      heightOffset = 0.5;
-    }
+    const heightOffset = this.maxColumnsUsed > 1 ? 0.5 : 0;
     const actualHeightUsed = (this.maxRowsUsed + heightOffset) * shapeHeight;
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
