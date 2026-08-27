@@ -221,36 +221,35 @@ describe('Layout Manager', () => {
   });
 
   describe('getOffsetsHexagonFlatTop', () => {
-    it('single column, single item: xoffset < 0 and yoffset < 0 (content centered)', () => {
-      const lm = new LayoutManager(400, 200, 1, 1, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
-      lm.maxColumnsUsed = 1;
-      lm.maxRowsUsed = 1;
-      const { xoffset, yoffset } = lm.getOffsetsHexagonFlatTop(1);
-      // heightOffset=0 because maxColumnsUsed (1) > 1 is false
-      expect(xoffset).toBeLessThan(0);
-      expect(yoffset).toBeLessThan(0);
+    // xoffset and yoffset are negative for any input by construction, since the radius is chosen so
+    // the grid fits. Asserting the sign proves nothing, so these pin the magnitude.
+    const round2 = (value: number) => Math.round(value * 100) / 100;
+
+    const flatTop = (width: number, height: number, columns: number, rows: number) => {
+      const lm = new LayoutManager(width, height, columns, rows, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
+      lm.maxColumnsUsed = columns;
+      lm.maxRowsUsed = rows;
+      return lm;
+    };
+
+    it('puts a lone hexagon at the middle of the panel', () => {
+      const { xoffset, yoffset } = flatTop(400, 200, 1, 1).getOffsetsHexagonFlatTop(1);
+      // one hexagon centered on a 400x200 panel sits at exactly half of each dimension
+      expect(round2(xoffset)).toBe(-200);
+      expect(round2(yoffset)).toBe(-100);
     });
 
-    it('two columns, two items: yoffset differs from single-column case (heightOffset=0.5 added)', () => {
-      const lm1 = new LayoutManager(400, 200, 2, 1, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
-      lm1.maxColumnsUsed = 1;
-      lm1.maxRowsUsed = 1;
-      const { yoffset: yoffset1 } = lm1.getOffsetsHexagonFlatTop(1);
-
-      const lm2 = new LayoutManager(400, 200, 2, 1, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
-      lm2.maxColumnsUsed = 2;
-      lm2.maxRowsUsed = 1;
-      // dataSize=2 >= maxRowsUsed+1 (2) → heightOffset=0.5
-      const { yoffset: yoffset2 } = lm2.getOffsetsHexagonFlatTop(2);
-      expect(yoffset2).not.toBeCloseTo(yoffset1, 1);
+    it('centers a 3x2 grid that fills the panel', () => {
+      const { xoffset, yoffset } = flatTop(200, 150, 3, 2).getOffsetsHexagonFlatTop(6);
+      expect(round2(xoffset)).toBe(-48.04);
+      expect(round2(yoffset)).toBe(-30.01);
     });
 
-    it('fills panel exactly: xoffset is negative (content pushed into view)', () => {
-      const lm = new LayoutManager(200, 150, 3, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);
-      lm.maxColumnsUsed = 3;
-      lm.maxRowsUsed = 2;
-      const { xoffset } = lm.getOffsetsHexagonFlatTop(6);
-      expect(xoffset).toBeLessThan(0);
+    it('shifts the grid up by half a hex when odd columns stagger down', () => {
+      // maxColumnsUsed 2 with dataSize 2 adds heightOffset 0.5, so the used height grows by half a
+      // hex and the offset shrinks from the single-column case
+      expect(round2(flatTop(400, 200, 1, 1).getOffsetsHexagonFlatTop(1).yoffset)).toBe(-100);
+      expect(round2(flatTop(400, 200, 2, 1).getOffsetsHexagonFlatTop(2).yoffset)).toBe(-66.67);
     });
 
     it('heightOffset NOT added when dataSize < maxRowsUsed+1 (only 1 item with 2 cols)', () => {
