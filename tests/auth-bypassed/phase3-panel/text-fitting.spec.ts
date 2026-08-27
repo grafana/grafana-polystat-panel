@@ -1,6 +1,6 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
-import { LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
+import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
 
 // Label and value text has to stay inside the polygon it belongs to. Both hexagons narrow away
 // from their center, so a text box sized against the widest point escapes through the angled
@@ -16,11 +16,13 @@ test.beforeEach(async ({ page }) => {
 
 for (const panel of PANELS) {
   test(`${panel.name} keeps all text inside its polygons`, async ({ page }) => {
-    const escaped = await page
+    const { checked, escaped } = await page
       .locator(`[data-testid="polystat-label-${panel.id}-0"]`)
       .evaluate((label: SVGTextElement, panelId) => {
         const svg = label.closest('svg')!;
         const outside: Array<{ index: number; kind: string; text: string }> = [];
+        // counted so a missed lookup shows up as under-coverage instead of a silent pass
+        let inspected = 0;
 
         Array.from(svg.querySelectorAll('path[transform]')).forEach((polygon, index) => {
           const match = polygon.getAttribute('transform')!.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/)!;
@@ -32,6 +34,7 @@ for (const panel of PANELS) {
             if (!text) {
               continue;
             }
+            inspected++;
             const box = text.getBBox();
             const corners = [
               [box.x, box.y],
@@ -49,9 +52,11 @@ for (const panel of PANELS) {
             }
           }
         });
-        return outside;
+        return { checked: inspected, escaped: outside };
       }, panel.id);
 
+    // every polygon must contribute a label and a value, or the check below inspected nothing
+    expect(checked).toBe(itemCount(panel.rowCounts) * 2);
     expect(escaped).toEqual([]);
   });
 }
