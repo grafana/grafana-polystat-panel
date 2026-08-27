@@ -112,12 +112,13 @@ export enum PolygonShapes {
   RECTANGLE = 'rectangle',
 }
 
-export const PolygonNamedShapes = [
-  { value: 'hexagon_pointed_top', label: 'Hexagon Pointed Top' },
-  { value: 'hexagon_flat_top', label: 'Hexagon Flat Top' },
-  { value: 'circle', label: 'Circle' },
-  { value: 'square', label: 'Square' },
-  { value: 'rectangle', label: 'Rectangle (Brick)' },
+// typed against the enum so a label list entry cannot drift from a shape the renderer knows
+export const PolygonNamedShapes: Array<SelectableValue<PolygonShapes>> = [
+  { value: PolygonShapes.HEXAGON_POINTED_TOP, label: 'Hexagon Pointed Top' },
+  { value: PolygonShapes.HEXAGON_FLAT_TOP, label: 'Hexagon Flat Top' },
+  { value: PolygonShapes.CIRCLE, label: 'Circle' },
+  { value: PolygonShapes.SQUARE, label: 'Square' },
+  { value: PolygonShapes.RECTANGLE, label: 'Rectangle (Brick)' },
 ];
 
 export interface PolystatDiameters {

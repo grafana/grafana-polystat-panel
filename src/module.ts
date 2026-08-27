@@ -6,6 +6,7 @@ import {
   FontFamilyOptionsLegacy,
   OperatorOptions,
   PolygonNamedShapes,
+  PolygonShapes,
   PolystatOptions,
   ShowTimestampFormats,
   ShowTimestampPositions,
@@ -465,7 +466,9 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalShape',
         description: 'Shape of polygon',
         category: ['Global'],
-        defaultValue: PolygonNamedShapes[0].value,
+        // named explicitly: binding to PolygonNamedShapes[0] would re-shape every panel that never
+        // set globalShape if a shape were ever inserted at the head of that list
+        defaultValue: PolygonShapes.HEXAGON_POINTED_TOP,
         settings: {
           options: PolygonNamedShapes,
         },
