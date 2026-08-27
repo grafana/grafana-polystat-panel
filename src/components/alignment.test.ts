@@ -190,4 +190,33 @@ describe('GetAlignments', () => {
       expect(result.valueWithLabelTextAlignment).toBeCloseTo(DY * 0.67 + V_FONT / 2);
     });
   });
+
+  // The cases above restate each formula, so they catch an accidental edit but say nothing about
+  // whether the placement is right. These assert the relationships the offsets exist to produce,
+  // and hold for every shape regardless of how the constants are tuned.
+  describe.each([
+    ['pointed-top hexagon', PolygonShapes.HEXAGON_POINTED_TOP],
+    ['flat-top hexagon', PolygonShapes.HEXAGON_FLAT_TOP],
+    ['circle', PolygonShapes.CIRCLE],
+    ['square', PolygonShapes.SQUARE],
+    ['rectangle', PolygonShapes.RECTANGLE],
+  ])('placement rules for a %s', (_name, shape) => {
+    const withoutTimestamp = GetAlignments(shape, DX, DY, TEXT_H, V_FONT, L_FONT, TS_FONT, false);
+    const withTimestamp = GetAlignments(shape, DX, DY, TEXT_H, V_FONT, L_FONT, TS_FONT, true);
+
+    it('puts the label above the value when both are shown', () => {
+      // y grows downward, so the label offset must be the smaller of the two
+      expect(withoutTimestamp.labelWithValueTextAlignment).toBeLessThan(withoutTimestamp.valueWithLabelTextAlignment);
+    });
+
+    it('never moves the value up to make room for a timestamp', () => {
+      expect(withTimestamp.valueWithLabelTextAlignment).toBeGreaterThanOrEqual(
+        withoutTimestamp.valueWithLabelTextAlignment
+      );
+    });
+
+    it('drops the label lower when there is no value above it', () => {
+      expect(withoutTimestamp.labelOnlyTextAlignment).toBeGreaterThan(withoutTimestamp.labelWithValueTextAlignment);
+    });
+  });
 });
