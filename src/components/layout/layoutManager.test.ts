@@ -3,6 +3,7 @@
  */
 
 import { LayoutManager } from './layoutManager';
+import { GetAlignments } from '../alignment';
 import { PolygonShapes } from '../types';
 
 describe('Layout Manager', () => {
@@ -253,8 +254,14 @@ describe('Layout Manager', () => {
       expect(yoffset).toBe(-100);
     });
 
-    it('gives the same offsets whether the grid is over-sized or exact', () => {
-      expect(pointedTop(8, 8)).toEqual(pointedTop(4, 1));
+    it.each([
+      [4, 1],
+      [5, 2],
+      [8, 8],
+      [12, 12],
+    ])('ignores a configured grid of %ix%i around the same data', (columns, rows) => {
+      // the configured size must not reach the offsets at all, only the occupied size
+      expect(pointedTop(columns, rows)).toEqual(pointedTop(4, 1));
     });
   });
 
@@ -360,8 +367,11 @@ describe('Layout Manager', () => {
     it.each([
       ['circle', PolygonShapes.CIRCLE],
       ['square', PolygonShapes.SQUARE],
-    ])('gives %s the same offsets whether the grid is over-sized or exact', (_name, shape) => {
-      expect(build(shape, 8).getOffsets(shape, 100, 4)).toEqual(build(shape, 4).getOffsets(shape, 100, 4));
+    ])('sizes %s from the occupied columns for any configured width', (_name, shape) => {
+      const exact = build(shape, 4).getOffsets(shape, 100, 4);
+      for (const columns of [4, 5, 8, 12]) {
+        expect(build(shape, columns).getOffsets(shape, 100, 4)).toEqual(exact);
+      }
     });
   });
 
@@ -399,9 +409,22 @@ describe('Layout Manager', () => {
       const lm = build(PolygonShapes.HEXAGON_FLAT_TOP);
       const radius = lm.getHexFlatTopRadius(4, 2);
       const { textAreaWidth, textAreaHeight } = lm.getTextArea();
-      // the value line sits ~1.11 * font below center, where the hexagon has narrowed
       const largestFont = textAreaHeight / 2;
-      const halfWidthAtValueLine = radius - (1.11 * largestFont) / Math.sqrt(3);
+      // ask alignment.ts where the value baseline lands rather than restating its constant, so
+      // retuning the flat-top offset there fails here instead of silently breaking the geometry
+      const { valueWithLabelTextAlignment } = GetAlignments(
+        PolygonShapes.HEXAGON_FLAT_TOP,
+        textAreaWidth,
+        textAreaHeight,
+        textAreaHeight,
+        largestFont,
+        largestFont,
+        0,
+        false
+      );
+      // the glyphs hang about a quarter of the font below the baseline
+      const valueLine = valueWithLabelTextAlignment + largestFont * 0.26;
+      const halfWidthAtValueLine = radius - valueLine / Math.sqrt(3);
       expect(textAreaWidth / 2).toBeLessThanOrEqual(halfWidthAtValueLine);
     });
   });
