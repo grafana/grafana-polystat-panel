@@ -38,7 +38,9 @@ export const createPolystatModel = (overrides: Partial<PolystatModel> = {}): Pol
 
 /**
  * Builds a complete PolystatOptions for tests that render <Polystat/> directly.
- * Values mirror the panel defaults; override whatever the test is about.
+ *
+ * These are neutral test values, not the panel defaults from module.ts: borders are off and
+ * tooltips are disabled to keep the rendered SVG minimal. Override whatever the test is about.
  */
 export const createPolystatOptions = (overrides: Partial<PolystatOptions> = {}): PolystatOptions => ({
   autoSizeColumns: true,

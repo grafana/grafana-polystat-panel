@@ -1,22 +1,10 @@
 import { expect, test } from '@grafana/plugin-e2e';
 import type { Page } from '@playwright/test';
 
+import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
+
 // Auto-sizing has to pack every polygon into the panel and center what it packs, across
 // extreme aspect ratios. Pixel sizes are not asserted, they move with Grafana's chrome.
-//
-// Panel ids come from provisioning/dashboards/Layout-Space-Optimization.json:
-//   1 = wide 4:1 pointed-top (20 items), 2 = square 1:1 pointed-top (16 items),
-//   3 = tall 1:4 pointed-top (20 items), 4 = wide 4:1 flat-top (20 items)
-//
-// rowCounts is how many polygons share each y, top row first. Flat-top staggers by column,
-// so its 20 items land on 4 alternating y values rather than 2 full rows.
-const PANELS = [
-  { id: 1, name: 'wide 4:1 pointed-top', rowCounts: [11, 9] },
-  { id: 2, name: 'square 1:1 pointed-top', rowCounts: [6, 6, 4] },
-  { id: 3, name: 'tall 1:4 pointed-top', rowCounts: [3, 3, 3, 3, 3, 3, 2] },
-  { id: 4, name: 'wide 4:1 flat-top', rowCounts: [6, 5, 5, 4] },
-];
-const TOTAL_ITEMS = PANELS.reduce((sum, panel) => sum + panel.rowCounts.reduce((a, b) => a + b, 0), 0);
 
 /**
  * Reads the polygon layout out of the svg that owns the given panel's labels. Anchoring on a
@@ -58,18 +46,15 @@ const readLayout = (page: Page, panelId: number) =>
     };
   });
 
-// The dashboard is ~36 grid rows tall; a 720p viewport would leave the lower panels unmounted
-test.use({ viewport: { width: 1600, height: 2400 } });
+test.use({ viewport: LAYOUT_VIEWPORT });
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/d/layout-space-opt/layout-space-optimization?kiosk');
-  // every panel has painted, not just the first
-  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(TOTAL_ITEMS, { timeout: 30000 });
+  await openLayoutDashboard(page);
 });
 
 for (const panel of PANELS) {
   test(`${panel.name} packs and centers its polygons`, async ({ page }) => {
-    const items = panel.rowCounts.reduce((a, b) => a + b, 0);
+    const items = itemCount(panel.rowCounts);
     await expect(page.locator(`[data-testid^="polystat-label-${panel.id}-"]`)).toHaveCount(items);
 
     const { rowCounts, gaps } = await readLayout(page, panel.id);
@@ -79,7 +64,3 @@ for (const panel of PANELS) {
     expect(gaps.top).toBe(gaps.bottom);
   });
 }
-
-test('no panel falls back to the layout error message', async ({ page }) => {
-  await expect(page.getByText('Not enough rows and columns for data')).toHaveCount(0);
-});

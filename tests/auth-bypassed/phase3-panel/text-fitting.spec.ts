@@ -1,25 +1,17 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
+import { LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
+
 // Label and value text has to stay inside the polygon it belongs to. Both hexagons narrow away
 // from their center, so a text box sized against the widest point escapes through the angled
 // edges. The unit tests mock measureText, so only a browser can confirm the real glyph widths.
 //
-// Panels come from provisioning/dashboards/Layout-Space-Optimization.json. Panel 4 renders
-// values up to '20.00', which is the width that used to escape the flat-top edges.
-const PANELS = [
-  { id: 1, name: 'wide 4:1 pointed-top' },
-  { id: 2, name: 'square 1:1 pointed-top' },
-  { id: 3, name: 'tall 1:4 pointed-top' },
-  { id: 4, name: 'wide 4:1 flat-top' },
-];
-const TOTAL_ITEMS = 76;
+// Panel 4 renders values up to '20.00', the width that used to escape the flat-top edges.
 
-// The dashboard is ~36 grid rows tall; a 720p viewport would leave the lower panels unmounted
-test.use({ viewport: { width: 1600, height: 2400 } });
+test.use({ viewport: LAYOUT_VIEWPORT });
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/d/layout-space-opt/layout-space-optimization?kiosk');
-  await expect(page.locator('[data-testid^="polystat-label-"]')).toHaveCount(TOTAL_ITEMS, { timeout: 30000 });
+  await openLayoutDashboard(page);
 });
 
 for (const panel of PANELS) {
