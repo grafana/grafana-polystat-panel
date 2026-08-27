@@ -254,6 +254,30 @@ describe('Layout Manager', () => {
       expect(yoffset).toBe(-100);
     });
 
+    it('centers the grid horizontally for every layout the fill can produce', () => {
+      // widthOffset claims half a shape width for the odd-row stagger. Sweeping both sides of that
+      // condition covers the ragged rows where the staggered row does not reach the last column.
+      for (let columns = 1; columns <= 8; columns++) {
+        for (let rows = 1; rows <= 8; rows++) {
+          for (let dataSize = 1; dataSize <= 40; dataSize++) {
+            const lm = new LayoutManager(800, 600, columns, rows, 0, true, PolygonShapes.HEXAGON_POINTED_TOP);
+            lm.generatePossibleColumnAndRowsSizes(false, false, 0, dataSize);
+            lm.generateActualColumnAndRowUsage(new Array(dataSize).fill(0), 0);
+            lm.setRadius(lm.generateRadius(PolygonShapes.HEXAGON_POINTED_TOP));
+
+            const shapeWidth = lm.radius * Math.sqrt(3);
+            const xs = lm
+              .generatePoints(new Array(dataSize).fill(0), 0, PolygonShapes.HEXAGON_POINTED_TOP)
+              .map((p) => p.x);
+            const { xoffset } = lm.getOffsets(PolygonShapes.HEXAGON_POINTED_TOP, 0, dataSize);
+            const before = Math.min(...xs) - shapeWidth / 2 - xoffset;
+            const after = xoffset + 800 - (Math.max(...xs) + shapeWidth / 2);
+            expect(Math.round(Math.abs(before - after))).toBe(0);
+          }
+        }
+      }
+    });
+
     it.each([
       [4, 1],
       [5, 2],
