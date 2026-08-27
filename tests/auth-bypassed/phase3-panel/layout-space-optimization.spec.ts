@@ -16,6 +16,7 @@ import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layou
 const readLayout = (page: Page, panelId: number) =>
   page.locator(`[data-testid="polystat-label-${panelId}-0"]`).evaluate((label: SVGTextElement) => {
     const svg = label.closest('svg')!;
+    const panelSize = `${svg.getAttribute('width')}x${svg.getAttribute('height')}`;
     const [viewX, viewY, viewWidth, viewHeight] = svg.getAttribute('viewBox')!.split(',').map(Number);
     const parseTranslate = (element: Element) => {
       const match = element.getAttribute('transform')!.match(/translate\(([-\d.]+),\s*([-\d.]+)\)/)!;
@@ -36,6 +37,7 @@ const readLayout = (page: Page, panelId: number) =>
     const xs = centers.map((center) => center.x);
     const ys = centers.map((center) => center.y);
     return {
+      panelSize,
       rowCounts,
       gaps: {
         left: Math.round(Math.min(...xs) - viewX),
@@ -57,9 +59,11 @@ for (const panel of PANELS) {
     const items = itemCount(panel.rowCounts);
     await expect(page.locator(`[data-testid^="polystat-label-${panel.id}-"]`)).toHaveCount(items);
 
-    const { rowCounts, gaps } = await readLayout(page, panel.id);
+    const { panelSize, rowCounts, gaps } = await readLayout(page, panel.id);
 
-    expect(rowCounts).toEqual(panel.rowCounts);
+    // rowCounts is what findOptimalColumns chose for this panel's pixel size, so it moves if either
+    // the optimizer or Grafana's chrome changes. Reporting the measured size says which.
+    expect(rowCounts, `panel ${panel.id} measured ${panelSize}`).toEqual(panel.rowCounts);
     expect(gaps.left).toBe(gaps.right);
     expect(gaps.top).toBe(gaps.bottom);
   });

@@ -6,6 +6,12 @@ import type { Page } from '@playwright/test';
 //
 // rowCounts is how many polygons share each y, top row first. Flat-top staggers by column,
 // so its 20 items land on 4 alternating y values rather than 2 full rows.
+//
+// These are the column counts findOptimalColumns picks for each panel's rendered pixel size, so
+// they depend on Grafana's chrome as well as on the optimizer. Measured at the pinned viewport
+// against Grafana 10.1 through 13.2, where panels 1-4 render 1550x170, 762x398, 368x854 and
+// 1156x170. If a Grafana upgrade shifts a panel across a candidate boundary, re-derive them; the
+// spec reports the measured size on failure.
 export const PANELS = [
   { id: 1, name: 'wide 4:1 pointed-top', rowCounts: [11, 9] },
   { id: 2, name: 'square 1:1 pointed-top', rowCounts: [6, 6, 4] },
