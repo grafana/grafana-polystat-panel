@@ -345,7 +345,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // Flat-top: label above center where hex narrows toward side tips.
   // Cap label ≤ value font so short labels don't overflow the upper angles.
   // Applied unconditionally so it also fires when auto-scale is off.
-  if (options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP && activeLabelFontSize > activeValueFontSize) {
+  // Skipped when the value font is 0: there is no value line to sit above, and capping to 0 would
+  // hide the label as well. AutoFontScaler returns 0 whenever the value is disabled or cannot fit.
+  if (
+    options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP &&
+    activeValueFontSize > 0 &&
+    activeLabelFontSize > activeValueFontSize
+  ) {
     activeLabelFontSize = activeValueFontSize;
   }
 
