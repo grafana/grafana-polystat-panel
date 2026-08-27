@@ -41,6 +41,51 @@ describe('Polystat layout centering', () => {
     };
   };
 
+  // circles and squares are not drawn as paths, so their positions come off their own attributes
+  const renderUniform = (overrides: Partial<PolystatOptions>) => {
+    const { container } = render(<Polystat {...createPolystatOptions(overrides)} />);
+    const svg = container.querySelector('svg')!;
+    const read = (element: Element, ...names: string[]) => names.map((name) => Number(element.getAttribute(name)));
+    return {
+      viewBox: svg
+        .getAttribute('viewBox')!
+        .split(',')
+        .map((value) => round2(Number(value))),
+      circles: Array.from(svg.querySelectorAll('circle')).map((c) => read(c, 'cx', 'cy', 'r')),
+      squares: Array.from(svg.querySelectorAll('rect')).map((r) => read(r, 'x', 'y', 'width')),
+    };
+  };
+
+  it('centers circles when a manual grid is larger than the data', () => {
+    const { viewBox, circles } = renderUniform(
+      manualGrid({ panelHeight: 400, globalShape: PolygonShapes.CIRCLE, processedData: makeData(4) })
+    );
+
+    // the row spans x = -100..700 (cx 0..600 with r 100), exactly matching the viewBox
+    expect(viewBox).toEqual([-100, -200, 800, 400]);
+    expect(circles).toEqual([
+      [0, 0, 100],
+      [200, 0, 100],
+      [400, 0, 100],
+      [600, 0, 100],
+    ]);
+  });
+
+  it('centers squares when a manual grid is larger than the data', () => {
+    const { viewBox, squares } = renderUniform(
+      manualGrid({ panelHeight: 400, globalShape: PolygonShapes.SQUARE, processedData: makeData(4) })
+    );
+
+    // the row spans x = 0..800 (x 0..600 plus a 200 width), exactly matching the viewBox
+    expect(viewBox).toEqual([0, -100, 800, 400]);
+    expect(squares).toEqual([
+      [0, 0, 200],
+      [200, 0, 200],
+      [400, 0, 200],
+      [600, 0, 200],
+    ]);
+  });
+
   it('places pointed-top hexagons on one centered row', () => {
     // 3 items in an 8x8 manual grid leaves 5 unused columns and 7 unused rows
     const { viewBox, centers } = renderPanel(

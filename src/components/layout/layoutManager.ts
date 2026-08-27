@@ -650,7 +650,8 @@ export class LayoutManager {
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
     const offsetToViewX = shapeWidth * 0.5;
-    const actualWidthUsed = this.numColumns * shapeWidth;
+    // size from the columns the data actually fills, matching actualHeightUsed above
+    const actualWidthUsed = Math.max(1, this.maxColumnsUsed) * shapeWidth;
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
     return { xoffset, yoffset };
@@ -665,7 +666,8 @@ export class LayoutManager {
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);
     const offsetToViewX = 0; //shapeWidth * 0.5;
-    const actualWidthUsed = this.numColumns * shapeWidth;
+    // size from the columns the data actually fills, matching actualHeightUsed above
+    const actualWidthUsed = Math.max(1, this.maxColumnsUsed) * shapeWidth;
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
     return { xoffset, yoffset };

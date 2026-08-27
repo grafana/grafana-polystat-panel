@@ -278,6 +278,33 @@ describe('Layout Manager', () => {
     });
   });
 
+  describe('getOffsets for uniform shapes with an under-filled manual grid', () => {
+    // 4 items in a manual 8-column grid on a short 800x100 panel. Height caps the radius at 50, so
+    // the row is only 400px wide and needs a real offset to center. Sizing from numColumns would
+    // claim the full 800px, leave nothing to center, and strand the row in the right half.
+    const build = (shape: PolygonShapes, numColumns: number) => {
+      const lm = new LayoutManager(800, 100, numColumns, 8, 100, true, shape);
+      lm.maxColumnsUsed = 4;
+      lm.maxRowsUsed = 1;
+      return lm;
+    };
+
+    it('centers circles on the columns the data fills, not the configured max', () => {
+      expect(build(PolygonShapes.CIRCLE, 8).getOffsets(PolygonShapes.CIRCLE, 100, 4).xoffset).toBe(-250);
+    });
+
+    it('centers squares on the columns the data fills, not the configured max', () => {
+      expect(build(PolygonShapes.SQUARE, 8).getOffsets(PolygonShapes.SQUARE, 100, 4).xoffset).toBe(-200);
+    });
+
+    it.each([
+      ['circle', PolygonShapes.CIRCLE],
+      ['square', PolygonShapes.SQUARE],
+    ])('gives %s the same offsets whether the grid is over-sized or exact', (_name, shape) => {
+      expect(build(shape, 8).getOffsets(shape, 100, 4)).toEqual(build(shape, 4).getOffsets(shape, 100, 4));
+    });
+  });
+
   describe('getTextArea', () => {
     const build = (shape: PolygonShapes) => {
       const lm = new LayoutManager(400, 200, 4, 2, 100, true, shape);
