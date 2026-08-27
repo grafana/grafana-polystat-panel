@@ -2,6 +2,7 @@ import React from 'react';
 import { act, render } from '@testing-library/react';
 
 import { Polystat } from './Polystat';
+import { LayoutManager } from './layout/layoutManager';
 import { PolystatOptions } from './types';
 import { createPolystatModel, createPolystatOptions } from '../test-utils/factory';
 
@@ -79,5 +80,19 @@ describe('composite value animation', () => {
     const second = render(<Polystat {...createPolystatOptions(options)} />);
     tick(2);
     expect(valueText(second.container)).toBe('mem: 22.00');
+  });
+
+  it('repaints without re-running the layout', () => {
+    // generatePoints runs once per render. The tick writes text through refs, so it must not
+    // trigger one: holding the member indexes in state re-solved the whole layout every frame.
+    const generatePoints = jest.spyOn(LayoutManager.prototype, 'generatePoints');
+    const { container } = render(<Polystat {...createPolystatOptions(options)} />);
+    const rendersOnMount = generatePoints.mock.calls.length;
+
+    tick(3);
+
+    expect(valueText(container)).toBe('disk: 33.00');
+    expect(generatePoints.mock.calls.length).toBe(rendersOnMount);
+    generatePoints.mockRestore();
   });
 });

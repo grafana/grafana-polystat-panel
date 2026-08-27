@@ -45,9 +45,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
   const [animationTimestampRefs, setAnimationTimestampRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
-  const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
-  // mirrors animationMetricIndexes so the animation tick can read the current values without
-  // going through a state updater
+  // which member of each composite is currently painted. Held in a ref, not state: the tick writes
+  // the text through animationRefs imperatively, so nothing in the render tree reads these and
+  // storing them in state would re-run the whole layout on every animation frame.
   const metricIndexesRef = useRef<number[]>([]);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -70,7 +70,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         if (animationRefs.length !== newAnimationRefs.length) {
           setAnimationRefs(newAnimationRefs);
           setAnimationTimestampRefs(newAnimationTimestampRefs);
-          setAnimationMetricIndexes(newAnimationMetricIndexes);
+          metricIndexesRef.current = newAnimationMetricIndexes;
         }
       }
     }
@@ -122,9 +122,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       next[index] = metricIndex;
     }
     metricIndexesRef.current = next;
-    setAnimationMetricIndexes(next);
   }, [
-    // animationMetricIndexes is deliberately absent: the tick reads metricIndexesRef instead
     animationRefs,
     animationTimestampRefs,
     animatedItems,
@@ -133,10 +131,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.globalShowTimestampEnabled,
     options.globalShowValueEnabled,
   ]);
-
-  useEffect(() => {
-    metricIndexesRef.current = animationMetricIndexes;
-  }, [animationMetricIndexes]);
 
   const animateCompositeRef = useRef(animateComposite);
   useEffect(() => {
