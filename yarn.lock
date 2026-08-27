@@ -3568,13 +3568,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/d3-hexbin@npm:0.2.5":
-  version: 0.2.5
-  resolution: "@types/d3-hexbin@npm:0.2.5"
-  checksum: 10c0/16045649b90639962e612c65e67f76ac47cd17d873ac26712a69021b4eb79fdf87fc68ef36803793ae189800f7e0e400ca24753dd32b3066af8b2c8348718681
-  languageName: node
-  linkType: hard
-
 "@types/d3-hierarchy@npm:*":
   version: 3.1.7
   resolution: "@types/d3-hierarchy@npm:3.1.7"
@@ -6058,13 +6051,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-hexbin@npm:0.2.2":
-  version: 0.2.2
-  resolution: "d3-hexbin@npm:0.2.2"
-  checksum: 10c0/775ed2d2b278836c84de2ce97770e515e74d44cda28bd548fcee90b0fd4026da5abf0cb089d67b7af44e3ad092df5f3da04953172ddf66a6328e2b15d37f70ea
-  languageName: node
-  linkType: hard
-
 "d3-hierarchy@npm:3":
   version: 3.1.2
   resolution: "d3-hierarchy@npm:3.1.2"
@@ -8031,7 +8017,6 @@ __metadata:
     "@testing-library/react": "npm:12.1.5"
     "@testing-library/react-hooks": "npm:8.0.1"
     "@types/d3": "npm:7.4.3"
-    "@types/d3-hexbin": "npm:0.2.5"
     "@types/eslint": "npm:9.6.1"
     "@types/glob": "npm:8.1.0"
     "@types/hoist-non-react-statics": "npm:3.3.7"
@@ -8050,7 +8035,6 @@ __metadata:
     copy-webpack-plugin: "npm:11.0.0"
     cspell: "npm:8.19.4"
     css-loader: "npm:6.11.0"
-    d3-hexbin: "npm:0.2.2"
     emotion: "npm:11.0.0"
     eslint: "npm:9.39.2"
     eslint-config-prettier: "npm:8.10.2"
