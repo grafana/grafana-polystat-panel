@@ -251,20 +251,14 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 
   // compute text area size (used to calculate the fontsize)
-  // Flat-top: sides angle inward toward left/right tips. Value baseline sits at
-  // ~0.85*valueFont from center; solving for no overflow gives textAreaWidth ≤ 0.71*diameterX.
-  // Use 0.70 for safety. Flat top/bottom edges mean full diameterY height is usable.
-  const textAreaWidth =
-    options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP ? diameterX * 0.7 : diameterX;
-  // Pointed-top/circle/square: tips at top/bottom unusable — use half height.
-  // Flat-top: flat edges at 12/6 o'clock — full height is usable.
-  // Rectangle: every pixel available.
-  const textAreaHeight =
-    options.globalShape === PolygonShapes.RECTANGLE
-      ? diameterY
-      : options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP
-        ? diameterY
-        : diameterY / 2;
+  // Flat-top sides angle inward toward the left/right tips, so the full diameterX is only
+  // available at the vertical center. The value line sits ~1.11*valueFont below it, which leaves
+  // width * 0.5 <= radius - 0.64 * valueFont. With the height capped at diameterY / 2 below, the
+  // largest font is diameterY / 4 and 0.70 * diameterX satisfies that bound.
+  const textAreaWidth = options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP ? diameterX * 0.7 : diameterX;
+  // Rectangle bricks can use every pixel. Every other shape narrows away from its vertical
+  // center, so half the height keeps two lines of text off the angled edges.
+  const textAreaHeight = options.globalShape === PolygonShapes.RECTANGLE ? diameterY : diameterY / 2;
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
   // use the smallest of diameterX or Y
