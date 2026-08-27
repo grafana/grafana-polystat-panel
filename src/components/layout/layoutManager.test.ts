@@ -180,7 +180,7 @@ describe('Layout Manager', () => {
       expect(lm.findOptimalColumns(20, 2000, 500)).toBe(10);
     });
 
-    // The closed-form estimate alone lands on the wrong integer here; only the neighbour search
+    // The closed-form estimate alone lands on the wrong integer here; only the neighbor search
     // recovers the better count. These fail if findOptimalColumnsImpl degrades to round(approx).
     it.each([
       ['wide panel, 4 items', 4, 300, 100, 4, 3],
