@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { PolygonShapes, PolystatDiameters } from '../types';
+import { PolygonShapes, PolystatDiameters, PolystatTextArea } from '../types';
 import { LayoutPoint } from './types';
 /**
  * LayoutManager creates layouts for supported polygon shapes
@@ -699,5 +699,22 @@ export class LayoutManager {
       default:
         return this.getUniformDiameters();
     }
+  }
+
+  /**
+   * Returns the box that text may occupy inside a single polygon, used to pick the font size.
+   *
+   * Rectangle bricks can use every pixel. Every other shape narrows away from its vertical
+   * center, so half the height keeps two lines of text off the angled edges. Flat-top
+   * additionally narrows toward its left and right tips: the value line sits ~1.11 * its font
+   * below center, which requires width * 0.5 <= radius - 0.64 * font. Half height caps the font
+   * at diameterY / 4, and 0.70 * diameterX satisfies that bound.
+   */
+  getTextArea(): PolystatTextArea {
+    const { diameterX, diameterY } = this.getDiameters();
+    return {
+      textAreaWidth: this.shape === PolygonShapes.HEXAGON_FLAT_TOP ? diameterX * 0.7 : diameterX,
+      textAreaHeight: this.shape === PolygonShapes.RECTANGLE ? diameterY : diameterY / 2,
+    };
   }
 }

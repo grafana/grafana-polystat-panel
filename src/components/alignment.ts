@@ -30,6 +30,9 @@ export const GetAlignments = (
     case PolygonShapes.HEXAGON_FLAT_TOP:
       // Flat-top sides angle inward toward left/right tips as |y| increases.
       // Keep text close to y=0 (hex center) where full width is available.
+      // These offsets are font-relative rather than textAreaHeight-relative, so they rely on
+      // LayoutManager.getTextArea() capping textAreaHeight at diameterY / 2. Raising that cap
+      // pushes the value line through the angled edge.
       labelOnlyTextAlignment = activeLabelFontSize * 0.37;
       valueWithLabelTextAlignment = activeValueFontSize * 0.85;
       labelWithValueTextAlignment = -(activeValueFontSize * 0.25);

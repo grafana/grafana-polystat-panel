@@ -278,6 +278,47 @@ describe('Layout Manager', () => {
     });
   });
 
+  describe('getTextArea', () => {
+    const build = (shape: PolygonShapes) => {
+      const lm = new LayoutManager(400, 200, 4, 2, 100, true, shape);
+      lm.maxColumnsUsed = 4;
+      lm.maxRowsUsed = 2;
+      return lm;
+    };
+
+    it('gives a rectangle brick its whole height', () => {
+      const lm = build(PolygonShapes.RECTANGLE);
+      const { diameterX, diameterY } = lm.getDiameters();
+      expect(lm.getTextArea()).toEqual({ textAreaWidth: diameterX, textAreaHeight: diameterY });
+    });
+
+    it.each([
+      ['pointed-top hexagon', PolygonShapes.HEXAGON_POINTED_TOP],
+      ['circle', PolygonShapes.CIRCLE],
+      ['square', PolygonShapes.SQUARE],
+    ])('gives %s the full width and half the height', (_name, shape) => {
+      const lm = build(shape);
+      const { diameterX, diameterY } = lm.getDiameters();
+      expect(lm.getTextArea()).toEqual({ textAreaWidth: diameterX, textAreaHeight: diameterY / 2 });
+    });
+
+    it('narrows a flat-top hexagon to 70% width so the value line clears the angled edges', () => {
+      const lm = build(PolygonShapes.HEXAGON_FLAT_TOP);
+      const { diameterX, diameterY } = lm.getDiameters();
+      expect(lm.getTextArea()).toEqual({ textAreaWidth: diameterX * 0.7, textAreaHeight: diameterY / 2 });
+    });
+
+    it('keeps the flat-top box inside the hexagon at the largest font it allows', () => {
+      const lm = build(PolygonShapes.HEXAGON_FLAT_TOP);
+      const radius = lm.getHexFlatTopRadius(4, 2);
+      const { textAreaWidth, textAreaHeight } = lm.getTextArea();
+      // the value line sits ~1.11 * font below center, where the hexagon has narrowed
+      const largestFont = textAreaHeight / 2;
+      const halfWidthAtValueLine = radius - (1.11 * largestFont) / Math.sqrt(3);
+      expect(textAreaWidth / 2).toBeLessThanOrEqual(halfWidthAtValueLine);
+    });
+  });
+
   describe('generateRadius for HEXAGON_FLAT_TOP', () => {
     it('returns positive radius after layout generation', () => {
       const lm = new LayoutManager(400, 200, 4, 2, 100, true, PolygonShapes.HEXAGON_FLAT_TOP);

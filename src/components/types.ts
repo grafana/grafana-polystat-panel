@@ -125,6 +125,11 @@ export interface PolystatDiameters {
   diameterY: number;
 }
 
+export interface PolystatTextArea {
+  textAreaWidth: number;
+  textAreaHeight: number;
+}
+
 export const OperatorOptions: SelectableValue[] = [
   { value: 'mean', label: 'Mean (avg)' },
   { value: 'sum', label: 'Sum' },

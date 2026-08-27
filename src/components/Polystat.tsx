@@ -250,15 +250,8 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.processedData!.length
   );
 
-  // compute text area size (used to calculate the fontsize)
-  // Flat-top sides angle inward toward the left/right tips, so the full diameterX is only
-  // available at the vertical center. The value line sits ~1.11*valueFont below it, which leaves
-  // width * 0.5 <= radius - 0.64 * valueFont. With the height capped at diameterY / 2 below, the
-  // largest font is diameterY / 4 and 0.70 * diameterX satisfies that bound.
-  const textAreaWidth = options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP ? diameterX * 0.7 : diameterX;
-  // Rectangle bricks can use every pixel. Every other shape narrows away from its vertical
-  // center, so half the height keeps two lines of text off the angled edges.
-  const textAreaHeight = options.globalShape === PolygonShapes.RECTANGLE ? diameterY : diameterY / 2;
+  // text area size drives the fontsize, and narrows with the shape
+  const { textAreaWidth, textAreaHeight } = lm.getTextArea();
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
   // use the smallest of diameterX or Y
@@ -466,11 +459,6 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
-  // Centering is handled by the viewBox offsets from lm.getOffsets(), which size the used area
-  // from maxColumnsUsed/maxRowsUsed. Any additional nudge here would shift the group off-center.
-  const marginLeft = margin.left;
-  const marginTop = margin.top;
-
   const getLabelContent = (item: PolystatModel, index: number, coords: { x: number; y: number }) => {
     let verticalAlignment = alignments.labelWithValueTextAlignment;
     if (!item.showValue) {
@@ -623,7 +611,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox={`${xoffset},${yoffset},${options.panelWidth},${options.panelHeight}`}
       >
-        <g transform={`translate(${marginLeft},${marginTop})`}>
+        {/* lm.getOffsets() centers the grid through the viewBox, so this group adds no shift of
+            its own. Any nudge here would move the polygons off center. */}
+        <g transform={`translate(${margin.left},${margin.top})`}>
           <Gradients gradientId={uniquePanelId} data={options.processedData} />
 
           {options.processedData!.map((item, index) => {
@@ -634,24 +624,26 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);
-            let clickableUrl: JSX.Element;
-            // only add target attribute when there is one specified
-            if (resolvedClickthroughTarget.length > 0 && useUrl.length > 0) {
-              clickableUrl = (
-                <a target={resolvedClickthroughTarget} href={useUrl}>
-                  {drawShape(index, options.globalShape)}
-                </a>
-              );
-            } else {
-              clickableUrl = <a href={useUrl}>{drawShape(index, options.globalShape)}</a>;
+            // build the shape once; wrapping it in an anchor is what varies
+            let shape = drawShape(index, options.globalShape);
+            if (useUrl.length > 0) {
+              // only add target attribute when there is one specified
+              shape =
+                resolvedClickthroughTarget.length > 0 ? (
+                  <a target={resolvedClickthroughTarget} href={useUrl}>
+                    {shape}
+                  </a>
+                ) : (
+                  <a href={useUrl}>{shape}</a>
+                );
             }
             return (
-              <>
-                {useUrl.length > 0 && clickableUrl ? clickableUrl : drawShape(index, options.globalShape)}
+              <React.Fragment key={`polystat-item-${uniquePanelId}-${index}`}>
+                {shape}
                 {getLabelContent(item, index, coords)}
                 {getValueContent(item, index, coords)}
                 {getTimestampForValueContent(item, index, coords)}
-              </>
+              </React.Fragment>
             );
           })}
         </g>
