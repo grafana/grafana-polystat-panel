@@ -6,7 +6,7 @@
 
 ### Added
 
-- Add provisioned dashboard `Layout-Space-Optimization.json` with 4 panels (wide/square/tall/flat-top)
+- Add provisioned dashboards `Layout-Wide-Pointed`, `Layout-Square-Pointed`, `Layout-Tall-Pointed`, `Layout-Wide-Flat` and `Layout-Flat-Timestamp`, one panel each
   for E2E visual regression screenshots
 - Add `layout-space-optimization.spec.ts` Playwright spec for before/after layout comparison
 - Add `HEXAGON_FLAT_TOP` to `PolygonShapes` enum and shape selector dropdown

@@ -1,24 +1,21 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
-import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
+import { itemCount, openLayoutPanel, PANELS } from './layout-dashboard';
 
 // Label and value text has to stay inside the polygon it belongs to. Both hexagons narrow away
 // from their center, so a text box sized against the widest point escapes through the angled
 // edges. The unit tests mock measureText, so only a browser can confirm the real glyph widths.
 //
-// Panel 4 renders values up to '20.00', the width that used to escape the flat-top edges. Panel 5
-// is flat-top with timestamps, where the label, value and timestamp share the same narrowed box.
-
-test.use({ viewport: LAYOUT_VIEWPORT });
-
-test.beforeEach(async ({ page }) => {
-  await openLayoutDashboard(page);
-});
+// The wide flat-top case renders values up to '20.00', the width that used to escape the angled
+// edges, and the timestamp case shares that narrowed box between three lines of text.
 
 for (const panel of PANELS) {
   test(`${panel.name} keeps all text inside its polygons`, async ({ page }) => {
-    const { checked, escaped } = await page.locator(`[data-testid="polystat-label-${panel.id}-0"]`).evaluate(
-      (label: SVGTextElement, { panelId, textKinds }) => {
+    await openLayoutPanel(page, panel);
+
+    const { checked, escaped } = await page
+      .locator('[data-testid="polystat-label-1-0"]')
+      .evaluate((label: SVGTextElement, textKinds: string[]) => {
         const svg = label.closest('svg')!;
         const outside: Array<{ index: number; kind: string; text: string }> = [];
         // counted so a missed lookup shows up as under-coverage instead of a silent pass
@@ -30,7 +27,7 @@ for (const panel of PANELS) {
           const centerY = Number(match[2]);
 
           for (const kind of textKinds) {
-            const text = svg.querySelector(`[data-testid="polystat-${kind}-${panelId}-${index}"]`) as SVGTextElement;
+            const text = svg.querySelector(`[data-testid="polystat-${kind}-1-${index}"]`) as SVGTextElement;
             if (!text) {
               continue;
             }
@@ -59,9 +56,7 @@ for (const panel of PANELS) {
           }
         });
         return { checked: inspected, escaped: outside };
-      },
-      { panelId: panel.id, textKinds: panel.textKinds }
-    );
+      }, panel.textKinds);
 
     // every polygon must contribute each of its text kinds, or the check below inspected nothing
     expect(checked).toBe(itemCount(panel.rowCounts) * panel.textKinds.length);

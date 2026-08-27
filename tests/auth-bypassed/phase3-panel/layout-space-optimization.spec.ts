@@ -1,7 +1,7 @@
 import { expect, test } from '@grafana/plugin-e2e';
 import type { Page } from '@playwright/test';
 
-import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layout-dashboard';
+import { itemCount, openLayoutPanel, PANELS } from './layout-dashboard';
 
 // Auto-sizing has to pack every polygon into the panel and center what it packs, across
 // extreme aspect ratios. Pixel sizes are not asserted, they move with Grafana's chrome.
@@ -13,8 +13,8 @@ import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layou
  * Returns the polygon count per row and the unrounded gap between the outermost polygon centers
  * and the viewBox edges. Equal gaps on opposing edges means the grid is centered.
  */
-const readLayout = (page: Page, panelId: number) =>
-  page.locator(`[data-testid="polystat-label-${panelId}-0"]`).evaluate((label: SVGTextElement) => {
+const readLayout = (page: Page) =>
+  page.locator('[data-testid="polystat-label-1-0"]').evaluate((label: SVGTextElement) => {
     const svg = label.closest('svg')!;
     const panelSize = `${svg.getAttribute('width')}x${svg.getAttribute('height')}`;
     const [viewX, viewY, viewWidth, viewHeight] = svg.getAttribute('viewBox')!.split(',').map(Number);
@@ -48,22 +48,16 @@ const readLayout = (page: Page, panelId: number) =>
     };
   });
 
-test.use({ viewport: LAYOUT_VIEWPORT });
-
-test.beforeEach(async ({ page }) => {
-  await openLayoutDashboard(page);
-});
-
 for (const panel of PANELS) {
   test(`${panel.name} packs and centers its polygons`, async ({ page }) => {
-    const items = itemCount(panel.rowCounts);
-    await expect(page.locator(`[data-testid^="polystat-label-${panel.id}-"]`)).toHaveCount(items);
+    await openLayoutPanel(page, panel);
+    await expect(page.locator('[data-testid^="polystat-label-1-"]')).toHaveCount(itemCount(panel.rowCounts));
 
-    const { panelSize, rowCounts, gaps } = await readLayout(page, panel.id);
+    const { panelSize, rowCounts, gaps } = await readLayout(page);
 
     // rowCounts is what findOptimalColumns chose for this panel's pixel size, so it moves if either
     // the optimizer or Grafana's chrome changes. Reporting the measured size says which.
-    expect(rowCounts, `panel ${panel.id} measured ${panelSize}`).toEqual(panel.rowCounts);
+    expect(rowCounts, `${panel.name} measured ${panelSize}`).toEqual(panel.rowCounts);
     // round the difference rather than each side: the two differ by a fraction of a pixel from the
     // hex stagger, and rounding them separately flips whenever they straddle a .5 boundary
     expect(Math.round(Math.abs(gaps.left - gaps.right))).toBe(0);
