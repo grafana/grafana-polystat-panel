@@ -46,6 +46,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animationTimestampRefs, setAnimationTimestampRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
   const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
+  // mirrors animationMetricIndexes so the animation tick can read the current values without
+  // going through a state updater
+  const metricIndexesRef = useRef<number[]>([]);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
   // this MUST be unique for gradients to work properly
@@ -77,50 +80,51 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     This is the animation method that will cycle through the metrics for a composite
    */
   const animateComposite = useCallback(() => {
-    setAnimationMetricIndexes((prev: number[]) => {
-      const next = [...prev];
-      for (let i = 0; i < animatedItems.length; i++) {
-        let index = animatedItems[i];
-        let metricIndex = next[index];
+    // read through a ref rather than a state updater: the updater must stay pure, and React is
+    // free to run it more than once, which would replay the innerHTML writes below
+    const next = [...metricIndexesRef.current];
+    for (let i = 0; i < animatedItems.length; i++) {
+      let index = animatedItems[i];
+      let metricIndex = next[index];
 
-        // composites can have animated values displayed
-        let isValueAnimated = false;
-        if (
-          options.globalShowValueEnabled ||
-          (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
-        ) {
-          isValueAnimated = true;
-        }
-        if (isValueAnimated && options.processedData && animationRefs.length > 0 && animationRefs[index].current) {
-          const item = options.processedData[index];
-          const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
-          if (animationRefs[index].current.innerHTML !== null) {
-            animationRefs[index].current.innerHTML = val;
-          }
-        }
-        // currently global setting determines if timestamp is animated
-        if (
-          options.globalShowTimestampEnabled &&
-          options.processedData &&
-          animationTimestampRefs.length > 0 &&
-          animationTimestampRefs[index].current
-        ) {
-          const item = options.processedData[index];
-          const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
-          if (animationTimestampRefs[index].current.innerHTML !== null) {
-            animationTimestampRefs[index].current.innerHTML = ts;
-          }
-        }
-        metricIndex++;
-        if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
-          metricIndex %= options.processedData[index].members.length;
-        }
-        next[index] = metricIndex;
+      // composites can have animated values displayed
+      let isValueAnimated = false;
+      if (
+        options.globalShowValueEnabled ||
+        (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
+      ) {
+        isValueAnimated = true;
       }
-      return next;
-    });
+      if (isValueAnimated && options.processedData && animationRefs.length > 0 && animationRefs[index].current) {
+        const item = options.processedData[index];
+        const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
+        if (animationRefs[index].current.innerHTML !== null) {
+          animationRefs[index].current.innerHTML = val;
+        }
+      }
+      // currently global setting determines if timestamp is animated
+      if (
+        options.globalShowTimestampEnabled &&
+        options.processedData &&
+        animationTimestampRefs.length > 0 &&
+        animationTimestampRefs[index].current
+      ) {
+        const item = options.processedData[index];
+        const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
+        if (animationTimestampRefs[index].current.innerHTML !== null) {
+          animationTimestampRefs[index].current.innerHTML = ts;
+        }
+      }
+      metricIndex++;
+      if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
+        metricIndex %= options.processedData[index].members.length;
+      }
+      next[index] = metricIndex;
+    }
+    metricIndexesRef.current = next;
+    setAnimationMetricIndexes(next);
   }, [
-    // animationMetricIndexes REMOVED — functional updater reads from prev
+    // animationMetricIndexes is deliberately absent: the tick reads metricIndexesRef instead
     animationRefs,
     animationTimestampRefs,
     animatedItems,
@@ -129,6 +133,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     options.globalShowTimestampEnabled,
     options.globalShowValueEnabled,
   ]);
+
+  useEffect(() => {
+    metricIndexesRef.current = animationMetricIndexes;
+  }, [animationMetricIndexes]);
 
   const animateCompositeRef = useRef(animateComposite);
   useEffect(() => {
