@@ -8,7 +8,7 @@ import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layou
 
 /**
  * Reads the polygon layout out of the svg that owns the given panel's labels. Anchoring on a
- * plugin data-testid keeps Grafana's own chrome svgs out of the query.
+ * plugin data-testid keeps the svg elements in Grafana's own chrome out of the query.
  *
  * Returns the polygon count per row and the gap between the outermost polygon centers and the
  * viewBox edges, rounded to whole pixels. Equal gaps on opposing edges means the grid is centered.
