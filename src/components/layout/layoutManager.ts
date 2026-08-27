@@ -628,11 +628,14 @@ export class LayoutManager {
     let xoffset = (this.width - actualWidthUsed) / 2;
     xoffset = -(xoffset + offsetToViewX);
 
-    // Y: odd columns shift rows down by SQRT3*R/2, so 2+ columns of data claim half a hex more.
-    // Rows fill left to right, so a second column already implies enough items to reach the last
-    // row; there is no need to also test dataSize against maxRowsUsed.
+    // Y: odd columns are shifted down by SQRT3*R/2, so the grid reaches half a hex lower than the
+    // row count suggests. That only happens if the last row actually reaches an odd column, which
+    // means holding at least two items. A last row with one item ends on column 0, unshifted.
     const offsetToViewY = shapeHeight * 0.5;
-    const heightOffset = this.maxColumnsUsed > 1 ? 0.5 : 0;
+    // dataSize can exceed what the grid holds, so count only the polygons actually placed
+    const placed = Math.min(dataSize, this.maxColumnsUsed * this.maxRowsUsed);
+    const lastRowCount = placed - (this.maxRowsUsed - 1) * this.maxColumnsUsed;
+    const heightOffset = lastRowCount > 1 ? 0.5 : 0;
     const actualHeightUsed = (this.maxRowsUsed + heightOffset) * shapeHeight;
     let yoffset = (this.height - actualHeightUsed) / 2;
     yoffset = -(yoffset + offsetToViewY);

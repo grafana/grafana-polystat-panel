@@ -290,17 +290,36 @@ describe('Layout Manager', () => {
       expect(round2(flatTop(400, 200, 2, 1).getOffsetsHexagonFlatTop(2).yoffset)).toBe(-66.67);
     });
 
-    it('never sees a second column without enough items to reach the last row', () => {
-      // heightOffset keys off maxColumnsUsed alone. Rows fill left to right, so any layout the
-      // fill can actually produce with 2+ columns already has dataSize >= maxRowsUsed + 1.
-      for (let columns = 1; columns <= 12; columns++) {
-        for (let rows = 1; rows <= 12; rows++) {
+    // The stagger pushes odd columns down half a hex, so the grid only reaches lower than its row
+    // count when the last row actually reaches an odd column, meaning it holds two or more items.
+    it.each([
+      ['a last row holding one item claims no extra height', 11, -128.58],
+      ['a full last row claims the stagger', 15, -85.73],
+    ])('%s', (_name, dataSize, expected) => {
+      const lm = new LayoutManager(800, 600, 5, 3, 0, true, PolygonShapes.HEXAGON_FLAT_TOP);
+      lm.maxColumnsUsed = 5;
+      lm.maxRowsUsed = 3;
+      expect(round2(lm.getOffsetsHexagonFlatTop(dataSize).yoffset)).toBe(expected);
+    });
+
+    it('centers the grid vertically for every layout the fill can produce', () => {
+      for (let columns = 1; columns <= 8; columns++) {
+        for (let rows = 1; rows <= 8; rows++) {
           for (let dataSize = 1; dataSize <= 40; dataSize++) {
-            const lm = new LayoutManager(800, 400, columns, rows, 0, true, PolygonShapes.HEXAGON_FLAT_TOP);
+            const lm = new LayoutManager(800, 600, columns, rows, 0, true, PolygonShapes.HEXAGON_FLAT_TOP);
+            lm.generatePossibleColumnAndRowsSizes(false, false, 0, dataSize);
             lm.generateActualColumnAndRowUsage(new Array(dataSize).fill(0), 0);
-            if (lm.maxColumnsUsed > 1) {
-              expect(dataSize).toBeGreaterThanOrEqual(lm.maxRowsUsed + 1);
-            }
+            lm.setRadius(lm.generateRadius(PolygonShapes.HEXAGON_FLAT_TOP));
+
+            const shapeHeight = lm.radius * Math.sqrt(3);
+            const ys = lm
+              .generatePoints(new Array(dataSize).fill(0), 0, PolygonShapes.HEXAGON_FLAT_TOP)
+              .map((p) => p.y);
+            const { yoffset } = lm.getOffsetsHexagonFlatTop(dataSize);
+            // equal space above the topmost hexagon and below the bottommost one
+            const above = Math.min(...ys) - shapeHeight / 2 - yoffset;
+            const below = yoffset + 600 - (Math.max(...ys) + shapeHeight / 2);
+            expect(round2(above)).toBeCloseTo(round2(below), 1);
           }
         }
       }
