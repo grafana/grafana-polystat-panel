@@ -47,17 +47,37 @@ describe('composite value animation', () => {
     }
   };
 
+  it('paints the first member before any interval elapses', () => {
+    const { container } = render(<Polystat {...createPolystatOptions(options)} />);
+
+    // rendered directly, not by the tick, which is why the assertions below start after tick 2
+    expect(valueText(container)).toBe('cpu: 11.00');
+  });
+
   it('advances exactly one member per interval and wraps around', () => {
     const { container } = render(<Polystat {...createPolystatOptions(options)} />);
 
-    // the first tick paints member 0, so the sequence trails the tick count by one
-    tick(1);
-    expect(valueText(container)).toBe('cpu: 11.00');
-    tick(1);
+    // member 0 is shown on mount and repainted by the first tick, so it is displayed for two
+    // intervals while every other member gets one
+    tick(2);
     expect(valueText(container)).toBe('mem: 22.00');
     tick(1);
     expect(valueText(container)).toBe('disk: 33.00');
     tick(1);
     expect(valueText(container)).toBe('cpu: 11.00');
+    tick(1);
+    expect(valueText(container)).toBe('mem: 22.00');
+  });
+
+  it('keeps ticking after the interval is torn down and remounted', () => {
+    const first = render(<Polystat {...createPolystatOptions(options)} />);
+    tick(2);
+    expect(valueText(first.container)).toBe('mem: 22.00');
+    first.unmount();
+
+    // a stale interval writing through a released ref would throw or resume mid-cycle
+    const second = render(<Polystat {...createPolystatOptions(options)} />);
+    tick(2);
+    expect(valueText(second.container)).toBe('mem: 22.00');
   });
 });
