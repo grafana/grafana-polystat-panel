@@ -10,8 +10,8 @@ import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layou
  * Reads the polygon layout out of the svg that owns the given panel's labels. Anchoring on a
  * plugin data-testid keeps the svg elements in Grafana's own chrome out of the query.
  *
- * Returns the polygon count per row and the gap between the outermost polygon centers and the
- * viewBox edges, rounded to whole pixels. Equal gaps on opposing edges means the grid is centered.
+ * Returns the polygon count per row and the unrounded gap between the outermost polygon centers
+ * and the viewBox edges. Equal gaps on opposing edges means the grid is centered.
  */
 const readLayout = (page: Page, panelId: number) =>
   page.locator(`[data-testid="polystat-label-${panelId}-0"]`).evaluate((label: SVGTextElement) => {
@@ -40,10 +40,10 @@ const readLayout = (page: Page, panelId: number) =>
       panelSize,
       rowCounts,
       gaps: {
-        left: Math.round(Math.min(...xs) - viewX),
-        right: Math.round(viewX + viewWidth - Math.max(...xs)),
-        top: Math.round(Math.min(...ys) - viewY),
-        bottom: Math.round(viewY + viewHeight - Math.max(...ys)),
+        left: Math.min(...xs) - viewX,
+        right: viewX + viewWidth - Math.max(...xs),
+        top: Math.min(...ys) - viewY,
+        bottom: viewY + viewHeight - Math.max(...ys),
       },
     };
   });
@@ -64,7 +64,9 @@ for (const panel of PANELS) {
     // rowCounts is what findOptimalColumns chose for this panel's pixel size, so it moves if either
     // the optimizer or Grafana's chrome changes. Reporting the measured size says which.
     expect(rowCounts, `panel ${panel.id} measured ${panelSize}`).toEqual(panel.rowCounts);
-    expect(gaps.left).toBe(gaps.right);
-    expect(gaps.top).toBe(gaps.bottom);
+    // round the difference rather than each side: the two differ by a fraction of a pixel from the
+    // hex stagger, and rounding them separately flips whenever they straddle a .5 boundary
+    expect(Math.round(Math.abs(gaps.left - gaps.right))).toBe(0);
+    expect(Math.round(Math.abs(gaps.top - gaps.bottom))).toBe(0);
   });
 }

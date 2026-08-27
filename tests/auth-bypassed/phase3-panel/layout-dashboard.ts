@@ -32,7 +32,7 @@ export const itemCount = (rowCounts: number[]) => rowCounts.reduce((total, count
 
 export const TOTAL_ITEMS = PANELS.reduce((total, panel) => total + itemCount(panel.rowCounts), 0);
 
-// The dashboard is ~36 grid rows tall; a 720p viewport would leave the lower panels unmounted
+// The dashboard is 44 grid rows tall; a 720p viewport would leave the lower panels unmounted
 export const LAYOUT_VIEWPORT = { width: 1600, height: 2400 };
 
 /**
