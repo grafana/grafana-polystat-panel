@@ -56,10 +56,11 @@ describe('AutoFontScaler', () => {
   });
 
   describe('label sizing', () => {
-    // a 200x100 area gives 190px of usable width and two lines of 50px
-    it('sizes the label to 39px when the width runs out first', () => {
-      // 8 characters at 39px measure 187.2px
-      expect(scale([makeLabel('Server-A')]).activeLabelFontSize).toBe(39);
+    // a 200x100 area gives 196px of usable width (getTextSizeForWidthAndHeight keeps 98%)
+    // and two lines of 50px
+    it('sizes the label to 40px when the width runs out first', () => {
+      // 8 characters at 40px measure 192px
+      expect(scale([makeLabel('Server-A')]).activeLabelFontSize).toBe(40);
     });
 
     it('sizes the label to 50px when half the height runs out first', () => {
@@ -80,7 +81,7 @@ describe('AutoFontScaler', () => {
 
     it('sizes on displayName in preference to name', () => {
       const model = createPolystatModel({ name: 'A', displayName: 'Server-A' });
-      expect(scale([model]).activeLabelFontSize).toBe(39);
+      expect(scale([model]).activeLabelFontSize).toBe(40);
     });
   });
 
@@ -100,16 +101,16 @@ describe('AutoFontScaler', () => {
         createPolystatModel({ valueFormatted: '1' }),
         createPolystatModel({ valueFormatted: '1234567890' }),
       ];
-      expect(scale(models).activeValueFontSize).toBe(31);
+      expect(scale(models).activeValueFontSize).toBe(32);
     });
   });
 
   describe('composite value sizing', () => {
     it('sizes the composite value on "displayName: valueFormatted" of the member', () => {
-      // 'member-1: 0' is 11 characters, so 190 / (11 * 0.6) settles at 28px
+      // 'member-1: 0' is 11 characters, so 196 / (11 * 0.6) settles at 29px
       const composite = makeComposite([createPolystatModel({ name: 'member-1', displayName: 'member-1' })]);
       const result = scale([composite], { valueEnabled: false });
-      expect(result.activeCompositeValueFontSize).toBe(28);
+      expect(result.activeCompositeValueFontSize).toBe(29);
     });
 
     it('returns 0 for the composite value font when no composite has showValue', () => {
@@ -133,10 +134,10 @@ describe('AutoFontScaler', () => {
 
   describe('timestamp sizing', () => {
     it('sizes the timestamp within the lower 33% of the text area', () => {
-      // 200 * 0.33 = 66px split over two lines = 33px, and 19 chars fit at 24px in 285px
+      // 200 * 0.33 = 66px split over two lines = 33px, and 19 chars fit at 25px in 294px
       const model = createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' });
       const result = scale([model], { textAreaWidth: 300, textAreaHeight: 200, showTimestamp: true });
-      expect(result.activeTimestampFontSize).toBe(24);
+      expect(result.activeTimestampFontSize).toBe(25);
     });
 
     it('shrinks the value font into the upper 67% when the timestamp is shown', () => {
@@ -155,9 +156,7 @@ describe('AutoFontScaler', () => {
     });
 
     it('sizes on the longest composite member timestamp, not the parent timestamp', () => {
-      const withMemberTimestamp = makeComposite([
-        createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' }),
-      ]);
+      const withMemberTimestamp = makeComposite([createPolystatModel({ timestampFormatted: '2026-05-17 08:00:00' })]);
       const withoutMemberTimestamp = makeComposite([createPolystatModel()]);
       const resultWithMemberTimestamp = scale([withMemberTimestamp], {
         textAreaWidth: 300,
@@ -169,7 +168,7 @@ describe('AutoFontScaler', () => {
         textAreaHeight: 200,
         showTimestamp: true,
       });
-      expect(resultWithMemberTimestamp.activeTimestampFontSize).toBe(24);
+      expect(resultWithMemberTimestamp.activeTimestampFontSize).toBe(25);
       expect(resultWithoutMemberTimestamp.activeTimestampFontSize).toBe(33);
     });
   });
@@ -187,7 +186,7 @@ describe('AutoFontScaler', () => {
     it.each([
       ['18 characters when the whole label will not fit', defaultAreaWidth, 18, 15],
       ['10 characters when 18 will not fit', 70, 10, 8],
-      ['6 characters when 10 will not fit', 45, 6, 7],
+      ['6 characters when 10 will not fit', 45, 6, 8],
     ])('truncates to %s', (_name, areaWidth, numOfChars, fontSize) => {
       const result = scale([oversizedLabel], { textAreaWidth: areaWidth });
       expect(result.showEllipses).toBe(true);

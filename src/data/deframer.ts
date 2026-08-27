@@ -11,7 +11,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
   for (const frame of data) {
     const newFrame: DataFrame = {
       ...frame,
-      meta: {...frame.meta},
+      meta: { ...frame.meta },
       fields: [], // clear the fields
     };
     const hasTimestamp = frameHasTimestamp(frame);

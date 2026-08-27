@@ -54,13 +54,13 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
   };
 
   const updateMetric = (index: number, value: string) => {
-    const allMetrics = [...props.composite.metrics ];
+    const allMetrics = [...props.composite.metrics];
     allMetrics[index].seriesMatch = value;
     setComposite({ ...props.composite, metrics: allMetrics });
   };
 
   const updateMetricAlias = (index: number, alias: string) => {
-    const allMetrics = [ ...props.composite.metrics ];
+    const allMetrics = [...props.composite.metrics];
     allMetrics[index].alias = alias;
     setComposite({ ...props.composite, metrics: allMetrics });
   };
@@ -189,18 +189,31 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               onChange={() => setComposite({ ...composite, clickThroughOpenNewTab: !composite.clickThroughOpenNewTab })}
             />
           </Field>
-          <Field label="Enable Custom URL Target" description="Enable custom target" disabled={!composite.showComposite} hidden={composite.clickThroughOpenNewTab}>
+          <Field
+            label="Enable Custom URL Target"
+            description="Enable custom target"
+            disabled={!composite.showComposite}
+            hidden={composite.clickThroughOpenNewTab}
+          >
             <Switch
               transparent={false}
               value={composite.clickThroughCustomTargetEnabled}
               disabled={!composite.showComposite}
-              onChange={() => setComposite({ ...composite,
-                clickThroughCustomTargetEnabled: !composite.clickThroughCustomTargetEnabled,
-                clickThroughCustomTarget: composite.clickThroughCustomTarget || ''
-              })}
+              onChange={() =>
+                setComposite({
+                  ...composite,
+                  clickThroughCustomTargetEnabled: !composite.clickThroughCustomTargetEnabled,
+                  clickThroughCustomTarget: composite.clickThroughCustomTarget || '',
+                })
+              }
             />
           </Field>
-          <Field label="Custom URL Target" description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename" disabled={!composite.showComposite} hidden={!composite.clickThroughCustomTargetEnabled}>
+          <Field
+            label="Custom URL Target"
+            description="Specify a custom target, typical values are: _blank|_self|_parent|_top|framename"
+            disabled={!composite.showComposite}
+            hidden={!composite.clickThroughCustomTargetEnabled}
+          >
             <Input
               value={composite.clickThroughCustomTarget}
               placeholder="_self"
@@ -219,7 +232,8 @@ export const CompositeItem: React.FC<CompositeItemProps> = (props: CompositeItem
               Add Metric
             </Button>
           </Field>
-          {composite.metrics && composite.metrics.length > 0 &&
+          {composite.metrics &&
+            composite.metrics.length > 0 &&
             composite.metrics.map((item: CompositeMetric, index: number) => {
               // generate ID if it doesn't exist
               if (!item.ID) {

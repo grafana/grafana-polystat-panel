@@ -1,0 +1,17 @@
+/*
+ * The scaffolded config only covers src/, so Playwright specs never run through typecheck. A spec
+ * that reads a property the shared helper no longer exports fails at runtime instead of at build
+ * time.
+ */
+{
+  "extends": "./.config/tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "noUnusedLocals": false,
+    "paths": {
+      "*": ["./src/*"]
+    }
+  },
+  "include": ["tests", "playwright.config.ts"]
+}

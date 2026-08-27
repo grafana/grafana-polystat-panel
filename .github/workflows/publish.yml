@@ -12,9 +12,9 @@ on:
         required: true
         type: choice
         options:
-          - "dev"
-          - "ops"
-          - "prod"
+          - 'dev'
+          - 'ops'
+          - 'prod'
       docs-only:
         description: Only publish docs, do not publish the plugin
         default: false
@@ -25,7 +25,7 @@ permissions: {}
 jobs:
   cd:
     name: CD
-    uses: grafana/plugin-ci-workflows/.github/workflows/cd.yml@ci-cd-workflows/v10.2.0
+    uses: grafana/plugin-ci-workflows/.github/workflows/cd.yml@ci-cd-workflows/v11.1.0
     permissions:
       contents: write
       id-token: write
@@ -36,5 +36,5 @@ jobs:
       docs-only: ${{ fromJSON(github.event.inputs.docs-only) }}
       attestation: true
       run-playwright-with-skip-grafana-dev-image: true
-      run-playwright-with-grafana-dependency: ">=10.1.0"
+      run-playwright-with-grafana-dependency: '>=10.1.0'
       upload-playwright-artifacts: true

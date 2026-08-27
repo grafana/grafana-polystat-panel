@@ -6,6 +6,7 @@ import {
   FontFamilyOptionsLegacy,
   OperatorOptions,
   PolygonNamedShapes,
+  PolygonShapes,
   PolystatOptions,
   ShowTimestampFormats,
   ShowTimestampPositions,
@@ -30,7 +31,6 @@ import { PolystatThreshold } from './components/thresholds/types';
 import { GlobalThresholdEditor } from './components/thresholds/GlobalThresholdEditor';
 import { PolystatDataSuggestionsSupplier } from './components/suggestions';
 import { hasRobotoFont, PolystatPanelMigrationHandler } from './migrations';
-
 
 export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
   .setMigrationHandler(PolystatPanelMigrationHandler)
@@ -308,7 +308,7 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalShowTooltipColumnHeadersEnabled',
         defaultValue: true,
         category: ['Tooltips'],
-        description: 'Show Column headers on tooltip'
+        description: 'Show Column headers on tooltip',
       })
       // display modes
       .addSelect({
@@ -450,7 +450,8 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
       .addNumberInput({
         name: 'Timestamp Y-Offset',
         path: 'globalShowTimestampYOffset',
-        description: 'Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down',
+        description:
+          'Adjust the displayed timestamp up or down the Y-Axis, use negative value to move up, positive for down',
         defaultValue: 0,
         settings: {
           integer: true,
@@ -465,7 +466,9 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalShape',
         description: 'Shape of polygon',
         category: ['Global'],
-        defaultValue: PolygonNamedShapes[0].value,
+        // named explicitly: binding to PolygonNamedShapes[0] would re-shape every panel that never
+        // set globalShape if a shape were ever inserted at the head of that list
+        defaultValue: PolygonShapes.HEXAGON_POINTED_TOP,
         settings: {
           options: PolygonNamedShapes,
         },
@@ -564,7 +567,8 @@ export const plugin = new PanelPlugin<PolystatOptions>(PolystatPanel)
         path: 'globalClickthroughCustomTargetEnabled',
         defaultValue: false,
         category: ['Global'],
-        description: 'Use custom target for global clickthrough (this overrides the new tab setting above). Typical values are: _blank|_self|_parent|_top|framename',
+        description:
+          'Use custom target for global clickthrough (this overrides the new tab setting above). Typical values are: _blank|_self|_parent|_top|framename',
         showIf: (c) => !c.globalClickthroughNewTabEnabled,
       })
       .addTextInput({

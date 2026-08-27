@@ -2,7 +2,6 @@ import React, { useEffect, createRef, useCallback, useRef } from 'react';
 import { textUtil } from '@grafana/data';
 import { useStyles2, Portal, useTheme2 } from '@grafana/ui';
 import { symbol as d3symbol, symbolCircle, symbolSquare } from 'd3';
-import { hexbin } from 'd3-hexbin';
 import { orderBy as lodashOrderBy } from 'lodash';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 
@@ -10,12 +9,30 @@ import { Gradients } from './gradients/Gradients';
 import { LayoutManager } from './layout/layoutManager';
 import { PolystatOptions, PolygonShapes, PolystatModel, DisplayModes, TimestampPositions } from './types';
 
-import { getErrorMessageStyles, getNoTriggerTextStyles, getSVGPathStyles, getSVGStyles, getWrapperStyles } from './styles';
+import {
+  getErrorMessageStyles,
+  getNoTriggerTextStyles,
+  getSVGPathStyles,
+  getSVGStyles,
+  getWrapperStyles,
+} from './styles';
 import { Tooltip } from './tooltips/Tooltip';
 import { AutoFontScaler } from './auto_font_scaler';
 import { ELLIPSIS } from './defaults';
 import { GetAlignments } from './alignment';
 import { getTemplateSrv } from '@grafana/runtime';
+
+function hexPointedTopPath(radius: number): string {
+  // Points at 12 and 6 o'clock; flat sides at 3 and 9 o'clock
+  const w = (Math.sqrt(3) / 2) * radius; // half-width = SQRT3/2 * R
+  return `M0,${-radius} L${w},${-radius / 2} L${w},${radius / 2} L0,${radius} L${-w},${radius / 2} L${-w},${-radius / 2}Z`;
+}
+
+function hexFlatTopPath(radius: number): string {
+  // Flat sides at 12 and 6 o'clock; points at 3 and 9 o'clock
+  const h = (Math.sqrt(3) / 2) * radius; // half-height = SQRT3/2 * R
+  return `M${radius},0 L${radius / 2},${-h} L${-radius / 2},${-h} L${-radius},0 L${-radius / 2},${h} L${radius / 2},${h}Z`;
+}
 
 export const Polystat: React.FC<PolystatOptions> = (options) => {
   const divStyles = useStyles2(getWrapperStyles);
@@ -28,11 +45,16 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   const [animationRefs, setAnimationRefs] = React.useState([] as any);
   const [animationTimestampRefs, setAnimationTimestampRefs] = React.useState([] as any);
   // tracks which metric to display during animation of a composite
-  const [animationMetricIndexes, setAnimationMetricIndexes] = React.useState([] as any);
+  // which member of each composite is currently painted. Held in a ref, not state: the tick writes
+  // the text through animationRefs imperatively, so nothing in the render tree reads these and
+  // storing them in state would re-run the whole layout on every animation frame.
+  const metricIndexesRef = useRef<number[]>([]);
   const [animatedItems, setAnimatedItems] = React.useState<number[]>([]);
   const margin = { top: 0, right: 0, bottom: 0, left: 0 };
   // this MUST be unique for gradients to work properly
-  const [uniquePanelId] = React.useState<string>(() => `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString());
+  const [uniquePanelId] = React.useState<string>(
+    () => `polystat_${options.panelId}_` + Math.floor(Math.random() * 10000).toString()
+  );
 
   const updateAnimation = (data: PolystatModel[]) => {
     if (data.length > 0) {
@@ -48,7 +70,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         if (animationRefs.length !== newAnimationRefs.length) {
           setAnimationRefs(newAnimationRefs);
           setAnimationTimestampRefs(newAnimationTimestampRefs);
-          setAnimationMetricIndexes(newAnimationMetricIndexes);
+          metricIndexesRef.current = newAnimationMetricIndexes;
         }
       }
     }
@@ -58,19 +80,22 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     This is the animation method that will cycle through the metrics for a composite
    */
   const animateComposite = useCallback(() => {
-    const newMetricIndexes = [...animationMetricIndexes];
+    // read through a ref rather than a state updater: the updater must stay pure, and React is
+    // free to run it more than once, which would replay the innerHTML writes below
+    const next = [...metricIndexesRef.current];
     for (let i = 0; i < animatedItems.length; i++) {
       let index = animatedItems[i];
-      let metricIndex = newMetricIndexes[index];
+      let metricIndex = next[index];
 
       // composites can have animated values displayed
       let isValueAnimated = false;
-      if (options.globalShowValueEnabled ||
+      if (
+        options.globalShowValueEnabled ||
         (options.processedData && options.processedData[index].isComposite && options.processedData[index].showValue)
       ) {
         isValueAnimated = true;
       }
-      if (isValueAnimated && options.processedData && (animationRefs.length > 0 && animationRefs[index].current)) {
+      if (isValueAnimated && options.processedData && animationRefs.length > 0 && animationRefs[index].current) {
         const item = options.processedData[index];
         const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
         if (animationRefs[index].current.innerHTML !== null) {
@@ -78,7 +103,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         }
       }
       // currently global setting determines if timestamp is animated
-      if (options.globalShowTimestampEnabled && options.processedData && (animationTimestampRefs.length > 0 && animationTimestampRefs[index].current)) {
+      if (
+        options.globalShowTimestampEnabled &&
+        options.processedData &&
+        animationTimestampRefs.length > 0 &&
+        animationTimestampRefs[index].current
+      ) {
         const item = options.processedData[index];
         const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
         if (animationTimestampRefs[index].current.innerHTML !== null) {
@@ -89,11 +119,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
       if (options.processedData && options.processedData[index] && options.processedData[index].members.length) {
         metricIndex %= options.processedData[index].members.length;
       }
-      newMetricIndexes[index] = metricIndex;
+      next[index] = metricIndex;
     }
-    setAnimationMetricIndexes(newMetricIndexes);
+    metricIndexesRef.current = next;
   }, [
-    animationMetricIndexes,
     animationRefs,
     animationTimestampRefs,
     animatedItems,
@@ -157,7 +186,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         return (
           <div className={errorMessageStyles}>
             Not enough rows and columns for data. There are {options.processedData!.length} items to display, and only{' '}
-            {limit} places allocated.{' '} See the Display Limit setting in category Layout{' '}
+            {limit} places allocated. See the Display Limit setting in category Layout{' '}
           </div>
         );
       }
@@ -176,7 +205,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   );
 
   // determine how many rows and columns are going to be generated
-  lm.generatePossibleColumnAndRowsSizes(options.autoSizeColumns, options.autoSizeRows, options.layoutDisplayLimit, options.processedData!.length);
+  lm.generatePossibleColumnAndRowsSizes(
+    options.autoSizeColumns,
+    options.autoSizeRows,
+    options.layoutDisplayLimit,
+    options.processedData!.length
+  );
   // to determine the radius, the actual number of rows and columns that will be used needs to be calculated
   lm.generateActualColumnAndRowUsage(options.processedData, options.layoutDisplayLimit);
   // next the radius can be determined from actual rows and columns being used
@@ -211,20 +245,15 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // using the known number of columns and rows that can be used in addition to the radius,
   // generate the points to be filled
   const calculatedPoints = lm.generatePoints(options.processedData, options.layoutDisplayLimit, options.globalShape);
-  const aHexbin = hexbin()
-    .radius(radius)
-    .extent([
-      [0, 0],
-      [options.panelWidth, options.panelHeight],
-    ]);
   const { diameterX, diameterY } = lm.getDiameters();
-  const { xoffset, yoffset } = lm.getOffsets(options.globalShape, options.layoutDisplayLimit, options.processedData!.length);
+  const { xoffset, yoffset } = lm.getOffsets(
+    options.globalShape,
+    options.layoutDisplayLimit,
+    options.processedData!.length
+  );
 
-  // compute text area size (used to calculate the fontsize)
-  const textAreaWidth = diameterX;
-  // For hexagon/circle the top and bottom tips are unusable — use half height.
-  // For rectangle every pixel is available, so use the full height.
-  const textAreaHeight = options.globalShape === PolygonShapes.RECTANGLE ? diameterY : diameterY / 2;
+  // text area size drives the fontsize, and narrows with the shape
+  const { textAreaWidth, textAreaHeight } = lm.getTextArea();
   // symbols use the area for their size
   let innerArea = diameterX * diameterY;
   // use the smallest of diameterX or Y
@@ -237,19 +266,22 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   // square and circle do not use this
   const symbol = d3symbol().size(innerArea);
 
-  let customShape: any;
+  let customShape: string;
   switch (options.globalShape) {
     case PolygonShapes.HEXAGON_POINTED_TOP:
-      customShape = aHexbin.hexagon(radius);
+      customShape = hexPointedTopPath(radius);
+      break;
+    case PolygonShapes.HEXAGON_FLAT_TOP:
+      customShape = hexFlatTopPath(radius);
       break;
     case PolygonShapes.CIRCLE:
-      customShape = symbol.type(symbolCircle);
+      customShape = symbol.type(symbolCircle)() ?? '';
       break;
     case PolygonShapes.SQUARE:
-      customShape = symbol.type(symbolSquare);
+      customShape = symbol.type(symbolSquare)() ?? '';
       break;
     default:
-      customShape = aHexbin.hexagon(radius);
+      customShape = hexPointedTopPath(radius);
       break;
   }
 
@@ -304,6 +336,19 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     numOfChars = result.numOfChars;
   }
 
+  // Flat-top: label above center where hex narrows toward side tips.
+  // Cap label ≤ value font so short labels don't overflow the upper angles.
+  // Applied unconditionally so it also fires when auto-scale is off.
+  // Skipped when the value font is 0: there is no value line to sit above, and capping to 0 would
+  // hide the label as well. AutoFontScaler returns 0 whenever the value is disabled or cannot fit.
+  if (
+    options.globalShape === PolygonShapes.HEXAGON_FLAT_TOP &&
+    activeValueFontSize > 0 &&
+    activeLabelFontSize > activeValueFontSize
+  ) {
+    activeLabelFontSize = activeValueFontSize;
+  }
+
   const alignments = GetAlignments(
     options.globalShape,
     diameterX,
@@ -315,9 +360,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     hasShowTimeStampEnabled
   );
 
-  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.20);
+  let timestampLineSpacing = Math.ceil(activeValueFontSize * 0.2);
   if (activeValueFontSize > activeTimestampFontSize) {
-    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.20);
+    timestampLineSpacing = Math.ceil(activeTimestampFontSize * 0.2);
   }
   // composites can have their own settings for displaying the value
   let compositeTimestampLineSpacing = Math.ceil(activeCompositeValueFontSize);
@@ -330,14 +375,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   }
 
-
   const drawShape = (index: number, shape: PolygonShapes) => {
     let fillColor = options.processedData![index].color;
     if (options.globalGradientsEnabled) {
       // TODO: safari needs the location.href
       fillColor = `url(#${uniquePanelId}_linear_gradient_state_data_${index})`;
     }
-    const useRadius = lm.generateRadius(options.globalShape);
     const coords = getCoords(index);
     if (!coords) {
       return;
@@ -345,11 +388,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
 
     switch (shape as any) {
       case PolygonShapes.HEXAGON_POINTED_TOP:
+      case PolygonShapes.HEXAGON_FLAT_TOP:
         return (
           <path
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
             data-tooltip-content={index}
-            data-tooltip-position-strategy='fixed'
+            data-tooltip-position-strategy="fixed"
             className={svgPathStyles}
             key={`polystat-tooltip-${uniquePanelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
@@ -364,12 +408,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <circle
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
             data-tooltip-content={index}
-            data-tooltip-position-strategy='fixed'
+            data-tooltip-position-strategy="fixed"
             key={`polystat-tooltip-${uniquePanelId}`}
             className={svgPathStyles}
             cx={coords.x}
             cy={coords.y}
-            r={useRadius}
+            r={radius}
             fill={fillColor}
           />
         );
@@ -378,13 +422,13 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <rect
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
             data-tooltip-content={index}
-            data-tooltip-position-strategy='fixed'
+            data-tooltip-position-strategy="fixed"
             key={`polystat-tooltip-${uniquePanelId}`}
             className={svgPathStyles}
             x={coords.x}
             y={coords.y}
-            height={useRadius * 2}
-            width={useRadius * 2}
+            height={radius * 2}
+            width={radius * 2}
             fill={fillColor}
           />
         );
@@ -393,7 +437,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <rect
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
             data-tooltip-content={index}
-            data-tooltip-position-strategy='fixed'
+            data-tooltip-position-strategy="fixed"
             key={`polystat-brick-${uniquePanelId}-${index}`}
             className={svgPathStyles}
             x={coords.x}
@@ -410,7 +454,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           <path
             data-tooltip-id={options.globalTooltipsEnabled ? `polystat-tooltip-${uniquePanelId}` : null}
             data-tooltip-content={index}
-            data-tooltip-position-strategy='fixed'
+            data-tooltip-position-strategy="fixed"
             className={svgPathStyles}
             key={`polystat-tooltip-${uniquePanelId}`}
             transform={`translate(${coords.x}, ${coords.y})`}
@@ -423,21 +467,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     }
   };
 
-  // allows the polygon to fill the horizontal space if the manually specified number of columns has not been used
-  let marginLeft = margin.left;
-  if ((!options.autoSizeColumns) && (radius) && (lm.maxColumnsUsed < options.layoutNumColumns)) {
-    let difference = options.layoutNumColumns - lm.maxColumnsUsed;
-    marginLeft += radius * difference;
-  }
-  // allows the polygon to fill the vertical space if the manually specified number of rows has not been used
-  let marginTop = margin.top;
-  if ((!options.autoSizeRows) && (radius) && (lm.maxRowsUsed < options.layoutNumRows)) {
-    let difference = options.layoutNumRows - lm.maxRowsUsed;
-    // always starts at zero, skip offset for first row used
-    marginTop += radius * (difference - 1);
-  }
-
-  const getLabelContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+  const getLabelContent = (item: PolystatModel, index: number, coords: { x: number; y: number }) => {
     let verticalAlignment = alignments.labelWithValueTextAlignment;
     if (!item.showValue) {
       verticalAlignment = alignments.labelOnlyTextAlignment;
@@ -452,14 +482,11 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         fontFamily={options.globalTextFontFamily}
         fontSize={activeLabelFontSize + 'px'}
         style={{
-          fill: options.globalTextFontAutoColorEnabled
-            ? options.globalTextFontAutoColor
-            : options.globalTextFontColor,
+          fill: options.globalTextFontAutoColorEnabled ? options.globalTextFontAutoColor : options.globalTextFontColor,
           pointerEvents: 'none',
         }}
       >
-        {
-          item.showName &&
+        {item.showName &&
           getTextToDisplay(
             options.globalAutoScaleFonts,
             options.ellipseEnabled,
@@ -473,7 +500,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     );
   };
 
-  const getValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+  const getValueContent = (item: PolystatModel, index: number, coords: { x: number; y: number }) => {
     // default
     let verticalAlignment = alignments.valueWithLabelTextAlignment;
     // check if showTimeStamp is enabled
@@ -492,11 +519,10 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
           break;
       }
     }
-    let valueContent = "";
+    let valueContent = '';
     if (item.isComposite) {
       if (item.showValue) {
-        valueContent = formatCompositeValueAndTimestamp(0, item,
-          options.globalDisplayTextTriggeredEmpty)[0];
+        valueContent = formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[0];
       }
     } else {
       if (options.globalShowValueEnabled) {
@@ -518,9 +544,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         fontFamily={options.globalTextFontFamily}
         fontSize={useFontSize + 'px'}
         style={{
-          fill: options.globalTextFontAutoColorEnabled
-            ? options.globalTextFontAutoColor
-            : options.globalTextFontColor,
+          fill: options.globalTextFontAutoColorEnabled ? options.globalTextFontAutoColor : options.globalTextFontColor,
           pointerEvents: 'none',
         }}
       >
@@ -529,7 +553,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     );
   };
 
-  const getTimestampForValueContent = (item: PolystatModel, index: number, coords: { x: number, y: number }) => {
+  const getTimestampForValueContent = (item: PolystatModel, index: number, coords: { x: number; y: number }) => {
     // TODO: the offset should be put inside the item also to handle overrides and composites correctly
     const timestampYOffset = isNaN(options.globalShowTimestampYOffset) ? 0 : options.globalShowTimestampYOffset;
     let verticalAlignment = alignments.timestampAlignment - timestampLineSpacing + timestampYOffset;
@@ -563,9 +587,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         fontFamily={options.globalTextFontFamily}
         fontSize={activeTimestampFontSize + 'px'}
         style={{
-          fill: options.globalTextFontAutoColorEnabled
-            ? options.globalTextFontAutoColor
-            : options.globalTextFontColor,
+          fill: options.globalTextFontAutoColorEnabled ? options.globalTextFontAutoColor : options.globalTextFontColor,
           pointerEvents: 'none',
         }}
       >
@@ -574,7 +596,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             ? formatCompositeValueAndTimestamp(0, item, options.globalDisplayTextTriggeredEmpty)[1]
             : item.timestampFormatted)}
       </text>
-    )
+    );
   };
 
   const detectEmptyState = detectNoDataEmptyState();
@@ -597,8 +619,9 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         xmlnsXlink="http://www.w3.org/1999/xlink"
         viewBox={`${xoffset},${yoffset},${options.panelWidth},${options.panelHeight}`}
       >
-
-        <g transform={`translate(${marginLeft},${marginTop})`}>
+        {/* lm.getOffsets() centers the grid through the viewBox, so this group adds no shift of
+            its own. Any nudge here would move the polygons off center. */}
+        <g transform={`translate(${margin.left},${margin.top})`}>
           <Gradients gradientId={uniquePanelId} data={options.processedData} />
 
           {options.processedData!.map((item, index) => {
@@ -609,28 +632,26 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
             const useUrl = item.sanitizeURLEnabled ? item.sanitizedURL : item.clickThrough;
             // determine if a target is required
             const resolvedClickthroughTarget = resolveClickThroughTarget(item);
-            let clickableUrl: JSX.Element;
-            // only add target attribute when there is one specified
-            if ((resolvedClickthroughTarget.length > 0) && (useUrl.length > 0)) {
-              clickableUrl = <a target={resolvedClickthroughTarget} href={useUrl}>
-                {drawShape(index, options.globalShape)}
-              </a>;
-            } else {
-              clickableUrl = <a href={useUrl}>
-                {drawShape(index, options.globalShape)}
-              </a>;
+            // build the shape once; wrapping it in an anchor is what varies
+            let shape = drawShape(index, options.globalShape);
+            if (useUrl.length > 0) {
+              // only add target attribute when there is one specified
+              shape =
+                resolvedClickthroughTarget.length > 0 ? (
+                  <a target={resolvedClickthroughTarget} href={useUrl}>
+                    {shape}
+                  </a>
+                ) : (
+                  <a href={useUrl}>{shape}</a>
+                );
             }
             return (
-              <>
-                {useUrl.length > 0 && clickableUrl ? (
-                  clickableUrl
-                ) : (
-                  drawShape(index, options.globalShape)
-                )}
+              <React.Fragment key={`polystat-item-${uniquePanelId}-${index}`}>
+                {shape}
                 {getLabelContent(item, index, coords)}
                 {getValueContent(item, index, coords)}
                 {getTimestampForValueContent(item, index, coords)}
-              </>
+              </React.Fragment>
             );
           })}
         </g>
@@ -666,12 +687,12 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
                     tooltipDisplayTextTriggeredEmpty={options.tooltipDisplayTextTriggeredEmpty}
                     tooltipFontFamily={options.globalTooltipsFontFamily}
                   />
-                )
+                );
               }
-              return (<></>)
-            }} />
+              return <></>;
+            }}
+          />
         </Portal>
-
       )}
     </div>
   );
@@ -727,7 +748,11 @@ export const buildTriggerCache = (item: any) => {
   return triggerCache;
 };
 
-export const formatCompositeValueAndTimestamp = (frames: number, item: PolystatModel, globalDisplayTextTriggeredEmpty: string) => {
+export const formatCompositeValueAndTimestamp = (
+  frames: number,
+  item: PolystatModel,
+  globalDisplayTextTriggeredEmpty: string
+) => {
   // TODO: if just one value, could speed this up
   let content = item.valueFormatted;
   let timestampContent = item.timestampFormatted;

@@ -4,8 +4,10 @@
 
 ## [Unreleased]
 
-- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
-- Expand test coverage, update dev tooling
+- New shape: Hexagon Flat Top, with flat edges at the top and bottom and points at the left and right
+- Polygons now use more of the panel, up to 38% larger on wide panels
+- Setting rows or columns higher than the number of metrics no longer shrinks the polygons
+- Composite animation no longer skips a metric
 - Fixed edge case where ellipses truncation could escape polygon boundaries
 
 ## v2.1.16
@@ -48,7 +50,7 @@
 
 ## v2.1.11
 
-- Fix for show/hide metric value in composites  [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
+- Fix for show/hide metric value in composites [#383](https://github.com/grafana/grafana-polystat-panel/issues/381)
 - Fix for value toggle in tooltips [#381](https://github.com/grafana/grafana-polystat-panel/issues/381)
 - NEW: Tooltips now have a toggle for showing values
 
@@ -72,7 +74,7 @@
 
 ## v2.1.7
 
-- Fix for using ${__composite_name} in clickthrough
+- Fix for using ${\_\_composite_name} in clickthrough
 - Update dependencies
 
 ## v2.1.6
@@ -148,13 +150,13 @@
 ## v2.0.4
 
 - Fix for Issue #242 (wide data conversion)
-    Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model
-    did not handle this scenario. This is seen with CSV Content and other datasources. This fix will detect wide
-    data received in this format and convert as expected.
+  Some datasources will send non-timeseries dataframes that are "wide" and the conversion to the polystat model
+  did not handle this scenario. This is seen with CSV Content and other datasources. This fix will detect wide
+  data received in this format and convert as expected.
 - Fix for Issue #247 (composite template variables)
-    Advanced use of template variables in composites were not functioning as intended. Composites can once again
-    use template variables as the composite name, and reference the composite name inside the list of member
-    metrics.
+  Advanced use of template variables in composites were not functioning as intended. Composites can once again
+  use template variables as the composite name, and reference the composite name inside the list of member
+  metrics.
 - Metric Hints in composites and overrides are now displaying correctly
 - Override Editor buttons are now left aligned for easier access and visibility
 - Composite Editor buttons are also left aligned, and are now visible

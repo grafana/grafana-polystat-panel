@@ -90,15 +90,15 @@ To enable it, navigate to the Plugins section in your Grafana main menu. Click t
 
 This panel is based on this D3 example:
 
-* <https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html>
+- <https://www.visualcinnamon.com/2013/07/self-organizing-maps-creating-hexagonal.html>
 
 Many thanks to contributors:
 
-* Mathieu Rollet (matletix)
-* Mattias Jiderhamn (mjiderhamn)
-* AnushaBoggarapu
-* KamalakarGoretta
-* Rene Hennig (renehennig)
-* Hamza Ziyani (HZiyani)
+- Mathieu Rollet (matletix)
+- Mattias Jiderhamn (mjiderhamn)
+- AnushaBoggarapu
+- KamalakarGoretta
+- Rene Hennig (renehennig)
+- Hamza Ziyani (HZiyani)
 
 and many others!

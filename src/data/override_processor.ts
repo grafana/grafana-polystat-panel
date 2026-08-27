@@ -26,7 +26,10 @@ const customFormatter = (value: any): string => {
   return value;
 };
 
-const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType[] => {
+const resolveOverrideTemplates = (
+  overrides: OverrideItemType[],
+  replaceVariables: InterpolateFunction
+): OverrideItemType[] => {
   const ret: OverrideItemType[] = [];
   const variableRegex = /\$(\w+)|\[\[([\s\S]+?)(?::(\w+))?\]\]|\${(\w+)(?:\.([^:^\}]+))?(?::(\w+))?}/g;
   overrides.forEach((override) => {
@@ -36,9 +39,9 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariable
       if (matchResult && matchResult.length > 0) {
         matchResult.forEach((template: any) => {
           const scopedVars: ScopedVars = {};
-          const resolvedSeriesNames = replaceVariables(
-            template, scopedVars, customFormatter)
-            .split(CUSTOM_SPLIT_DELIMITER);
+          const resolvedSeriesNames = replaceVariables(template, scopedVars, customFormatter).split(
+            CUSTOM_SPLIT_DELIMITER
+          );
 
           resolvedSeriesNames.forEach((seriesName) => {
             const newName = override.metricName.replace(template, seriesName);
@@ -58,7 +61,11 @@ const resolveOverrideTemplates = (overrides: OverrideItemType[], replaceVariable
   return ret;
 };
 
-export const MatchOverride = (pattern: string, overrides: OverrideItemType[], replaceVariables: InterpolateFunction): OverrideItemType | null => {
+export const MatchOverride = (
+  pattern: string,
+  overrides: OverrideItemType[],
+  replaceVariables: InterpolateFunction
+): OverrideItemType | null => {
   const resolvedOverrides = resolveOverrideTemplates(overrides, replaceVariables);
   for (let index = 0; index < resolvedOverrides.length; index++) {
     const anOverride = resolvedOverrides[index];
@@ -120,7 +127,11 @@ export const ApplyOverrides = (
         }
         // override the timestamp format also
         if (anOverride.showTimestampEnabled) {
-          data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].timestampFormatted = TimeFormatter(
+            timeZone,
+            data[index].timestamp,
+            anOverride.showTimestampFormat
+          );
           data[index].showTimestamp = true;
         }
       } else {
@@ -141,10 +152,13 @@ export const ApplyOverrides = (
         }
         // process the timestamp display
         if (anOverride.showTimestampEnabled) {
-          data[index].timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, anOverride.showTimestampFormat);
+          data[index].timestampFormatted = TimeFormatter(
+            timeZone,
+            data[index].timestamp,
+            anOverride.showTimestampFormat
+          );
           data[index].showTimestamp = true;
         }
-
       }
       // add prefix/suffix to formatted value
       if (anOverride.prefix !== '') {

@@ -49,7 +49,6 @@ export default defineConfig<PluginOptions>({
         channel: 'chrome',
       },
       dependencies: ['auth'],
-    }
+    },
   ],
-
 });

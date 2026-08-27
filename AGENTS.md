@@ -103,6 +103,12 @@ Every task:
   - Run code > guess. Test suite → run it. Linter → run it. Type checker → run it.
   - Never "done" from plausible-looking diff. Plausibility ≠ correctness.
   - UI changes: screenshot before+after, describe diff.
+  - `yarn spellcheck` is NOT authoritative for CI. It runs the pinned cspell 8.19.4; CI runs
+    `npx cspell@6.13.3`, hardcoded in grafana/plugin-ci-workflows. cspell 8 accepts inflections of
+    words in `cspell.config.json` (a past-tense form of `typecheck` passes), 6.13.3 demands the
+    literal string, so local can pass while CI fails. Use a spelling already in the list, or run
+    `npx --yes cspell@6.13.3 -c cspell.config.json "**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}"`
+    to check what CI will see.
 - **Debugging:**
   - Root causes, not symptoms. Suppressing error ≠ fixing error.
   - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
@@ -374,15 +380,25 @@ Flat config (ESLint 9). Common rules applied:
   - When checking out a branch or `main`, always `git fetch` and `git pull` first.
   - Always run `git status` before constructing `git add` commands.
 - **Pull requests:**
-  - Always create as drafts (`gh pr create --draft`).
+  - Always create as drafts (`gh pr create --draft`). Never call `gh pr ready` — only the author marks PRs ready.
   - Use categories in summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`, `### Dependencies`,
     `### CI/CD`, `### Documentation`, `### Tooling`.
   - Always include a `## Test plan` section with a verification checklist.
 
 ## 10. Project Learnings
 
-- Never drop comments during a mechanical refactor. Comments recording color values, source URLs, workarounds, or
-  alternate values are intentional — carry them over to the new code.
+- `override_processor.test.ts` uses `renderHook` + `useTheme()`/`useTheme2()` to get theme objects. Refactor to use
+  `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
+- ~~`Color` class refactor~~ — Done. Converted to interface + standalone functions. Dead `RGBToHex` removed.
+- Preserve all comments when refactoring. Comments documenting color values, URLs, workarounds, or alternate values
+  are intentional — do not strip them during mechanical transforms.
+- `AutoFontScaler` needs Playwright E2E visual regression tests — unit tests verify logic branching but cannot prove
+  font sizes render correctly. Add provisioned dashboard with polystat panels at various sizes and screenshot baselines.
+- `AutoFontScaler` refactor: flatten nested ellipsis cascade (3-deep if/else with repeated `computeTextFontSize` calls)
+  into a loop over `[18, 10, 6]`. Blocked on E2E visual tests above.
+- `LayoutManager` class refactor: only class in the codebase; convert to a plain state type + pipeline of pure functions
+  (`createLayout` → `computeColumnRowSizes` → `computeActualUsage` → `computeRadius` → ...). Large dedicated PR —
+  use existing 301 tests as acceptance criteria. Do not mix with other changes.
 
 ---
 
