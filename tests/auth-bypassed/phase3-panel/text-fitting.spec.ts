@@ -34,8 +34,14 @@ for (const panel of PANELS) {
             if (!text) {
               continue;
             }
-            inspected++;
             const box = text.getBBox();
+            // a 0px font gives a zero-size box whose corners all collapse onto the anchor, which is
+            // always inside the polygon. Counting only painted boxes keeps that from passing as a
+            // check; AutoFontScaler emits 0px whenever the text will not fit.
+            if (box.width === 0 || box.height === 0) {
+              continue;
+            }
+            inspected++;
             const corners = [
               [box.x, box.y],
               [box.x + box.width, box.y],
