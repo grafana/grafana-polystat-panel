@@ -9,14 +9,23 @@ import type { Page } from '@playwright/test';
 //
 // These are the column counts findOptimalColumns picks for each panel's rendered pixel size, so
 // they depend on Grafana's chrome as well as on the optimizer. Measured at the pinned viewport
-// against Grafana 10.1 through 13.2, where panels 1-4 render 1550x170, 762x398, 368x854 and
-// 1156x170. If a Grafana upgrade shifts a panel across a candidate boundary, re-derive them; the
-// spec reports the measured size on failure.
+// against Grafana 10.1 through 13.2, where panels 1-5 render 1550x170, 762x398, 368x854, 1156x170
+// and 1156x246. If a Grafana upgrade shifts a panel across a candidate boundary, re-derive them;
+// the spec reports the measured size on failure.
+//
+// textKinds is which text elements each panel paints, which is what the text-fitting spec counts.
+// Only panel 5 enables timestamps.
 export const PANELS = [
-  { id: 1, name: 'wide 4:1 pointed-top', rowCounts: [11, 9] },
-  { id: 2, name: 'square 1:1 pointed-top', rowCounts: [6, 6, 4] },
-  { id: 3, name: 'tall 1:4 pointed-top', rowCounts: [3, 3, 3, 3, 3, 3, 2] },
-  { id: 4, name: 'wide 4:1 flat-top', rowCounts: [6, 5, 5, 4] },
+  { id: 1, name: 'wide 4:1 pointed-top', rowCounts: [11, 9], textKinds: ['label', 'value'] },
+  { id: 2, name: 'square 1:1 pointed-top', rowCounts: [6, 6, 4], textKinds: ['label', 'value'] },
+  { id: 3, name: 'tall 1:4 pointed-top', rowCounts: [3, 3, 3, 3, 3, 3, 2], textKinds: ['label', 'value'] },
+  { id: 4, name: 'wide 4:1 flat-top', rowCounts: [6, 5, 5, 4], textKinds: ['label', 'value'] },
+  {
+    id: 5,
+    name: 'flat-top with timestamp',
+    rowCounts: [3, 3],
+    textKinds: ['label', 'value', 'timestamp'],
+  },
 ];
 
 export const itemCount = (rowCounts: number[]) => rowCounts.reduce((total, count) => total + count, 0);

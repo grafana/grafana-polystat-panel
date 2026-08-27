@@ -6,7 +6,8 @@ import { itemCount, LAYOUT_VIEWPORT, openLayoutDashboard, PANELS } from './layou
 // from their center, so a text box sized against the widest point escapes through the angled
 // edges. The unit tests mock measureText, so only a browser can confirm the real glyph widths.
 //
-// Panel 4 renders values up to '20.00', the width that used to escape the flat-top edges.
+// Panel 4 renders values up to '20.00', the width that used to escape the flat-top edges. Panel 5
+// is flat-top with timestamps, where the label, value and timestamp share the same narrowed box.
 
 test.use({ viewport: LAYOUT_VIEWPORT });
 
@@ -16,9 +17,8 @@ test.beforeEach(async ({ page }) => {
 
 for (const panel of PANELS) {
   test(`${panel.name} keeps all text inside its polygons`, async ({ page }) => {
-    const { checked, escaped } = await page
-      .locator(`[data-testid="polystat-label-${panel.id}-0"]`)
-      .evaluate((label: SVGTextElement, panelId) => {
+    const { checked, escaped } = await page.locator(`[data-testid="polystat-label-${panel.id}-0"]`).evaluate(
+      (label: SVGTextElement, { panelId, textKinds }) => {
         const svg = label.closest('svg')!;
         const outside: Array<{ index: number; kind: string; text: string }> = [];
         // counted so a missed lookup shows up as under-coverage instead of a silent pass
@@ -29,7 +29,7 @@ for (const panel of PANELS) {
           const centerX = Number(match[1]);
           const centerY = Number(match[2]);
 
-          for (const kind of ['label', 'value']) {
+          for (const kind of textKinds) {
             const text = svg.querySelector(`[data-testid="polystat-${kind}-${panelId}-${index}"]`) as SVGTextElement;
             if (!text) {
               continue;
@@ -53,10 +53,12 @@ for (const panel of PANELS) {
           }
         });
         return { checked: inspected, escaped: outside };
-      }, panel.id);
+      },
+      { panelId: panel.id, textKinds: panel.textKinds }
+    );
 
-    // every polygon must contribute a label and a value, or the check below inspected nothing
-    expect(checked).toBe(itemCount(panel.rowCounts) * 2);
+    // every polygon must contribute each of its text kinds, or the check below inspected nothing
+    expect(checked).toBe(itemCount(panel.rowCounts) * panel.textKinds.length);
     expect(escaped).toEqual([]);
   });
 }
