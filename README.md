@@ -9,47 +9,25 @@
 
 The Polystat panel plugin provides a [D3-based](http://www.d3js.org) multi-stat panel for [Grafana](https://grafana.com/) 9.5 or later.
 
-This plugin creates an hexagon for each metric received, and allows you to group metrics into a composite metric and display the triggered state of the composite. The plugin supports autoscaling for best-fit sizing of each polygon to the panel size. When the complete text cannot be displayed, only tooltips are active.
-
-See the following examples:
-
-**All visible**
+This plugin creates an hexagon for each metric received, and allows you to group metrics into a composite metric and display the triggered state of the composite. The plugin supports autoscaling for best-fit sizing of each polygon to the panel size.
 
 ![polystat-v2-agent-all-visible](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-all-visible.png)
 
-**Scaled down**
+## Features
 
-![polystat-v2-agent-scaled-down](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-scaled-down.png)
+- One polygon per metric, sized for a best fit to the panel
+- Hexagon, circle, square and rectangle shapes
+- Ranged thresholds with `ok`, `warning`, `critical` and `custom` states
+- Composites that roll several metrics up into one polygon showing their worst state
+- Overrides that apply a different stat, unit, decimals or thresholds to metrics matching a regular expression
+- Clickthrough URLs built from template variables, regular expression capture groups and polygon names and values
+- Tooltips with primary and secondary sorting and a triggered-only mode
+- Value mappings support
+- Appears in the visualization suggestions list when the query result has numeric fields
 
-**Scaled down with tooltip**
+## Documentation
 
-![polystat-v2-agent-scaled-down-tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-scaled-down-tooltip.png)
-
-## Settings and options
-
-This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings.md) and [Options](docs/Polystat-docs-options.md).
-
-### Clickthrough URLs
-
-Use this setting to indicate the URL to open when clicking the polygon. Find more information in [Use Clickthrough URLs](docs/Polystat-docs-clickthroughurl.md).
-
-## Set thresholds
-
-This plugin supports "ranged" states. See how to [Set thresholds](docs/Polystat-docs-thresholds.md).
-
-## Overrides
-
-Use overrides to apply additional rendering options for metrics, including custom thresholds and clickthroughs. [Learn more](docs/Polystat-docs-overrides.md).
-
-## Composites
-
-Composites allow you to combine multiple metrics into a single representation that reflects the "worst" state of the metrics combined. See how at [Composites](docs/Polystat-docs-composites.md).
-
-## Value mappings
-
-This is a built-in option in Grafana and behaves as documented in [Configure value mappings](https://grafana.com/docs/grafana/latest/panels/configure-value-mappings/).
-
-Note that color assignments are ignored, and only threshold colors are applied.
+For configuration guides, the full option reference and examples, refer to the [Polystat documentation](https://grafana.com/grafana/plugins/grafana-polystat-panel/docs/).
 
 ## Build the plugin
 
