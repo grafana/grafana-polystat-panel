@@ -4,11 +4,19 @@
 
 ## [Unreleased]
 
-- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
-- Expand test coverage, update dev tooling
-- Fixed edge case where ellipses truncation could escape polygon boundaries
+### Changed
+
 - Prepare for React 19 in Grafana 13
 - Minimum supported Grafana version is now 12.2.5
+
+### Fixed
+
+- Fixed edge case where ellipses truncation could escape polygon boundaries
+
+### Project Updates
+
+- Rename `AutoFontScalar` to `AutoFontScaler` across source, consumer, and tests
+- Expand test coverage, update dev tooling
 
 ## v2.1.16
 
