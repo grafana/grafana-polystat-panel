@@ -1,8 +1,9 @@
 import { expect, test } from '@grafana/plugin-e2e';
 
-test('test composite creation', async ({ page, panelEditPage }) => {
+test('test composite creation', async ({ page, gotoPanelEditPage }) => {
+  // start from the provisioned Polystat panel; plugin-e2e's setVisualization is unreliable on Grafana 12.4
+  const panelEditPage = await gotoPanelEditPage({ dashboard: { uid: 'e2e-test-dashboard' }, id: '1' });
   await panelEditPage.datasource.set('TestData DB');
-  await panelEditPage.setVisualization('Polystat');
   await page.getByRole('spinbutton', { name: 'Series count', exact: true }).fill('10');
   await page.getByTestId('data-testid RefreshPicker run button').click();
   await page.getByLabel('Composites', { exact: true }).click();
