@@ -64,10 +64,8 @@
     "version": "%VERSION%",
     "updated": "%TODAY%"
   },
-
   "dependencies": {
-    "grafanaVersion": "9.5.x",
-    "grafanaDependency": ">=9.5.0-0",
+    "grafanaDependency": ">=12.2.5",
     "plugins": []
   }
 }

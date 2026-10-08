@@ -79,6 +79,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
   /*
     This is the animation method that will cycle through the metrics for a composite
    */
+  // eslint-disable-next-line react-hooks/immutability
   const animateComposite = useCallback(() => {
     // read through a ref rather than a state updater: the updater must stay pure, and React is
     // free to run it more than once, which would replay the innerHTML writes below
@@ -99,6 +100,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const val = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[0];
         if (animationRefs[index].current.innerHTML !== null) {
+          // eslint-disable-next-line react-hooks/immutability
           animationRefs[index].current.innerHTML = val;
         }
       }
@@ -112,6 +114,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
         const item = options.processedData[index];
         const ts = formatCompositeValueAndTimestamp(metricIndex, item, options.globalDisplayTextTriggeredEmpty)[1];
         if (animationTimestampRefs[index].current.innerHTML !== null) {
+          // eslint-disable-next-line react-hooks/immutability
           animationTimestampRefs[index].current.innerHTML = ts;
         }
       }
@@ -153,6 +156,7 @@ export const Polystat: React.FC<PolystatOptions> = (options) => {
     // check array content equality
     if (JSON.stringify(animatedItems) !== JSON.stringify(animate)) {
       if (options.processedData) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         updateAnimation(options.processedData);
         setAnimatedItems(animate);
       }

@@ -1,4 +1,4 @@
-import { DataFrame, Field, FieldType, FieldConfig, Vector } from '@grafana/data';
+import { DataFrame, Field, FieldType, FieldConfig } from '@grafana/data';
 
 // Inserts a "Time" field into each dataframe if it is missing
 // the value of the timestamp is "now"

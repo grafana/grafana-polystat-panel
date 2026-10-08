@@ -4,8 +4,18 @@
 
 ## [Unreleased]
 
+### Added
+
 - New shape: Hexagon Flat Top, with flat edges at the top and bottom and points at the left and right
+
+### Changed
+
+- Prepare for React 19 in Grafana 13
+- Minimum supported Grafana version is now 12.2.5
 - Polygons now use more of the panel, up to 38% larger on wide panels
+
+### Fixed
+
 - Setting rows or columns higher than the number of metrics no longer shrinks the polygons
 - Composite animation no longer skips a metric
 - Fixed edge case where ellipses truncation could escape polygon boundaries
