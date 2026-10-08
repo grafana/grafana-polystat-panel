@@ -1,7 +1,7 @@
 # AGENTS.md - Coding Agent Guidelines for grafana-polystat-panel
 
 Grafana Polystat Panel plugin. React + TypeScript frontend panel plugin built with `@grafana/create-plugin`
-scaffolding (v7.6.0). Uses Yarn 4 (Berry), Node >= 24, React 17.
+scaffolding (v7.12.1). Uses Yarn 4 (Berry), Node >= 24, React 18.
 
 **Working code only. Finish job. Plausibility ≠ correctness.**
 
@@ -296,14 +296,14 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### Key Technical Details
 
-- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `^9.5.21`
-- **React 17** (not 18) with `@types/react` pinned to `17.0.91`
+- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `12.3.1`
+- **React 18** with `@types/react` pinned to `18.3.31`; plugin must stay React 19 compatible (jsx-runtime externalized)
 - **Webpack 5** with SWC loader, AMD library output format
 - **Production build** drops `console.log` and `console.info` via TerserPlugin
 - **ESLint 9** flat config extending `@grafana/eslint-config/flat.js`
 - **`@grafana/plugins/import-is-compatible`** lint rule warns on SDK version mismatches
 - **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role)
-- **grafanaDependency**: `>=9.5.0` (minimum supported Grafana version)
+- **grafanaDependency**: `>=11.6.11 <12 || >=12.0.10 <12.1 || >=12.1.7 <12.2 || >=12.2.5` (releases that provide `react/jsx-runtime`)
 
 ### CI Workflow
 

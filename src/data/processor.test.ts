@@ -54,7 +54,7 @@ describe('Main Processor', () => {
         diff: 20,
         delta: 20,
         step: 10,
-        diffperc: 0.1,
+        diffperc: 10,
         previousDeltaUp: true,
       };
       for (const statKey of Object.keys(staticStats)) {
@@ -87,7 +87,7 @@ describe('Main Processor', () => {
         diff: 20,
         delta: 20,
         step: 10,
-        diffperc: 0.1,
+        diffperc: 10,
         previousDeltaUp: true,
       };
       for (const statKey of Object.keys(staticStats)) {
