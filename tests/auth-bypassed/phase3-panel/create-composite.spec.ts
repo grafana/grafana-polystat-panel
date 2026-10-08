@@ -3,7 +3,7 @@ import { expect, test } from '@grafana/plugin-e2e';
 test('test composite creation', async ({ page, panelEditPage }) => {
   await panelEditPage.datasource.set('TestData DB');
   await panelEditPage.setVisualization('Polystat');
-  await page.getByLabel('Series count', { exact: true }).fill('10');
+  await page.getByRole('spinbutton', { name: 'Series count', exact: true }).fill('10');
   await page.getByTestId('data-testid RefreshPicker run button').click();
   await page.getByLabel('Composites', { exact: true }).click();
   await page.getByRole('button', { name: 'Add Composite' }).click();
