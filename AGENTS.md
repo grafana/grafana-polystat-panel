@@ -306,14 +306,14 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### Key Technical Details
 
-- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `12.3.1`
+- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `^13.0.0`
 - **React 18** with `@types/react` pinned to `18.3.31`; plugin must stay React 19 compatible (jsx-runtime externalized)
 - **Webpack 5** with SWC loader, AMD library output format
 - **Production build** drops `console.log` and `console.info` via TerserPlugin
 - **ESLint 9** flat config extending `@grafana/eslint-config` v10 (via `.config/eslint.config.mjs`)
 - **`@grafana/plugins/import-is-compatible`** lint rule warns on SDK version mismatches
-- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role); default version 12.3.0
-- **grafanaDependency**: `>=12.2.5` (first 12.2 patch that provides `react/jsx-runtime`)
+- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role); default version 13.0.1
+- **grafanaDependency**: `>=12.4.0` (raised by #536 with the function-based suggestions API)
 
 ### CI Workflow
 
@@ -321,7 +321,7 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v1
 
 - Lint, typecheck, unit tests, build
 - Playwright E2E against a matrix of `grafana-enterprise` versions matching `run-playwright-with-grafana-dependency`
-  (`>=12.2.5`) in `.github/workflows/push.yml`. Keep it in sync with `grafanaDependency` in `src/plugin.json`.
+  (`>=12.4.0`) in `.github/workflows/push.yml`. Keep it in sync with `grafanaDependency` in `src/plugin.json`.
 - Manual publish via `workflow_dispatch` to dev/ops/prod environments
 
 ### Plugin Tooling Rules

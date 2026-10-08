@@ -1,5 +1,6 @@
 {
   "type": "panel",
+  "suggestions": true,
   "name": "Polystat",
   "id": "grafana-polystat-panel",
   "info": {
@@ -65,7 +66,7 @@
     "updated": "%TODAY%"
   },
   "dependencies": {
-    "grafanaDependency": ">=12.2.5",
+    "grafanaDependency": ">=12.4.0",
     "plugins": []
   }
 }

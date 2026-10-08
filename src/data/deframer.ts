@@ -21,7 +21,7 @@ export function InsertTime(data: DataFrame[]): DataFrame[] {
         if (!hasTimestamp) {
           const copiedField = Object.assign({}, aField);
           // need to get the number of rows of data for this frame
-          const aFieldValues = copiedField.values.toArray();
+          const aFieldValues = copiedField.values;
           const rowsOfField = aFieldValues.length;
           for (let rowNum = 0; rowNum < rowsOfField; rowNum++) {
             // only create a new field when the rowValue is not null
@@ -100,7 +100,7 @@ function flattenLabels(frame: DataFrame, rowNum: number) {
 }
 
 function getValueOfField(field: Field, index: number) {
-  const bufferValue = field.values.toArray()[index];
+  const bufferValue = field.values[index];
   return bufferValue;
 }
 
