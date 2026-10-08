@@ -1,7 +1,7 @@
 /**
  * Tests for utils
  */
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 import { ApplyOverrides, MatchOverride } from './override_processor';
 import { OverrideItemType } from 'components/overrides/types';
@@ -52,8 +52,7 @@ describe('Test Overrides', () => {
   describe('Override affects model', () => {
     it('returns an override match', () => {
       const { result } = renderHook(() => MatchOverride(modelA.name, [overrideA], replaceVariables));
-      expect(result.all.length).toBe(1);
-      const modified = result.all[0] as OverrideItemType;
+      const modified = result.current as OverrideItemType;
       expect(modified.label).toBe('OVERRIDE-0');
     });
     it('returns an overridden model', () => {
@@ -64,8 +63,7 @@ describe('Test Overrides', () => {
         overrides: [],
       };
       const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2()));
-      expect(result.all.length).toBe(1);
-      const x = result.all[0] as PolystatModel[];
+      const x = result.current as PolystatModel[];
       const modified = x[0] as PolystatModel;
       //console.log(JSON.stringify(modified));
       expect(modified.valueFormatted).toBe('210.00');
@@ -87,7 +85,7 @@ describe('Test Overrides', () => {
       const { result } = renderHook(() =>
         ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
       );
-      const applied = result.all[0] as PolystatModel[];
+      const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test?name=A-series');
     });
 
@@ -100,7 +98,7 @@ describe('Test Overrides', () => {
       const { result } = renderHook(() =>
         ApplyOverrides([overrideWithRegex], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
       );
-      const applied = result.all[0] as PolystatModel[];
+      const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test?full=A-series&prefix=A&suffix=series');
     });
 
@@ -116,7 +114,7 @@ describe('Test Overrides', () => {
       const { result } = renderHook(() =>
         ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
       );
-      const applied = result.all[0] as PolystatModel[];
+      const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test');
       expect(applied[0].newTabEnabled).toBe(true);
       expect(applied[0].sanitizeURLEnabled).toBe(true);

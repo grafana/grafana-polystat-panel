@@ -1,7 +1,7 @@
 # AGENTS.md - Coding Agent Guidelines for grafana-polystat-panel
 
 Grafana Polystat Panel plugin. React + TypeScript frontend panel plugin built with `@grafana/create-plugin`
-scaffolding (v7.6.0). Uses Yarn 4 (Berry), Node >= 24, React 17.
+scaffolding (v7.12.1). Uses Yarn 4 (Berry), Node >= 24, React 18.
 
 **Working code only. Finish job. Plausibility ≠ correctness.**
 
@@ -193,6 +193,10 @@ yarn playwright:showreport  # View HTML report
 E2E tests require a running Grafana instance at `http://localhost:3000` with admin/admin credentials. The `auth`
 project runs first to create stored auth state, then `run-tests` executes against Desktop Chrome.
 
+To test a specific Grafana version: `GRAFANA_VERSION=12.2.5 GRAFANA_IMAGE=grafana docker compose up -d
+--force-recreate`. Patch releases such as 12.2.5 are not published as `grafana-oss` images; use `grafana` or
+`grafana-enterprise`. Always run E2E against the `grafanaDependency` minimum when changing it.
+
 ### Project Structure
 
 - `src/module.ts` -- entry point (PanelPlugin registration)
@@ -296,21 +300,22 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### Key Technical Details
 
-- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `^9.5.21`
-- **React 17** (not 18) with `@types/react` pinned to `17.0.91`
+- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `12.3.1`
+- **React 18** with `@types/react` pinned to `18.3.31`; plugin must stay React 19 compatible (jsx-runtime externalized)
 - **Webpack 5** with SWC loader, AMD library output format
 - **Production build** drops `console.log` and `console.info` via TerserPlugin
-- **ESLint 9** flat config extending `@grafana/eslint-config/flat.js`
+- **ESLint 9** flat config extending `@grafana/eslint-config` v10 (via `.config/eslint.config.mjs`)
 - **`@grafana/plugins/import-is-compatible`** lint rule warns on SDK version mismatches
-- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role)
-- **grafanaDependency**: `>=9.5.0` (minimum supported Grafana version)
+- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role); default version 12.3.0
+- **grafanaDependency**: `>=12.2.5` (first 12.2 patch that provides `react/jsx-runtime`)
 
 ### CI Workflow
 
-CI runs via `grafana/plugin-ci-workflows` reusable workflow (v8.0.1):
+CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v11.3.0`):
 
 - Lint, typecheck, unit tests, build
-- Playwright E2E against `grafana-enterprise@latest` matching `>=12.3.0`
+- Playwright E2E against a matrix of `grafana-enterprise` versions matching `run-playwright-with-grafana-dependency`
+  (`>=12.2.5`) in `.github/workflows/push.yml`. Keep it in sync with `grafanaDependency` in `src/plugin.json`.
 - Manual publish via `workflow_dispatch` to dev/ops/prod environments
 
 ### Plugin Tooling Rules
@@ -318,7 +323,7 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (v8.0.1):
 - **Never:**
   - Modify anything inside `.config/` — managed by `@grafana/create-plugin`. Extend at repo root only.
   - Change `id` or `type` in `src/plugin.json`. Requires Grafana server restart.
-  - Pin `grafana/plugin-ci-workflows` to a commit SHA. Use tagged releases only (e.g., `@ci-cd-workflows/v7`).
+  - Pin `grafana/plugin-ci-workflows` to a commit SHA. Use tagged releases only (e.g., `@ci-cd-workflows/v11.3.0`).
 - **Always:**
   - Use webpack from `.config/` for builds; no custom bundler.
   - Use `@grafana/plugin-e2e` for E2E tests.
@@ -349,6 +354,9 @@ Flat config (ESLint 9). Common rules applied:
 - `@typescript-eslint/no-deprecated` is a **warning** — avoid deprecated APIs
 - `@typescript-eslint/no-empty-object-type: off`
 - Unused variables are errors (except rest siblings)
+- `eslint-plugin-react-hooks` 7.1 enables React Compiler rules (`react-hooks/immutability`,
+  `react-hooks/set-state-in-effect`) as errors. Fix new code; existing animation code in `Polystat.tsx` uses
+  targeted `eslint-disable-next-line`
 - Test files, mocks, config files, and server dirs are excluded from linting
 
 ### Critical Rules
@@ -381,6 +389,9 @@ Flat config (ESLint 9). Common rules applied:
 
 ## 10. Project Learnings
 
+- `@grafana/data`, `@grafana/ui`, `@grafana/runtime` are runtime externals: production uses the host Grafana's copy,
+  tests use the devDependency copy. When an SDK bump changes test results (e.g. `diffperc` became a percentage in
+  12.x), align tests with the SDK — that is already the production behavior.
 - Never drop comments during a mechanical refactor. Comments recording color values, source URLs, workarounds, or
   alternate values are intentional — carry them over to the new code.
 
