@@ -7,7 +7,8 @@
 ### Changed
 
 - Prepare for React 19 in Grafana 13
-- Minimum supported Grafana version is now 12.2.5
+- Minimum supported Grafana version is now 12.4.0
+- Upgrade Grafana dependencies to v13 and use the function-based visualization suggestions API
 
 ### Fixed
 

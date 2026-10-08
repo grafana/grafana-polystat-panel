@@ -247,7 +247,6 @@ export const CompositeEditor: React.FC<Props> = ({ context, onChange }) => {
               label={item.composite.name}
               isOpen={isOpen[index]}
               onToggle={() => toggleOpener(index)}
-              collapsible
             >
               <CompositeItem
                 key={`composite-item-index-${item.ID}`}
