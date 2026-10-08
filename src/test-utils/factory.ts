@@ -1,4 +1,4 @@
-import { PolystatModel } from '../components/types';
+import { PolygonShapes, PolystatModel, PolystatOptions, TimestampPositions } from '../components/types';
 
 // fixtures share one fixed instant so anything rendering a timestamp stays deterministic
 export const FIXTURE_TIMESTAMP = new Date('01 October 2022 10:28 UTC').getTime();
@@ -33,5 +33,76 @@ export const createPolystatModel = (overrides: Partial<PolystatModel> = {}): Pol
   showTimestamp: false,
   isComposite: false,
   members: [],
+  ...overrides,
+});
+
+/**
+ * Builds a complete PolystatOptions for tests that render <Polystat/> directly.
+ *
+ * These are neutral test values, not the panel defaults from module.ts: borders are off and
+ * tooltips are disabled to keep the rendered SVG minimal. Override whatever the test is about.
+ */
+export const createPolystatOptions = (overrides: Partial<PolystatOptions> = {}): PolystatOptions => ({
+  autoSizeColumns: true,
+  autoSizeRows: true,
+  autoSizePolygons: true,
+  ellipseCharacters: 18,
+  ellipseEnabled: false,
+  globalAutoScaleFonts: true,
+  globalClickthrough: '',
+  globalClickthroughNewTabEnabled: false,
+  globalClickthroughSanitizedEnabled: true,
+  globalClickthroughCustomTargetEnabled: false,
+  globalClickthroughCustomTarget: '',
+  globalDecimals: 2,
+  globalDisplayMode: 'all',
+  globalDisplayTextTriggeredEmpty: 'OK',
+  globalFillColor: '#0a55a1',
+  globalLabelFontSize: 12,
+  globalValueFontSize: 12,
+  globalCompositeValueFontSize: 12,
+  globalGradientsEnabled: false,
+  globalOperator: 'mean',
+  globalPolygonBorderSize: 0,
+  globalPolygonBorderColor: '#000000',
+  globalPolygonSize: '50',
+  globalRegexPattern: '',
+  globalShape: PolygonShapes.HEXAGON_POINTED_TOP,
+  globalShowValueEnabled: true,
+  globalShowTimestampEnabled: false,
+  globalShowTimestampFormat: 'YYYY-MM-DD HH:mm:ss',
+  globalShowTimestampFontSize: 12,
+  globalShowTimestampPosition: TimestampPositions.BELOW_VALUE,
+  globalShowTimestampYOffset: 0,
+  globalShowTooltipColumnHeadersEnabled: true,
+  globalTextFontAutoColor: '#000000',
+  globalTextFontAutoColorEnabled: false,
+  globalTextFontColor: '#FFFFFF',
+  globalTextFontFamily: 'Inter',
+  globalThresholdsConfig: [],
+  globalTooltipsEnabled: false,
+  globalTooltipsShowTimestampEnabled: false,
+  globalTooltipsShowValueEnabled: true,
+  globalTooltipsFontFamily: 'Inter',
+  globalUnitFormat: 'short',
+  layoutDisplayLimit: 100,
+  layoutNumColumns: 8,
+  layoutNumRows: 8,
+  processedData: [],
+  panelHeight: 200,
+  panelWidth: 800,
+  panelId: 1,
+  radius: null,
+  sortByField: 'name',
+  sortByDirection: 1,
+  overrideConfig: { overrides: [] },
+  compositeGlobalAliasingEnabled: false,
+  compositeConfig: { animationSpeed: '5000', composites: [], enabled: false },
+  tooltipPrimarySortDirection: 1,
+  tooltipPrimarySortByField: 'name',
+  tooltipSecondarySortDirection: 1,
+  tooltipSecondarySortByField: 'name',
+  tooltipDisplayMode: 'all',
+  tooltipDisplayTextTriggeredEmpty: 'OK',
   ...overrides,
 });

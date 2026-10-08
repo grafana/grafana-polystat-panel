@@ -61,7 +61,9 @@ export const resolveMemberTemplates = (
             compositeName: { text: 'compositeName', value: compositeName },
           };
           // template variables can be multi-select, or "all", iterate over each match
-          const resolvedSeriesNames = replaceVariables(aMatch, scopedVars, customFormatter).split(CUSTOM_SPLIT_DELIMITER);
+          const resolvedSeriesNames = replaceVariables(aMatch, scopedVars, customFormatter).split(
+            CUSTOM_SPLIT_DELIMITER
+          );
           // iterate over the array of names
           if (resolvedSeriesNames && resolvedSeriesNames.length) {
             resolvedSeriesNames.forEach((aName) => {
@@ -140,7 +142,7 @@ export const ApplyComposites = (
   replaceVariables: InterpolateFunction,
   compositesGlobalAliasingEnabled: boolean,
   timeZone: string,
-  globalRegexPattern?: string,
+  globalRegexPattern?: string
 ): PolystatModel[] => {
   if (!composites) {
     return data;
@@ -207,7 +209,11 @@ export const ApplyComposites = (
           }
           // process the timestamp display
           if (aComposite.showTimestampEnabled) {
-            seriesItem.timestampFormatted = TimeFormatter(timeZone, data[index].timestamp, aComposite.showTimestampFormat);
+            seriesItem.timestampFormatted = TimeFormatter(
+              timeZone,
+              data[index].timestamp,
+              aComposite.showTimestampFormat
+            );
             seriesItem.showTimestamp = true;
           }
         }
@@ -259,8 +265,8 @@ export const ApplyComposites = (
     }
   }
   // now merge the clonedComposites into data
-  if(compositesGlobalAliasingEnabled && globalRegexPattern) {
-    Array.prototype.push.apply(data, ApplyGlobalRegexPattern(clonedComposites, globalRegexPattern))
+  if (compositesGlobalAliasingEnabled && globalRegexPattern) {
+    Array.prototype.push.apply(data, ApplyGlobalRegexPattern(clonedComposites, globalRegexPattern));
   } else {
     Array.prototype.push.apply(data, clonedComposites);
   }

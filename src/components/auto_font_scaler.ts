@@ -1,7 +1,6 @@
-import { PolystatModel } from "./types";
+import { PolystatModel } from './types';
 import { getTextSizeForWidthAndHeight } from '../utils';
 import { ELLIPSIS } from './defaults';
-
 
 // how many characters of the label to keep, tried longest first, when the whole label will not fit
 const TRUNCATION_LENGTHS = [18, 10, 6];
@@ -82,7 +81,7 @@ export const AutoFontScaler = ({
   }
 
   // same for the value and timestamp option, also check for sub metrics size in case of composite
-  let {maxValue, maxTimestamp} = getMaxValueAndTimestamp(data);
+  let { maxValue, maxTimestamp } = getMaxValueAndTimestamp(data);
   //console.log(`AutoFontScaler maxValue ${maxValue}`);
   // assume no timestamp
   let activeValueFontSize = computeTextFontSize(
@@ -104,7 +103,7 @@ export const AutoFontScaler = ({
       maxFont,
       maxLinesToDisplay,
       textAreaWidth,
-      (textAreaHeight * valueHeightShare)
+      textAreaHeight * valueHeightShare
     );
   }
   // timestamp shares the same space as the value, but is always smaller
@@ -115,7 +114,7 @@ export const AutoFontScaler = ({
     maxFont,
     maxLinesToDisplay,
     textAreaWidth,
-    (textAreaHeight * timestampHeightShare)
+    textAreaHeight * timestampHeightShare
   );
 
   if (activeTimestampFontSize < minFont) {
@@ -153,7 +152,8 @@ export const AutoFontScaler = ({
     activeCompositeValueFontSize,
     activeTimestampFontSize,
     showEllipses,
-    numOfChars };
+    numOfChars,
+  };
 };
 
 /**
@@ -213,7 +213,7 @@ const getMaxValueAndTimestamp = (data: PolystatModel[]) => {
       }
     }
   }
-  return {maxValue, maxTimestamp};
+  return { maxValue, maxTimestamp };
 };
 
 const computeTextFontSize = (
@@ -233,5 +233,5 @@ const computeTextFontSize = (
     minFont,
     maxFont
   );
-  return (computedSize);
+  return computedSize;
 };

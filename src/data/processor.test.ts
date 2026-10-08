@@ -1,6 +1,11 @@
 import { PolystatModel } from '../components/types';
 import { FieldType, toDataFrame } from '@grafana/data';
-import { DataFrameToPolystat, ApplyGlobalRegexPattern, processDefaultClickThrough, ApplyGlobalClickThrough } from './processor';
+import {
+  DataFrameToPolystat,
+  ApplyGlobalRegexPattern,
+  processDefaultClickThrough,
+  ApplyGlobalClickThrough,
+} from './processor';
 
 describe('Main Processor', () => {
   let modelA: PolystatModel;
@@ -106,11 +111,11 @@ describe('Main Processor', () => {
       const time = new Date().getTime();
       const frameSQL = toDataFrame({
         fields: [
-          { name: 'Time', type: FieldType.time, values: [time]},
-          { name: 'count', type: FieldType.number, values: [3], labels: {'severity': 'high'} },
-          { name: 'count', type: FieldType.number, values: [0], labels: { 'severity': 'low'} },
-          { name: 'count', type: FieldType.number, values: [5], labels: { 'severity': 'critical'} },
-          { name: 'count', type: FieldType.number, values: [2], labels: { 'severity': 'medium' } },
+          { name: 'Time', type: FieldType.time, values: [time] },
+          { name: 'count', type: FieldType.number, values: [3], labels: { severity: 'high' } },
+          { name: 'count', type: FieldType.number, values: [0], labels: { severity: 'low' } },
+          { name: 'count', type: FieldType.number, values: [5], labels: { severity: 'critical' } },
+          { name: 'count', type: FieldType.number, values: [2], labels: { severity: 'medium' } },
         ],
       });
       const model = DataFrameToPolystat(frameSQL, 'lastNotNull');
@@ -139,64 +144,36 @@ describe('Main Processor', () => {
   describe('Test processDefaultClickThrough', () => {
     const replaceVariables = (str: string) => {
       return str.replace(/\${machine}/g, 'machineA');
-    }
+    };
     const identityReplace = (str: string) => str;
     const globalClickthrough = '/d/dashboard?var-machine=${machine}';
     it('returns polystat model with global clickthrough applied', () => {
       // ensure not set
       modelA.clickThrough = '';
-      const newUrl = processDefaultClickThrough(
-        0,
-        globalClickthrough,
-        [modelA],
-        replaceVariables
-      );
+      const newUrl = processDefaultClickThrough(0, globalClickthrough, [modelA], replaceVariables);
       console.log(JSON.stringify(newUrl, null, 2));
       expect(newUrl).toEqual('/d/dashboard?var-machine=machineA');
     });
     it('returns polystat model with global clickthrough not applied', () => {
       // ensure not set
       modelA.clickThrough = '/d/dashboard-other?var-machine=${machine}';
-      const applied = ApplyGlobalClickThrough(
-        [modelA],
-        globalClickthrough,
-        false,
-        false,
-        false,
-        '',
-        replaceVariables
-        );
+      const applied = ApplyGlobalClickThrough([modelA], globalClickthrough, false, false, false, '', replaceVariables);
       expect(applied[0].clickThrough).toEqual('/d/dashboard-other?var-machine=${machine}');
     });
 
     it('replaces ${__cell_name} with encoded series name', () => {
-      const url = processDefaultClickThrough(
-        0,
-        '/d/test?name=${__cell_name}',
-        models,
-        identityReplace
-      );
+      const url = processDefaultClickThrough(0, '/d/test?name=${__cell_name}', models, identityReplace);
       expect(url).toBe('/d/test?name=A-series');
     });
 
     it('replaces ${__cell} with encoded formatted value', () => {
-      const url = processDefaultClickThrough(
-        0,
-        '/d/test?val=${__cell}',
-        models,
-        identityReplace
-      );
+      const url = processDefaultClickThrough(0, '/d/test?val=${__cell}', models, identityReplace);
       expect(url).toContain('/d/test?val=');
       expect(url).not.toContain('${__cell}');
     });
 
     it('replaces ${__cell:raw} with encoded raw value', () => {
-      const url = processDefaultClickThrough(
-        0,
-        '/d/test?raw=${__cell:raw}',
-        models,
-        identityReplace
-      );
+      const url = processDefaultClickThrough(0, '/d/test?raw=${__cell:raw}', models, identityReplace);
       expect(url).toBe('/d/test?raw=210');
     });
 
