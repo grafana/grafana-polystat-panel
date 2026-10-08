@@ -311,7 +311,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### CI Workflow
 
-CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v10.2.0`):
+CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v11.3.0`):
 
 - Lint, typecheck, unit tests, build
 - Playwright E2E against a matrix of `grafana-enterprise` versions matching `run-playwright-with-grafana-dependency`
@@ -323,7 +323,7 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v1
 - **Never:**
   - Modify anything inside `.config/` — managed by `@grafana/create-plugin`. Extend at repo root only.
   - Change `id` or `type` in `src/plugin.json`. Requires Grafana server restart.
-  - Pin `grafana/plugin-ci-workflows` to a commit SHA. Use tagged releases only (e.g., `@ci-cd-workflows/v10.2.0`).
+  - Pin `grafana/plugin-ci-workflows` to a commit SHA. Use tagged releases only (e.g., `@ci-cd-workflows/v11.3.0`).
 - **Always:**
   - Use webpack from `.config/` for builds; no custom bundler.
   - Use `@grafana/plugin-e2e` for E2E tests.
