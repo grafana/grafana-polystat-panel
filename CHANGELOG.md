@@ -8,7 +8,7 @@
 - Expand test coverage, update dev tooling
 - Fixed edge case where ellipses truncation could escape polygon boundaries
 - Prepare for React 19 in Grafana 13
-- Minimum supported Grafana version is now 11.6.11 (or 12.0.10, 12.1.7, 12.2.5 and later)
+- Minimum supported Grafana version is now 12.2.5
 
 ## v2.1.16
 

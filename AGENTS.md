@@ -303,7 +303,7 @@ const getStyles = (theme: GrafanaTheme2) => ({
 - **ESLint 9** flat config extending `@grafana/eslint-config/flat.js`
 - **`@grafana/plugins/import-is-compatible`** lint rule warns on SDK version mismatches
 - **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role)
-- **grafanaDependency**: `>=11.6.11 <12 || >=12.0.10 <12.1 || >=12.1.7 <12.2 || >=12.2.5` (releases that provide `react/jsx-runtime`)
+- **grafanaDependency**: `>=12.2.5` (first 12.2 patch that provides `react/jsx-runtime`)
 
 ### CI Workflow
 
