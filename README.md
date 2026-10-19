@@ -25,6 +25,12 @@ See the following examples:
 
 ![polystat-v2-agent-scaled-down-tooltip](https://raw.githubusercontent.com/grafana/grafana-polystat-panel/v2.x/src/img/screenshots/polystat-v2-agent-scaled-down-tooltip.png)
 
+> [!TIP]
+>
+> ## Give it a try using Grafana Play
+>
+> With Grafana Play, you can explore and see how it works, learning from practical examples to accelerate your development. This feature can be seen on [Polystat Visualization Showcase](https://play.grafana.org/d/viz-polystat-demo/).
+
 ## Settings and options
 
 This panel provides a large number of settings customization options, and are searchable from the menu. For more info, see [General settings](docs/Polystat-docs-settings.md) and [Options](docs/Polystat-docs-options.md).
