@@ -37,7 +37,7 @@ describe('Test Overrides', () => {
   };
   const replaceVariables = (str: string) => {
     return str.replace(/\${noVariable}/g, 'noValue');
-  }
+  };
 
   beforeEach(() => {
     const time = new Date().getTime();
@@ -62,7 +62,19 @@ describe('Test Overrides', () => {
         },
         overrides: [],
       };
-      const { result } = renderHook(() => ApplyOverrides([overrideA], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2()));
+      const { result } = renderHook(() =>
+        ApplyOverrides(
+          [overrideA],
+          [modelA],
+          fieldConfig,
+          'white',
+          [],
+          replaceVariables,
+          'utc',
+          useTheme(),
+          useTheme2()
+        )
+      );
       const x = result.current as PolystatModel[];
       const modified = x[0] as PolystatModel;
       //console.log(JSON.stringify(modified));
@@ -83,7 +95,17 @@ describe('Test Overrides', () => {
         clickThrough: '/d/test?name=${__cell_name}',
       };
       const { result } = renderHook(() =>
-        ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+        ApplyOverrides(
+          [overrideWithClick],
+          [modelA],
+          fieldConfig,
+          'white',
+          [],
+          replaceVariables,
+          'utc',
+          useTheme(),
+          useTheme2()
+        )
       );
       const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test?name=A-series');
@@ -96,7 +118,17 @@ describe('Test Overrides', () => {
         clickThrough: '/d/test?full=${0}&prefix=${1}&suffix=${2}',
       };
       const { result } = renderHook(() =>
-        ApplyOverrides([overrideWithRegex], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+        ApplyOverrides(
+          [overrideWithRegex],
+          [modelA],
+          fieldConfig,
+          'white',
+          [],
+          replaceVariables,
+          'utc',
+          useTheme(),
+          useTheme2()
+        )
       );
       const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test?full=A-series&prefix=A&suffix=series');
@@ -112,7 +144,17 @@ describe('Test Overrides', () => {
         clickThroughCustomTarget: '_self',
       };
       const { result } = renderHook(() =>
-        ApplyOverrides([overrideWithClick], [modelA], fieldConfig, 'white', [], replaceVariables, 'utc', useTheme(), useTheme2())
+        ApplyOverrides(
+          [overrideWithClick],
+          [modelA],
+          fieldConfig,
+          'white',
+          [],
+          replaceVariables,
+          'utc',
+          useTheme(),
+          useTheme2()
+        )
       );
       const applied = result.current as PolystatModel[];
       expect(applied[0].clickThrough).toBe('/d/test');

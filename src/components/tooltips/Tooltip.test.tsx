@@ -180,7 +180,13 @@ describe('Test Tooltips', () => {
     });
 
     it('returns primary sorted metrics: case insensitive ascending', () => {
-      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val, false, timeZone);
+      const applied = ApplyComposites(
+        [compositeA],
+        [casedModelA, casedModelB, casedModelC],
+        (val) => val,
+        false,
+        timeZone
+      );
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,
@@ -206,7 +212,13 @@ describe('Test Tooltips', () => {
     });
 
     it('returns primary sorted metrics: case insensitive descending', () => {
-      const applied = ApplyComposites([compositeA], [casedModelA, casedModelB, casedModelC], (val) => val, false, timeZone);
+      const applied = ApplyComposites(
+        [compositeA],
+        [casedModelA, casedModelB, casedModelC],
+        (val) => val,
+        false,
+        timeZone
+      );
       const props: TooltipProps = {
         data: applied[0],
         valueEnabled: true,

@@ -1,0 +1,45 @@
+{
+  "id": null,
+  "uid": "layout-flat-timestamp",
+  "title": "Layout - Flat Top Timestamp",
+  "tags": ["polystat", "layout-test"],
+  "schemaVersion": 36,
+  "version": 1,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Layout - Flat Top Timestamp",
+      "type": "grafana-polystat-panel",
+      "gridPos": {
+        "h": 10,
+        "w": 18,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "autoSizeColumns": true,
+        "autoSizePolygons": true,
+        "autoSizeRows": true,
+        "globalAutoScaleFonts": true,
+        "globalShape": "hexagon_flat_top",
+        "globalFillColor": "rgba(110, 159, 255, 0.15)",
+        "globalShowTimestampEnabled": true
+      },
+      "datasource": {
+        "type": "grafana-testdata-datasource",
+        "uid": "trlxrdZVk"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "scenarioId": "csv_content",
+          "datasource": {
+            "type": "grafana-testdata-datasource",
+            "uid": "trlxrdZVk"
+          },
+          "csvContent": "m01,m02,m03,m04,m05,m06\n1,2,3,4,5,6"
+        }
+      ]
+    }
+  ]
+}

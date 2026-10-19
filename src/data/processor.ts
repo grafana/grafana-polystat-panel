@@ -65,9 +65,8 @@ export function ProcessDataFrames(
   compositesGlobalAliasingEnabled: boolean,
   timeZone: string,
   themeV1: GrafanaTheme,
-  themeV2: GrafanaTheme2,
+  themeV2: GrafanaTheme2
 ): PolystatModel[] {
-
   // check if data contains a field called Time of type time
   let processedData = InsertTime(data.series);
   let internalData = [] as PolystatModel[];
@@ -91,7 +90,8 @@ export function ProcessDataFrames(
     globalShowTimestamp,
     globalShowTimestampFormat,
     timeZone,
-    themeV2);
+    themeV2
+  );
   // applies overrides and global thresholds (and mappings)
   internalData = ApplyOverrides(
     overrides,
@@ -112,7 +112,8 @@ export function ProcessDataFrames(
       replaceVariables,
       compositesGlobalAliasingEnabled,
       timeZone,
-      globalRegexPattern);
+      globalRegexPattern
+    );
   }
   // clickthroughs
   internalData = ApplyGlobalClickThrough(
@@ -196,7 +197,8 @@ export const processDefaultClickThrough = (
   index: number,
   globalClickthrough: string,
   data: PolystatModel[],
-  replaceVariables: InterpolateFunction): string => {
+  replaceVariables: InterpolateFunction
+): string => {
   let url = globalClickthrough;
   // apply both types of transforms, one targeted at the data item index, and secondly the nth variant
   url = ClickThroughTransformer.transformSingleMetric(index, url, data);
@@ -301,15 +303,13 @@ const FilterByGlobalDisplayMode = (data: any, globalDisplayMode: string): Polyst
 };
 
 export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): PolystatModel[] => {
-
   const valueFields: Field[] = [];
   let newestTimestamp = 0;
 
   for (const aField of frame.fields) {
     if (aField.type === FieldType.number) {
       valueFields.push(aField);
-    }
-    else if (aField.type === FieldType.time) {
+    } else if (aField.type === FieldType.time) {
       // get the "newest" timestamp from data
       // check if timestamp is 0
       let aTimestamp = 0;
@@ -331,7 +331,7 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
   }
   if (newestTimestamp === 0) {
     // use current time if none is found
-    newestTimestamp = new Date().getTime()
+    newestTimestamp = new Date().getTime();
   }
   const models: PolystatModel[] = [];
 
@@ -384,4 +384,4 @@ export const DataFrameToPolystat = (frame: DataFrame, globalOperator: string): P
     models.push(model);
   }
   return models;
-}
+};

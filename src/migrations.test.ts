@@ -1,5 +1,5 @@
 import { PanelModel, RangeMap, ValueMap, SpecialValueMap } from '@grafana/data';
-import { config } from "@grafana/runtime";
+import { config } from '@grafana/runtime';
 
 import {
   PolystatPanelMigrationHandler,
@@ -13,6 +13,34 @@ import {
 } from './migrations';
 
 describe('Polystat -> PolystatV2 migrations', () => {
+  describe('shape values round-trip', () => {
+    // hexagon_flat_top is new on this branch, so no saved dashboard can predate it. The React
+    // migration path must pass it through: normalizing or restricting shape values there would
+    // silently rewrite panels that use it.
+    it.each(['hexagon_flat_top', 'hexagon_pointed_top', 'circle', 'square', 'rectangle'])(
+      'leaves globalShape %s untouched',
+      (shape) => {
+        const panel = {
+          options: { globalShape: shape, globalValueFontSize: 12 },
+          fieldConfig: { defaults: {}, overrides: [] },
+        } as unknown as PanelModel<any>;
+
+        expect(PolystatPanelMigrationHandler(panel).globalShape).toBe(shape);
+      }
+    );
+
+    it('is idempotent for the new shape', () => {
+      const panel = {
+        options: { globalShape: 'hexagon_flat_top', globalValueFontSize: 12 },
+        fieldConfig: { defaults: {}, overrides: [] },
+      } as unknown as PanelModel<any>;
+
+      const once = PolystatPanelMigrationHandler(panel);
+      const twice = PolystatPanelMigrationHandler({ ...panel, options: once } as unknown as PanelModel<any>);
+      expect(twice).toEqual(once);
+    });
+  });
+
   it('only migrates old polystat', () => {
     const panel = {} as PanelModel;
     const options = PolystatPanelMigrationHandler(panel);
@@ -460,13 +488,13 @@ describe('Polystat -> PolystatV2 migrations', () => {
   });
   it('checks if roboto is available to runtime', () => {
     const versions = new Map<string, boolean>([
-      ["8.4.11", true],
-      ["8.5.21", true],
-      ["9.1.0", true],
-      ["9.2.0", true],
-      ["9.3.0", true],
-      ["9.4.0", false],
-      ["9.4.3", false],
+      ['8.4.11', true],
+      ['8.5.21', true],
+      ['9.1.0', true],
+      ['9.2.0', true],
+      ['9.3.0', true],
+      ['9.4.0', false],
+      ['9.4.3', false],
     ]);
     for (let [key, value] of versions) {
       config.buildInfo.version = key;

@@ -27,8 +27,16 @@ const getComponentStyles = (theme: GrafanaTheme2) => {
   };
 };
 
-
-export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, height, replaceVariables, fieldConfig, timeZone }) => {
+export const PolystatPanel: React.FC<Props> = ({
+  options,
+  data,
+  id,
+  width,
+  height,
+  replaceVariables,
+  fieldConfig,
+  timeZone,
+}) => {
   const styles = useStyles2(getComponentStyles);
   const currentThemeV1 = useTheme(); // V8
   const currentThemeV2 = useTheme2(); // V9+
@@ -64,14 +72,12 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
       options.compositeGlobalAliasingEnabled,
       timeZone,
       currentThemeV1,
-      currentThemeV2,
+      currentThemeV2
     );
   }, [data, fieldConfig, options, replaceVariables, currentThemeV1, currentThemeV2, timeZone]);
 
   if (cachedProcessedData === undefined) {
-    return (
-      <>Loading... please wait</>
-    )
+    return <>Loading... please wait</>;
   }
 
   return (
@@ -113,7 +119,9 @@ export const PolystatPanel: React.FC<Props> = ({ options, data, id, width, heigh
           globalShowTimestampPosition={options.globalShowTimestampPosition}
           globalShowTimestampFontSize={options.globalShowTimestampFontSize}
           globalShowTimestampYOffset={options.globalShowTimestampYOffset}
-          globalTextFontAutoColor={options.globalTextFontAutoColorEnabled ? currentThemeV2.colors.text.primary : '#000000'}
+          globalTextFontAutoColor={
+            options.globalTextFontAutoColorEnabled ? currentThemeV2.colors.text.primary : '#000000'
+          }
           globalTextFontAutoColorEnabled={options.globalTextFontAutoColorEnabled}
           globalTextFontColor={options.globalTextFontColor}
           globalTextFontFamily={options.globalTextFontFamily}

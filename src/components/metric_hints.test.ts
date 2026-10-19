@@ -19,7 +19,7 @@ describe('Test Metric Hints', () => {
           name: 'B-series',
           type: FieldType.number,
           values: [100, 110, 120],
-          labels: { '__name__': 'B with Label', 'fake-label-b': 'BName' }
+          labels: { __name__: 'B with Label', 'fake-label-b': 'BName' },
         },
       ],
     });
@@ -31,7 +31,7 @@ describe('Test Metric Hints', () => {
           name: 'C-series',
           type: FieldType.number,
           values: [101, 111, 121],
-          labels: { '__not_name__': 'C with label', 'fake-label-c': 'CLabel' }
+          labels: { __not_name__: 'C with label', 'fake-label-c': 'CLabel' },
         },
       ],
     });
@@ -64,8 +64,8 @@ describe('Test Metric Hints', () => {
           type: 'number',
           typeInfo: { frame: 'float64', nullable: true },
           labels: {
-            "coin": "btc",
-            "currency": "usd"
+            coin: 'btc',
+            currency: 'usd',
           },
           config: {
             displayNameFromDS: 'changePctDay.mean { coin: btc currency: usd }',
@@ -75,9 +75,7 @@ describe('Test Metric Hints', () => {
         },
       ],
     });
-
   });
-
 
   describe('Metric Hints', () => {
     it('returns set of hints from labels', () => {
@@ -108,7 +106,5 @@ describe('Test Metric Hints', () => {
       let val = [...hints][0];
       expect(val).toEqual('changePctDay.mean { coin: btc currency: usd }');
     });
-
   });
-
 });
