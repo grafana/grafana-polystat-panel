@@ -308,14 +308,8 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "ClusterA",
-            "ClusterA-dev"
-          ],
-          "value": [
-            "ClusterA",
-            "ClusterA-dev"
-          ]
+          "text": ["ClusterA", "ClusterA-dev"],
+          "value": ["ClusterA", "ClusterA-dev"]
         },
         "hide": 1,
         "includeAll": true,

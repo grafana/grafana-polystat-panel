@@ -59,8 +59,7 @@ function getTextSizeForWidth(text: string, font: any, width: number, minFontPx: 
   if (w <= width) {
     return maxFontPx;
   }
-  // pad width by 10px
-  width = width - 20;
+  width = width - Math.max(2, Math.round(width * 0.05));
   // start from large to small, return 0 for no-fit
   for (let fontSize = maxFontPx; fontSize >= minFontPx; fontSize--) {
     s = font.replace('?', fontSize);
@@ -95,9 +94,7 @@ function getTextSizeForWidthAndHeight(
   let s = font.replace('?', maxFontPx);
   let w = getTextWidth(text, s);
   //console.log(`getTextSizeForWidthAndHeight: width raw ${width}`);
-  // need to pad the width: use 95% of the space (leave 10% padding on each side)
-  // and ensure it is a whole number
-  width = Math.round(width * 0.95);
+  width = Math.round(width * 0.98);
   //console.log(`getTextSizeForWidthAndHeight: width reduced ${width}`);
   if (w <= width && maxFontPx <= height) {
     return maxFontPx;
@@ -234,5 +231,5 @@ export {
   RGBToHex,
   SortVariableValuesByField,
   getTextOrValue,
-  roundValue
+  roundValue,
 };

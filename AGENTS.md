@@ -103,6 +103,12 @@ Every task:
   - Run code > guess. Test suite → run it. Linter → run it. Type checker → run it.
   - Never "done" from plausible-looking diff. Plausibility ≠ correctness.
   - UI changes: screenshot before+after, describe diff.
+  - `yarn spellcheck` is NOT authoritative for CI. It runs the pinned cspell 8.19.4; CI runs
+    `npx cspell@6.13.3`, hardcoded in grafana/plugin-ci-workflows. cspell 8 accepts inflections of
+    words in `cspell.config.json` (a past-tense form of `typecheck` passes), 6.13.3 demands the
+    literal string, so local can pass while CI fails. Use a spelling already in the list, or run
+    `npx --yes cspell@6.13.3 -c cspell.config.json "**/*.{ts,tsx,js,go,md,mdx,yml,yaml,json,scss,css}"`
+    to check what CI will see.
 - **Debugging:**
   - Root causes, not symptoms. Suppressing error ≠ fixing error.
   - Logs/errors/traces: read whole thing. Half-read trace → wrong fix.
@@ -300,14 +306,14 @@ const getStyles = (theme: GrafanaTheme2) => ({
 
 ### Key Technical Details
 
-- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `12.3.1`
+- **Grafana SDK versions**: `@grafana/data`, `@grafana/runtime`, `@grafana/ui` at `^13.0.0`
 - **React 18** with `@types/react` pinned to `18.3.31`; plugin must stay React 19 compatible (jsx-runtime externalized)
 - **Webpack 5** with SWC loader, AMD library output format
 - **Production build** drops `console.log` and `console.info` via TerserPlugin
 - **ESLint 9** flat config extending `@grafana/eslint-config` v10 (via `.config/eslint.config.mjs`)
 - **`@grafana/plugins/import-is-compatible`** lint rule warns on SDK version mismatches
-- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role); default version 12.3.0
-- **grafanaDependency**: `>=12.2.5` (first 12.2 patch that provides `react/jsx-runtime`)
+- **Docker compose** runs Grafana at `localhost:3000` with anonymous auth (admin role); default version 13.0.1
+- **grafanaDependency**: `>=12.4.0` (raised by #536 with the function-based suggestions API)
 
 ### CI Workflow
 
@@ -315,7 +321,7 @@ CI runs via `grafana/plugin-ci-workflows` reusable workflow (`ci-cd-workflows/v1
 
 - Lint, typecheck, unit tests, build
 - Playwright E2E against a matrix of `grafana-enterprise` versions matching `run-playwright-with-grafana-dependency`
-  (`>=12.2.5`) in `.github/workflows/push.yml`. Keep it in sync with `grafanaDependency` in `src/plugin.json`.
+  (`>=12.4.0`) in `.github/workflows/push.yml`. Keep it in sync with `grafanaDependency` in `src/plugin.json`.
 - Manual publish via `workflow_dispatch` to dev/ops/prod environments
 
 ### Plugin Tooling Rules
@@ -382,7 +388,7 @@ Flat config (ESLint 9). Common rules applied:
   - When checking out a branch or `main`, always `git fetch` and `git pull` first.
   - Always run `git status` before constructing `git add` commands.
 - **Pull requests:**
-  - Always create as drafts (`gh pr create --draft`).
+  - Always create as drafts (`gh pr create --draft`). Never call `gh pr ready` — only the author marks PRs ready.
   - Use categories in summaries: `### Added`, `### Fixed`, `### Changed`, `### Removed`, `### Dependencies`,
     `### CI/CD`, `### Documentation`, `### Tooling`.
   - Always include a `## Test plan` section with a verification checklist.
@@ -392,8 +398,18 @@ Flat config (ESLint 9). Common rules applied:
 - `@grafana/data`, `@grafana/ui`, `@grafana/runtime` are runtime externals: production uses the host Grafana's copy,
   tests use the devDependency copy. When an SDK bump changes test results (e.g. `diffperc` became a percentage in
   12.x), align tests with the SDK — that is already the production behavior.
-- Never drop comments during a mechanical refactor. Comments recording color values, source URLs, workarounds, or
-  alternate values are intentional — carry them over to the new code.
+- `override_processor.test.ts` uses `renderHook` + `useTheme()`/`useTheme2()` to get theme objects. Refactor to use
+  `createTheme()` from `@grafana/data` instead — simpler, no React context needed.
+- ~~`Color` class refactor~~ — Done. Converted to interface + standalone functions. Dead `RGBToHex` removed.
+- Preserve all comments when refactoring. Comments documenting color values, URLs, workarounds, or alternate values
+  are intentional — do not strip them during mechanical transforms.
+- `AutoFontScaler` needs Playwright E2E visual regression tests — unit tests verify logic branching but cannot prove
+  font sizes render correctly. Add provisioned dashboard with polystat panels at various sizes and screenshot baselines.
+- `AutoFontScaler` refactor: flatten nested ellipsis cascade (3-deep if/else with repeated `computeTextFontSize` calls)
+  into a loop over `[18, 10, 6]`. Blocked on E2E visual tests above.
+- `LayoutManager` class refactor: only class in the codebase; convert to a plain state type + pipeline of pure functions
+  (`createLayout` → `computeColumnRowSizes` → `computeActualUsage` → `computeRadius` → ...). Large dedicated PR —
+  use existing 301 tests as acceptance criteria. Do not mix with other changes.
 
 ---
 
